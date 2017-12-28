@@ -35,6 +35,11 @@ resources:
   source:
     branch: develop
     uri: https://github.com/cloudfoundry-incubator/garden-windows-bosh-release.git
+- name: bosh-dns
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/bosh-dns-release.git
 - name: vsphere-windows2012R2-stemcell
   type: s3
   source:
@@ -104,6 +109,8 @@ jobs:
     - get: garden-windows-bosh-release-develop
       trigger: true
       tags: [vsphere]
+    - get: bosh-dns
+      tags: [vsphere]
   - aggregate:
     - task: get-linux-stemcell
       file: ci/tasks/get-vsphere-linux-stemcell/task.yml
@@ -138,6 +145,13 @@ jobs:
       output_mapping:
         release-tarball: garden-windows-tarball
       tags: [vsphere]
+    - task: create-bosh-dns-release
+      file: ci/bosh-cr/task.yml
+      input_mapping:
+        release: bosh-dns
+      output_mapping:
+        release-tarball: bosh-dns-tarball
+      tags: [vsphere]
   - put: mulgore-cf-deployment
     params:
       manifest: cf-deployment/cf-deployment.yml
@@ -149,6 +163,7 @@ jobs:
       - winc-tarball/*.tgz
       - windows2016fs-tarball/*.tgz
       - garden-windows-tarball/*.tgz
+      - bosh-dns-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/windows-cell.yml
@@ -173,6 +188,7 @@ jobs:
       - ci/operations/latest-winc.yml
       - ci/operations/latest-windows2016fs-release.yml
       - ci/operations/latest-garden-windows.yml
+      - ci/operations/latest-bosh-dns.yml
       vars_files:
       - cf-vars/vars.yml
       cleanup: true
