@@ -1,0 +1,15 @@
+---
+platform: linux
+
+image_resource: {type: docker-image, source: {repository: pivotalgreenhouse/ci}}
+
+inputs:
+- name: ci
+- name: hwc
+  path: src/code.cloudfoundry.org/hwc
+
+outputs:
+- name: hwc-rel
+
+run:
+  path: ci/tasks/build-hwc/run

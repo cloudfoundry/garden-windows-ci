@@ -3,7 +3,7 @@ resources:
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry-incubator/greenhouse-ci.git
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
 - name: hwc-develop
   type: git
   source:
@@ -40,10 +40,10 @@ jobs:
     - get: hwc-master
   - task: test-hwc
     input_mapping: { hwc: hwc-develop }
-    file: ci/test-hwc/task.yml
+    file: ci/tasks/test-hwc/task.yml
   - task: merge-develop-to-master
     input_mapping: { from-repo: hwc-develop, to-repo: hwc-master }
-    file: ci/merge-repo/task.yml
+    file: ci/tasks/merge-repo/task.yml
     params: { FROM_BRANCH: develop }
   - put: hwc-master
     params: { repository: merged-repo/to-repo }
@@ -58,7 +58,7 @@ jobs:
       passed: [test]
     - get: hwc-version
   - task: build-hwc
-    file: ci/build-hwc/task.yml
+    file: ci/tasks/build-hwc/task.yml
   - put: hwc-version
     params: {bump: major}
   - put: hwc-release

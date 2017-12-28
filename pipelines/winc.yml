@@ -9,7 +9,7 @@ resources:
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry-incubator/greenhouse-ci.git
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
 - name: winc-develop
   type: git
   source:
@@ -129,12 +129,12 @@ jobs:
       trigger: true
   - task: test
     input_mapping: { winc: winc-develop }
-    file: ci/test-winc/task.yml
+    file: ci/tasks/test-winc/task.yml
     params:
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
   - task: merge-develop-to-master
     input_mapping: { from-repo: winc-develop, to-repo: winc-master }
-    file: ci/merge-repo/task.yml
+    file: ci/tasks/merge-repo/task.yml
     params: { FROM_BRANCH: develop }
   - put: winc-master
     params: { repository: merged-repo/to-repo }
@@ -157,7 +157,7 @@ jobs:
     - get: windows2016fs
   - aggregate:
     - task: build-winc
-      file: ci/build-binary/task.yml
+      file: ci/tasks/build-binary/task.yml
       input_mapping:
         repo: winc-master
       output_mapping:
@@ -166,7 +166,7 @@ jobs:
         IMPORT_PATH: "code.cloudfoundry.org/winc"
         PACKAGE: "./cmd/winc"
     - task: build-winc-network
-      file: ci/build-binary/task.yml
+      file: ci/tasks/build-binary/task.yml
       input_mapping:
         repo: winc-master
       output_mapping:
@@ -175,7 +175,7 @@ jobs:
         IMPORT_PATH: "code.cloudfoundry.org/winc"
         PACKAGE: "./cmd/winc-network"
     - task: build-winc-image
-      file: ci/build-binary/task.yml
+      file: ci/tasks/build-binary/task.yml
       input_mapping:
         repo: winc-master
       output_mapping:
@@ -184,7 +184,7 @@ jobs:
         IMPORT_PATH: "code.cloudfoundry.org/winc"
         PACKAGE: "./cmd/winc-image"
     - task: build-nstar
-      file: ci/build-binary/task.yml
+      file: ci/tasks/build-binary/task.yml
       input_mapping:
         repo: winc-release-develop
       output_mapping:
@@ -192,11 +192,11 @@ jobs:
       params:
         PACKAGE: "./src/nstar"
   - task: copy-forks
-    file: ci/copy-forks/task.yml
+    file: ci/tasks/copy-forks/task.yml
     input_mapping:
       garden-integration-tests: gats-fork
   - task: run-gats
-    file: ci/run-local-gats/task.yml
+    file: ci/tasks/run-local-gats/task.yml
     input_mapping:
       garden-runc-release: garden-runc-release-forks
 
@@ -211,7 +211,7 @@ jobs:
       - local-gats
       trigger: true
   - task: bump-submodule
-    file: ci/bump-submodule/task.yml
+    file: ci/tasks/bump-submodule/task.yml
     params:
       SUBMODULE: "src/code.cloudfoundry.org/winc"
     input_mapping:
@@ -229,7 +229,7 @@ jobs:
     - get: winc-release-develop
       trigger: true
   - task: run-ginkgo-exe
-    file: ci/run-ginkgo-exe/task.yml
+    file: ci/tasks/run-ginkgo-exe/task.yml
     input_mapping:
       repo: winc-release-develop
     params:
@@ -256,17 +256,17 @@ jobs:
     - get: garden-windows-private
   - aggregate:
     - task: get-cf-vars
-      file: ci/get-gcs-file/task.yml
+      file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
       params:
         BUCKET: cff-greenhouse-pesto
         FILE_NAME: cf/vars.yml
         SERVICE_ACCOUNT_KEY: {{PESTO_SERVICE_ACCOUNT_JSON}}
     - task: get-linux-stemcell
-      file: ci/get-gcp-linux-stemcell/task.yml
+      file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
     - task: create-winc-release
-      file: ci/bosh-cr/task.yml
+      file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: winc-release-develop
       output_mapping:
@@ -296,7 +296,7 @@ jobs:
     get_params:
       skip_export: true
   - task: run-wats
-    file: ci/run-wats/task.yml
+    file: ci/tasks/run-wats/task.yml
     params:
       ADMIN_PASSWORD: {{PESTO_ADMIN_PASSWORD}}
       ADMIN_USER: admin
@@ -311,7 +311,7 @@ jobs:
       NODES: 1
     on_success:
       task: delete-deployment
-      file: ci/bosh-deld/task.yml
+      file: ci/tasks/bosh-deld/task.yml
       params:
         BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
         BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
@@ -333,7 +333,7 @@ jobs:
     - get: version
       params: {bump: major}
   - task: finalize-release
-    file: ci/finalize-release/task.yml
+    file: ci/tasks/finalize-release/task.yml
     input_mapping: { release: winc-release-develop }
     params:
       RELEASE_NAME: winc
@@ -351,7 +351,7 @@ jobs:
     params: {file: version/number}
   - task: generate-github-release
     input_mapping: { release: finalized-repo }
-    file: ci/generate-github-release/task.yml
+    file: ci/tasks/generate-github-release/task.yml
   - put: winc-release-github-release
     params:
       commitish: generated-release/commitish
@@ -370,7 +370,7 @@ jobs:
     - get: version
       params: {bump: minor}
   - task: finalize-release
-    file: ci/finalize-release/task.yml
+    file: ci/tasks/finalize-release/task.yml
     input_mapping: { release: winc-release-develop }
     params:
       RELEASE_NAME: winc
@@ -388,7 +388,7 @@ jobs:
     params: {file: version/number}
   - task: generate-github-release
     input_mapping: { release: finalized-repo }
-    file: ci/generate-github-release/task.yml
+    file: ci/tasks/generate-github-release/task.yml
   - put: winc-release-github-release
     params:
       commitish: generated-release/commitish
@@ -407,7 +407,7 @@ jobs:
     - get: version
       params: {bump: patch}
   - task: finalize-release
-    file: ci/finalize-release/task.yml
+    file: ci/tasks/finalize-release/task.yml
     input_mapping: { release: winc-release-develop }
     params:
       RELEASE_NAME: winc
@@ -425,7 +425,7 @@ jobs:
     params: {file: version/number}
   - task: generate-github-release
     input_mapping: { release: finalized-repo }
-    file: ci/generate-github-release/task.yml
+    file: ci/tasks/generate-github-release/task.yml
   - put: winc-release-github-release
     params:
       commitish: generated-release/commitish

@@ -3,7 +3,7 @@ resources:
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry-incubator/greenhouse-ci.git
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
     paths: [ docker/Dockerfile.ci ]
 
 - name: ci-image

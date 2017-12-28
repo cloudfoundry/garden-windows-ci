@@ -62,7 +62,7 @@ resources:
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry-incubator/greenhouse-ci.git
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
 - name: tartar-cf-deployment
   type: bosh-deployment
   source:
@@ -159,7 +159,7 @@ jobs:
       resource: garden-windows-release
     - get: ci
   - task: sync-submodules
-    file: ci/sync-submodules/task.yml
+    file: ci/tasks/sync-submodules/task.yml
     params:
       SUBMODULES: "src/code.cloudfoundry.org/garden,src/github.com/bmizerany/pat,src/github.com/cloudfoundry/dropsonde,src/github.com/cloudfoundry/gosteno,src/github.com/cloudfoundry/sonde-go,src/github.com/gogo/protobuf,src/github.com/golang/protobuf,src/github.com/gorilla/context,src/github.com/gorilla/mux,src/github.com/nu7hatch/gouuid,src/github.com/onsi/ginkgo,src/github.com/onsi/gomega,src/github.com/pivotal-golang/localip,src/github.com/tedsuo/ifrit,src/golang.org/x/net,src/gopkg.in/yaml.v2"
   - put: garden-windows-release
@@ -191,13 +191,13 @@ jobs:
       params:
         file: version/number
     - task: create-release
-      file: ci/bosh-cr/task.yml
+      file: ci/tasks/bosh-cr/task.yml
       input_mapping: { release: garden-windows-bosh-release-develop }
     - task: get-linux-stemcell
-      file: ci/get-gcp-linux-stemcell/task.yml
+      file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
     - task: get-cf-vars
-      file: ci/get-gcs-file/task.yml
+      file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
       params:
         BUCKET: cf-greenhouse-tartar
@@ -235,20 +235,20 @@ jobs:
       get_params:
         skip_export: true
     - task: clean-up
-      file: ci/bosh-cleanup/task.yml
+      file: ci/tasks/bosh-cleanup/task.yml
       params:
         BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
         BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
         BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
         BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
     - task: enable-credhub
-      file: ci/enable-credhub/task.yml
+      file: ci/tasks/enable-credhub/task.yml
       params:
         CF_API: api.tartar.cf-app.com
         CF_USERNAME: admin
         CF_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
     - task: wats
-      file: ci/run-wats/task.yml
+      file: ci/tasks/run-wats/task.yml
       input_mapping: { wats: wats-develop }
       params:
         ADMIN_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
@@ -262,7 +262,7 @@ jobs:
         CREDHUB_MODE: assisted
       on_success:
         task: delete-deployment
-        file: ci/bosh-deld/task.yml
+        file: ci/tasks/bosh-deld/task.yml
         params:
           BOSH_DEPLOYMENT: cf
           BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
@@ -270,7 +270,7 @@ jobs:
           BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
           BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
     - task: rename
-      file: ci/rename/task.yml
+      file: ci/tasks/rename/task.yml
       input_mapping: { source: release-tarball }
       output_mapping: { dest: garden-windows-output }
       params:
@@ -281,7 +281,7 @@ jobs:
         file: garden-windows-output/garden-windows-*.tgz
     - task: merge-develop-to-master
       input_mapping: { from-repo: wats-develop, to-repo: wats-master }
-      file: ci/merge-repo/task.yml
+      file: ci/tasks/merge-repo/task.yml
       params:
         FROM_BRANCH: develop
     - put: wats-mergedback
@@ -310,7 +310,7 @@ jobs:
   - put: version
     params: {file: version/number}
   - task: finalize-release
-    file: ci/finalize-release/task.yml
+    file: ci/tasks/finalize-release/task.yml
     input_mapping: { release: release-develop }
     params:
       RELEASE_NAME: garden-windows
@@ -326,7 +326,7 @@ jobs:
       tag_prefix: v
   - task: generate-release
     input_mapping: { release: release-master }
-    file: ci/generate-github-release/task.yml
+    file: ci/tasks/generate-github-release/task.yml
   - put: garden-windows-bosh-github-release
     params:
       commitish: generated-release/commitish
@@ -349,7 +349,7 @@ jobs:
         params:
           submodules: none
     - task: merge-master-into-develop
-      file: ci/merge-repo/task.yml
+      file: ci/tasks/merge-repo/task.yml
       params:
         FROM_BRANCH: master
     - put: garden-windows-bosh-release-develop-mergedback
@@ -389,7 +389,7 @@ jobs:
     - get: garden-windows-bosh-artifacts
       trigger: true
   - task: update-blobs
-    file: ci/update-garden-windows-blobs/task.yml
+    file: ci/tasks/update-garden-windows-blobs/task.yml
     params:
       ACCESS_KEY_ID: {{BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID}}
       SECRET_ACCESS_KEY: {{BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY}}

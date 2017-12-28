@@ -12,7 +12,7 @@ resources:
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry-incubator/greenhouse-ci.git
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
 - name: windows2016fs-release-develop
   type: git
@@ -276,7 +276,7 @@ jobs:
     - get: image-version
       params: {bump: patch}
   - task: build-and-push
-    file: ci/docker-build-and-push/task.yml
+    file: ci/tasks/docker-build-and-push/task.yml
     input_mapping:
       repo: windows2016fs-dockerfile
       version: image-version
@@ -286,9 +286,9 @@ jobs:
       DOCKER_USERNAME: {{DOCKER_USERNAME}}
       DOCKER_PASSWORD: {{DOCKER_PASSWORD}}
   - task: update-image-tag
-    file: ci/update-image-tag/task.yml
+    file: ci/tasks/update-image-tag/task.yml
   - task: commit-changes
-    file: ci/commit/task.yml
+    file: ci/tasks/commit/task.yml
     input_mapping:
       repo: windows2016fs-updated
     output_mapping:
@@ -311,7 +311,7 @@ jobs:
       passed: [build-and-push]
       trigger: true
   - task: create-story
-    file: ci/create-rootfs-tracker-story/task.yml
+    file: ci/tasks/create-rootfs-tracker-story/task.yml
     input_mapping:
       version: image-version
     params:
@@ -326,7 +326,7 @@ jobs:
     - get: windows2016fs
       trigger: true
   - task: run-ginkgo-exe
-    file: ci/test-windows2016fs-windows/task.yml
+    file: ci/tasks/test-windows2016fs-windows/task.yml
     params:
       NODES: 2
 
@@ -338,7 +338,7 @@ jobs:
     - get: windows2016fs
       trigger: true
   - task: run-ginkgo
-    file: ci/test-windows2016fs-linux/task.yml
+    file: ci/tasks/test-windows2016fs-linux/task.yml
     params:
       IGNORE_PACKAGES: "cmd/extract,windows2016fs/image,windows2016fs/layer"
 
@@ -354,18 +354,18 @@ jobs:
       - test-windows2016fs-linux
       trigger: true
   - task: bump-windows2016fs-release
-    file: ci/bump-submodule/task.yml
+    file: ci/tasks/bump-submodule/task.yml
     params:
       SUBMODULE: "src/code.cloudfoundry.org/windows2016fs"
     input_mapping:
       source-repo: windows2016fs-release-develop
       module-repo: windows2016fs
   - task: update-blob
-    file: ci/update-windows2016fs-blob/task.yml
+    file: ci/tasks/update-windows2016fs-blob/task.yml
     input_mapping:
       windows2016fs-release: bumped-repo
   - task: commit-changes
-    file: ci/commit/task.yml
+    file: ci/tasks/commit/task.yml
     input_mapping:
       repo: windows2016fs-release-updated-blob
     output_mapping:
@@ -389,7 +389,7 @@ jobs:
       - test-windows2016fs-linux
       trigger: true
   - task: bump-windows2016fs-online-release
-    file: ci/bump-submodule/task.yml
+    file: ci/tasks/bump-submodule/task.yml
     params:
       SUBMODULE: "src/code.cloudfoundry.org/windows2016fs"
     input_mapping:
@@ -408,7 +408,7 @@ jobs:
     - get: windows2016fs-release-develop
       trigger: true
   - task: build-create-release-binaries
-    file: ci/build-create-release-binaries/task.yml
+    file: ci/tasks/build-create-release-binaries/task.yml
     input_mapping:
       version: windows2016fs-release-version
       windows2016fs-release: windows2016fs-release-develop
@@ -445,19 +445,19 @@ jobs:
       passed: [ build-create-release ]
   - aggregate:
     - task: create-dev-release
-      file: ci/create-fs-release-windows/task.yml
+      file: ci/tasks/create-fs-release-windows/task.yml
       input_mapping:
         sha: create-windows-sha
         windows2016fs-release: windows2016fs-release-develop
       params:
         DEV_ENV: true
     - task: run-ginkgo-exe
-      file: ci/run-ginkgo-exe/task.yml
+      file: ci/tasks/run-ginkgo-exe/task.yml
       input_mapping: { repo: windows2016fs-release-develop}
       params:
         TEST_PATH: src/create
     - task: create-release
-      file: ci/create-fs-release-windows/task.yml
+      file: ci/tasks/create-fs-release-windows/task.yml
       input_mapping:
         sha: create-windows-sha
         windows2016fs-release: windows2016fs-release-develop
@@ -478,19 +478,19 @@ jobs:
       passed: [ build-create-release ]
   - aggregate:
     - task: create-dev-release
-      file: ci/create-fs-release-linux/task.yml
+      file: ci/tasks/create-fs-release-linux/task.yml
       input_mapping:
         sha: create-linux-sha
         windows2016fs-release: windows2016fs-release-develop
       params:
         DEV_ENV: true
     - task: run-ginkgo
-      file: ci/run-ginkgo/task.yml
+      file: ci/tasks/run-ginkgo/task.yml
       input_mapping: { repo: windows2016fs-release-develop}
       params:
         TEST_PATH: src/create
     - task: create-release
-      file: ci/create-fs-release-linux/task.yml
+      file: ci/tasks/create-fs-release-linux/task.yml
       input_mapping:
         sha: create-linux-sha
         windows2016fs-release: windows2016fs-release-develop
@@ -522,17 +522,17 @@ jobs:
     - get: garden-windows-private
   - aggregate:
     - task: get-cf-vars
-      file: ci/get-gcs-file/task.yml
+      file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
       params:
         BUCKET: cf-greenhouse-tartar
         FILE_NAME: cf/vars.yml
         SERVICE_ACCOUNT_KEY: {{TARTAR_SERVICE_ACCOUNT_JSON}}
     - task: get-linux-stemcell
-      file: ci/get-gcp-linux-stemcell/task.yml
+      file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
     - task: create-windows2016fs-release
-      file: ci/create-windows2016fs-offline-release/task.yml
+      file: ci/tasks/create-windows2016fs-offline-release/task.yml
       input_mapping:
         sha: create-linux-sha
         version: windows2016fs-release-version
@@ -540,7 +540,7 @@ jobs:
       output_mapping:
         release-tarball: windows2016fs-tarball
   - task: create-windows2016fs-opsfile
-    file: ci/write-windows2016fs-opsfile/task.yml
+    file: ci/tasks/write-windows2016fs-opsfile/task.yml
     input_mapping: { release-tarball: windows2016fs-tarball }
   - put: tartar-cf-deployment
     params:
@@ -564,7 +564,7 @@ jobs:
     get_params:
       skip_export: true
   - task: run-wats
-    file: ci/run-wats/task.yml
+    file: ci/tasks/run-wats/task.yml
     params:
       ADMIN_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
       ADMIN_USER: admin
@@ -579,7 +579,7 @@ jobs:
       NODES: 1
     on_success:
       task: delete-deployment
-      file: ci/bosh-deld/task.yml
+      file: ci/tasks/bosh-deld/task.yml
       params:
         BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
         BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
@@ -612,7 +612,7 @@ jobs:
     - get: create-windows-sha
       passed: [tartar-offline-wats]
   - task: promote-create-binaries
-    file: ci/promote-create-binaries/task.yml
+    file: ci/tasks/promote-create-binaries/task.yml
     input_mapping:
       version: windows2016fs-release-version
   - put: create-windows-rcs
@@ -622,7 +622,7 @@ jobs:
     params:
       file: promoted-binaries/create-*-linux-amd64
   - task: update-version-and-shas
-    file: ci/update-fs-release-version/task.yml
+    file: ci/tasks/update-fs-release-version/task.yml
     input_mapping:
       windows2016fs-release: windows2016fs-release-develop
       version: windows2016fs-release-version
@@ -638,7 +638,7 @@ jobs:
     input_mapping:
       release: windows2016fs-release-updated-version
       version: windows2016fs-release-version
-    file: ci/generate-github-release/task.yml
+    file: ci/tasks/generate-github-release/task.yml
   - put: windows2016fs-release-github-release
     params:
       commitish: generated-release/commitish
@@ -669,7 +669,7 @@ jobs:
     - get: create-windows-sha
       passed: [tartar-offline-wats]
   - task: promote-create-binaries
-    file: ci/promote-create-binaries/task.yml
+    file: ci/tasks/promote-create-binaries/task.yml
     input_mapping:
       version: windows2016fs-release-version
   - put: create-windows-rcs
@@ -679,7 +679,7 @@ jobs:
     params:
       file: promoted-binaries/create-*-linux-amd64
   - task: update-version-and-shas
-    file: ci/update-fs-release-version/task.yml
+    file: ci/tasks/update-fs-release-version/task.yml
     input_mapping:
       windows2016fs-release: windows2016fs-release-develop
       version: windows2016fs-release-version
@@ -695,7 +695,7 @@ jobs:
     input_mapping:
       release: windows2016fs-release-updated-version
       version: windows2016fs-release-version
-    file: ci/generate-github-release/task.yml
+    file: ci/tasks/generate-github-release/task.yml
   - put: windows2016fs-release-github-release
     params:
       commitish: generated-release/commitish
@@ -726,7 +726,7 @@ jobs:
     - get: create-windows-sha
       passed: [tartar-offline-wats]
   - task: promote-create-binaries
-    file: ci/promote-create-binaries/task.yml
+    file: ci/tasks/promote-create-binaries/task.yml
     input_mapping:
       version: windows2016fs-release-version
   - put: create-windows-rcs
@@ -736,7 +736,7 @@ jobs:
     params:
       file: promoted-binaries/create-*-linux-amd64
   - task: update-version-and-shas
-    file: ci/update-fs-release-version/task.yml
+    file: ci/tasks/update-fs-release-version/task.yml
     input_mapping:
       windows2016fs-release: windows2016fs-release-develop
       version: windows2016fs-release-version
@@ -752,7 +752,7 @@ jobs:
     input_mapping:
       release: windows2016fs-release-updated-version
       version: windows2016fs-release-version
-    file: ci/generate-github-release/task.yml
+    file: ci/tasks/generate-github-release/task.yml
   - put: windows2016fs-release-github-release
     params:
       commitish: generated-release/commitish
@@ -778,23 +778,23 @@ jobs:
     - get: garden-windows-private
   - aggregate:
     - task: get-cf-vars
-      file: ci/get-gcs-file/task.yml
+      file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
       params:
         BUCKET: cf-greenhouse-tartar
         FILE_NAME: cf/vars.yml
         SERVICE_ACCOUNT_KEY: {{TARTAR_SERVICE_ACCOUNT_JSON}}
     - task: get-linux-stemcell
-      file: ci/get-gcp-linux-stemcell/task.yml
+      file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
     - task: create-windows2016fs-release
-      file: ci/bosh-cr/task.yml
+      file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: windows2016fs-online-release-develop
       output_mapping:
         release-tarball: windows2016fs-tarball
   - task: create-windows2016fs-opsfile
-    file: ci/write-windows2016fs-opsfile/task.yml
+    file: ci/tasks/write-windows2016fs-opsfile/task.yml
     input_mapping: { release-tarball: windows2016fs-tarball }
   - put: tartar-cf-deployment
     params:
@@ -818,7 +818,7 @@ jobs:
     get_params:
       skip_export: true
   - task: run-wats
-    file: ci/run-wats/task.yml
+    file: ci/tasks/run-wats/task.yml
     params:
       ADMIN_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
       ADMIN_USER: admin
@@ -833,7 +833,7 @@ jobs:
       NODES: 1
     on_success:
       task: delete-deployment
-      file: ci/bosh-deld/task.yml
+      file: ci/tasks/bosh-deld/task.yml
       params:
         BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
         BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
@@ -856,7 +856,7 @@ jobs:
     - get: windows2016fs-online-release-version
       params: {bump: major}
   - task: finalize-release
-    file: ci/finalize-release/task.yml
+    file: ci/tasks/finalize-release/task.yml
     input_mapping:
       release: windows2016fs-online-release-develop
       version: windows2016fs-online-release-version
@@ -879,7 +879,7 @@ jobs:
     input_mapping:
       release: finalized-repo
       version: windows2016fs-online-release-version
-    file: ci/generate-github-release/task.yml
+    file: ci/tasks/generate-github-release/task.yml
   - put: windows2016fs-online-release-github-release
     params:
       commitish: generated-release/commitish
@@ -899,7 +899,7 @@ jobs:
     - get: windows2016fs-online-release-version
       params: {bump: minor}
   - task: finalize-release
-    file: ci/finalize-release/task.yml
+    file: ci/tasks/finalize-release/task.yml
     input_mapping:
       release: windows2016fs-online-release-develop
       version: windows2016fs-online-release-version
@@ -922,7 +922,7 @@ jobs:
     input_mapping:
       release: finalized-repo
       version: windows2016fs-online-release-version
-    file: ci/generate-github-release/task.yml
+    file: ci/tasks/generate-github-release/task.yml
   - put: windows2016fs-online-release-github-release
     params:
       commitish: generated-release/commitish
@@ -942,7 +942,7 @@ jobs:
     - get: windows2016fs-online-release-version
       params: {bump: patch}
   - task: finalize-release
-    file: ci/finalize-release/task.yml
+    file: ci/tasks/finalize-release/task.yml
     input_mapping:
       release: windows2016fs-online-release-develop
       version: windows2016fs-online-release-version
@@ -965,7 +965,7 @@ jobs:
     input_mapping:
       release: finalized-repo
       version: windows2016fs-online-release-version
-    file: ci/generate-github-release/task.yml
+    file: ci/tasks/generate-github-release/task.yml
   - put: windows2016fs-online-release-github-release
     params:
       commitish: generated-release/commitish

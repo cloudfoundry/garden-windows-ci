@@ -9,7 +9,7 @@ resources:
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry-incubator/greenhouse-ci.git
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
 - name: wats
   type: git
   source:
@@ -114,11 +114,11 @@ jobs:
       tags: [vsphere]
   - aggregate:
     - task: get-linux-stemcell
-      file: ci/get-vsphere-linux-stemcell/task.yml
+      file: ci/tasks/get-vsphere-linux-stemcell/task.yml
       output_mapping: { stemcell: vsphere-linux-stemcell }
       tags: [vsphere]
     - task: get-cf-vars
-      file: ci/get-gcs-file/task.yml
+      file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
       params:
         BUCKET: mulgore
@@ -126,21 +126,21 @@ jobs:
         SERVICE_ACCOUNT_KEY: {{SPITFIRE_SERVICE_ACCOUNT_JSON}}
       tags: [vsphere]
     - task: create-winc-release
-      file: ci/bosh-cr/task.yml
+      file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: winc-release-develop
       output_mapping:
         release-tarball: winc-tarball
       tags: [vsphere]
     - task: create-windows2016fs-release
-      file: ci/bosh-cr/task.yml
+      file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: windows2016fs-release-develop
       output_mapping:
         release-tarball: windows2016fs-tarball
       tags: [vsphere]
     - task: create-garden-windows-bosh-release
-      file: ci/bosh-cr/task.yml
+      file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: garden-windows-bosh-release-develop
       output_mapping:
@@ -208,7 +208,7 @@ jobs:
       passed: [mulgore-deploy-cf]
       tags: [vsphere]
   - task: cfbench
-    file: ci/cfbench/task.yml
+    file: ci/tasks/cfbench/task.yml
     input_mapping: {app: wats}
     params:
       CF_API: api.mulgore.cf-app.com
@@ -239,7 +239,7 @@ jobs:
       passed: [mulgore-deploy-cf]
       tags: [vsphere]
   - task: push-app
-    file: ci/push-app/task.yml
+    file: ci/tasks/push-app/task.yml
     input_mapping: {app: wats}
     params:
       CF_API: api.mulgore.cf-app.com
@@ -268,7 +268,7 @@ jobs:
       passed: [mulgore-push-longrunning-app-windows2016]
       tags: [vsphere]
   - task: curl-app
-    file: ci/curl-app/task.yml
+    file: ci/tasks/curl-app/task.yml
     params:
       CF_APP_URL: longrunning-windows2016.mulgore.cf-app.com
       CF_TAG: windows2016
@@ -296,7 +296,7 @@ jobs:
       passed: [mulgore-deploy-cf]
       tags: [vsphere]
   - task: cfbench
-    file: ci/cfbench/task.yml
+    file: ci/tasks/cfbench/task.yml
     input_mapping: {app: wats}
     params:
       CF_API: api.mulgore.cf-app.com
@@ -327,7 +327,7 @@ jobs:
       passed: [mulgore-deploy-cf]
       tags: [vsphere]
   - task: push-app
-    file: ci/push-app/task.yml
+    file: ci/tasks/push-app/task.yml
     input_mapping: {app: wats}
     params:
       CF_API: api.mulgore.cf-app.com
@@ -356,7 +356,7 @@ jobs:
       passed: [mulgore-push-longrunning-app-windows2012R2]
       tags: [vsphere]
   - task: curl-app
-    file: ci/curl-app/task.yml
+    file: ci/tasks/curl-app/task.yml
     params:
       CF_APP_URL: longrunning-windows2012R2.mulgore.cf-app.com
       CF_TAG: windows2012R2
