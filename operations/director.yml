@@ -1,0 +1,10 @@
+---
+- type: replace
+  path: /disk_pools/name=disks/disk_size?
+  value: 102400
+- type: replace
+  path: /instance_groups/name=bosh/properties/blobstore/max_upload_size?
+  value: 10000m
+- type: replace
+  path: /instance_groups/name=bosh/properties/director/local_dns?/enabled
+  value: true

@@ -1,0 +1,6 @@
+---
+- type: replace
+  path: /releases/name=bosh-dns?
+  value:
+    name: bosh-dns
+    version: latest
