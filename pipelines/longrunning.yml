@@ -35,7 +35,7 @@ resources:
   source:
     branch: develop
     uri: https://github.com/cloudfoundry-incubator/garden-windows-bosh-release.git
-- name: bosh-dns
+- name: bosh-dns-release
   type: git
   source:
     branch: master
@@ -109,7 +109,7 @@ jobs:
     - get: garden-windows-bosh-release-develop
       trigger: true
       tags: [vsphere]
-    - get: bosh-dns
+    - get: bosh-dns-release
       tags: [vsphere]
   - aggregate:
     - task: get-linux-stemcell
@@ -148,7 +148,7 @@ jobs:
     - task: create-bosh-dns-release
       file: ci/bosh-cr/task.yml
       input_mapping:
-        release: bosh-dns
+        release: bosh-dns-release
       output_mapping:
         release-tarball: bosh-dns-tarball
       tags: [vsphere]
