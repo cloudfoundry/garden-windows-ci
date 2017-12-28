@@ -57,13 +57,6 @@ resources:
     uri: https://github.com/cloudfoundry-incubator/windows2016fs.git
     paths: [ Dockerfile ]
 
-- name: garden-windows-private
-  type: git
-  source:
-    branch: master
-    private_key: {{GARDEN_WINDOWS_CI_GITHUB_PRIVATE_KEY}}
-    uri: git@github.com:pivotal-cf/garden-windows-private
-
 - name: wats
   type: git
   source:
@@ -519,7 +512,6 @@ jobs:
     - get: wats
     - get: cf-deployment
     - get: gcp-windows-stemcell
-    - get: garden-windows-private
   - aggregate:
     - task: get-cf-vars
       file: ci/tasks/get-gcs-file/task.yml
@@ -554,9 +546,9 @@ jobs:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
       - cf-deployment/operations/experimental/windows2016-cell.yml
-      - garden-windows-private/operations-common/windows2016-prs.yml
-      - garden-windows-private/operations-common/windows2016-debug.yml
-      - garden-windows-private/operations-common/scale-down-windows2016.yml
+      - ci/operations/windows2016-prs.yml
+      - ci/operations/windows2016-debug.yml
+      - ci/operations/scale-down-windows2016.yml
       - windows2016fs-opsfile/specified-windows2016fs-version.yml
       vars_files:
       - cf-vars/vars.yml
@@ -775,7 +767,6 @@ jobs:
     - get: wats
     - get: cf-deployment
     - get: gcp-windows-stemcell
-    - get: garden-windows-private
   - aggregate:
     - task: get-cf-vars
       file: ci/tasks/get-gcs-file/task.yml
@@ -808,9 +799,9 @@ jobs:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
       - cf-deployment/operations/experimental/windows2016-cell.yml
-      - garden-windows-private/operations-common/windows2016-prs.yml
-      - garden-windows-private/operations-common/windows2016-debug.yml
-      - garden-windows-private/operations-common/scale-down-windows2016.yml
+      - ci/operations/windows2016-prs.yml
+      - ci/operations/windows2016-debug.yml
+      - ci/operations/scale-down-windows2016.yml
       - windows2016fs-opsfile/specified-windows2016fs-version.yml
       vars_files:
       - cf-vars/vars.yml

@@ -46,18 +46,6 @@ resources:
     branch: develop
     uri: git@github.com:cloudfoundry-incubator/garden-windows-bosh-release.git
     private_key: {{CLOUDFOUNDRY-INCUBATOR_GARDEN-WINDOWS-BOSH-RELEASE_PRIVATE_KEY}}
-- name: greenhouse-private
-  type: git
-  source:
-    branch: master
-    private_key: {{GREENHOUSE_CI_GITHUB_PRIVATE_KEY}}
-    uri: git@github.com:pivotal-cf/greenhouse-private
-- name: garden-windows-private
-  type: git
-  source:
-    branch: master
-    private_key: {{GARDEN_WINDOWS_CI_GITHUB_PRIVATE_KEY}}
-    uri: git@github.com:pivotal-cf/garden-windows-private
 - name: ci
   type: git
   source:
@@ -186,7 +174,6 @@ jobs:
       - get: version
         params: {pre: rc}
       - get: ci
-      - get: garden-windows-private
     - put: version
       params:
         file: version/number
@@ -227,8 +214,8 @@ jobs:
         - cf-deployment/operations/experimental/secure-service-credentials-windows-cell.yml
         - cf-deployment/operations/experimental/disable-consul.yml
         - cf-deployment/operations/experimental/disable-consul-windows.yml
-        - garden-windows-private/operations-common/latest-garden-windows.yml
-        - garden-windows-private/operations-common/scale-down-credhub.yml
+        - ci/operations/latest-garden-windows.yml
+        - ci/operations/scale-down-credhub.yml
         vars_files:
         - cf-vars/vars.yml
         cleanup: true
@@ -296,7 +283,6 @@ jobs:
   plan:
   - aggregate:
     - get: ci
-    - get: greenhouse-private
     - get: version
       params: {bump: final}
     - get: release-develop
