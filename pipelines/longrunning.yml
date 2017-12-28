@@ -146,7 +146,7 @@ jobs:
         release-tarball: garden-windows-tarball
       tags: [vsphere]
     - task: create-bosh-dns-release
-      file: ci/bosh-cr/task.yml
+      file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: bosh-dns-release
       output_mapping:
