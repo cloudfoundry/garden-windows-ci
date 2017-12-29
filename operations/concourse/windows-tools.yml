@@ -1,0 +1,48 @@
+---
+- type: replace
+  path: /releases/name=windows-tools?
+  value:
+    name: windows-tools
+    version: latest
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: golang-windows
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: git
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: cmake
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: mingw64
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: mingw32
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: bosh-cli-windows
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: docker
+    release: windows-tools

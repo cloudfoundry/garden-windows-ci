@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+
+# Bosh and CF target functions
+bosh_target() {
+  local environment=$1
+
+  if [[ -z "$(gcloud config list --format='value(core.account)')" ]]; then
+    echo 'Must log in using `gcloud auth login`'
+    return
+  fi
+
+  if [[ -z "$(_project_name $environment)" ]]; then
+    echo "Unknown environment: $environment"
+    return
+  fi
+
+  eval "$(_bosh_creds $environment true)"
+  bosh alias-env $environment
+}
+
+cf_target() {
+  local environment=$1
+
+  if [[ -z "$(gcloud config list --format='value(core.account)')" ]]; then
+    echo 'Must log in using `gcloud auth login`'
+    return
+  fi
+
+  project_name=$(_project_name $environment)
+  if [[ -z "$project_name" ]]; then
+    echo "Unknown environment: $environment"
+    return
+  fi
+
+  eval "$(_cf_creds $environment)"
+  cf login --skip-ssl-validation \
+    -a https://api.$environment.cf-app.com \
+    -u admin \
+    -p $ADMIN_PASSWORD
+}
+
+# Helper functions
+_env_creds_yml() {
+  local environment=$1
+  if [[ -z "(_project_name $environment)" ]]; then
+    echo "Unknown environment: $environment"
+    return
+  fi
+  local uppercase_environment=$(echo "$environment" | awk '{print toupper($0)}')
+
+  eval "$(_bosh_creds $environment)"
+  eval "$(_cf_creds $environment)"
+
+  echo "${uppercase_environment}_BOSH_CLIENT: $BOSH_CLIENT"
+  echo "${uppercase_environment}_BOSH_CLIENT_SECRET: $BOSH_CLIENT_SECRET"
+  echo "${uppercase_environment}_BOSH_ENVIRONMENT: $BOSH_ENVIRONMENT"
+
+  local formatted_cert=$(echo "$BOSH_CA_CERT" | sed 's/^/  /')
+  echo -e "${uppercase_environment}_BOSH_CA_CERT: |\n$formatted_cert"
+
+  echo "${uppercase_environment}_ADMIN_PASSWORD: $ADMIN_PASSWORD"
+}
+
+_bosh_creds() {
+  local environment=$1
+  local project_name=$(_project_name $environment)
+  if [[ -z "$project_name" ]]; then
+    echo "Unknown environment: $environment"
+    return
+  fi
+
+  if gsutil ls gs://$project_name/bbl-state.json > /dev/null 2>&1; then
+    local bbl_state_dir=$(mktemp -d)
+    gsutil cp gs://$project_name/bbl-state.json $bbl_state_dir >/dev/null 2>&1
+
+    local bbl_env
+    bbl_env="$(bbl --state-dir=$bbl_state_dir print-env 2>&1)"
+    local bbl_exit_status=$?
+    rm -r $bbl_state_dir
+    if [[ $bbl_exit_status -ne 0 ]]; then
+      echo "Failed to print bbl env: $bbl_env"
+      return
+    fi
+    echo "$bbl_env"
+  else
+    local state_dir=$(mktemp -d)
+    gsutil cp gs://$project_name/creds.yml $state_dir > /dev/null 2>&1
+    gsutil cp gs://$project_name/vars.yml $state_dir > /dev/null 2>&1
+
+    echo "export BOSH_CLIENT=admin"
+    echo "export BOSH_CLIENT_SECRET=$(bosh int --path /admin_password $state_dir/creds.yml)"
+    echo "export BOSH_ENVIRONMENT=$(bosh int --path /internal_ip $state_dir/vars.yml)"
+    echo "export BOSH_CA_CERT=\"$(bosh int --path /default_ca/ca $state_dir/creds.yml)\""
+    rm -rf $state_dir
+  fi
+}
+
+_cf_creds() {
+  local environment=$1
+  local project_name=$(_project_name $environment)
+  if [[ -z "$project_name" ]]; then
+    echo "Unknown environment: $environment"
+    return
+  fi
+
+  local admin_password=$(bosh int --path /cf_admin_password <(gsutil cat gs://$project_name/cf/vars.yml))
+  echo "export ADMIN_PASSWORD=$admin_password"
+}
+
+_project_name() {
+  case "$1" in
+    hummus | spitfire | tartar)
+      echo "cf-greenhouse-$1"
+      ;;
+    pesto | alfredo)
+      echo "cff-greenhouse-$1"
+      ;;
+    mulgore)
+      echo "$1"
+      ;;
+  esac
+}
