@@ -40,6 +40,7 @@ gsutil cp $DIR/creds.yml gs://$concourse_vars_project/concourse/creds.yml
 bosh_target "mulgore"
 bosh -d concourse-worker deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-worker.yml \
   -v deployment_name=concourse-worker \
+  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
   -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
   -l <(gsutil cat gs://$concourse_vars_project/concourse/vars.yml) \
   -l $DIR/creds.yml
