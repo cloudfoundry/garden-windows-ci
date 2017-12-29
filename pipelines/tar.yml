@@ -92,7 +92,7 @@ jobs:
       PROJECT_ID: {{GARDEN_WINDOWS_PROJECT_ID}}
     config:
       platform: linux
-      image_resource: {type: docker-image, source: {repository: pivotalgreenhouse/ci}}
+      image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
       run:
         path: /bin/bash
         args:
@@ -113,7 +113,7 @@ jobs:
       PROJECT_ID: {{BOSH_WINDOWS_PROJECT_ID}}
     config:
       platform: linux
-      image_resource: {type: docker-image, source: {repository: pivotalgreenhouse/ci}}
+      image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
       run:
         path: /bin/bash
         args:
