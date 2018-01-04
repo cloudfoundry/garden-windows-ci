@@ -195,6 +195,12 @@ jobs:
     get_params:
       skip_export: true
     tags: [vsphere]
+  - task: create-longrunning-spaces
+    file: ci/tasks/create-longrunning-spaces/task.yml
+    params:
+      CF_API: api.mulgore.cf-app.com
+      CF_USERNAME: admin
+      CF_PASSWORD: {{MULGORE_ADMIN_PASSWORD}}
 
 - name: mulgore-cfbench-windows2016
   serial: true
