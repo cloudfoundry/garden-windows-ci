@@ -201,6 +201,7 @@ jobs:
       CF_API: api.mulgore.cf-app.com
       CF_USERNAME: admin
       CF_PASSWORD: {{MULGORE_ADMIN_PASSWORD}}
+    tags: [vsphere]
 
 - name: mulgore-cfbench-windows2016
   serial: true
