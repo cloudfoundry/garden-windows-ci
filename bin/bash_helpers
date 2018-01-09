@@ -15,7 +15,6 @@ bosh_target() {
   fi
 
   eval "$(_bosh_creds $environment true)"
-  bosh alias-env $environment
 }
 
 cf_target() {
@@ -72,16 +71,22 @@ _bosh_creds() {
   if gsutil ls gs://$project_name/bbl-state.json > /dev/null 2>&1; then
     local bbl_state_dir=$(mktemp -d)
     gsutil cp gs://$project_name/bbl-state.json $bbl_state_dir >/dev/null 2>&1
+    gsutil cp -r gs://$project_name/vars $bbl_state_dir >/dev/null 2>&1
 
     local bbl_env
     bbl_env="$(bbl --state-dir=$bbl_state_dir print-env 2>&1)"
     local bbl_exit_status=$?
+
+    local bosh_environment="$(bbl --state-dir=$bbl_state_dir env-id)"
+    local bosh_exit_status=$?
+
     rm -r $bbl_state_dir
-    if [[ $bbl_exit_status -ne 0 ]]; then
-      echo "Failed to print bbl env: $bbl_env"
+    if [[ $bbl_exit_status -ne 0 || $bosh_exit_status -ne 0 ]]; then
+      echo "echo \"Failed to print bbl env: $bbl_env, env-id: $bosh_environment\""
       return
     fi
-    echo "$bbl_env"
+    echo "export BOSH_TARGET_NAME=$bosh_environment"
+    echo "$bbl_env >/dev/null 2>&1"
   else
     local state_dir=$(mktemp -d)
     gsutil cp gs://$project_name/creds.yml $state_dir > /dev/null 2>&1
@@ -92,6 +97,10 @@ _bosh_creds() {
     echo "export BOSH_ENVIRONMENT=$(bosh int --path /internal_ip $state_dir/vars.yml)"
     echo "export BOSH_CA_CERT=\"$(bosh int --path /default_ca/ca $state_dir/creds.yml)\""
     rm -rf $state_dir
+  fi
+
+  if [[ -n "$BOSH_ALL_PROXY" ]]; then
+    pkill -f "\-D ${BOSH_ALL_PROXY##*:} jumpbox"
   fi
 }
 
