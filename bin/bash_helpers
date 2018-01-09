@@ -101,6 +101,7 @@ _bosh_creds() {
 
   if [[ -n "$BOSH_ALL_PROXY" ]]; then
     pkill -f "\-D ${BOSH_ALL_PROXY##*:} jumpbox"
+    unset BOSH_ALL_PROXY
   fi
 }
 
