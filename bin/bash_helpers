@@ -109,7 +109,7 @@ _cf_creds() {
 
 _project_name() {
   case "$1" in
-    hummus | spitfire | tartar)
+    hummus | spitfire | tartar | tzatziki)
       echo "cf-greenhouse-$1"
       ;;
     pesto | alfredo)
