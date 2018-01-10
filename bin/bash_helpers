@@ -122,15 +122,7 @@ _bosh_creds() {
     echo "export BOSH_TARGET_NAME=$bosh_environment"
     echo "$bbl_env >/dev/null 2>&1"
   else
-    local state_dir=$(mktemp -d)
-    gsutil cp gs://$project_name/creds.yml $state_dir > /dev/null 2>&1
-    gsutil cp gs://$project_name/vars.yml $state_dir > /dev/null 2>&1
-
-    echo "export BOSH_CLIENT=admin"
-    echo "export BOSH_CLIENT_SECRET=$(bosh int --path /admin_password $state_dir/creds.yml)"
-    echo "export BOSH_ENVIRONMENT=$(bosh int --path /internal_ip $state_dir/vars.yml)"
-    echo "export BOSH_CA_CERT=\"$(bosh int --path /default_ca/ca $state_dir/creds.yml)\""
-    rm -rf $state_dir
+    echo "echo \"bbl-state.json missing for $project_name\""
   fi
 
   if [[ -n "$BOSH_ALL_PROXY" ]]; then
