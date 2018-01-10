@@ -58,6 +58,40 @@ _env_creds_yml() {
   echo -e "${uppercase_environment}_BOSH_CA_CERT: |\n$formatted_cert"
 
   echo "${uppercase_environment}_ADMIN_PASSWORD: $ADMIN_PASSWORD"
+
+  project_name=$(_project_name $environment)
+  if [[ -z "$project_name" ]]; then
+    echo "Unknown environment: $environment"
+    return
+  fi
+
+  if gsutil ls gs://$project_name/bbl-state.json > /dev/null 2>&1; then
+    local bbl_state_dir=$(mktemp -d)
+    gsutil cp gs://$project_name/bbl-state.json $bbl_state_dir >/dev/null 2>&1
+    gsutil cp -r gs://$project_name/vars $bbl_state_dir >/dev/null 2>&1
+
+    local jumpbox_ip="$(bbl --state-dir=$bbl_state_dir jumpbox-address 2>&1)"
+    if [[ $? -ne 0 ]]; then
+      echo "echo \"Failed to get jumpbox address: $jumpbox_ip\""
+      return
+    fi
+
+    local jumpbox_ssh_key="$(bbl --state-dir=$bbl_state_dir ssh-key)"
+    if [[ $? -ne 0 ]]; then
+      echo "echo \"Failed to get jumpbox ssh key: $jumpbox_ssh_key\""
+      return
+    fi
+
+    rm -r $bbl_state_dir
+
+    echo "${uppercase_environment}_JUMPBOX_URL: $jumpbox_ip:22"
+    echo "${uppercase_environment}_JUMPBOX_IP: $jumpbox_ip"
+
+    local formatted_key=$(echo "$jumpbox_ssh_key" | sed 's/^/  /')
+    echo -e "${uppercase_environment}_JUMPBOX_SSH_KEY: |\n$formatted_key"
+  else
+    echo "echo \"bbl-state.json missing for $project_name\""
+  fi
 }
 
 _bosh_creds() {
