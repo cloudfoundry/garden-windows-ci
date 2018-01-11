@@ -247,7 +247,7 @@ jobs:
         API: api.tartar.cf-app.com
         APPS_DOMAIN: tartar.cf-app.com
         NUM_WIN_CELLS: 1
-        SOCKET_ADDRESS_FOR_SECURITY_GROUP_TEST: 10.0.0.6:25555
+        SOCKET_ADDRESS_FOR_SECURITY_GROUP_TEST: 10.0.0.5:22
         CONSUL_MUTUAL_TLS: false
         TEST_TASK: true
         CREDHUB_MODE: assisted
