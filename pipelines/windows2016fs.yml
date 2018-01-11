@@ -202,6 +202,8 @@ resources:
     client_secret: {{TARTAR_BOSH_CLIENT_SECRET}}
     ca_cert: {{TARTAR_BOSH_CA_CERT}}
     target: {{TARTAR_BOSH_ENVIRONMENT}}
+    jumpbox_url: {{TARTAR_JUMPBOX_URL}}
+    jumpbox_ssh_key: {{TARTAR_JUMPBOX_SSH_KEY}}
     vars_store:
       provider: gcs
       config:
@@ -578,6 +580,8 @@ jobs:
         BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
         BOSH_DEPLOYMENT: cf
         BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
+        JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
   ensure:
     put: tartar-lock-pool
     params:
@@ -831,6 +835,8 @@ jobs:
         BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
         BOSH_DEPLOYMENT: cf
         BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
+        JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
   ensure:
     put: tartar-lock-pool
     params:

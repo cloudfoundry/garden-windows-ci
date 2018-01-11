@@ -101,6 +101,8 @@ resources:
     client_secret: {{PESTO_BOSH_CLIENT_SECRET}}
     ca_cert: {{PESTO_BOSH_CA_CERT}}
     target: {{PESTO_BOSH_ENVIRONMENT}}
+    jumpbox_url: {{PESTO_JUMPBOX_URL}}
+    jumpbox_ssh_key: {{PESTO_JUMPBOX_SSH_KEY}}
     vars_store:
       provider: gcs
       config:
@@ -311,6 +313,8 @@ jobs:
         BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
         BOSH_DEPLOYMENT: cf
         BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+        JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
   ensure:
     put: pesto-lock-pool
     params:

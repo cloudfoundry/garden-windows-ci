@@ -62,6 +62,8 @@ resources:
     client_secret: {{MULGORE_BOSH_CLIENT_SECRET}}
     ca_cert: {{MULGORE_BOSH_CA_CERT}}
     target: {{MULGORE_BOSH_ENVIRONMENT}}
+    jumpbox_url: {{MULGORE_JUMPBOX_URL}}
+    jumpbox_ssh_key: {{MULGORE_JUMPBOX_SSH_KEY}}
     vars_store:
       provider: gcs
       config:

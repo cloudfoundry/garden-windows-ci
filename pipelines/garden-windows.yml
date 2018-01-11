@@ -59,6 +59,8 @@ resources:
     client_secret: {{TARTAR_BOSH_CLIENT_SECRET}}
     ca_cert: {{TARTAR_BOSH_CA_CERT}}
     target: {{TARTAR_BOSH_ENVIRONMENT}}
+    jumpbox_url: {{TARTAR_JUMPBOX_URL}}
+    jumpbox_ssh_key: {{TARTAR_JUMPBOX_SSH_KEY}}
     vars_store:
       provider: gcs
       config:
@@ -228,6 +230,8 @@ jobs:
         BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
         BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
         BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
     - task: enable-credhub
       file: ci/tasks/enable-credhub/task.yml
       params:
@@ -256,6 +260,8 @@ jobs:
           BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
           BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
           BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
+          JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
+          JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
     - task: rename
       file: ci/tasks/rename/task.yml
       input_mapping: { source: release-tarball }
