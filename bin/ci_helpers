@@ -7,8 +7,8 @@ _bosh_socks5_env() {
 
   local port=$(ruby -e 'require "socket"; puts Addrinfo.tcp("", 0).bind {|s| s.local_address.ip_port }')
 
-  ssh -f -N -o StrictHostKeyChecking=no -o ServerAliveInterval=300 -D $port "jumpbox@$1" -i "$ssh_key_dir/ssh.key"
-  echo "export BOSH_ALL_PROXY=\"socks5://localhost:$port\""
+  echo "ssh -f -N -o StrictHostKeyChecking=no -o ServerAliveInterval=300 -D $port jumpbox@$1 -i $ssh_key_dir/ssh.key"
+  echo "export BOSH_ALL_PROXY=socks5://localhost:$port"
 }
 
 _close_ssh_connection() {
