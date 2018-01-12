@@ -2,7 +2,7 @@ resource_types:
 - name: bosh-deployment
   type: docker-image
   source:
-    repository: cloudfoundry/bosh-deployment-resource
+    repository: pivotalgreenhouse/bosh-deployment-resource
 
 resources:
 - name: ci
