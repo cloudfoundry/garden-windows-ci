@@ -19,7 +19,7 @@ if ($LastExitCode -ne 0) {
     throw "Ginkgo installation process returned error code: $LastExitCode"
 }
 
-ginkgo.exe -r -race -keepGoing
+ginkgo.exe -r -race -keepGoing -p
 if ($LastExitCode -ne 0) {
     throw "Testing hwc returned error code: $LastExitCode"
 }
