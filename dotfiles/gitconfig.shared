@@ -1,0 +1,41 @@
+[core]
+  excludesfile = ~/.gitignore_global
+  pager = less -FXRS -x2
+  editor = nvim
+[alias]
+  st = status
+  co = checkout
+  br = branch
+  d = diff --submodule=log
+  ci = duet-commit
+  su = submodule update --init --recursive
+  prb = pull --rebase
+  l = log --graph --decorate=short
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset' --abbrev-commit --date=relative
+  diffsub = diff --submodule=log
+  pair = duet
+  co-pr = !sh -c 'git fetch origin pull/$1/head:pr/$1 && git checkout pr/$1' -
+[apply]
+  whitespace = nowarn
+[color]
+  branch = auto
+  diff = auto
+  interactive = auto
+  status = auto
+  ui = auto
+[branch]
+  autosetupmerge = true
+[rebase]
+  autosquash = true
+[push]
+  default = simple
+[rerere]
+  enabled = true
+[user]
+  email = garden-windows-eng@pivotal.io
+  name = Garden Windows
+[url "git@github.com:"]
+  pushInsteadOf = https://github.com/
+[gui]
+  fontui = -family Courier -size 17 -weight normal -slant roman -underline 0 -overstrike 0
+  fontdiff = -family Monaco -size 16 -weight normal -slant roman -underline 0 -overstrike 0

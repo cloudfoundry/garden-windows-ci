@@ -1,0 +1,287 @@
+#!/usr/bin/env bash
+
+
+export HISTSIZE='32768'
+export HISTFILESIZE=$HISTSIZE
+export HISTCONTROL='ignoredups'
+export GIT_DUET_GLOBAL=true
+export GIT_DUET_ROTATE_AUTHOR=1
+export BOSH_USE_GEMFILE=1
+
+# rbenv
+export PATH="$HOME/.rbenv/bin:$PATH"
+[[ `which rbenv` ]] && eval "$(rbenv init -)"
+[[ -e $HOME/.rbenv/completions/rbenv.bash ]] && source $HOME/.rbenv/completions/rbenv.bash
+
+# Direnv
+eval "$(direnv hook bash)"
+
+# z (jump to directories)
+source $HOME/.z.sh
+
+# Show git status and bosh target in prompt
+green="\[\033[01;32m\]"
+blue="\[\033[01;34m\]"
+cyan="\[\033[01;36m\]"
+yellow="\e[1;33m"
+no_color="\[\033[0m\]"
+
+source $HOME/.git-prompt.sh
+if type __git_ps1 > /dev/null 2>&1; then
+    export PS1="${green}\h${no_color}:${blue}\w${no_color}${green}\$(__git_ps1 ' %s')${no_color} ${cyan}\$(__bosh_ps1)${no_color}${yellow}\$(__cf_ps1)${no_color}\n$ "
+else
+    export PS1="${green}\h${no_color}:${blue}\w${no_color}${cyan}\$(__bosh_ps1)${no_color}${yellow}\$(__cf_ps1)${no_color}\n$ "
+fi
+
+# Homebrew
+export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+
+# Go
+export GOPATH="$HOME/go"
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  export GOROOT="/usr/local/go"
+fi
+export PATH="$PATH:/usr/local/opt/go/libexec/bin:$GOROOT/bin"
+export PATH="$GOPATH/bin:$PATH:$HOME/workspace/garden-windows-private/bin"
+
+# Homebrew gnu-tar: override defualt BSD tar
+export MANPATH="/usr/local/Cellar/gnu-tar/1.29/share/man:$MANPATH"
+
+# Hombrew Bash Completion
+brew_cmd () {
+	if hash brew 2> /dev/null; then
+		brew "$@"
+	else
+		echo "Linux"
+	fi
+}
+if [ -f $(brew_cmd --prefix)/etc/bash_completion ]; then
+  . $(brew_cmd --prefix)/etc/bash_completion
+fi
+
+# Git tab completion (homebrew)
+if [ -f `brew_cmd --prefix`/etc/bash_completion.d/git-completion.bash ]; then
+    . `brew_cmd --prefix`/etc/bash_completion.d/git-completion.bash
+fi
+
+# AWS CLI Completion
+complete -C aws_completer aws
+
+if hash nvim 2> /dev/null; then
+  export EDITOR=nvim
+else
+  export EDITOR=vim
+fi
+
+# Detect which `ls` flavor is in use
+if ls --color > /dev/null 2>&1; then # GNU `ls`
+	colorflag="--color"
+else # OS X `ls`
+	colorflag="-G"
+fi
+alias l="ls -lhFA ${colorflag}"
+alias ll="ls -lhFA ${colorflag}"
+alias ls="command ls ${colorflag}"
+alias grep='grep --color'
+alias watch='watch '
+alias hgrep='history | grep'
+alias be="bundle exec"
+alias make_a_nora="$HOME/workspace/wats/assets/nora/make_a_nora"
+alias tmux='tmux -2'
+alias reload="exec $(which bash) -l"
+alias vim='nvim'
+v () {
+  if [[ $# -eq 0 ]] ; then
+    nvim .
+  else
+    nvim $@
+  fi
+}
+n () {
+  if [[ $# -eq 0 ]] ; then
+    nvim .
+  else
+    nvim $@
+  fi
+}
+gv () {
+  if [[ $# -eq 0 ]] ; then
+    GOOS=windows nvim .
+  else
+    GOOS=windows nvim $@
+  fi
+}
+
+box () {
+  box=$1
+  cmd=$2
+  shift 2
+  if [[ $cmd == "rdp" ]]; then
+    local ip=$(VAGRANT_CWD="$HOME/workspace/boxes/$box" vagrant ssh-config | grep HostName | awk '{ print $2 }')
+    rdp $ip vagrant vagrant
+  else
+    VAGRANT_CWD="$HOME/workspace/boxes/$box" vagrant $cmd $@
+  fi
+}
+
+# Load ssh key from lastpass
+function load-key() {
+  NAME=$1
+  HOURS=$2
+
+  if [ -z $HOURS ]; then
+   CURRENT_HOUR=`date +%H | sed 's/^0//'`
+   HOURS=`expr 18 - $CURRENT_HOUR`
+   echo "Hours: $HOURS"
+  fi
+
+  if [[ `lpass status` != *"$NAME@pivotal.io"* ]]; then
+    lpass login "$NAME@pivotal.io"
+  fi
+
+  lpass status 2>&1 > /dev/null
+  if [[ $? -eq 0 ]]; then
+    /usr/bin/ssh-add -D
+    tmp_file=`mktemp`
+    lpass show --notes 'my-ssh-key' > $tmp_file
+    /usr/bin/ssh-add -t ${HOURS}H $tmp_file
+    rm $tmp_file
+  fi
+}
+alias vkl='load-key'
+
+# Download bosh logs
+bl() {
+  dir=$(mktemp -d)
+  pushd $dir
+    bosh -d $1 logs $2/0
+    tar -xzvf *.tgz
+    nvim .
+  popd
+}
+
+rdp() {
+  if [[ -z $1 ]] ; then
+    IP='127.0.0.1'
+  else
+    IP=$1
+  fi
+
+  if [[ -z $2 ]] ; then
+    PASSWORD='Password123!'
+  else
+    PASSWORD=$2
+  fi
+
+  if [[ -z $3 ]] ; then
+    USERNAME='Administrator'
+  else
+    USERNAME=$3
+  fi
+
+  xfreerdp +nego +sec-rdp +sec-tls +sec-nla /u:$USERNAME /p:$PASSWORD /v:$IP /scale:140 /size:1920x1080 +home-drive +clipboard
+}
+
+grdp() {
+  project_name=$(_project_name $1)
+  if [[ -z "$project_name" ]]; then
+    echo "Unknown environment: $1"
+    return
+  fi
+  zone=${ZONE:=us-east1-b}
+  gcloud config set project $project_name
+  gcloud config set compute/zone $zone
+  user=${3:-admin}
+  local auth=$(gcloud -q beta compute reset-windows-password $2 --user $user --format=json)
+  local ip=$(echo $auth | jq -r .ip_address)
+  local username=$(echo $auth | jq -r .username)
+  local password=$(echo $auth | jq -r .password)
+  rdp $ip $password $username
+}
+
+vrdp() {
+  pushd $HOME/workspace/windows2016-core >/dev/null
+    if ! vagrant status 2>/dev/null | grep -q running; then
+      echo "windows2016-core VM is not running"
+      return
+    fi
+    local ip=$(vagrant ssh-config | grep HostName | awk '{ print $2 }')
+  popd >/dev/null
+  rdp $ip vagrant vagrant
+}
+
+
+# Set Pipelines
+alias fly-hwc-exe="fly -t garden-windows sp -p hwc-exe -c $HOME/workspace/garden-windows-ci/pipelines/hwc-exe.yml -l<(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' 'aws-iam-access-keys' 'github-access-tokens')"
+alias fly-tar="fly -t garden-windows sp -p tar -c $HOME/workspace/garden-windows-ci/pipelines/tar.yml -l<(lpass show --notes -G github-deploy-keys pesto-secrets github-access-tokens aws-iam-access-keys github-access-tokens tracker-api-token)"
+
+fly-garden-windows() {
+  fly -t garden-windows sp \
+    -p garden-windows \
+    -c $HOME/workspace/garden-windows-ci/pipelines/garden-windows.yml \
+    -l <(_env_creds_yml tartar) \
+    -l <(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' 'aws-iam-access-keys' 'github-access-tokens' 'tartar-service-account.json' )
+}
+
+fly-winc () {
+  fly -t garden-windows sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
+    -l <(_env_creds_yml pesto) \
+  -l<(lpass show --notes github-deploy-keys aws-iam-access-keys github-access-tokens pesto-service-account.json)
+}
+
+fly-longrunning () {
+  fly -t garden-windows sp -p longrunning -c $HOME/workspace/garden-windows-ci/pipelines/longrunning.yml \
+    -l <(_env_creds_yml mulgore) \
+  -l<(lpass show --notes github-deploy-keys aws-iam-access-keys github-access-tokens spitfire-service-account.json datadog-secrets)
+}
+
+fly-concourse-windows () {
+  fly -t garden-windows sp -p concourse-windows -c $HOME/workspace/garden-windows-ci/pipelines/concourse-windows.yml \
+  -l<(lpass show --notes github-deploy-keys aws-iam-access-keys github-access-tokens)
+}
+
+fly-windows2016fs () {
+  fly -t garden-windows sp -p windows2016fs -c $HOME/workspace/garden-windows-ci/pipelines/windows2016fs.yml \
+    -l <(_env_creds_yml tartar) \
+  -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tartar-service-account.json tracker-api-token)
+}
+
+fly-docker () {
+  fly -t garden-windows sp -p docker -c $HOME/workspace/garden-windows-ci/pipelines/docker.yml \
+  -l<(lpass show --notes docker-creds)
+}
+
+source $HOME/workspace/garden-windows-ci/bin/bash_helpers
+alias bt="bosh_target"
+alias ct="cf_target"
+
+__bosh_ps1() {
+  if [[ -n "$BOSH_ENVIRONMENT" && -n "$BOSH_TARGET_NAME" && -n "$BOSH_ALL_PROXY" ]]; then
+    echo "[$BOSH_TARGET_NAME] "
+  fi
+}
+
+__cf_ps1() {
+  local env_name=$(jq -r .Target $HOME/.cf/config.json 2>/dev/null | sed 's/.*api\.\(.*\)\.cf-app.*/\1/')
+  if [[ -n "$env_name" ]]; then
+    echo "[$env_name]"
+  fi
+}
+
+set_bosh_windows_s3_blobstore() {
+  note="aws-iam-access-keys"
+  export AWS_ACCESS_KEY_ID=$(bosh int --path /BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID <(lpass show --notes $note))
+  export AWS_SECRET_ACCESS_KEY=$(bosh int --path /BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY <(lpass show --notes $note))
+  private_yml='---
+blobstore:
+  provider: s3
+  options:
+    credentials_source: env_or_profile'
+  echo "$private_yml" > config/private.yml
+}
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/ash/google-cloud-sdk/path.bash.inc' ]; then source '/Users/ash/google-cloud-sdk/path.bash.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/ash/google-cloud-sdk/completion.bash.inc' ]; then source '/Users/ash/google-cloud-sdk/completion.bash.inc'; fi
