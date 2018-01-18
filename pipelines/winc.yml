@@ -278,7 +278,8 @@ jobs:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
       - cf-deployment/operations/experimental/windows2016-cell.yml
-      # - cf-deployment/operations/experimental/enable-prefer-declarative-healthchecks-windows2016.yml
+      - cf-deployment/operations/experimental/enable-prefer-declarative-healthchecks.yml
+      - cf-deployment/operations/experimental/enable-prefer-declarative-healthchecks-windows2016.yml
       - cf-deployment/operations/experimental/enable-instance-identity-credentials.yml
       - cf-deployment/operations/experimental/enable-instance-identity-credentials-windows2016.yml
       - ci/operations/windows2016-prs.yml
