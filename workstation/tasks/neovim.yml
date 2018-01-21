@@ -1,0 +1,30 @@
+---
+- name: Tap Homebrew repositories
+  when: is_osx
+  homebrew_tap:
+    name: "neovim/neovim"
+  become: yes
+  become_user: pivotal
+- name: Install Homebrew packages
+  when: is_osx
+  homebrew:
+    name: "neovim"
+    update_homebrew: yes
+  become: yes
+  become_user: pivotal
+- name: Add Neovim PPA (linux)
+  when: is_ubuntu
+  apt_repository: repo="ppa:neovim-ppa/stable"
+- name: Install apt neovim (linux)
+  package: name={{ item }}
+  when: is_ubuntu
+  with_items:
+    - python-dev
+    - python-pip
+    - python3-dev
+    - python3-pip
+    - neovim
+- name: Install pip3 neovim
+  pip:
+    executable: pip3
+    name: neovim

@@ -1,0 +1,67 @@
+- name: Install core packages (linux)
+  when: is_ubuntu
+  package: name={{ item }}
+  with_items:
+    - build-essential
+    - openssh-server
+    - smbclient
+    - xsel
+    - htop
+    - tree
+    - jq
+    - python3-pip
+    - silversearcher-ag
+    - cmake
+    - direnv
+    - ruby
+    - mingw-w64
+- name: sync pip
+  when: is_ubuntu
+  pip: executable=pip3 name={{ item }}
+  with_items:
+    - pip
+    - setuptools
+
+- name: Install ubuntu-restricted-extras (linux)
+  when: is_ubuntu
+  package: name=ubuntu-restricted-extras
+
+- name: Install core packages (osx)
+  when: is_osx
+  package: name={{ item }}
+  with_items:
+    - coreutils
+    - findutils
+    - gawk
+    - gnu-getopt
+    - gnu-indent
+    - gnu-sed
+    - gnu-tar
+    - gnutls
+    - gpg
+    - grc
+    - pstree
+    - unrar
+    - watch
+    - the_silver_searcher
+    - direnv
+    - jq
+    - openssl
+    - python3
+    - the_silver_searcher
+    - mingw-w64
+    - go
+    - git-duet
+    - dep
+  become: yes
+  become_user: pivotal
+- name: Install apps (osx)
+  homebrew_cask: name={{ item }}
+  when: is_osx
+  with_items:
+    - flycut
+    - flux
+    - shiftit
+    - docker
+  become: yes
+  become_user: pivotal

@@ -1,0 +1,17 @@
+- name: Add Chrome apt keys
+  when: is_ubuntu
+  apt_key: url=https://dl-ssl.google.com/linux/linux_signing_key.pub
+- name: Add Chrome PPA
+  apt_repository: repo='deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main'
+  when: is_ubuntu
+- name: Install Chrome
+  when: is_ubuntu
+  package: name={{ item }}
+  with_items:
+    - libnss3
+    - google-chrome-stable
+- name: Install Chrome
+  when: is_osx
+  homebrew_cask: name=google-chrome
+  become: yes
+  become_user: pivotal

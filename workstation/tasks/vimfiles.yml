@@ -1,0 +1,14 @@
+- name: Download vimfiles
+  git:
+    repo: git://github.com/luan/vimfiles.git
+    dest: ~/.nvim
+    version: master
+    update: yes
+    accept_hostkey: yes
+  become: yes
+  become_user: pivotal
+- name: Install vimfiles
+  shell: "~/.nvim/install"
+  become: yes
+  become_user: pivotal
+  ignore_errors: yes

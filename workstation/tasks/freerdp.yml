@@ -1,0 +1,14 @@
+- name: Add freerdp PPA (linux)
+  when: is_ubuntu
+  apt_repository: repo='ppa:remmina-ppa-team/freerdp-daily'
+- name: Install freerdp
+  when: is_ubuntu
+  package: name=freerdp
+- name: Install freerdp (osx)
+  when: is_osx
+  homebrew:
+    name: freerdp
+    state: present
+    install_options: "--HEAD"
+  become: yes
+  become_user: pivotal

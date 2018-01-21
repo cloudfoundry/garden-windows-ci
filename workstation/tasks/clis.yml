@@ -1,0 +1,79 @@
+- name: Add Homebrew taps
+  when: is_osx
+  homebrew_tap: tap=cloudfoundry/tap
+  become: yes
+  become_user: pivotal
+- name: Install Homebrew cf clis
+  when: is_osx
+  package: name={{ item }}
+  with_items:
+    - terraform
+    - cf
+    - bbl
+    - bosh-cli
+  become: yes
+  become_user: pivotal
+
+- name: Add CF apt keys
+  when: is_ubuntu
+  apt_key: url=https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key
+- name: Add CF PPA
+  when: is_ubuntu
+  apt_repository: repo='deb http://packages.cloudfoundry.org/debian stable main'
+- name: Install CF
+  when: is_ubuntu
+  package: name={{ item }}
+  with_items:
+    - cf-cli
+
+- name: fly cli (osx)
+  when: is_osx
+  get_url:
+    url: "https://garden-windows.ci.cf-app.com/api/v1/cli?arch=amd64&platform=darwin"
+    dest: "/usr/local/bin/fly"
+- name: fly cli (linux)
+  when: is_ubuntu
+  get_url:
+    url: "https://garden-windows.ci.cf-app.com/api/v1/cli?arch=amd64&platform=linux"
+    dest: "/usr/local/bin/fly"
+- name: "fly exec flag"
+  file:
+    path: "/usr/local/bin/fly"
+    owner: pivotal
+    mode: "a+x"
+
+- name: bosh cli (linux)
+  when: is_ubuntu
+  get_url:
+    url: "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.48-linux-amd64"
+    dest: "/usr/local/bin/bosh"
+- name: "bosh exec flag"
+  when: is_ubuntu
+  file:
+    path: "/usr/local/bin/bosh"
+    owner: pivotal
+    mode: "a+x"
+
+- name: bbl cli (linux)
+  when: is_ubuntu
+  get_url:
+    url: "https://github.com/cloudfoundry/bosh-bootloader/releases/download/v5.11.5/bbl-v5.11.5_linux_x86-64"
+    dest: "/usr/local/bin/bbl"
+- name: "bbl exec flag"
+  when: is_ubuntu
+  file:
+    path: "/usr/local/bin/bbl"
+    owner: pivotal
+    mode: "a+x"
+
+- name: terraform cli (linux)
+  when: is_ubuntu
+  get_url:
+    url: "https://releases.hashicorp.com/terraform/0.11.2/terraform_0.11.2_linux_amd64.zip?_ga=2.65939564.3988438.1516391530-521573972.1516391530"
+    dest: "/usr/local/bin/terraform"
+- name: "terraform exec flag"
+  when: is_ubuntu
+  file:
+    path: "/usr/local/bin/terraform"
+    owner: pivotal
+    mode: "a+x"

@@ -1,0 +1,18 @@
+---
+- name: Add node apt keys (linux)
+  when: is_ubuntu
+  apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+- name: Add node repositories (linux)
+  when: is_ubuntu
+  apt_repository: repo='{{ item }} https://deb.nodesource.com/node_8.x {{ ansible_distribution_release }} main'
+  with_items:
+    - deb
+    - deb-src
+- name: Install Node
+  when: is_ubuntu
+  package: name=nodejs
+- name: Install Node
+  when: is_osx
+  package: name=node
+  become: yes
+  become_user: pivotal
