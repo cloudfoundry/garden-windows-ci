@@ -1,0 +1,6 @@
+- name: Add Audio PPA
+  when: is_ubuntu
+  apt_repository: repo='ppa:ubuntu-audio-dev/alsa-daily'
+- name: Install Audio driver
+  when: is_ubuntu
+  package: name='oem-audio-hda-daily-lts-xenial-dkms'
