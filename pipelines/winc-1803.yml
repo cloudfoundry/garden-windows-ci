@@ -1,0 +1,132 @@
+resources:
+- name: ci
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
+- name: winc-develop
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry-incubator/winc.git
+- name: winc-release-develop
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry-incubator/winc-release.git
+- name: windows2016fs
+  type: git
+  source:
+    branch: 17074
+    uri: https://github.com/cloudfoundry-incubator/windows2016fs.git
+- name: garden-runc-release
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry/garden-runc-release.git
+- name: gats-fork
+  type: git
+  source:
+    branch: fork-master
+    uri: https://github.com/greenhouse-org/garden-integration-tests.git
+- name: every-2hrs
+  type: time
+  source:
+    interval: 2h
+jobs:
+- name: winc
+  serial: true
+  serial_groups: [window2016]
+  plan:
+  - aggregate:
+    - get: ci
+      tags: [vsphere]
+    - get: every-2hrs
+      trigger: true
+      tags: [vsphere]
+    - get: winc-develop
+      trigger: true
+      tags: [vsphere]
+    - get: windows2016fs
+      trigger: true
+      tags: [vsphere]
+  - task: test
+    input_mapping: { winc: winc-develop }
+    file: ci/tasks/test-winc/task.yml
+    tags: [1803]
+    params:
+      WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
+
+- name: local-gats
+  serial: true
+  serial_groups: [window2016]
+  plan:
+  - aggregate:
+    - get: ci
+      tags: [vsphere]
+    - get: every-2hrs
+      trigger: true
+      tags: [vsphere]
+    - get: gats-fork
+      tags: [vsphere]
+    - get: garden-runc-release
+      trigger: true
+      tags: [vsphere]
+    - get: winc-develop
+      passed: [winc]
+      trigger: true
+      tags: [vsphere]
+    - get: winc-release-develop
+      tags: [vsphere]
+    - get: windows2016fs
+      tags: [vsphere]
+  - aggregate:
+    - task: build-winc
+      file: ci/tasks/build-binary/task.yml
+      tags: [1803]
+      input_mapping:
+        repo: winc-develop
+      output_mapping:
+        binary-output: winc-binary
+      params:
+        IMPORT_PATH: "code.cloudfoundry.org/winc"
+        PACKAGE: "./cmd/winc"
+    - task: build-winc-network
+      file: ci/tasks/build-binary/task.yml
+      tags: [1803]
+      input_mapping:
+        repo: winc-develop
+      output_mapping:
+        binary-output: winc-network-binary
+      params:
+        IMPORT_PATH: "code.cloudfoundry.org/winc"
+        PACKAGE: "./cmd/winc-network"
+    - task: build-winc-image
+      file: ci/tasks/build-binary/task.yml
+      tags: [1803]
+      input_mapping:
+        repo: winc-develop
+      output_mapping:
+        binary-output: winc-image-binary
+      params:
+        IMPORT_PATH: "code.cloudfoundry.org/winc"
+        PACKAGE: "./cmd/winc-image"
+    - task: build-nstar
+      file: ci/tasks/build-binary/task.yml
+      tags: [1803]
+      input_mapping:
+        repo: winc-release-develop
+      output_mapping:
+        binary-output: nstar-binary
+      params:
+        PACKAGE: "./src/nstar"
+  - task: copy-forks
+    file: ci/tasks/copy-forks/task.yml
+    tags: [vsphere]
+    input_mapping:
+      garden-integration-tests: gats-fork
+  - task: run-gats
+    file: ci/tasks/run-local-gats/task.yml
+    tags: [1803]
+    input_mapping:
+      garden-runc-release: garden-runc-release-forks
