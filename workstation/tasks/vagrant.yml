@@ -3,8 +3,16 @@
   apt:
     deb: "https://releases.hashicorp.com/vagrant/2.0.1/vagrant_2.0.1_x86_64.deb"
     state: present
+- name: Install vagrant workstation provider
+  when: is_ubuntu
+  shell: vagrant plugin install vagrant-vmware-workstation
+  become: yes
 - name: Install vagrant cli (osx)
   when: is_osx
   homebrew_cask: name=vagrant
   become: yes
   become_user: pivotal
+- name: Install vagrant fusion provider
+  when: is_osx
+  shell: vagrant plugin install vagrant-vmware-fusion
+  become: yes
