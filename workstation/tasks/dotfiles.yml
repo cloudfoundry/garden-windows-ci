@@ -31,3 +31,5 @@
     dest: "~/.gitconfig"
     owner: pivotal
     mode: 0644
+  become: yes
+  become_user: pivotal
