@@ -43,6 +43,7 @@
     - gnu-sed
     - gnu-tar
     - gnutls
+    - wget
     - gpg
     - grc
     - pstree

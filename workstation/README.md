@@ -1,6 +1,13 @@
+??? from here until ???END lines may have been inserted/deleted
 # workstation
 
 Workstation setup for osx (High Sierra) and linux (Ubunutu 16.04)
+
+### OSx
+Remove the following applications from the base installation
+
+- Google chrome
+- Shiftit
 
 ## Usage:
 
@@ -8,8 +15,10 @@ Workstation setup for osx (High Sierra) and linux (Ubunutu 16.04)
 wget https://github.com/cloudfoundry/garden-windows-ci/archive/master.zip
 unzip master.zip
 cd garden-windows-ci-master/workstation
-sudo ./setup
 ```
+
+- Linux `sudo ./setup`
+- OSx `./setup`
 
 ### Install antivirus SentinelOne
 

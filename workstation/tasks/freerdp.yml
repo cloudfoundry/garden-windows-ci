@@ -4,6 +4,11 @@
 - name: Install freerdp
   when: is_ubuntu
   package: name=freerdp
+- name: Install Chrome
+  when: is_osx
+  homebrew_cask: name=xquartz
+  become: yes
+  become_user: pivotal
 - name: Install freerdp (osx)
   when: is_osx
   homebrew:
