@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -eu
+
+pushd repo
+  ./scripts/sync-package-specs
+
+  if [ -n "$(git status --porcelain)" ]; then
+    git config user.email "pivotal-netgarden-eng@pivotal.io"
+    git config user.name "CI (Automated)"
+    git add -A .
+    git commit -m "Sync package specs"
+  fi
+popd
+
+cp -r repo/. synced-repo/

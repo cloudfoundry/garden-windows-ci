@@ -213,9 +213,13 @@ jobs:
     input_mapping:
       source-repo: winc-release-develop
       module-repo: winc-master
+  - task: sync-packages
+    file: ci/tasks/sync-packages/task.yml
+    input_mapping:
+      repo: bumped-repo
   - put: winc-release-develop
     params:
-      repository: bumped-repo
+      repository: synced-repo
       rebase: true
 
 - name: test-nstar
