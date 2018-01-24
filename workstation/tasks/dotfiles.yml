@@ -25,3 +25,9 @@
     - { src: "z.sh", dest: ".z.sh" }
   become: yes
   become_user: pivotal
+- name: Copy gitconfig
+  copy:
+    src: "~/workspace/garden-windows-ci/dotfiles/gitconfig"
+    dest: "~/.gitconfig"
+    owner: pivotal
+    mode: 0644
