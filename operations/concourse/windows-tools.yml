@@ -3,9 +3,9 @@
   path: /releases/name=windows-tools?
   value:
     name: windows-tools
-    version: 1
-    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=1
-    sha1: 195292397df712d38ab321ab02f55abecd148a4c
+    version: 3
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=3
+    sha1: c98a3c2dad2598da78d84a7becdebaf606805dd2
 
 - type: replace
   path: /instance_groups/name=windows-worker/jobs/-
@@ -47,4 +47,10 @@
   path: /instance_groups/name=windows-worker/jobs/-
   value:
     name: docker
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: processhacker
     release: windows-tools
