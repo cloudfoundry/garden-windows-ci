@@ -5,3 +5,10 @@
     owner: pivotal
     group: pivotal
     recurse: yes
+- name: change perm for go
+  when: is_ubuntu
+  file:
+    path: "/home/pivotal/go"
+    owner: pivotal
+    group: pivotal
+    recurse: yes
