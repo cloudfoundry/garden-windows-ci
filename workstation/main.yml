@@ -24,6 +24,7 @@
     - import_tasks: tasks/zoom.yml
     - import_tasks: tasks/dell.yml
     - import_tasks: tasks/audio.yml
+    - import_tasks: tasks/go-misc.yml
 
   roles:
     - role: fubarhouse.golang

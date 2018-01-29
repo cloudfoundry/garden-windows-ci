@@ -1,0 +1,7 @@
+- name: change perm for GOROOT
+  when: is_ubuntu
+  file:
+    path: "/usr/local/src/go"
+    owner: pivotal
+    group: pivotal
+    recurse: yes

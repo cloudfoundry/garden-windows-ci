@@ -39,7 +39,7 @@ export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 # Go
 export GOPATH="$HOME/go"
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-  export GOROOT="/usr/local/go"
+  export GOROOT="/usr/local/src/go"
 fi
 export PATH="$PATH:/usr/local/opt/go/libexec/bin:$GOROOT/bin"
 export PATH="$GOPATH/bin:$PATH:$HOME/workspace/garden-windows-private/bin"
