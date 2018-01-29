@@ -1,0 +1,15 @@
+---
+platform: windows
+
+inputs:
+- name: ci
+- name: groot-windows
+  path: src/code.cloudfoundry.org/groot-windows
+
+run:
+  path: powershell
+  args:
+  - "-ExecutionPolicy"
+  - "Bypass"
+  - "-File"
+  - ci/tasks/test-groot-windows/run.ps1

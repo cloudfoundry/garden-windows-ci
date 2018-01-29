@@ -10,6 +10,17 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
+- name: groot-windows-develop
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry-incubator/groot-windows.git
+- name: groot-windows-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry-incubator/groot-windows.git
+    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
 - name: winc-develop
   type: git
   source:
@@ -110,6 +121,25 @@ resources:
         file_name: cf/creds.yml
         json_key: {{PESTO_SERVICE_ACCOUNT_JSON}}
 jobs:
+- name: groot-windows
+  serial: true
+  serial_groups: [window2016]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: groot-windows-develop
+      trigger: true
+    - get: groot-windows-master
+  - task: test
+    input_mapping: { groot-windows: groot-windows-develop }
+    file: ci/tasks/test-groot-windows/task.yml
+  - task: merge-develop-to-master
+    input_mapping: { from-repo: groot-windows-develop, to-repo: groot-windows-master}
+    file: ci/tasks/merge-repo/task.yml
+    params: { FROM_BRANCH: develop }
+  - put: groot-windows-master
+    params: { repository: merged-repo/to-repo }
+
 - name: winc
   serial: true
   serial_groups: [window2016]
