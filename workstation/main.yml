@@ -23,7 +23,7 @@
     - import_tasks: tasks/chrome.yml
     - import_tasks: tasks/zoom.yml
     - import_tasks: tasks/dell.yml
-    - import_tasks: taskst/audio.yml
+    - import_tasks: tasks/audio.yml
 
   roles:
     - role: fubarhouse.golang

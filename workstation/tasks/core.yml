@@ -26,6 +26,10 @@
   when: is_ubuntu
   shell: ufw enable
   become: yes
+- name: firewall enable ssh
+  when: is_ubuntu
+  shell: ufw allow ssh
+  become: yes
 
 - name: Install ubuntu-restricted-extras (linux)
   when: is_ubuntu
