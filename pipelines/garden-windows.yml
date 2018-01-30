@@ -137,6 +137,10 @@ resources:
     regexp: 2012R2/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2012R2-go_agent.tgz
     access_key_id: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
     secret_access_key: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+- name: every-2hrs
+  type: time
+  source:
+    interval: 2h
 jobs:
 - name: sync-garden-windows-release-submodules
   serial: true
@@ -164,6 +168,8 @@ jobs:
       acquire: true
   - do:
     - aggregate:
+      - get: every-2hrs
+        trigger: true
       - get: cf-deployment
         trigger: true
       - get: garden-windows-bosh-release-develop
