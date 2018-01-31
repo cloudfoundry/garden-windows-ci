@@ -11,4 +11,4 @@ outputs:
 - name: synced-repo
 
 run:
-  path: ci/tasks/bump-submodule/run
+  path: ci/tasks/sync-packages/run
