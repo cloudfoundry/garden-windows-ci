@@ -2,6 +2,8 @@
 
 set -eu
 
+go get github.com/vito/gosub
+
 pushd repo
   ./scripts/sync-package-specs
 
