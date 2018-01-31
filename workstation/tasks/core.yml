@@ -16,6 +16,7 @@
     - ruby
     - mingw-w64
     - auditd
+    - gnome-tweak-tool
 - name: sync pip
   when: is_ubuntu
   pip: executable=pip3 name={{ item }}
