@@ -5,7 +5,7 @@
     state: present
 - name: Install vagrant workstation provider
   when: is_ubuntu
-  shell: vagrant plugin install vagrant-vmware-workstation --plugin-version 4.0.19
+  shell: vagrant plugin install vagrant-vmware-workstation
   become: yes
 - name: Install vagrant cli (osx)
   when: is_osx
