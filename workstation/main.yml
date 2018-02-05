@@ -52,6 +52,8 @@
           url: github.com/git-duet/git-duet/git-duet-revert
         - name: git-solo
           url: github.com/git-duet/git-duet/git-solo
+        - name: counterfeiter
+          url: github.com/maxbrunsfeld/counterfeiter
     - role: angstwad.docker_ubuntu
       when: is_ubuntu
       update_docker_package: yes
