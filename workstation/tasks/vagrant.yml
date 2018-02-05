@@ -3,11 +3,20 @@
   apt:
     deb: "https://releases.hashicorp.com/vagrant/2.0.1/vagrant_2.0.1_x86_64.deb"
     state: present
+- name: chown vagrant home (linux)
+  when: is_ubuntu
+  file:
+    path: /opt/vagrant.d
+    owner: pivotal
+    group: pivotal
+  become: yes
 - name: Install vagrant workstation provider
   when: is_ubuntu
   shell: vagrant plugin install vagrant-vmware-workstation
   become: yes
   become_user: pivotal
+  environment:
+    VAGRANT_HOME: "/opt/vagrant.d"
 - name: Install vagrant cli (osx)
   when: is_osx
   homebrew_cask: name=vagrant
