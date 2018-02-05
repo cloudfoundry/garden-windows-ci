@@ -4,6 +4,7 @@
     - is_ubuntu: ansible_distribution == 'Ubuntu'
 
   tasks:
+    - import_tasks: tasks/purge-applications.yml
     - import_tasks: tasks/apt.yml
     - import_tasks: tasks/homebrew.yml
     - import_tasks: tasks/core.yml
