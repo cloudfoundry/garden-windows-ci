@@ -75,5 +75,6 @@
     - flux
     - shiftit
     - docker
+    - tunnelblick
   become: yes
   become_user: pivotal
