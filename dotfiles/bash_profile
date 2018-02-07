@@ -227,7 +227,7 @@ fly-garden-windows() {
 fly-winc () {
   fly -t garden-windows sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
     -l <(_env_creds_yml pesto) \
-  -l<(lpass show --notes github-deploy-keys aws-iam-access-keys github-access-tokens pesto-service-account.json)
+  -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 aws-iam-access-keys github-access-tokens pesto-service-account.json)
 }
 
 fly-longrunning () {
