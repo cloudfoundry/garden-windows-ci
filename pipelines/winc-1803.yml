@@ -17,7 +17,7 @@ resources:
 - name: windows2016fs
   type: git
   source:
-    branch: 17074
+    branch: 17079
     uri: https://github.com/cloudfoundry-incubator/windows2016fs.git
 - name: garden-runc-release
   type: git
