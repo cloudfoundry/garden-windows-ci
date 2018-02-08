@@ -6,8 +6,6 @@
     default:
     - dns
     - gateway
-    static_ips:
-    - ((private_static_ip))
   - name: vip
     static_ips:
     - ((vip_static_ip))
