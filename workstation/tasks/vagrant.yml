@@ -8,7 +8,6 @@
     path: /opt/vagrant.d
     state: directory
     owner: pivotal
-    group: pivotal
   become: yes
 - name: Install vagrant workstation provider
   when: is_ubuntu
