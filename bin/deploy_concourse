@@ -30,6 +30,7 @@ bosh -d concourse deploy ${CONCOURSE_DEPLOYMENT}/cluster/concourse.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/privileged-https.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/tls.yml \
+  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/privileged-https.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/web-network.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-tools.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh.yml \
