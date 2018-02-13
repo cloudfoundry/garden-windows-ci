@@ -3,10 +3,10 @@
   apt:
     deb: "https://releases.hashicorp.com/vagrant/2.0.1/vagrant_2.0.1_x86_64.deb"
     state: present
-- name: chown vagrant home (linux)
-  when: is_ubuntu
+- name: create vagrant home
   file:
     path: /opt/vagrant.d
+    state: directory
     owner: pivotal
     group: pivotal
   become: yes
@@ -26,3 +26,5 @@
   when: is_osx
   shell: vagrant plugin install vagrant-vmware-fusion
   become: yes
+  environment:
+    VAGRANT_HOME: "/opt/vagrant.d"
