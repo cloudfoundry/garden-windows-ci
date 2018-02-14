@@ -87,9 +87,25 @@ pop-location
 $env:GOPATH = $PWD
 $env:PATH="$env:GOPATH\bin;" +$env:PATH
 
+go build -o winc-network.exe src/code.cloudfoundry.org/winc/cmd/winc-network
+if ($LastExitCode -ne 0) {
+    throw "Building winc-network failed with exit code: $LastExitCode"
+}
+gcc.exe -c src/code.cloudfoundry/org/winc/network/firewall/dll/firewall.c -o firewall.dll
+if ($LastExitCode -ne 0) {
+    throw "Compiling firewall.o failed with exit code: $LastExitCode"
+}
+gcc.exe -shared -o firewall.dll firewall.o -lole32 -loleaut32
+if ($LastExitCode -ne 0) {
+    throw "Compiling firewall.dll failed with exit code: $LastExitCode"
+}
+
 $config = '{"name": "winc-nat"}'
 set-content -path "$env:TEMP\interface.json" -value $config
-go run src/code.cloudfoundry.org/winc/cmd/winc-network/main.go --action delete --configFile "$env:TEMP/interface.json"
+./winc-network.exe --action delete --configFile "$env:TEMP/interface.json"
+if ($LastExitCode -ne 0) {
+    throw "Running winc-network.exe --action delete failed with exit code: $LastExitCode"
+}
 
 cd $env:GOPATH/src/code.cloudfoundry.org/winc
 
