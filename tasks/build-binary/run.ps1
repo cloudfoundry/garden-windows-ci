@@ -38,3 +38,14 @@ if ($BINARY -eq "winc-image") {
     exit $LastExitCode
   }
 }
+
+if ($BINARY -eq "winc-network") {
+  gcc.exe -c "repo\network\firewall\dll\firewall.c" -o "$env:TEMP\firewall.o"
+  if ($LastExitCode -ne 0) {
+    exit $LastExitCode
+  }
+  gcc.exe -shared -o "binary-output\firewall.dll" "$env:TEMP\firewall.o" -lole32 -loleaut32
+  if ($LastExitCode -ne 0) {
+    exit $LastExitCode
+  }
+}
