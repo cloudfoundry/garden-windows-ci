@@ -87,7 +87,7 @@ pop-location
 $env:GOPATH = $PWD
 $env:PATH="$env:GOPATH\bin;" +$env:PATH
 
-go build -o winc-network.exe src/code.cloudfoundry.org/winc/cmd/winc-network
+go build -o winc-network.exe code.cloudfoundry.org/winc/cmd/winc-network
 if ($LastExitCode -ne 0) {
     throw "Building winc-network failed with exit code: $LastExitCode"
 }
