@@ -91,7 +91,7 @@ go build -o winc-network.exe code.cloudfoundry.org/winc/cmd/winc-network
 if ($LastExitCode -ne 0) {
     throw "Building winc-network failed with exit code: $LastExitCode"
 }
-gcc.exe -c src/code.cloudfoundry/org/winc/network/firewall/dll/firewall.c -o firewall.dll
+gcc.exe -c src/code.cloudfoundry.org/winc/network/firewall/dll/firewall.c -o firewall.dll
 if ($LastExitCode -ne 0) {
     throw "Compiling firewall.o failed with exit code: $LastExitCode"
 }
