@@ -102,6 +102,11 @@ resources:
     initial_version: 0.0.0
     key: version
     region_name: us-east-1
+- name: warts
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/windows-regression-tests.git
 - name: wats-master
   type: git
   source:
@@ -176,6 +181,8 @@ jobs:
         trigger: true
       - get: gcp-windows-stemcell
         trigger: true
+      - get: warts
+        trigger: true
       - get: wats-develop
         trigger: true
       - get: wats-master
@@ -244,6 +251,15 @@ jobs:
         CF_API: api.tartar.cf-app.com
         CF_USERNAME: admin
         CF_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
+    - task: warts
+      file: ci/tasks/run-warts/task.yml
+      params:
+        ADMIN_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
+        ADMIN_USER: admin
+        API: api.tartar.cf-app.com
+        APPS_DOMAIN: tartar.cf-app.com
+        NUM_WIN_CELLS: 1
+        STACK: windows2012R2
     - task: wats
       file: ci/tasks/run-wats/task.yml
       input_mapping: { wats: wats-develop }
