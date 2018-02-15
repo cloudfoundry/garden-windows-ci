@@ -7,6 +7,7 @@
   file:
     path: /opt/vagrant.d
     state: directory
+    recurse: yes
     owner: pivotal
   become: yes
 - name: Install vagrant workstation provider
