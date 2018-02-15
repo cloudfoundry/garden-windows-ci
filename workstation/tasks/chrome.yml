@@ -2,7 +2,7 @@
   when: is_ubuntu
   apt_key: url=https://dl-ssl.google.com/linux/linux_signing_key.pub
 - name: Add Chrome PPA
-  apt_repository: repo='deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main'
+  apt_repository: repo='deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' filename='google-chrome'
   when: is_ubuntu
 - name: Install Chrome
   when: is_ubuntu
