@@ -9,7 +9,7 @@ export GIT_DUET_ROTATE_AUTHOR=1
 export BOSH_USE_GEMFILE=1
 
 # rbenv
-export PATH="$HOME/.rbenv/bin:$PATH"
+export PATH="$HOME/.rbenv/bin:$PATH:$HOME/.nvim/gobin"
 [[ `which rbenv` ]] && eval "$(rbenv init -)"
 [[ -e $HOME/.rbenv/completions/rbenv.bash ]] && source $HOME/.rbenv/completions/rbenv.bash
 
