@@ -88,7 +88,7 @@ alias watch='watch '
 alias hgrep='history | grep'
 alias be="bundle exec"
 alias make_a_nora="$HOME/workspace/wats/assets/nora/make_a_nora"
-alias tmux='_ssh_auth_save ; export HOSTNAME=$(hostname); tmux -2'
+alias tmux='_ssh_auth_save ; export HOSTNAME=$(hostname); export $DISPLAY=":0"; tmux -2'
 alias reload="exec $(which bash) -l"
 alias vim='nvim'
 v () {
