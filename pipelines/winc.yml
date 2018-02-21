@@ -145,6 +145,34 @@ jobs:
   - put: groot-windows-master
     params: { repository: merged-repo/to-repo }
 
+- name: bump-groot-in-winc-release
+  serial: true
+  serial_groups:
+  - bump-winc-release
+  plan:
+  - aggregate:
+    - get: ci
+    - get: winc-release-develop
+    - get: groot-windows-master
+      passed:
+      - groot-windows
+      trigger: true
+  - task: bump-submodule
+    file: ci/tasks/bump-submodule/task.yml
+    params:
+      SUBMODULE: "src/code.cloudfoundry.org/groot-windows"
+    input_mapping:
+      source-repo: winc-release-develop
+      module-repo: groot-windows-master
+  - task: sync-packages
+    file: ci/tasks/sync-packages/task.yml
+    input_mapping:
+      repo: bumped-repo
+  - put: winc-release-develop
+    params:
+      repository: synced-repo
+      rebase: true
+
 - name: winc
   serial: true
   serial_groups: [window2016]
@@ -231,8 +259,10 @@ jobs:
     input_mapping:
       garden-runc-release: garden-runc-release-forks
 
-- name: bump-winc-release
+- name: bump-winc-in-winc-release
   serial: true
+  serial_groups:
+  - bump-winc-release
   plan:
   - aggregate:
     - get: ci
