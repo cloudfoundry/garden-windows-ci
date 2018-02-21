@@ -21,6 +21,11 @@ resources:
     branch: master
     uri: git@github.com:cloudfoundry-incubator/groot-windows.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
+- name: bosh-dns-release
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/bosh-dns-release.git
 - name: winc-develop
   type: git
   source:
@@ -280,6 +285,7 @@ jobs:
       trigger: true
     - get: wats
       trigger: true
+    - get: bosh-dns-release
     - get: cf-deployment
       trigger: true
     - get: gcp-windows-stemcell
@@ -300,6 +306,12 @@ jobs:
         release: winc-release-develop
       output_mapping:
         release-tarball: winc-tarball
+    - task: create-bosh-dns-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping:
+        release: bosh-dns-release
+      output_mapping:
+        release-tarball: bosh-dns-tarball
   - put: pesto-cf-deployment
     params:
       manifest: cf-deployment/cf-deployment.yml
@@ -308,23 +320,40 @@ jobs:
       - gcp-windows-stemcell/*.tgz
       releases:
       - winc-tarball/*.tgz
+      - bosh-dns-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
       - cf-deployment/operations/experimental/windows2016-cell.yml
       - cf-deployment/operations/experimental/enable-prefer-declarative-healthchecks.yml
       - cf-deployment/operations/experimental/enable-prefer-declarative-healthchecks-windows2016.yml
+      - cf-deployment/operations/experimental/use-bosh-dns.yml
+      - cf-deployment/operations/experimental/use-bosh-dns-for-containers.yml
+      - cf-deployment/operations/experimental/use-bosh-dns-for-windows2016-containers.yml
+      - cf-deployment/operations/experimental/skip-consul-cell-registrations.yml
+      - cf-deployment/operations/experimental/skip-consul-locks.yml
       - cf-deployment/operations/experimental/enable-instance-identity-credentials.yml
       - cf-deployment/operations/experimental/enable-instance-identity-credentials-windows2016.yml
+      - cf-deployment/operations/experimental/secure-service-credentials.yml
+      - cf-deployment/operations/experimental/secure-service-credentials-windows2016-cell.yml
+      - cf-deployment/operations/experimental/disable-consul.yml
+      - cf-deployment/operations/experimental/disable-consul-windows2016.yml
       - ci/operations/windows2016-prs.yml
       - ci/operations/windows2016-debug.yml
       - ci/operations/latest-winc.yml
+      - ci/operations/latest-bosh-dns.yml
       - ci/operations/scale-down-windows2016.yml
       vars_files:
       - cf-vars/vars.yml
       cleanup: true
     get_params:
       skip_export: true
+  - task: enable-credhub
+    file: ci/tasks/enable-credhub/task.yml
+    params:
+      CF_API: api.pesto.cf-app.com
+      CF_USERNAME: admin
+      CF_PASSWORD: {{PESTO_ADMIN_PASSWORD}}
   - task: run-wats
     file: ci/tasks/run-wats/task.yml
     params:
@@ -338,7 +367,7 @@ jobs:
       SKIP_SSH: false
       STACK: windows2016
       CONTEXT_PATH: true
-      NODES: 1
+      CREDHUB_MODE: assisted
     on_success:
       task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
