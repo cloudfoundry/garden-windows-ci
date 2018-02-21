@@ -145,34 +145,6 @@ jobs:
   - put: groot-windows-master
     params: { repository: merged-repo/to-repo }
 
-- name: bump-groot-in-winc-release
-  serial: true
-  serial_groups:
-  - bump-winc-release
-  plan:
-  - aggregate:
-    - get: ci
-    - get: winc-release-develop
-    - get: groot-windows-master
-      passed:
-      - groot-windows
-      trigger: true
-  - task: bump-submodule
-    file: ci/tasks/bump-submodule/task.yml
-    params:
-      SUBMODULE: "src/code.cloudfoundry.org/groot-windows"
-    input_mapping:
-      source-repo: winc-release-develop
-      module-repo: groot-windows-master
-  - task: sync-packages
-    file: ci/tasks/sync-packages/task.yml
-    input_mapping:
-      repo: bumped-repo
-  - put: winc-release-develop
-    params:
-      repository: synced-repo
-      rebase: true
-
 - name: winc
   serial: true
   serial_groups: [window2016]
@@ -259,10 +231,8 @@ jobs:
     input_mapping:
       garden-runc-release: garden-runc-release-forks
 
-- name: bump-winc-in-winc-release
+- name: bump-winc-release
   serial: true
-  serial_groups:
-  - bump-winc-release
   plan:
   - aggregate:
     - get: ci
@@ -271,6 +241,10 @@ jobs:
       passed:
       - local-gats
       trigger: true
+    - get: groot-windows-master
+      passed:
+      - groot-windows
+      trigger: true
   - task: bump-submodule
     file: ci/tasks/bump-submodule/task.yml
     params:
@@ -278,10 +252,21 @@ jobs:
     input_mapping:
       source-repo: winc-release-develop
       module-repo: winc-master
+    output_mapping:
+      bumped-repo: winc-bumped
+  - task: bump-submodule
+    file: ci/tasks/bump-submodule/task.yml
+    params:
+      SUBMODULE: "src/code.cloudfoundry.org/groot-windows"
+    input_mapping:
+      source-repo: winc-bumped
+      module-repo: groot-windows-master
+    output_mapping:
+      bumped-repo: winc-groot-bumped
   - task: sync-packages
     file: ci/tasks/sync-packages/task.yml
     input_mapping:
-      repo: bumped-repo
+      repo: winc-groot-bumped
   - put: winc-release-develop
     params:
       repository: synced-repo
