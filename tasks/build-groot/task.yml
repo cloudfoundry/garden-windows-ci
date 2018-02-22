@@ -3,7 +3,8 @@ platform: windows
 
 inputs:
 - name: ci
-- name: groot
+- name: groot-windows
+  path: src/code.cloudfoundry.org/groot-windows
 
 outputs:
 - name: groot-binary

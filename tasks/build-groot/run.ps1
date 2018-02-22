@@ -5,8 +5,10 @@ $env:PATH = "$env:GOPATH\bin;" + $env:PATH
 
 go.exe version
 
-pushd groot
-  go build -o ..\groot-binary\groot.exe main.go
+$binaryDir = "$PWD\groot-binary"
+
+pushd src\code.cloudfoundry.org\groot-windows
+  go build -o "$binaryDir\groot.exe" main.go
 
   gcc.exe -c ".\volume\quota\quota.c" -o "$env:TEMP\quota.o"
   if ($LastExitCode -ne 0) {

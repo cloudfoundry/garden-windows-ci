@@ -159,7 +159,7 @@ jobs:
     - get: groot-windows-master
       trigger: true
   - task: build-groot
-    input_mapping: { groot: groot-windows-master }
+    input_mapping: { groot-windows: groot-windows-master }
     file: ci/tasks/build-groot/task.yml
   - task: test
     input_mapping: { winc: winc-develop }
