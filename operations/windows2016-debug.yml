@@ -1,7 +1,7 @@
 ---
 - type: replace
-  path: /instance_groups/name=windows2016-cell/jobs/name=garden-windows/properties/garden/image_plugin_extra_args?/-
-  value: "--debug"
+  path: /instance_groups/name=windows2016-cell/jobs/name=groot/properties/groot/log_level?
+  value: debug
 
 - type: replace
   path: /instance_groups/name=windows2016-cell/jobs/name=garden-windows/properties/garden/network_plugin_extra_args?/-
