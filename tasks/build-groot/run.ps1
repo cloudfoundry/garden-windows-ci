@@ -1,10 +1,9 @@
 ﻿$ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
-$env:PATH = "$env:GOPATH\bin;" + $env:PATH
-
 go.exe version
 
+$env:GOPATH=$PWD
 $binaryDir = "$PWD\groot-binary"
 
 pushd src\code.cloudfoundry.org\groot-windows
