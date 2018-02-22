@@ -1,0 +1,17 @@
+---
+platform: windows
+
+inputs:
+- name: ci
+- name: groot
+
+outputs:
+- name: groot-binary
+
+run:
+  path: powershell
+  args:
+  - "-ExecutionPolicy"
+  - "Bypass"
+  - "-File"
+  - ci/tasks/build-groot/run.ps1
