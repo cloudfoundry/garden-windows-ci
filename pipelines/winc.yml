@@ -156,8 +156,11 @@ jobs:
     - get: winc-develop
       trigger: true
     - get: winc-master
-    - get: windows2016fs
+    - get: groot-windows-master
       trigger: true
+  - task: build-groot
+    input_mapping: { groot: groot-windows-master }
+    file: ci/tasks/build-groot/task.yml
   - task: test
     input_mapping: { winc: winc-develop }
     file: ci/tasks/test-winc/task.yml

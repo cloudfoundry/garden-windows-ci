@@ -28,17 +28,6 @@ if ($LastExitCode -ne 0) {
   exit $LastExitCode
 }
 
-if ($BINARY -eq "winc-image") {
-  gcc.exe -c "repo\image\volume\quota\quota.c" -o "$env:TEMP\quota.o"
-  if ($LastExitCode -ne 0) {
-    exit $LastExitCode
-  }
-  gcc.exe -shared -o "binary-output\quota.dll" "$env:TEMP\quota.o" -lole32 -loleaut32
-  if ($LastExitCode -ne 0) {
-    exit $LastExitCode
-  }
-}
-
 if ($BINARY -eq "winc-network") {
   gcc.exe -c "repo\network\firewall\dll\firewall.c" -o "$env:TEMP\firewall.o"
   if ($LastExitCode -ne 0) {
