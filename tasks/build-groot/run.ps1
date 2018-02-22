@@ -13,7 +13,7 @@ pushd src\code.cloudfoundry.org\groot-windows
   if ($LastExitCode -ne 0) {
     exit $LastExitCode
   }
-  gcc.exe -shared -o "..\groot-binary\quota.dll" "$env:TEMP\quota.o" -lole32 -loleaut32
+  gcc.exe -shared -o "$binaryDir\quota.dll" "$env:TEMP\quota.o" -lole32 -loleaut32
   if ($LastExitCode -ne 0) {
     exit $LastExitCode
   }
