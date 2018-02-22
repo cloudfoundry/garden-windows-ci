@@ -570,7 +570,6 @@ jobs:
       SKIP_SSH: false
       STACK: windows2016
       CONTEXT_PATH: true
-      NODES: 1
     on_success:
       task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
@@ -825,7 +824,6 @@ jobs:
       SKIP_SSH: false
       STACK: windows2016
       CONTEXT_PATH: true
-      NODES: 1
     on_success:
       task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
