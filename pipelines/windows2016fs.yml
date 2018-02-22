@@ -565,7 +565,7 @@ jobs:
       API: api.tartar.cf-app.com
       APPS_DOMAIN: tartar.cf-app.com
       NUM_WIN_CELLS: 1
-      SOCKET_ADDRESS_FOR_SECURITY_GROUP_TEST: 169.254.169.254:80
+      SOCKET_ADDRESS_FOR_SECURITY_GROUP_TEST: 10.0.0.5:22
       TEST_TASK: true
       SKIP_SSH: false
       STACK: windows2016
@@ -820,7 +820,7 @@ jobs:
       API: api.tartar.cf-app.com
       APPS_DOMAIN: tartar.cf-app.com
       NUM_WIN_CELLS: 1
-      SOCKET_ADDRESS_FOR_SECURITY_GROUP_TEST: 169.254.169.254:80
+      SOCKET_ADDRESS_FOR_SECURITY_GROUP_TEST: 10.0.0.5:22
       TEST_TASK: true
       SKIP_SSH: false
       STACK: windows2016
