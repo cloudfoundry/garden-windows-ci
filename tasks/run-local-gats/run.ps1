@@ -75,6 +75,9 @@ $grootImageStore = "C:\ProgramData\groot"
 
 & $grootBinary --driver-store "$grootImageStore" pull "$env:WINC_TEST_ROOTFS"
 
+$grootConfigPath = "$PWD/config.yml"
+Set-Content -Value "log_level: debug" -Path "$grootConfigPath"
+
 $wincPath = "$PWD/winc-binary/winc.exe"
 $wincNetworkPath = "$PWD/winc-network-binary/winc-network.exe"
 
@@ -119,8 +122,7 @@ push-location garden-runc-release
     --runtime-plugin-extra-arg=--image-store=$grootImageStore `
     --image-plugin=$grootBinary `
     --image-plugin-extra-arg=--driver-store=$grootImageStore `
-    --image-plugin-extra-arg=--log=winc-image.log `
-    --image-plugin-extra-arg=--debug `
+    --image-plugin-extra-arg=--config=$grootConfigPath `
     --network-plugin=$wincNetworkPath `
     --network-plugin-extra-arg=--configFile=$env:TEMP/interface.json `
     --network-plugin-extra-arg=--log=winc-network.log `
@@ -156,8 +158,6 @@ if ($ExitCode -ne 0) {
   Get-Content garden-runc-release/gdn.out.log
   echo "`n`n`n############# gdn.exe STDERR"
   Get-Content garden-runc-release/gdn.err.log
-  echo "`n`n`n############# winc-image.exe"
-  Get-Content garden-runc-release/winc-image.log
   echo "`n`n`n############# winc-network.exe"
   Get-Content garden-runc-release/winc-network.log
   Exit $ExitCode
