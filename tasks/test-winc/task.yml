@@ -16,5 +16,5 @@ run:
   - ci/tasks/test-winc/run.ps1
 
 params:
-  TEST_CONTAINER_IMAGE_TAG:
+  WINC_TEST_ROOTFS:
   WINC_TEST_PERF_CONCURRENT_CONTAINERS: 15

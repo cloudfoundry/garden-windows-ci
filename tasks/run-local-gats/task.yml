@@ -5,7 +5,7 @@ inputs:
 - name: ci
 - name: winc-binary
 - name: winc-network-binary
-- name: winc-image-binary
+- name: groot-binary
 - name: nstar-binary
 - name: garden-runc-release
 - name: windows2016fs
@@ -20,4 +20,4 @@ run:
   - ci/tasks/run-local-gats/run.ps1
 
 params:
-  TEST_CONTAINER_IMAGE_TAG:
+  WINC_TEST_ROOTFS:

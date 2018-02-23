@@ -63,7 +63,6 @@ go.exe version
 $env:GOPATH = $PWD
 $env:PATH="$env:GOPATH\bin;" +$env:PATH
 
-$env:WINC_TEST_ROOTFS = "docker:///cloudfoundry/windows2016fs"
 $env:GROOT_BINARY = "$PWD\groot-binary\groot.exe"
 $env:GROOT_IMAGE_STORE = "C:\ProgramData\groot"
 

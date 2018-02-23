@@ -165,6 +165,7 @@ jobs:
     input_mapping: { winc: winc-develop }
     file: ci/tasks/test-winc/task.yml
     params:
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
   - task: merge-develop-to-master
     input_mapping: { from-repo: winc-develop, to-repo: winc-master }
@@ -189,6 +190,7 @@ jobs:
       trigger: true
     - get: winc-release-develop
     - get: windows2016fs
+    - get: groot-windows-master
   - aggregate:
     - task: build-winc
       file: ci/tasks/build-binary/task.yml
@@ -208,15 +210,9 @@ jobs:
       params:
         IMPORT_PATH: "code.cloudfoundry.org/winc"
         PACKAGE: "./cmd/winc-network"
-    - task: build-winc-image
-      file: ci/tasks/build-binary/task.yml
-      input_mapping:
-        repo: winc-master
-      output_mapping:
-        binary-output: winc-image-binary
-      params:
-        IMPORT_PATH: "code.cloudfoundry.org/winc"
-        PACKAGE: "./cmd/winc-image"
+    - task: build-groot
+      input_mapping: { groot-windows: groot-windows-master }
+      file: ci/tasks/build-groot/task.yml
     - task: build-nstar
       file: ci/tasks/build-binary/task.yml
       input_mapping:
@@ -233,6 +229,8 @@ jobs:
     file: ci/tasks/run-local-gats/task.yml
     input_mapping:
       garden-runc-release: garden-runc-release-forks
+    params:
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs
 
 - name: bump-winc-release
   serial: true
