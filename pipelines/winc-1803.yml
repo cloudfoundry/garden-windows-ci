@@ -9,16 +9,16 @@ resources:
   source:
     branch: develop
     uri: https://github.com/cloudfoundry-incubator/winc.git
+- name: groot-windows-master
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry-incubator/groot-windows.git
 - name: winc-release-develop
   type: git
   source:
     branch: develop
     uri: https://github.com/cloudfoundry-incubator/winc-release.git
-- name: windows2016fs
-  type: git
-  source:
-    branch: 17079
-    uri: https://github.com/cloudfoundry-incubator/windows2016fs.git
 - name: garden-runc-release
   type: git
   source:
@@ -47,14 +47,19 @@ jobs:
     - get: winc-develop
       trigger: true
       tags: [vsphere]
-    - get: windows2016fs
+    - get: groot-windows-master
       trigger: true
       tags: [vsphere]
+  - task: build-groot
+    input_mapping: { groot-windows: groot-windows-master }
+    file: ci/tasks/build-groot/task.yml
+    tags: [1803]
   - task: test
     input_mapping: { winc: winc-develop }
     file: ci/tasks/test-winc/task.yml
     tags: [1803]
     params:
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:17079
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
 
 - name: local-gats
@@ -78,7 +83,7 @@ jobs:
       tags: [vsphere]
     - get: winc-release-develop
       tags: [vsphere]
-    - get: windows2016fs
+    - get: groot-windows-master
       tags: [vsphere]
   - aggregate:
     - task: build-winc
@@ -101,16 +106,10 @@ jobs:
       params:
         IMPORT_PATH: "code.cloudfoundry.org/winc"
         PACKAGE: "./cmd/winc-network"
-    - task: build-winc-image
-      file: ci/tasks/build-binary/task.yml
+    - task: build-groot
+      input_mapping: { groot-windows: groot-windows-master }
+      file: ci/tasks/build-groot/task.yml
       tags: [1803]
-      input_mapping:
-        repo: winc-develop
-      output_mapping:
-        binary-output: winc-image-binary
-      params:
-        IMPORT_PATH: "code.cloudfoundry.org/winc"
-        PACKAGE: "./cmd/winc-image"
     - task: build-nstar
       file: ci/tasks/build-binary/task.yml
       tags: [1803]
@@ -130,3 +129,5 @@ jobs:
     tags: [1803]
     input_mapping:
       garden-runc-release: garden-runc-release-forks
+    params:
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:17079
