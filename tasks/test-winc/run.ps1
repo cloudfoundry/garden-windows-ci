@@ -63,12 +63,11 @@ go.exe version
 $env:GOPATH = $PWD
 $env:PATH="$env:GOPATH\bin;" +$env:PATH
 
-
 $env:WINC_TEST_ROOTFS = "docker:///cloudfoundry/windows2016fs"
 $env:GROOT_BINARY = "$PWD\groot-binary\groot.exe"
 $env:GROOT_IMAGE_STORE = "C:\ProgramData\groot"
 
-& $env:GROOT_BINARY --driver-store $env:GROOT_IMAGE_STORE pull $env:WINC_TEST_ROOTFS
+& "$env:GROOT_BINARY" --driver-store "$env:GROOT_IMAGE_STORE" pull "$env:WINC_TEST_ROOTFS"
 
 go build -o winc-network.exe code.cloudfoundry.org/winc/cmd/winc-network
 if ($LastExitCode -ne 0) {

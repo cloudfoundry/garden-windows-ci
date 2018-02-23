@@ -5,6 +5,7 @@ inputs:
 - name: ci
 - name: winc
   path: src/code.cloudfoundry.org/winc
+- name: groot-binary
 
 run:
   path: powershell
