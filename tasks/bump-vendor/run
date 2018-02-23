@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -ex
+
+pushd source-repo
+  dep ensure -update $DEP
+  if [ -n "$(git status --porcelain)" ]; then
+    git config user.email "pivotal-netgarden-eng@pivotal.io"
+    git config user.name "CI (Automated)"
+    git add -A .
+    git commit -m "Bump $DEP package"
+  fi
+popd
+
+cp -r source-repo/. bumped-repo/
