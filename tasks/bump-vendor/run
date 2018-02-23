@@ -2,7 +2,12 @@
 
 set -ex
 
-pushd source-repo
+export GOPATH=$PWD
+
+mkdir -p "src/$SOURCE_IMPORT_PATH"
+cp -r source-repo/. "src/$SOURCE_IMPORT_PATH"
+
+pushd "src/$SOURCE_IMPORT_PATH"
   dep ensure -update $DEP
   if [ -n "$(git status --porcelain)" ]; then
     git config user.email "pivotal-netgarden-eng@pivotal.io"
@@ -12,4 +17,4 @@ pushd source-repo
   fi
 popd
 
-cp -r source-repo/. bumped-repo/
+cp -r "src/$SOURCE_IMPORT_PATH/." bumped-repo/
