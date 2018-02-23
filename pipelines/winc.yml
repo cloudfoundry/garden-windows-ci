@@ -47,12 +47,6 @@ resources:
   source:
     branch: use-groot-on-windows
     uri: https://github.com/greenhouse-org/cf-deployment.git
-- name: windows2016fs
-  type: git
-  source:
-    branch: master
-    private_key: {{GARDEN_WINDOWS_CI_GITHUB_PRIVATE_KEY}}
-    uri: git@github.com:cloudfoundry-incubator/windows2016fs
 - name: winc-release-develop
   type: git
   source:
@@ -189,7 +183,6 @@ jobs:
       passed: [winc]
       trigger: true
     - get: winc-release-develop
-    - get: windows2016fs
     - get: groot-windows-master
   - aggregate:
     - task: build-winc
