@@ -139,8 +139,10 @@ _cf_creds() {
     return
   fi
 
-  local admin_password=$(bosh int --path /cf_admin_password <(gsutil cat gs://$project_name/cf/vars.yml))
-  echo "export ADMIN_PASSWORD=$admin_password"
+  if gsutil ls gs://$project_name/cf/vars.yml 2> /dev/null; then
+    local admin_password=$(bosh int --path /cf_admin_password <(gsutil cat gs://$project_name/cf/vars.yml))
+    echo "export ADMIN_PASSWORD=$admin_password"
+  fi
 }
 
 _project_name() {

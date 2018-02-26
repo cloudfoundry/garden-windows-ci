@@ -1,0 +1,114 @@
+resources:
+- name: every-day
+  type: time
+  source:
+    start: 01:00  # 8PM ET
+    stop:  02:00  # 9PM ET
+
+- name: ci
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
+jobs:
+- name: alfredo-cleanup
+  plan:
+  - get: every-day
+    trigger: true
+  - get: ci
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+- name: hummus-cleanup
+  plan:
+  - get: every-day
+    trigger: true
+  - get: ci
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CLIENT: {{HUMMUS_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{HUMMUS_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{HUMMUS_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{HUMMUS_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{HUMMUS_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{HUMMUS_JUMPBOX_SSH_KEY}}
+- name: pesto-cleanup
+  plan:
+  - get: every-day
+    trigger: true
+  - get: ci
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+- name: spitfire-cleanup
+  plan:
+  - get: every-day
+    trigger: true
+  - get: ci
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CLIENT: {{SPITFIRE_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{SPITFIRE_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{SPITFIRE_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{SPITFIRE_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{SPITFIRE_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{SPITFIRE_JUMPBOX_SSH_KEY}}
+- name: tartar-cleanup
+  plan:
+  - get: every-day
+    trigger: true
+  - get: ci
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+- name: tzatziki-cleanup
+  plan:
+  - get: every-day
+    trigger: true
+  - get: ci
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CLIENT: {{TZATZIKI_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{TZATZIKI_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{TZATZIKI_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{TZATZIKI_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{TZATZIKI_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{TZATZIKI_JUMPBOX_SSH_KEY}}
+- name: mulgore-cleanup
+  plan:
+  - get: every-day
+    trigger: true
+    tags: [vsphere]
+  - get: ci
+    tags: [vsphere]
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    tags: [vsphere]
+    params:
+      BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{MULGORE_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
