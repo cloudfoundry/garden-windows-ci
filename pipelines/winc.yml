@@ -14,7 +14,8 @@ resources:
   type: git
   source:
     branch: develop
-    uri: https://github.com/cloudfoundry-incubator/groot-windows.git
+    uri: git@github.com:cloudfoundry-incubator/groot-windows.git
+    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
 - name: groot-windows-master
   type: git
   source:
@@ -26,6 +27,11 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/bosh-dns-release.git
+- name: groot
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/groot.git
 - name: winc-develop
   type: git
   source:
@@ -120,6 +126,22 @@ resources:
         file_name: cf/creds.yml
         json_key: {{PESTO_SERVICE_ACCOUNT_JSON}}
 jobs:
+- name: bump-lib-groot
+  plan:
+  - aggregate:
+    - get: ci
+    - get: groot-windows-develop
+    - get: groot
+      trigger: true
+  - task: bump-vendor
+    input_mapping: { source-repo: groot-windows-develop }
+    file: ci/tasks/bump-vendor/task.yml
+    params:
+      SOURCE_IMPORT_PATH: "code.cloudfoundry.org/groot-windows"
+      DEP: "code.cloudfoundry.org/groot"
+  - put: groot-windows-develop
+    params: { repository: bumped-repo }
+
 - name: groot-windows
   serial: true
   serial_groups: [window2016]
