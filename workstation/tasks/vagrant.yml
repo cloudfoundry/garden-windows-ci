@@ -1,8 +1,3 @@
-- name: Install vagrant cli (linux)
-  when: is_ubuntu
-  apt:
-    deb: "https://releases.hashicorp.com/vagrant/2.0.1/vagrant_2.0.1_x86_64.deb"
-    state: present
 - name: create vagrant home
   file:
     path: /opt/vagrant.d
@@ -10,7 +5,12 @@
     recurse: yes
     owner: pivotal
   become: yes
-- name: Install vagrant workstation provider
+- name: Install vagrant cli (linux)
+  when: is_ubuntu
+  apt:
+    deb: "https://releases.hashicorp.com/vagrant/2.0.1/vagrant_2.0.1_x86_64.deb"
+    state: present
+- name: Install vagrant workstation provider (linux)
   when: is_ubuntu
   shell: vagrant plugin install vagrant-vmware-workstation
   become: yes
@@ -22,9 +22,10 @@
   homebrew_cask: name=vagrant
   become: yes
   become_user: pivotal
-- name: Install vagrant fusion provider
+- name: Install vagrant fusion provider (osx)
   when: is_osx
-  shell: vagrant plugin install vagrant-vmware-fusion
+  shell: vagrant plugin install vagrant-vmware-fusion --plugin-version 4.0.25
   become: yes
+  become_user: pivotal
   environment:
     VAGRANT_HOME: "/opt/vagrant.d"
