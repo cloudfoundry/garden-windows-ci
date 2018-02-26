@@ -19,7 +19,7 @@
   apt_key: url=https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key
 - name: Add CF PPA
   when: is_ubuntu
-  apt_repository: repo='deb http://packages.cloudfoundry.org/debian stable main'
+  apt_repository: repo='deb https://packages.cloudfoundry.org/debian stable main'
 - name: Install CF
   when: is_ubuntu
   package: name={{ item }}
