@@ -119,7 +119,6 @@ push-location garden-runc-release
     "server `
     --skip-setup `
     --runtime-plugin=$wincPath `
-    --runtime-plugin-extra-arg=--image-store=$grootImageStore `
     --image-plugin=$grootBinary `
     --image-plugin-extra-arg=--driver-store=$grootImageStore `
     --image-plugin-extra-arg=--config=$grootConfigPath `
