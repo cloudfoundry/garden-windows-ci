@@ -127,13 +127,18 @@ box () {
 
 # Load ssh key from lastpass
 function load-key() {
-  NAME=$1
-  HOURS=$2
+  local NAME=$1
+  local HOURS=$2
+  local KEY_NOTE=$3
 
   if [ -z $HOURS ]; then
    CURRENT_HOUR=`date +%H | sed 's/^0//'`
    HOURS=`expr 18 - $CURRENT_HOUR`
    echo "Hours: $HOURS"
+  fi
+
+  if [ -z $KEY_NOTE ]; then
+    KEY_NOTE=my-ssh-key
   fi
 
   if [[ `lpass status` != *"$NAME@pivotal.io"* ]]; then
@@ -144,7 +149,7 @@ function load-key() {
   if [[ $? -eq 0 ]]; then
     /usr/bin/ssh-add -D
     tmp_file=`mktemp`
-    lpass show --notes 'my-ssh-key' > $tmp_file
+    lpass show --notes $KEY_NOTE > $tmp_file
     /usr/bin/ssh-add -t ${HOURS}H $tmp_file
     rm $tmp_file
   fi
