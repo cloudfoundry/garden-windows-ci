@@ -212,14 +212,8 @@ jobs:
         IMPORT_PATH: "code.cloudfoundry.org/winc"
         PACKAGE: "./cmd/winc"
     - task: build-winc-network
-      file: ci/tasks/build-binary/task.yml
-      input_mapping:
-        repo: winc-master
-      output_mapping:
-        binary-output: winc-network-binary
-      params:
-        IMPORT_PATH: "code.cloudfoundry.org/winc"
-        PACKAGE: "./cmd/winc-network"
+      file: ci/tasks/build-winc-network/task.yml
+      input_mapping: { winc: winc-master }
     - task: build-groot
       input_mapping: { groot-windows: groot-windows-master }
       file: ci/tasks/build-groot/task.yml
@@ -231,6 +225,15 @@ jobs:
         binary-output: nstar-binary
       params:
         PACKAGE: "./src/nstar"
+    - task: build-garden-init
+      file: ci/tasks/build-binary/task.yml
+      input_mapping:
+        repo: garden-runc-release
+      output_mapping:
+        binary-output: garden-init-binary
+      params:
+        PACKAGE: "src/code.cloudfoundry.org/guardian/cmd/winit"
+        BINARY_NAME: "garden-init.exe"
   - task: copy-forks
     file: ci/tasks/copy-forks/task.yml
     input_mapping:
