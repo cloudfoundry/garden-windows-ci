@@ -70,6 +70,8 @@ go version
 $env:GOPATH = "$PWD/garden-runc-release"
 $env:PATH= "$env:GOPATH/bin;" + $env:PATH
 
+$gardenInitBinary = "$PWD\garden-init-binary\garden-init.exe"
+
 $grootBinary = "$PWD\groot-binary\groot.exe"
 $grootImageStore = "C:\ProgramData\groot"
 
@@ -131,6 +133,7 @@ push-location garden-runc-release
     --default-rootfs=$env:WINC_TEST_ROOTFS `
     --nstar-bin=$nstarPath `
     --tar-bin=$tarBin `
+    --init-bin=$gardenInitBinary `
     --depot $depotDir `
     --log-level=debug"
 

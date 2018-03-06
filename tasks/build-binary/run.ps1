@@ -22,8 +22,13 @@ if ($env:IMPORT_PATH -ne "") {
   $env:PACKAGE = (Resolve-Path (Join-Path $env:GOPATH $env:PACKAGE) -Relative)
 }
 
-$BINARY=(Get-Item $env:PACKAGE).BaseName
-go.exe build -o "binary-output/$BINARY.exe" $env:PACKAGE
+if ($env:BINARY_NAME -ne "") {
+  $BINARY=$env:BINARY_NAME
+} else {
+  $BINARY=(Get-Item $env:PACKAGE).BaseName + ".exe"
+}
+
+go.exe build -o "binary-output/$BINARY" $env:PACKAGE
 if ($LastExitCode -ne 0) {
   exit $LastExitCode
 }

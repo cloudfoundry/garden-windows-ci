@@ -19,3 +19,4 @@ run:
 params:
   IMPORT_PATH:
   PACKAGE:
+  BINARY_NAME:

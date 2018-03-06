@@ -7,6 +7,7 @@ inputs:
 - name: winc-network-binary
 - name: groot-binary
 - name: nstar-binary
+- name: garden-init-binary
 - name: garden-runc-release
 
 run:
