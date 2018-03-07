@@ -115,6 +115,7 @@ jobs:
         PACKAGE: "./src/nstar"
     - task: build-garden-init
       file: ci/tasks/build-binary/task.yml
+      tags: [1803]
       input_mapping:
         repo: garden-runc-release
       output_mapping:
