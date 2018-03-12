@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-set -eu
-
-pushd cats
-./bin/test -keepGoing -randomizeAllSpecs \
-  -skipPackage=helpers -slowSpecThreshold=120 \
-  -noisySkippings=false -nodes $NODES
-popd
