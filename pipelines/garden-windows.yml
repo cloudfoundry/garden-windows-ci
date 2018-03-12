@@ -107,22 +107,16 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/windows-regression-tests.git
-- name: wats-master
+- name: cf-acceptance-tests
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry/wats
-- name: wats-develop
-  type: git
-  source:
-    branch: develop
-    uri: https://github.com/cloudfoundry/wats
-- name: wats-mergedback
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests
+- name: cats-concourse-task
   type: git
   source:
     branch: master
-    uri: git@github.com:cloudfoundry/wats
-    private_key: {{CLOUDFOUNDRY_WATS_DEPLOY_KEY}}
+    uri: https://github.com/cloudfoundry/cats-concourse-task.git
 - name: garden-windows-bosh-github-release
   type: github-release
   source:
@@ -183,9 +177,9 @@ jobs:
         trigger: true
       - get: warts
         trigger: true
-      - get: wats-develop
+      - get: cf-acceptance-tests
         trigger: true
-      - get: wats-master
+      - get: cats-concourse-task
       - get: version
         params: {pre: rc}
       - get: ci
@@ -260,19 +254,22 @@ jobs:
         APPS_DOMAIN: tartar.cf-app.com
         NUM_WIN_CELLS: 1
         STACK: windows2012R2
-    - task: wats
-      file: ci/tasks/run-wats/task.yml
-      input_mapping: { wats: wats-develop }
+    - task: generate-integration-config
+      file: ci/tasks/generate-integration-config/task.yml
       params:
         ADMIN_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
         ADMIN_USER: admin
         API: api.tartar.cf-app.com
         APPS_DOMAIN: tartar.cf-app.com
-        NUM_WIN_CELLS: 1
-        SOCKET_ADDRESS_FOR_SECURITY_GROUP_TEST: 169.254.169.254:80
-        TEST_TASK: true
+        NUM_WINDOWS_CELLS: 1
+        WINDOWS_SECURE_ADDRESS: 169.254.169.254:80
+        WINDOWS_STACK: windows2012R2
         CREDHUB_MODE: assisted
-        CONTEXT_PATH: true
+        CREDHUB_SECRET: {{TARTAR_CREDHUB_SECRET}}
+    - task: cats
+      file: cats-concourse-task/task.yml
+      params:
+        NODES: 4
       on_success:
         task: delete-deployment
         file: ci/tasks/bosh-deld/task.yml
@@ -294,13 +291,6 @@ jobs:
     - put: garden-windows-bosh-release-bucket-dev
       params:
         file: garden-windows-output/garden-windows-*.tgz
-    - task: merge-develop-to-master
-      input_mapping: { from-repo: wats-develop, to-repo: wats-master }
-      file: ci/tasks/merge-repo/task.yml
-      params:
-        FROM_BRANCH: develop
-    - put: wats-mergedback
-      params: { repository: merged-repo/to-repo }
     ensure:
       put: tartar-lock-pool
       params:

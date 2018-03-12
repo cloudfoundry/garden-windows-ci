@@ -57,11 +57,16 @@ resources:
     uri: https://github.com/cloudfoundry-incubator/windows2016fs.git
     paths: [ Dockerfile ]
 
-- name: wats
+- name: cf-acceptance-tests
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry/wats
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests
+- name: cats-concourse-task
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/cats-concourse-task.git
 
 - name: cf-deployment
   type: git
@@ -235,13 +240,13 @@ groups:
     - build-create-release
     - test-create-release-windows
     - test-create-release-linux
-    - tartar-offline-wats
+    - tartar-offline-cats
     - shipit-offline-major
     - shipit-offline-minor
     - shipit-offline-patch
 - name: windows2016fs-online-release
   jobs:
-    - tartar-online-wats
+    - tartar-online-cats
     - shipit-online-major
     - shipit-online-minor
     - shipit-online-patch
@@ -490,7 +495,7 @@ jobs:
         sha: create-linux-sha
         windows2016fs-release: windows2016fs-release-develop
 
-- name: tartar-offline-wats
+- name: tartar-offline-cats
   serial: true
   plan:
   - put: tartar-lock-pool
@@ -511,7 +516,8 @@ jobs:
       passed: [test-create-release-windows]
     - get: create-windows-sha
       passed: [test-create-release-windows]
-    - get: wats
+    - get: cf-acceptance-tests
+    - get: cats-concourse-task
     - get: cf-deployment
     - get: gcp-windows-stemcell
   - aggregate:
@@ -557,19 +563,20 @@ jobs:
       cleanup: true
     get_params:
       skip_export: true
-  - task: run-wats
-    file: ci/tasks/run-wats/task.yml
+  - task: generate-integration-config
+    file: ci/tasks/generate-integration-config/task.yml
     params:
       ADMIN_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
       ADMIN_USER: admin
       API: api.tartar.cf-app.com
       APPS_DOMAIN: tartar.cf-app.com
-      NUM_WIN_CELLS: 1
-      SOCKET_ADDRESS_FOR_SECURITY_GROUP_TEST: 10.0.0.5:22
-      TEST_TASK: true
-      SKIP_SSH: false
-      STACK: windows2016
-      CONTEXT_PATH: true
+      NUM_WINDOWS_CELLS: 1
+      WINDOWS_SECURE_ADDRESS: 10.0.0.5:22
+      WINDOWS_STACK: windows2016
+  - task: cats
+    file: cats-concourse-task/task.yml
+    params:
+      NODES: 4
     on_success:
       task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
@@ -593,19 +600,19 @@ jobs:
     - get: ci
     - get: windows2016fs-release-master
     - get: windows2016fs-release-develop
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: windows2016fs-release-version
       params: {bump: major}
     - get: create-timestamp
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: create-linux-rcs
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: create-linux-sha
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: create-windows-rcs
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: create-windows-sha
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
   - task: promote-create-binaries
     file: ci/tasks/promote-create-binaries/task.yml
     input_mapping:
@@ -650,19 +657,19 @@ jobs:
     - get: ci
     - get: windows2016fs-release-master
     - get: windows2016fs-release-develop
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: windows2016fs-release-version
       params: {bump: minor}
     - get: create-timestamp
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: create-linux-rcs
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: create-linux-sha
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: create-windows-rcs
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: create-windows-sha
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
   - task: promote-create-binaries
     file: ci/tasks/promote-create-binaries/task.yml
     input_mapping:
@@ -707,19 +714,19 @@ jobs:
     - get: ci
     - get: windows2016fs-release-master
     - get: windows2016fs-release-develop
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: windows2016fs-release-version
       params: {bump: patch}
     - get: create-timestamp
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: create-linux-rcs
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: create-linux-sha
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: create-windows-rcs
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
     - get: create-windows-sha
-      passed: [tartar-offline-wats]
+      passed: [tartar-offline-cats]
   - task: promote-create-binaries
     file: ci/tasks/promote-create-binaries/task.yml
     input_mapping:
@@ -757,7 +764,7 @@ jobs:
     params:
       file: windows2016fs-release-version/version
 
-- name: tartar-online-wats
+- name: tartar-online-cats
   serial: true
   plan:
   - put: tartar-lock-pool
@@ -767,7 +774,8 @@ jobs:
     - get: ci
     - get: windows2016fs-online-release-develop
       trigger: true
-    - get: wats
+    - get: cf-acceptance-tests
+    - get: cats-concourse-task
     - get: cf-deployment
     - get: gcp-windows-stemcell
   - aggregate:
@@ -811,19 +819,20 @@ jobs:
       cleanup: true
     get_params:
       skip_export: true
-  - task: run-wats
-    file: ci/tasks/run-wats/task.yml
+  - task: generate-integration-config
+    file: ci/tasks/generate-integration-config/task.yml
     params:
       ADMIN_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
       ADMIN_USER: admin
       API: api.tartar.cf-app.com
       APPS_DOMAIN: tartar.cf-app.com
-      NUM_WIN_CELLS: 1
-      SOCKET_ADDRESS_FOR_SECURITY_GROUP_TEST: 10.0.0.5:22
-      TEST_TASK: true
-      SKIP_SSH: false
-      STACK: windows2016
-      CONTEXT_PATH: true
+      NUM_WINDOWS_CELLS: 1
+      WINDOWS_SECURE_ADDRESS: 10.0.0.5:22
+      WINDOWS_STACK: windows2016
+  - task: cats
+    file: cats-concourse-task/task.yml
+    params:
+      NODES: 4
     on_success:
       task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
@@ -846,7 +855,7 @@ jobs:
   - aggregate:
     - get: ci
     - get: windows2016fs-online-release-develop
-      passed: [tartar-online-wats]
+      passed: [tartar-online-cats]
     - get: windows2016fs-online-release-master
     - get: windows2016fs-online-release-version
       params: {bump: major}
@@ -889,7 +898,7 @@ jobs:
   - aggregate:
     - get: ci
     - get: windows2016fs-online-release-develop
-      passed: [tartar-online-wats]
+      passed: [tartar-online-cats]
     - get: windows2016fs-online-release-master
     - get: windows2016fs-online-release-version
       params: {bump: minor}
@@ -932,7 +941,7 @@ jobs:
   - aggregate:
     - get: ci
     - get: windows2016fs-online-release-develop
-      passed: [tartar-online-wats]
+      passed: [tartar-online-cats]
     - get: windows2016fs-online-release-master
     - get: windows2016fs-online-release-version
       params: {bump: patch}
