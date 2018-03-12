@@ -35,4 +35,4 @@ read -r -d '' JSON_TEMPLATE <<EOF || true
 }
 EOF
 
-echo "$JSON_TEMPLATE" > integration-config/integration-config.json
+echo "$JSON_TEMPLATE" > integration-config/integration_config.json
