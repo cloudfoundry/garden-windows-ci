@@ -1,0 +1,22 @@
+---
+platform: linux
+
+image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
+
+inputs:
+  - name: ci
+outputs:
+  - name: integration-config
+run:
+  path: ci/tasks/generate-integration-config/run
+
+params:
+  ADMIN_PASSWORD:
+  ADMIN_USER:
+  API:
+  APPS_DOMAIN:
+  NUM_WINDOWS_CELLS:
+  WINDOWS_SECURE_ADDRESS:
+  WINDOWS_STACK:
+  CREDHUB_MODE:
+  CREDHUB_SECRET:
