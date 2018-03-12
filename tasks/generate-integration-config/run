@@ -13,7 +13,8 @@ set -o pipefail
 : ${CREDHUB_MODE:=""}
 : ${CREDHUB_SECRET:=""}
 
-read -r -d '' JSON_TEMPLATE <<EOF || true {
+read -r -d '' JSON_TEMPLATE <<EOF || true
+{
   "api": "$API",
   "apps_domain": "$APPS_DOMAIN",
   "admin_user": "$ADMIN_USER",
