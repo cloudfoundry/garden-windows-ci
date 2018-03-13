@@ -217,7 +217,6 @@ jobs:
       CF_PASSWORD: {{MULGORE_ADMIN_PASSWORD}}
       CF_ORG: cfbench
       CF_SPACE: windows2016
-      CF_TAG: windows2016
       APP_DIR: app/assets/nora/NoraPublished
       APP_BUILDPACK: hwc_buildpack
       DATADOG_API_KEY: {{DATADOG_API_KEY}}
@@ -271,7 +270,7 @@ jobs:
     file: ci/tasks/curl-app/task.yml
     params:
       CF_APP_URL: longrunning-windows2016.mulgore.cf-app.com
-      CF_TAG: windows2016
+      DATADOG_TAG: windows2016
       DATADOG_API_KEY: {{DATADOG_API_KEY}}
       DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
     tags: [vsphere]
@@ -305,7 +304,6 @@ jobs:
       CF_PASSWORD: {{MULGORE_ADMIN_PASSWORD}}
       CF_ORG: cfbench
       CF_SPACE: windows2012R2
-      CF_TAG: windows2012R2
       APP_DIR: app/assets/nora/NoraPublished
       APP_BUILDPACK: hwc_buildpack
       DATADOG_API_KEY: {{DATADOG_API_KEY}}
@@ -359,7 +357,7 @@ jobs:
     file: ci/tasks/curl-app/task.yml
     params:
       CF_APP_URL: longrunning-windows2012R2.mulgore.cf-app.com
-      CF_TAG: windows2012R2
+      DATADOG_TAG: windows2012R2
       DATADOG_API_KEY: {{DATADOG_API_KEY}}
       DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
     tags: [vsphere]

@@ -11,7 +11,7 @@ inputs:
 
 params:
   CF_APP_URL:
-  CF_TAG:
+  DATADOG_TAG:
   DATADOG_API_KEY:
   DATADOG_APPLICATION_KEY:
 

@@ -36,7 +36,7 @@ cfbench \
   -app-dir $APP_DIR \
   $APP_BUILDPACK \
   $APP_START_COMMAND \
-  -doppler-address "$DOPPLER_ADDRESS"
+  -doppler-address "$DOPPLER_ADDRESS" \
   -tag $CF_STACK \
   -json > metrics.json
 
