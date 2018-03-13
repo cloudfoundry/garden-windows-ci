@@ -42,6 +42,13 @@ resources:
     uri: git@github.com:cloudfoundry-incubator/windows2016fs-online-release.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_ONLINE_DEPLOY_KEY}}
 
+- name: hydrator
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/hydrator.git
+    private_key: {{CLOUDFOUNDRY_HYDRATOR_DEPLOY_KEY}}
+
 - name: windows2016fs
   type: git
   source:
@@ -229,10 +236,12 @@ resources:
 groups:
 - name: windows2016fs
   jobs:
-    - test-windows2016fs-windows
-    - test-windows2016fs-linux
-    - bump-windows2016fs-release
-    - bump-windows2016fs-online-release
+    - test-hydrator-windows
+    - test-hydrator-linux
+    - bump-windows2016fs-release-windows2016fs
+    - bump-windows2016fs-online-release-windows2016fs
+    - bump-windows2016fs-release-hydrator
+    - bump-windows2016fs-online-release-hydrator
     - build-and-push
     - create-tracker-story
 - name: windows2016fs-release
@@ -318,40 +327,37 @@ jobs:
       TRACKER_TOKEN: {{TRACKER_GITBOT_TOKEN}}
       TRACKER_PROJECT_ID: {{GARDEN_WINDOWS_PROJECT_ID}}
 
-- name: test-windows2016fs-windows
+- name: test-hydrator-windows
   serial: true
   plan:
   - aggregate:
     - get: ci
-    - get: windows2016fs
+    - get: hydrator
       trigger: true
   - task: run-ginkgo-exe
-    file: ci/tasks/test-windows2016fs-windows/task.yml
+    file: ci/tasks/test-hydrator-windows/task.yml
     params:
       NODES: 2
 
-- name: test-windows2016fs-linux
+- name: test-hydrator-linux
   serial: true
   plan:
   - aggregate:
     - get: ci
-    - get: windows2016fs
+    - get: hydrator
       trigger: true
   - task: run-ginkgo
-    file: ci/tasks/test-windows2016fs-linux/task.yml
+    file: ci/tasks/test-hydrator-linux/task.yml
     params:
-      IGNORE_PACKAGES: "cmd/extract,windows2016fs/image,windows2016fs/layer"
+      IGNORE_PACKAGES: ""
 
-- name: bump-windows2016fs-release
+- name: bump-windows2016fs-release-windows2016fs
   serial: true
   plan:
   - aggregate:
     - get: ci
     - get: windows2016fs-release-develop
     - get: windows2016fs
-      passed:
-      - test-windows2016fs-windows
-      - test-windows2016fs-linux
       trigger: true
   - task: bump-windows2016fs-release
     file: ci/tasks/bump-submodule/task.yml
@@ -377,16 +383,36 @@ jobs:
       repository: windows2016fs-release-updated-commit
       rebase: false
 
-- name: bump-windows2016fs-online-release
+- name: bump-windows2016fs-release-hydrator
+  serial: true
+  plan:
+  - aggregate:
+    - get: ci
+    - get: windows2016fs-release-develop
+    - get: hydrator
+      passed:
+      - test-hydrator-windows
+      - test-hydrator-linux
+      trigger: true
+  - task: bump-windows2016fs-release
+    file: ci/tasks/bump-submodule/task.yml
+    params:
+      SUBMODULE: "src/code.cloudfoundry.org/hydrator"
+    input_mapping:
+      source-repo: windows2016fs-release-develop
+      module-repo: hydrator
+  - put: windows2016fs-release-develop
+    params:
+      repository: bumped-repo
+      rebase: false
+
+- name: bump-windows2016fs-online-release-windows2016fs
   serial: true
   plan:
   - aggregate:
     - get: ci
     - get: windows2016fs-online-release-develop
     - get: windows2016fs
-      passed:
-      - test-windows2016fs-windows
-      - test-windows2016fs-linux
       trigger: true
   - task: bump-windows2016fs-online-release
     file: ci/tasks/bump-submodule/task.yml
@@ -395,6 +421,29 @@ jobs:
     input_mapping:
       source-repo: windows2016fs-online-release-develop
       module-repo: windows2016fs
+  - put: windows2016fs-online-release-develop
+    params:
+      repository: bumped-repo
+      rebase: true
+
+- name: bump-windows2016fs-online-release-hydrator
+  serial: true
+  plan:
+  - aggregate:
+    - get: ci
+    - get: windows2016fs-online-release-develop
+    - get: hydrator
+      passed:
+      - test-hydrator-windows
+      - test-hydrator-linux
+      trigger: true
+  - task: bump-windows2016fs-online-release
+    file: ci/tasks/bump-submodule/task.yml
+    params:
+      SUBMODULE: "src/code.cloudfoundry.org/hydrator"
+    input_mapping:
+      source-repo: windows2016fs-online-release-develop
+      module-repo: hydrator
   - put: windows2016fs-online-release-develop
     params:
       repository: bumped-repo
