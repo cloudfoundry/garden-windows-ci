@@ -1,9 +1,1 @@
 ---
-- type: replace
-  path: /instance_groups/name=windows2016-cell/jobs/name=rep_windows/properties/loggregator?
-  value:
-    ca_cert: ((loggregator_tls_metron.ca))
-    cert: ((loggregator_tls_metron.certificate))
-    key: ((loggregator_tls_metron.private_key))
-    use_v2_api: true
-
