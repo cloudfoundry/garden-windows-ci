@@ -36,7 +36,9 @@ cfbench \
   -app-dir $APP_DIR \
   $APP_BUILDPACK \
   $APP_START_COMMAND \
-  -doppler-address "$DOPPLER_ADDRESS" -json > metrics.json
+  -doppler-address "$DOPPLER_ADDRESS"
+  -tag $CF_STACK \
+  -json > metrics.json
 
 pushExitStatus=$?
 
@@ -51,7 +53,7 @@ else
            [{\"metric\": \"cfbench.failed\",
             \"points\": [[$(date +%s), $pushExitStatus]],
             \"type\": \"gauge\",
-            \"tags\": [\"$CF_TAG\"]
+            \"tags\": [\"$CF_STACK\"]
           }]
         }" \
   "https://app.datadoghq.com/api/v1/series?api_key=${DATADOG_API_KEY}&application_key=$DATADOG_APPLICATION_KEY"
