@@ -68,8 +68,7 @@ resources:
 - name: cfbench
   type: git
   source:
-    branch: longrunning-pipeline
-    uri: https://github.com/greenhouse-org/cfbench.git
+    uri: https://github.com/teddyking/cfbench.git
 - name: every-5mins
   type: time
   source:
