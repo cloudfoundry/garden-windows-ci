@@ -15,3 +15,11 @@ cf bind-staging-security-group credhub-internal
 cf bind-running-security-group credhub-internal
 
 cf set-running-environment-variable-group '{"CREDHUB_API": "https://credhub.service.cf.internal:8844"}'
+
+cf create-security-group uaa-internal <(echo '[{
+  "destination": "10.0.16.0/24",
+  "ports": "8443",
+  "protocol": "tcp"
+}]')
+
+cf bind-running-security-group uaa-internal
