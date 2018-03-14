@@ -40,6 +40,8 @@ export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 export GOPATH="$HOME/go"
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
   export GOROOT="/usr/local/src/go"
+  alias pbcopy="xclip -selection clipboard"
+  alias pbpaste="xclip -out -selection clipboard"
 fi
 export VAGRANT_HOME="/opt/vagrant.d"
 export PATH="$PATH:/usr/local/opt/go/libexec/bin:$GOROOT/bin"
