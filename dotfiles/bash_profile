@@ -220,6 +220,7 @@ vrdp() {
 
 # Set Pipelines
 alias fly-hwc-exe="fly -t garden-windows sp -p hwc-exe -c $HOME/workspace/garden-windows-ci/pipelines/hwc-exe.yml -l<(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' 'aws-iam-access-keys' 'github-access-tokens')"
+alias fly-filelock="fly -t garden-windows sp -p filelock -c $HOME/workspace/garden-windows-ci/pipelines/filelock.yml"
 alias fly-tar="fly -t garden-windows sp -p tar -c $HOME/workspace/garden-windows-ci/pipelines/tar.yml -l<(lpass show --notes -G github-deploy-keys pesto-secrets github-access-tokens aws-iam-access-keys github-access-tokens tracker-api-token)"
 
 fly-cleanup() {

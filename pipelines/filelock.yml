@@ -1,0 +1,29 @@
+resources:
+- name: filelock
+  type: git
+  source:
+    branch: master
+    uri: http://github.com/cloudfoundry/filelock.git
+- name: ci
+  type: git
+  source:
+    branch: master
+    uri: http://github.com/cloudfoundry/garden-windows-ci.git
+
+jobs:
+- name: test
+  serial: true
+  plan:
+  - aggregate:
+    - get: ci
+    - get: filelock
+      trigger: true
+  - aggregate:
+    - task: test-linux
+      input_mapping: { repo: filelock }
+      file: ci/tasks/ginkgo-to-gopath-linux/task.yml
+      params: { IMPORT_PATH: "code.cloudfoundry.org/filelock" }
+    - task: test-windows
+      input_mapping: { repo: filelock }
+      file: ci/tasks/ginkgo-to-gopath-windows/task.yml
+      params: { IMPORT_PATH: "code.cloudfoundry.org/filelock" }

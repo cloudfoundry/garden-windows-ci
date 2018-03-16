@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -eu
+
+mkdir -p "go/src/$IMPORT_PATH"
+cp -r repo/* "go/src/$IMPORT_PATH"
+
+export GOPATH="$PWD/go"
+export GOBIN="$GOPATH/bin"
+export PATH="$PATH:$GOBIN"
+
+go get github.com/onsi/ginkgo/ginkgo
+go get github.com/onsi/gomega
+
+pushd "go/src/$IMPORT_PATH"
+  go get ./...
+  ginkgo -p -r -race -keepGoing -randomizeSuites -skipPackage "$IGNORE_PACKAGES"
+popd

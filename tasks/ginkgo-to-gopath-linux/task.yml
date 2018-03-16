@@ -8,9 +8,9 @@ inputs:
 - name: repo
 
 run:
-  path: ci/tasks/run-ginkgo/run
+  path: ci/tasks/ginkgo-to-gopath-linux/run
 
 params:
-  GOPATH: "repo"
-  TEST_PATH: "repo"
+  IMPORT_PATH:
+  NODES: 4
   IGNORE_PACKAGES:

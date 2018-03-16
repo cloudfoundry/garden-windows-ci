@@ -298,7 +298,7 @@ jobs:
     - get: winc-release-develop
       trigger: true
   - task: run-ginkgo-exe
-    file: ci/tasks/run-ginkgo-exe/task.yml
+    file: ci/tasks/ginkgo-from-gopath-windows/task.yml
     input_mapping:
       repo: winc-release-develop
     params:

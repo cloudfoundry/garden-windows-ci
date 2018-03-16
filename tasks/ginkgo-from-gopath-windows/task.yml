@@ -11,7 +11,7 @@ run:
   - "-ExecutionPolicy"
   - "Bypass"
   - "-File"
-  - ci/tasks/run-ginkgo-exe/run.ps1
+  - ci/tasks/ginkgo-from-gopath-windows/run.ps1
 
 params:
   GOPATH: "repo"
