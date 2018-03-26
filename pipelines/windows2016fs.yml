@@ -602,7 +602,7 @@ jobs:
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
-      - cf-deployment/operations/experimental/windows2016-cell.yml
+      - cf-deployment/operations/windows2016-cell.yml
       - ci/operations/windows2016-prs.yml
       - ci/operations/windows2016-debug.yml
       - ci/operations/scale-down-windows2016.yml
@@ -858,7 +858,7 @@ jobs:
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
-      - cf-deployment/operations/experimental/windows2016-cell.yml
+      - cf-deployment/operations/windows2016-cell.yml
       - ci/operations/windows2016-prs.yml
       - ci/operations/windows2016-debug.yml
       - ci/operations/scale-down-windows2016.yml
