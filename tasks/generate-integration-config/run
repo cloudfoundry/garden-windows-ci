@@ -7,7 +7,7 @@ set -o pipefail
 : ${API:?"!"}
 : ${APPS_DOMAIN:?"!"}
 : ${NUM_WINDOWS_CELLS:?"!"}
-: ${WINDOWS_SECURE_ADDRESS:?"!"}
+: ${SECURE_ADDRESS:?"!"}
 : ${WINDOWS_STACK:?"!"}
 
 : ${CREDHUB_MODE:=""}
@@ -33,7 +33,7 @@ read -r -d '' JSON_TEMPLATE <<EOF || true
   "windows_test_task": true,
   "credhub_mode": "$CREDHUB_MODE",
   "credhub_secret": "$CREDHUB_SECRET",
-  "windows_secure_address": "$WINDOWS_SECURE_ADDRESS",
+  "secure_address": "$SECURE_ADDRESS",
   "num_windows_cells": $NUM_WINDOWS_CELLS,
   "use_windows_test_task": true,
   "use_windows_context_path": true,
