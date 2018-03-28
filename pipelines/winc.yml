@@ -388,7 +388,7 @@ jobs:
       API: api.pesto.cf-app.com
       APPS_DOMAIN: pesto.cf-app.com
       NUM_WINDOWS_CELLS: 1
-      WINDOWS_SECURE_ADDRESS: 10.0.0.5:22
+      SECURE_ADDRESS: 10.0.0.5:22
       WINDOWS_STACK: windows2016
       CREDHUB_MODE: assisted
       CREDHUB_SECRET: {{PESTO_CREDHUB_SECRET}}

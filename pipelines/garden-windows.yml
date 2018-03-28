@@ -262,7 +262,7 @@ jobs:
         API: api.tartar.cf-app.com
         APPS_DOMAIN: tartar.cf-app.com
         NUM_WINDOWS_CELLS: 1
-        WINDOWS_SECURE_ADDRESS: 169.254.169.254:80
+        SECURE_ADDRESS: 169.254.169.254:80
         WINDOWS_STACK: windows2012R2
         CREDHUB_MODE: assisted
         CREDHUB_SECRET: {{TARTAR_CREDHUB_SECRET}}

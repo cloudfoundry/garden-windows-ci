@@ -621,7 +621,7 @@ jobs:
       API: api.tartar.cf-app.com
       APPS_DOMAIN: tartar.cf-app.com
       NUM_WINDOWS_CELLS: 1
-      WINDOWS_SECURE_ADDRESS: 10.0.0.5:22
+      SECURE_ADDRESS: 10.0.0.5:22
       WINDOWS_STACK: windows2016
   - task: cats
     file: cats-concourse-task/task.yml
@@ -878,7 +878,7 @@ jobs:
       API: api.tartar.cf-app.com
       APPS_DOMAIN: tartar.cf-app.com
       NUM_WINDOWS_CELLS: 1
-      WINDOWS_SECURE_ADDRESS: 10.0.0.5:22
+      SECURE_ADDRESS: 10.0.0.5:22
       WINDOWS_STACK: windows2016
   - task: cats
     file: cats-concourse-task/task.yml
