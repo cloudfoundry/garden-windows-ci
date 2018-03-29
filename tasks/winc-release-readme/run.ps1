@@ -82,7 +82,9 @@ winc state <CONTAINER_ID>
 $README = [string]::join(" ",$README, $NEXT)
 
 $bundle=(Get-Content -Path "$outFile" | ConvertFrom-Json).Bundle
-$validBundleConfig = (Get-Content -Path "$bundle\config.json" | ConvertFrom-Json | ConvertTo-Json -depth 80 )
+$validBundleConfig = (Get-Content -Path "$bundle\config.json" | ConvertFrom-Json)
+$validBundleConfig.root.path = "\\?\Volume{guid-xxxx-xxxx-xxxxxxxxxxxxx}"
+$validBundleConfig = ($validBundleConfig | ConvertTo-Json -depth 80)
 
 Write-Host "Delete Container"
 Start-Process -FilePath "powershell.exe" `
