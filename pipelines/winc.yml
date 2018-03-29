@@ -126,6 +126,33 @@ resources:
         file_name: cf/creds.yml
         json_key: {{PESTO_SERVICE_ACCOUNT_JSON}}
 jobs:
+- name: generate-readme
+  plan:
+  - aggregate:
+    - get: ci
+    - get: winc-release-develop
+      trigger: true
+  - task: winc-release-readme
+    input_mapping: { winc-release: winc-release-develop }
+    file: ci/tasks/winc-release-readme/task.yml
+    params:
+      WINC_TEST_ROOTFS: "docker:///cloudfoundry/windows2016fs:latest"
+      GROOT_IMAGE_STORE: "C:\\ProgramData\\groot"
+  - task: override-repo
+    input_mapping: { repo: winc-release-develop, override-repo: generated-readme }
+    file: ci/tasks/override-repo/task.yml
+  - task: commit-changes
+    file: ci/tasks/commit/task.yml
+    input_mapping:
+      repo: output-repo
+    output_mapping:
+      repo_with_commit: updated-repo
+    params:
+      MESSAGE: "Updated README"
+  - put: winc-release-develop
+    params:
+      repository: updated-repo
+
 - name: bump-lib-groot
   plan:
   - aggregate:

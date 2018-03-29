@@ -15,3 +15,8 @@ run:
   - "Bypass"
   - "-File"
   - ci/tasks/winc-release-readme/run.ps1
+
+params:
+  WINC_TEST_ROOTFS:
+  GROOT_IMAGE_STORE:
+
