@@ -43,7 +43,9 @@ Start-Process -FilePath "powershell.exe" `
     -Wait -PassThru -NoNewWindow
 $NEXT = @"
  `n
-- Create Container with an optional containerId as an argument
+- Create Container with an optional containerId as an argument. This requires
+  setting ``WINC_TEST_ROOTFS`` to an image (e.g. docker:////microsoft/windowsservercore)
+  and ``GROOT_IMAGE_STORE`` (e.g C:\ProgramData\groot)
 
 ``````
 Start-Process -FilePath "powershell.exe" `
