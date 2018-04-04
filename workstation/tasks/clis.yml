@@ -57,7 +57,7 @@
 - name: bbl cli (linux)
   when: is_ubuntu
   get_url:
-    url: "https://github.com/cloudfoundry/bosh-bootloader/releases/download/v5.11.5/bbl-v5.11.5_linux_x86-64"
+    url: "https://github.com/cloudfoundry/bosh-bootloader/releases/download/v6.6.4/bbl-v6.6.4_linux_x86-64"
     dest: "/usr/local/bin/bbl"
 - name: "bbl exec flag"
   when: is_ubuntu
