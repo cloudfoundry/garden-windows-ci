@@ -1,7 +1,7 @@
 - name: Install zoom cli (linux)
   when: is_ubuntu
   apt:
-    deb: "https://www.dropbox.com/s/psb0xl08v0b02kb/zoom_2.0.119330.0115_amd64.deb?dl=1"
+    deb: "https://zoom.us/client/2.0.123086.0330/zoom_amd64.deb"
     state: present
 - name: Install zoom cli (osx)
   when: is_osx
