@@ -59,7 +59,7 @@ jobs:
     file: ci/tasks/test-winc/task.yml
     tags: [1803]
     params:
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:17079
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:17093
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
 
 - name: local-gats
@@ -134,4 +134,4 @@ jobs:
     input_mapping:
       garden-runc-release: garden-runc-release-forks
     params:
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:17079
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:17093
