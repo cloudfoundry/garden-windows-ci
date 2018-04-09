@@ -310,6 +310,14 @@ _ssh_auth_save() {
     ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh-auth-sock.$HOSTNAME"
 }
 
+cp_lpass() {
+  lpass show --password -G "$1" | pbcopy
+}
+
+ls_lpass() {
+  lpass show -G "$1"
+}
+
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/ash/google-cloud-sdk/path.bash.inc' ]; then source '/Users/ash/google-cloud-sdk/path.bash.inc'; fi
 
