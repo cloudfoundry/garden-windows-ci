@@ -128,7 +128,7 @@ resources:
 jobs:
 - name: generate-readme
   serial: true
-  serial_groups: [window2016]
+  serial_groups: [windows2016]
   plan:
   - aggregate:
     - get: ci
@@ -173,7 +173,7 @@ jobs:
 
 - name: groot-windows
   serial: true
-  serial_groups: [window2016]
+  serial_groups: [windows2016]
   plan:
   - aggregate:
     - get: ci
@@ -192,7 +192,7 @@ jobs:
 
 - name: winc
   serial: true
-  serial_groups: [window2016]
+  serial_groups: [windows2016]
   plan:
   - aggregate:
     - get: ci
@@ -221,7 +221,7 @@ jobs:
 
 - name: local-gats
   serial: true
-  serial_groups: [window2016]
+  serial_groups: [windows2016]
   plan:
   - aggregate:
     - get: ci
