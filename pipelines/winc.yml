@@ -127,6 +127,8 @@ resources:
         json_key: {{PESTO_SERVICE_ACCOUNT_JSON}}
 jobs:
 - name: generate-readme
+  serial: true
+  serial_groups: [window2016]
   plan:
   - aggregate:
     - get: ci
