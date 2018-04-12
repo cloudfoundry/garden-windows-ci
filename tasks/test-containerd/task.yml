@@ -4,7 +4,6 @@ platform: windows
 inputs:
 - name: ci
 - name: containerd-fork
-  path: src/github.com/containerd/containerd
 
 run:
   path: powershell

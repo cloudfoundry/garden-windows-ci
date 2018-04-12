@@ -3,7 +3,7 @@ resources:
   type: git
   source:
     branch: winc-runtime
-    uri: git@github.com:greenhouse-org/containerd.git
+    uri: https://github.com/greenhouse-org/containerd.git
 - name: ci
   type: git
   source:
