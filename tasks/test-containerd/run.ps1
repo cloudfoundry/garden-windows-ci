@@ -26,7 +26,7 @@ pushd src/github.com/containerd/containerd
 
   mkdir bin
   $env:PATH+=";$PWD/bin"
-  go build -o bin/containerd.exe cmd/containerd
+  go build -o bin/containerd.exe ./cmd/containerd
   if ($LastExitCode -ne 0) {
       throw "couldn't build containerd.exe: exit code $LastExitCode"
   }
