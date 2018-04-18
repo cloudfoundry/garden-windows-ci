@@ -30,7 +30,6 @@ read -r -d '' JSON_TEMPLATE <<EOF || true
   "backend": "diego",
   "include_windows": true,
   "include_ssh": true,
-  "windows_test_task": true,
   "credhub_mode": "$CREDHUB_MODE",
   "credhub_secret": "$CREDHUB_SECRET",
   "secure_address": "$SECURE_ADDRESS",
