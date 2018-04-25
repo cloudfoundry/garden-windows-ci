@@ -192,6 +192,8 @@ rdp() {
 
 grdp() {
   project_name=$(_project_name $1)
+  instance_name=$2
+  user=${3:-admin}
   if [[ -z "$project_name" ]]; then
     echo "Unknown environment: $1"
     return
@@ -199,8 +201,7 @@ grdp() {
   zone=${ZONE:=us-east1-b}
   gcloud config set project $project_name
   gcloud config set compute/zone $zone
-  user=${3:-admin}
-  local auth=$(gcloud -q beta compute reset-windows-password $2 --user $user --format=json)
+  local auth=$(gcloud -q beta compute reset-windows-password $instance_name --user $user --format=json)
   local ip=$(echo $auth | jq -r .ip_address)
   local username=$(echo $auth | jq -r .username)
   local password=$(echo $auth | jq -r .password)
