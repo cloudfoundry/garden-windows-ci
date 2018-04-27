@@ -96,7 +96,13 @@ if ($LastExitCode -ne 0) {
     throw "Ginkgo installation process returned error code: $LastExitCode"
 }
 
-ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 -skipPackage winc-network
+ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 -skipPackage winc-network,perf
+$exitCode = $LastExitCode
+if ($exitCode -ne 0) {
+  Exit $exitCode
+}
+
+ginkgo.exe -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/perf
 $exitCode = $LastExitCode
 if ($exitCode -ne 0) {
   Exit $exitCode
