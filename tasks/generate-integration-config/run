@@ -36,6 +36,7 @@ read -r -d '' JSON_TEMPLATE <<EOF || true
   "num_windows_cells": $NUM_WINDOWS_CELLS,
   "use_windows_test_task": true,
   "use_windows_context_path": true,
+  "windows_context_path": true,
   "windows_stack": "$WINDOWS_STACK"
 }
 EOF
