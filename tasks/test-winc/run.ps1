@@ -108,6 +108,13 @@ if ($exitCode -ne 0) {
   Exit $exitCode
 }
 
+# Microsoft claims networking is better on 1803, let's see...
+if ($env:WINC_TEST_ROOTFS.split(":")[-1] -eq "1803") {
+  ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/winc-network
+  $exitCode = $LastExitCode
+  Exit $exitCode
+}
+
 ginkgo.exe -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/winc-network
 $exitCode = $LastExitCode
 Exit $exitCode
