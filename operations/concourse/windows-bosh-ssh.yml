@@ -3,9 +3,9 @@
   path: /releases/name=windows-utilities?
   value:
     name: windows-utilities
-    version: 0.5.0
-    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.5.0
-    sha1: 71f5617ad2a63a558968854fc20e5fc71b033ebd
+    version: 0.10.0
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.10.0
+    sha1: 2bf15743be48e696a72236c05e8e3e137474cedd
 
 - type: replace
   path: /addons?/-
