@@ -30,11 +30,6 @@ resources:
   source:
     branch: develop
     uri: https://github.com/cloudfoundry-incubator/windows2016fs-online-release.git
-- name: bosh-dns-release-master
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry/bosh-dns-release.git
 - name: garden-windows-bosh-release-develop
   type: git
   source:
@@ -110,8 +105,6 @@ jobs:
     - get: garden-windows-bosh-release-develop
       trigger: true
       tags: [vsphere]
-    - get: bosh-dns-release-master
-      tags: [vsphere]
   - aggregate:
     - task: get-linux-stemcell
       file: ci/tasks/get-vsphere-linux-stemcell/task.yml
@@ -139,12 +132,6 @@ jobs:
       output_mapping:
         release-tarball: windows2016fs-tarball
       tags: [vsphere]
-    - task: create-bosh-dns-release
-      file: ci/tasks/bosh-cr/task.yml
-      input_mapping:
-        release: bosh-dns-release-master
-      output_mapping:
-        release-tarball: bosh-dns-tarball
       tags: [vsphere]
     - task: create-garden-windows-bosh-release
       file: ci/tasks/bosh-cr/task.yml
@@ -164,7 +151,6 @@ jobs:
       - winc-tarball/*.tgz
       - windows2016fs-tarball/*.tgz
       - garden-windows-tarball/*.tgz
-      - bosh-dns-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/windows-cell.yml
@@ -186,7 +172,6 @@ jobs:
       - cf-deployment/operations/experimental/enable-instance-identity-credentials-windows2016.yml
       - ci/operations/windows2016-prs.yml
       - ci/operations/windows2016-debug.yml
-      - ci/operations/latest-bosh-dns.yml
       - ci/operations/latest-winc.yml
       - ci/operations/latest-windows2016fs-release.yml
       - ci/operations/latest-garden-windows.yml
