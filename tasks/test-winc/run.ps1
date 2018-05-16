@@ -18,7 +18,7 @@ function check-firewall {
 	}
 }
 
-function setup-firewall {
+function setup-firewall-1709 {
   $anyFirewallsDisabled = !!(Get-NetFirewallProfile -All | Where-Object { $_.Enabled -eq "False" })
   $adminRuleMissing = !(Get-NetFirewallRule -Name CFAllowAdmins -ErrorAction Ignore)
   if ($anyFirewallsDisabled -or $adminRuleMissing) {
@@ -56,7 +56,12 @@ function setup-firewall {
   }
 }
 
-setup-firewall
+if ($env:WINDOWS_VERSION -eq "1709") {
+  setup-firewall-1709
+} else {
+  #1803
+  Set-NetFirewallProfile -All -DefaultInboundAction Block -DefaultOutboundAction Allow -Enabled True
+}
 
 go.exe version
 

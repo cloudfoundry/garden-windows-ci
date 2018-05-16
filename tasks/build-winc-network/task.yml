@@ -16,3 +16,6 @@ run:
   - "Bypass"
   - "-File"
   - ci/tasks/build-winc-network/run.ps1
+
+params:
+  WINDOWS_VERSION:

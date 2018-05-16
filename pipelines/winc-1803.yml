@@ -61,6 +61,7 @@ jobs:
     params:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
+      WINDOWS_VERSION: 1803
 
 - name: local-gats
   serial: true
@@ -100,6 +101,8 @@ jobs:
       file: ci/tasks/build-winc-network/task.yml
       tags: [1803]
       input_mapping: { winc: winc-develop }
+      params:
+        WINDOWS_VERSION: 1803
     - task: build-groot
       input_mapping: { groot-windows: groot-windows-master }
       file: ci/tasks/build-groot/task.yml
@@ -135,3 +138,4 @@ jobs:
       garden-runc-release: garden-runc-release-forks
     params:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
+      WINDOWS_VERSION: 1803

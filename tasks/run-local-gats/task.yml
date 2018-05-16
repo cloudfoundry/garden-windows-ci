@@ -20,3 +20,4 @@ run:
 
 params:
   WINC_TEST_ROOTFS:
+  WINDOWS_VERSION:
