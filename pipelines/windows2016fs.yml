@@ -69,11 +69,11 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/cf-acceptance-tests
-- name: cats-concourse-task
+- name: cf-deployment-concourse-tasks
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry/cats-concourse-task.git
+    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
 
 - name: cf-deployment
   type: git
@@ -566,7 +566,7 @@ jobs:
     - get: create-windows-sha
       passed: [test-create-release-windows]
     - get: cf-acceptance-tests
-    - get: cats-concourse-task
+    - get: cf-deployment-concourse-tasks
     - get: cf-deployment
     - get: gcp-windows-stemcell
   - aggregate:
@@ -601,7 +601,7 @@ jobs:
       - windows2016fs-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
-      - cf-deployment/operations/workaround/use-3-azs-for-router.yml
+      - cf-deployment/operations/workaround/use-4-azs-for-router.yml
       - cf-deployment/operations/windows2016-cell.yml
       - cf-deployment/operations/use-latest-windows2016-stemcell.yml
       - ci/operations/windows2016-prs.yml
@@ -624,7 +624,7 @@ jobs:
       UNALLOCATED_IP: 10.0.0.5
       WINDOWS_STACK: windows2016
   - task: cats
-    file: cats-concourse-task/task.yml
+    file: cf-deployment-concourse-tasks/run-cats/task.yml
     params:
       NODES: 4
     on_success:
@@ -825,7 +825,7 @@ jobs:
     - get: windows2016fs-online-release-develop
       trigger: true
     - get: cf-acceptance-tests
-    - get: cats-concourse-task
+    - get: cf-deployment-concourse-tasks
     - get: cf-deployment
     - get: gcp-windows-stemcell
   - aggregate:
@@ -858,7 +858,7 @@ jobs:
       - windows2016fs-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
-      - cf-deployment/operations/workaround/use-3-azs-for-router.yml
+      - cf-deployment/operations/workaround/use-4-azs-for-router.yml
       - cf-deployment/operations/windows2016-cell.yml
       - cf-deployment/operations/use-latest-windows2016-stemcell.yml
       - ci/operations/windows2016-prs.yml
@@ -881,7 +881,7 @@ jobs:
       UNALLOCATED_IP: 10.0.0.5
       WINDOWS_STACK: windows2016
   - task: cats
-    file: cats-concourse-task/task.yml
+    file: cf-deployment-concourse-tasks/run-cats/task.yml
     params:
       NODES: 4
     on_success:
