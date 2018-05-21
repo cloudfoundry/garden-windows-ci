@@ -101,6 +101,9 @@ if ($LastExitCode -ne 0) {
     throw "Ginkgo installation process returned error code: $LastExitCode"
 }
 
+# Turn on debug for winc integration
+$env:DEBUG="true"
+
 ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 -skipPackage winc-network,perf
 $exitCode = $LastExitCode
 if ($exitCode -ne 0) {
