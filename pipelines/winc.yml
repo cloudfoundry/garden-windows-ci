@@ -14,13 +14,13 @@ resources:
   type: git
   source:
     branch: develop
-    uri: git@github.com:cloudfoundry-incubator/groot-windows.git
+    uri: git@github.com:cloudfoundry/groot-windows.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
 - name: groot-windows-master
   type: git
   source:
     branch: master
-    uri: git@github.com:cloudfoundry-incubator/groot-windows.git
+    uri: git@github.com:cloudfoundry/groot-windows.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
 - name: groot
   type: git
@@ -31,12 +31,12 @@ resources:
   type: git
   source:
     branch: develop
-    uri: https://github.com/cloudfoundry-incubator/winc.git
+    uri: https://github.com/cloudfoundry/winc.git
 - name: winc-master
   type: git
   source:
     branch: master
-    uri: git@github.com:cloudfoundry-incubator/winc.git
+    uri: git@github.com:cloudfoundry/winc.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_WINC_DEPLOY_KEY}}
 - name: cf-acceptance-tests
   type: git
@@ -57,13 +57,13 @@ resources:
   type: git
   source:
     branch: develop
-    uri: git@github.com:cloudfoundry-incubator/winc-release.git
+    uri: git@github.com:cloudfoundry/winc-release.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_WINC-RELEASE_DEPLOY_KEY}}
 - name: winc-release-master
   type: git
   source:
     branch: master
-    uri: git@github.com:cloudfoundry-incubator/winc-release.git
+    uri: git@github.com:cloudfoundry/winc-release.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_WINC-RELEASE_DEPLOY_KEY}}
 - name: garden-runc-release
   type: git
@@ -105,7 +105,7 @@ resources:
 - name: winc-release-github-release
   type: github-release
   source:
-    user: cloudfoundry-incubator
+    user: cloudfoundry
     repository: winc-release
     drafts: true
     access_token: {{GREENHOUSE_CI_ACCESS_TOKEN}}

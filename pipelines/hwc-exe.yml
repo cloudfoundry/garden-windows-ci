@@ -8,17 +8,17 @@ resources:
   type: git
   source:
     branch: develop
-    uri: https://github.com/cloudfoundry-incubator/hwc.git
+    uri: https://github.com/cloudfoundry/hwc.git
 - name: hwc-master
   type: git
   source:
     branch: master
-    uri: git@github.com:cloudfoundry-incubator/hwc.git
+    uri: git@github.com:cloudfoundry/hwc.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_HWC_DEPLOY_KEY}}
 - name: hwc-release
   type: github-release
   source:
-    user: cloudfoundry-incubator
+    user: cloudfoundry
     repository: hwc
     access_token: {{GREENHOUSE_CI_ACCESS_TOKEN}}
 - name: hwc-version

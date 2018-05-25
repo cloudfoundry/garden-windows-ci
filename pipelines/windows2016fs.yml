@@ -18,28 +18,28 @@ resources:
   type: git
   source:
     branch: develop
-    uri: git@github.com:cloudfoundry-incubator/windows2016fs-release.git
+    uri: git@github.com:cloudfoundry/windows2016fs-release.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_OFFLINE_DEPLOY_KEY}}
 
 - name: windows2016fs-release-master
   type: git
   source:
     branch: master
-    uri: git@github.com:cloudfoundry-incubator/windows2016fs-release.git
+    uri: git@github.com:cloudfoundry/windows2016fs-release.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_OFFLINE_DEPLOY_KEY}}
 
 - name: windows2016fs-online-release-develop
   type: git
   source:
     branch: develop
-    uri: git@github.com:cloudfoundry-incubator/windows2016fs-online-release.git
+    uri: git@github.com:cloudfoundry/windows2016fs-online-release.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_ONLINE_DEPLOY_KEY}}
 
 - name: windows2016fs-online-release-master
   type: git
   source:
     branch: master
-    uri: git@github.com:cloudfoundry-incubator/windows2016fs-online-release.git
+    uri: git@github.com:cloudfoundry/windows2016fs-online-release.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_ONLINE_DEPLOY_KEY}}
 
 - name: hydrator
@@ -53,7 +53,7 @@ resources:
   type: git
   source:
     branch: master
-    uri: git@github.com:cloudfoundry-incubator/windows2016fs.git
+    uri: git@github.com:cloudfoundry/windows2016fs.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_DEPLOY_KEY}}
     ignore_paths: [ Dockerfile ]
 
@@ -61,7 +61,7 @@ resources:
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry-incubator/windows2016fs.git
+    uri: https://github.com/cloudfoundry/windows2016fs.git
     paths: [ Dockerfile ]
 
 - name: cf-acceptance-tests
@@ -101,7 +101,7 @@ resources:
 - name: windows2016fs-release-github-release
   type: github-release
   source:
-    user: cloudfoundry-incubator
+    user: cloudfoundry
     repository: windows2016fs-release
     drafts: true
     access_token: {{GREENHOUSE_CI_ACCESS_TOKEN}}
@@ -109,7 +109,7 @@ resources:
 - name: windows2016fs-online-release-github-release
   type: github-release
   source:
-    user: cloudfoundry-incubator
+    user: cloudfoundry
     repository: windows2016fs-online-release
     drafts: true
     access_token: {{GREENHOUSE_CI_ACCESS_TOKEN}}

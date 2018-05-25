@@ -8,17 +8,17 @@ resources:
   type: git
   source:
     branch: develop
-    uri: https://github.com/cloudfoundry-incubator/winc.git
+    uri: https://github.com/cloudfoundry/winc.git
 - name: groot-windows-master
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry-incubator/groot-windows.git
+    uri: https://github.com/cloudfoundry/groot-windows.git
 - name: winc-release-develop
   type: git
   source:
     branch: develop
-    uri: https://github.com/cloudfoundry-incubator/winc-release.git
+    uri: https://github.com/cloudfoundry/winc-release.git
 - name: garden-runc-release
   type: git
   source:

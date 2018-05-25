@@ -24,12 +24,12 @@ resources:
   type: git
   source:
     branch: develop
-    uri: https://github.com/cloudfoundry-incubator/winc-release.git
+    uri: https://github.com/cloudfoundry/winc-release.git
 - name: windows2016fs-release-develop
   type: git
   source:
     branch: develop
-    uri: https://github.com/cloudfoundry-incubator/windows2016fs-online-release.git
+    uri: https://github.com/cloudfoundry/windows2016fs-online-release.git
 - name: garden-windows-bosh-release-develop
   type: git
   source:
