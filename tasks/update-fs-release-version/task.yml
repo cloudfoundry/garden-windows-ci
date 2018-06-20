@@ -7,8 +7,6 @@ inputs:
   - name: ci
   - name: version
   - name: windows2016fs-release
-  - name: create-windows-sha
-  - name: create-linux-sha
 
 outputs:
   - name: windows2016fs-release-updated-version

@@ -4,8 +4,6 @@ platform: windows
 inputs:
 - name: ci
 - name: windows2016fs-release
-- name: create-timestamp
-- name: sha
 
 run:
   path: powershell
@@ -14,6 +12,3 @@ run:
   - "Bypass"
   - "-File"
   - ci/tasks/create-fs-release-windows/run.ps1
-
-params:
-  DEV_ENV:
