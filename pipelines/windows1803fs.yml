@@ -548,15 +548,15 @@ jobs:
       version: windowsfs-release-version
   - put: windowsfs-release-develop
     params:
-      repository: windowsfs-release-updated-version
+      repository: windows2016fs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
   - put: windowsfs-release-master
     params:
-      repository: windowsfs-release-updated-version
+      repository: windows2016fs-release-updated-version
   - task: generate-github-release
     input_mapping:
-      release: windowsfs-release-updated-version
+      release: windows2016fs-release-updated-version
       version: windowsfs-release-version
     file: ci/tasks/generate-github-release/task.yml
   - put: windowsfs-release-github-release
@@ -585,15 +585,15 @@ jobs:
       version: windowsfs-release-version
   - put: windowsfs-release-develop
     params:
-      repository: windowsfs-release-updated-version
+      repository: windows2016fs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
   - put: windowsfs-release-master
     params:
-      repository: windowsfs-release-updated-version
+      repository: windows2016fs-release-updated-version
   - task: generate-github-release
     input_mapping:
-      release: windowsfs-release-updated-version
+      release: windows2016fs-release-updated-version
       version: windowsfs-release-version
     file: ci/tasks/generate-github-release/task.yml
   - put: windowsfs-release-github-release
@@ -622,15 +622,15 @@ jobs:
       version: windowsfs-release-version
   - put: windowsfs-release-develop
     params:
-      repository: windowsfs-release-updated-version
+      repository: windows2016fs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
   - put: windowsfs-release-master
     params:
-      repository: windowsfs-release-updated-version
+      repository: windows2016fs-release-updated-version
   - task: generate-github-release
     input_mapping:
-      release: windowsfs-release-updated-version
+      release: windows2016fs-release-updated-version
       version: windowsfs-release-version
     file: ci/tasks/generate-github-release/task.yml
   - put: windowsfs-release-github-release
