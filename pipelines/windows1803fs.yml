@@ -55,14 +55,14 @@ resources:
     branch: master
     uri: git@github.com:cloudfoundry/windows2016fs.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_DEPLOY_KEY}}
-    ignore_paths: [ Dockerfile ]
+    ignore_paths: [ 1803/Dockerfile ]
 
 - name: windowsfs-dockerfile
   type: git
   source:
     branch: master
     uri: https://github.com/cloudfoundry/windows1803fs.git
-    paths: [ Dockerfile ]
+    paths: [ 1803/Dockerfile ]
 
 - name: cf-acceptance-tests
   type: git
@@ -249,7 +249,7 @@ jobs:
       repo: windowsfs-dockerfile
       version: image-version
     params:
-      DOCKERFILE: repo/Dockerfile
+      DOCKERFILE: repo/1803/Dockerfile
       IMAGE_NAME: cloudfoundry/windows2016fs
       DOCKER_USERNAME: {{DOCKER_USERNAME}}
       DOCKER_PASSWORD: {{DOCKER_PASSWORD}}
