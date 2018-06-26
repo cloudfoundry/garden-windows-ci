@@ -353,7 +353,7 @@ jobs:
       - test-hydrator-windows
       - test-hydrator-linux
       trigger: true
-  - task: bump-windows2016fs-release
+  - task: bump-windowsfs-release
     file: ci/tasks/bump-submodule/task.yml
     params:
       SUBMODULE: "src/code.cloudfoundry.org/hydrator"
@@ -373,7 +373,7 @@ jobs:
     - get: windowsfs-online-release-develop
     - get: windows2016fs
       trigger: true
-  - task: bump-windows2016fs-online-release
+  - task: bump-windowsfs-online-release
     file: ci/tasks/bump-submodule/task.yml
     params:
       SUBMODULE: "src/code.cloudfoundry.org/windows2016fs"
@@ -396,7 +396,7 @@ jobs:
       - test-hydrator-windows
       - test-hydrator-linux
       trigger: true
-  - task: bump-windows2016fs-online-release
+  - task: bump-windowsfs-online-release
     file: ci/tasks/bump-submodule/task.yml
     params:
       SUBMODULE: "src/code.cloudfoundry.org/hydrator"
@@ -470,13 +470,13 @@ jobs:
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
-    - task: create-windows2016fs-release
+    - task: create-windowsfs-release
       file: ci/tasks/create-fs-release-linux/task.yml
       input_mapping:
         windows2016fs-release: windowsfs-release-develop
       output_mapping:
         release-tarball: windowsfs-tarball
-  - task: create-windows2016fs-opsfile
+  - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     input_mapping: { release-tarball: windowsfs-tarball }
   - put: tartar-cf-deployment
@@ -667,13 +667,13 @@ jobs:
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
-    - task: create-windows2016fs-release
+    - task: create-windowsfs-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: windowsfs-online-release-develop
       output_mapping:
         release-tarball: windowsfs-tarball
-  - task: create-windows2016fs-opsfile
+  - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     input_mapping: { release-tarball: windowsfs-tarball }
   - put: tartar-cf-deployment
