@@ -19,28 +19,28 @@ resources:
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/windows1803fs-release.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_OFFLINE_DEPLOY_KEY}}
+    private_key: {{CLOUDFOUNDRY_WINDOWS1803FS_OFFLINE_DEPLOY_KEY}}
 
 - name: windowsfs-release-master
   type: git
   source:
     branch: master
     uri: git@github.com:cloudfoundry/windows1803fs-release.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_OFFLINE_DEPLOY_KEY}}
+    private_key: {{CLOUDFOUNDRY_WINDOWS1803FS_OFFLINE_DEPLOY_KEY}}
 
 - name: windowsfs-online-release-develop
   type: git
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/windows1803fs-online-release.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_ONLINE_DEPLOY_KEY}}
+    private_key: {{CLOUDFOUNDRY_WINDOWS1803FS_ONLINE_DEPLOY_KEY}}
 
 - name: windowsfs-online-release-master
   type: git
   source:
     branch: master
     uri: git@github.com:cloudfoundry/windows1803fs-online-release.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_ONLINE_DEPLOY_KEY}}
+    private_key: {{CLOUDFOUNDRY_WINDOWS1803FS_ONLINE_DEPLOY_KEY}}
 
 - name: hydrator
   type: git
