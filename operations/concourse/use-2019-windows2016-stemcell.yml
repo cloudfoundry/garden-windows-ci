@@ -1,0 +1,4 @@
+- path: /stemcells/alias=windows/version
+  type: replace
+  value: "2019.0"
+

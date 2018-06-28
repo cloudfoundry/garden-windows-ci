@@ -59,7 +59,7 @@ function setup-firewall-1709 {
 if ($env:WINDOWS_VERSION -eq "1709") {
   setup-firewall-1709
 } else {
-  #1803
+  #1803 or 2019
   Set-NetFirewallProfile -All -DefaultInboundAction Block -DefaultOutboundAction Allow -Enabled True
 }
 
@@ -117,7 +117,9 @@ if ($exitCode -ne 0) {
 }
 
 # Microsoft claims networking is better on 1803, let's see...
-if ($env:WINC_TEST_ROOTFS.split(":")[-1] -eq "1803") {
+# I'm assuming we should do the same for 2019...again, we will see...
+$os = $env:WINC_TEST_ROOTFS.split(":")[-1]
+if ($os -eq "1803" -or $os -eq "2019") {
   ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/winc-network
   $exitCode = $LastExitCode
   Exit $exitCode

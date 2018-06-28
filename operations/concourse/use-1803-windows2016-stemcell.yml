@@ -1,0 +1,4 @@
+- path: /stemcells/alias=windows/version
+  type: replace
+  value: "1803.0.1"
+

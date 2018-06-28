@@ -64,7 +64,7 @@ function setup-firewall-1709 {
 if ($env:WINDOWS_VERSION -eq "1709") {
   setup-firewall-1709
 } else {
-  #1803
+  #1803 or 2019
   Set-NetFirewallProfile -All -DefaultInboundAction Block -DefaultOutboundAction Allow -Enabled True
 }
 
