@@ -278,6 +278,12 @@ fly-windows2016fs () {
   -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tartar-service-account.json tracker-api-token)
 }
 
+fly-windows1803fs () {
+  fly -t garden-windows sp -p windows1803fs -c $HOME/workspace/garden-windows-ci/pipelines/windows1803fs.yml \
+    -l <(_env_creds_yml tartar) \
+  -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tartar-service-account.json tracker-api-token)
+}
+
 fly-docker () {
   fly -t garden-windows sp -p docker -c $HOME/workspace/garden-windows-ci/pipelines/docker.yml \
   -l<(lpass show --notes docker-creds)

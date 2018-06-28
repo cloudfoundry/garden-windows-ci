@@ -331,8 +331,9 @@ jobs:
     file: ci/tasks/update-windows2016fs-blob/task.yml
     params:
       FS_VERSION: "windows2016fs"
+      OS_VERSION: "1709"
     input_mapping:
-      windows2016fs-release: bumped-repo
+      windowsfs-release: bumped-repo
   - task: commit-changes
     file: ci/tasks/commit/task.yml
     input_mapping:
