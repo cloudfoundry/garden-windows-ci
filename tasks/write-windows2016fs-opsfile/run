@@ -8,12 +8,12 @@ popd
 
 echo "Found version: $release_version"
 
-cat << EOF > windows2016fs-opsfile/specified-windows2016fs-version.yml
+cat << EOF > windowsfs-opsfile/specified-windowsfs-version.yml
 ---
 - type: replace
-  path: /releases/name=windows2016fs?
+  path: /releases/name=$FS_VERSION?
   value:
-    name: windows2016fs
+    name: $FS_VERSION
     version: $release_version
 EOF
 

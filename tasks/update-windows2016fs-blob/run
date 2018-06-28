@@ -2,22 +2,22 @@
 
 set -eu
 
-submodule_version=$(cat windows2016fs-release/src/code.cloudfoundry.org/windows2016fs/IMAGE_TAG)
-blob_version=$(grep  windows2016fs windows2016fs-release/config/blobs.yml |  grep -o '[0-9]\+.[0-9]\+.[0-9]\+')
+submodule_version=$(cat windowsfs-release/src/code.cloudfoundry.org/windows2016fs/$OS_VERSION/IMAGE_TAG)
+blob_version=$(grep $FS_VERSION windowsfs-release/config/blobs.yml |  grep -o '[0-9]\+.[0-9]\+.[0-9]\+')
 
 if [[ "$submodule_version" == "$blob_version" ]]; then
   echo "No blob to update"
 else
-  pushd windows2016fs-release
+  pushd windowsfs-release
     export GOPATH=$PWD
-    mkdir -p blobs/windows2016fs
-    go run src/code.cloudfoundry.org/hydrator/cmd/hydrate/main.go -image cloudfoundry/windows2016fs -outputDir blobs/windows2016fs -tag $submodule_version
+    mkdir -p blobs/$FS_VERSION
+    go run src/code.cloudfoundry.org/hydrator/cmd/hydrate/main.go -image cloudfoundry/windows2016fs -outputDir blobs/$FS_VERSION -tag $submodule_version
 
-    bosh remove-blob "windows2016fs/windows2016fs-$blob_version.tgz"
-    bosh add-blob "blobs/windows2016fs/windows2016fs-$submodule_version.tgz" "windows2016fs/windows2016fs-$submodule_version.tgz"
+    bosh remove-blob "$FS_VERSION/$FS_VERSION-$blob_version.tgz"
+    bosh add-blob "blobs/$FS_VERSION/$FS_VERSION-$submodule_version.tgz" "$FS_VERSION/$FS_VERSION-$submodule_version.tgz"
 
-    rm "blobs/windows2016fs/windows2016fs-$submodule_version.tgz"
+    rm "blobs/$FS_VERSION/$FS_VERSION-$submodule_version.tgz"
   popd
 fi
 
-cp -r ./windows2016fs-release/. windows2016fs-release-updated-blob/
+cp -r ./windowsfs-release/. windowsfs-release-updated-blob/

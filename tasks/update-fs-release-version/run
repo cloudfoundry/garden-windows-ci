@@ -4,7 +4,7 @@ set -eux
 
 NEW_VERSION=$(cat version/version)
 
-pushd windows2016fs-release
+pushd windowsfs-release
 	echo -n $NEW_VERSION > VERSION
 
 	git config --global user.email "pivotal-netgarden-eng@pivotal.io"
@@ -15,5 +15,5 @@ pushd windows2016fs-release
 	git commit -m "$(echo -e $commit_message)"
 popd
 
-cp -r windows2016fs-release/. windows2016fs-release-updated-version
+cp -r windowsfs-release/. windowsfs-release-updated-version
 

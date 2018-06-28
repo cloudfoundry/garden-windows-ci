@@ -2,6 +2,6 @@
 
 set -e
 
-pushd windows2016fs-release
+pushd windowsfs-release
   ./scripts/create-release --tarball ../release-tarball/release.tgz
 popd

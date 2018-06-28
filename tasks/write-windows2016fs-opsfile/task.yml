@@ -8,7 +8,10 @@ inputs:
 - name: release-tarball
 
 outputs:
-- name: windows2016fs-opsfile
+- name: windowsfs-opsfile
+
+params:
+  FS_VERSION: ""
 
 run:
   path: ci/tasks/write-windows2016fs-opsfile/run

@@ -6,10 +6,10 @@ image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-wi
 inputs:
   - name: ci
   - name: version
-  - name: windows2016fs-release
+  - name: windowsfs-release
 
 outputs:
-  - name: windows2016fs-release-updated-version
+  - name: windowsfs-release-updated-version
 
 run:
   path: ci/tasks/update-fs-release-version/run

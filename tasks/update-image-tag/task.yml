@@ -11,5 +11,8 @@ inputs:
 outputs:
   - name: windows2016fs-updated
 
+params:
+  OS_VERSION: ""
+
 run:
   path: ci/tasks/update-image-tag/run

@@ -140,7 +140,7 @@ resources:
     access_key_id: {{BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID}}
     secret_access_key: {{BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY}}
     bucket: windows1803fs
-    initial_version: 0.0.1
+    initial_version: 1803.0.1
     key: image-version
     region_name: us-east-1
 
@@ -255,6 +255,8 @@ jobs:
       DOCKER_PASSWORD: {{DOCKER_PASSWORD}}
   - task: update-image-tag
     file: ci/tasks/update-image-tag/task.yml
+    params:
+      OS_VERSION: "1803"
   - task: commit-changes
     file: ci/tasks/commit/task.yml
     input_mapping:
@@ -327,12 +329,14 @@ jobs:
       module-repo: windows2016fs
   - task: update-blob
     file: ci/tasks/update-windows2016fs-blob/task.yml
+    params:
+      FS_VERSION: "windows1803fs"
     input_mapping:
       windows2016fs-release: bumped-repo
   - task: commit-changes
     file: ci/tasks/commit/task.yml
     input_mapping:
-      repo: windows2016fs-release-updated-blob
+      repo: windowsfs-release-updated-blob
     output_mapping:
       repo_with_commit: windowsfs-release-updated-commit
     params:
@@ -478,6 +482,8 @@ jobs:
         release-tarball: windowsfs-tarball
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
+    params:
+      FS_VERSION: "windows1803fs"
     input_mapping: { release-tarball: windowsfs-tarball }
   - put: tartar-cf-deployment
     params:
@@ -495,7 +501,7 @@ jobs:
       - ci/operations/windows2016-prs.yml
       - ci/operations/windows2016-debug.yml
       - ci/operations/scale-down-windows2016.yml
-      - windows2016fs-opsfile/specified-windows2016fs-version.yml
+      - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
       - cf-vars/vars.yml
       cleanup: true
@@ -543,20 +549,22 @@ jobs:
       params: {bump: major}
   - task: update-version-and-shas
     file: ci/tasks/update-fs-release-version/task.yml
+    params:
+      FS_VERSION: "windows1803fs"
     input_mapping:
       windows2016fs-release: windowsfs-release-develop
       version: windowsfs-release-version
   - put: windowsfs-release-develop
     params:
-      repository: windows2016fs-release-updated-version
+      repository: windowsfs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
   - put: windowsfs-release-master
     params:
-      repository: windows2016fs-release-updated-version
+      repository: windowsfs-release-updated-version
   - task: generate-github-release
     input_mapping:
-      release: windows2016fs-release-updated-version
+      release: windowsfs-release-updated-version
       version: windowsfs-release-version
     file: ci/tasks/generate-github-release/task.yml
   - put: windowsfs-release-github-release
@@ -585,15 +593,15 @@ jobs:
       version: windowsfs-release-version
   - put: windowsfs-release-develop
     params:
-      repository: windows2016fs-release-updated-version
+      repository: windowsfs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
   - put: windowsfs-release-master
     params:
-      repository: windows2016fs-release-updated-version
+      repository: windowsfs-release-updated-version
   - task: generate-github-release
     input_mapping:
-      release: windows2016fs-release-updated-version
+      release: windowsfs-release-updated-version
       version: windowsfs-release-version
     file: ci/tasks/generate-github-release/task.yml
   - put: windowsfs-release-github-release
@@ -622,15 +630,15 @@ jobs:
       version: windowsfs-release-version
   - put: windowsfs-release-develop
     params:
-      repository: windows2016fs-release-updated-version
+      repository: windowsfs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
   - put: windowsfs-release-master
     params:
-      repository: windows2016fs-release-updated-version
+      repository: windowsfs-release-updated-version
   - task: generate-github-release
     input_mapping:
-      release: windows2016fs-release-updated-version
+      release: windowsfs-release-updated-version
       version: windowsfs-release-version
     file: ci/tasks/generate-github-release/task.yml
   - put: windowsfs-release-github-release
@@ -675,6 +683,8 @@ jobs:
         release-tarball: windowsfs-tarball
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
+    params:
+      FS_VERSION: "windows1803fs"
     input_mapping: { release-tarball: windowsfs-tarball }
   - put: tartar-cf-deployment
     params:
@@ -687,12 +697,12 @@ jobs:
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
-      - cf-deployment/operations/windows2016-cell.yml
+      - cf-deployment/operations/windows1803-cell.yml
       - cf-deployment/operations/use-latest-windows2016-stemcell.yml
       - ci/operations/windows2016-prs.yml
       - ci/operations/windows2016-debug.yml
       - ci/operations/scale-down-windows2016.yml
-      - windows2016fs-opsfile/specified-windows2016fs-version.yml
+      - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
       - cf-vars/vars.yml
       cleanup: true
