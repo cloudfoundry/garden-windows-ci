@@ -424,7 +424,7 @@ jobs:
     - task: create-dev-release
       file: ci/tasks/create-fs-release-windows/task.yml
       input_mapping:
-        windows2016fs-release: windowsfs-release-develop
+        windowsfs-release: windowsfs-release-develop
     - task: run-ginkgo-exe
       file: ci/tasks/ginkgo-from-gopath-windows/task.yml
       input_mapping: { repo: windowsfs-release-develop}
@@ -442,7 +442,7 @@ jobs:
     - task: create-dev-release
       file: ci/tasks/create-fs-release-linux/task.yml
       input_mapping:
-        windows2016fs-release: windowsfs-release-develop
+        windowsfs-release: windowsfs-release-develop
     - task: run-ginkgo
       file: ci/tasks/ginkgo-from-gopath-linux/task.yml
       input_mapping: { repo: windowsfs-release-develop}
@@ -478,7 +478,7 @@ jobs:
     - task: create-windowsfs-release
       file: ci/tasks/create-fs-release-linux/task.yml
       input_mapping:
-        windows2016fs-release: windowsfs-release-develop
+        windowsfs-release: windowsfs-release-develop
       output_mapping:
         release-tarball: windowsfs-tarball
   - task: create-windowsfs-opsfile
@@ -553,7 +553,7 @@ jobs:
     params:
       FS_VERSION: "windows1803fs"
     input_mapping:
-      windows2016fs-release: windowsfs-release-develop
+      windowsfs-release: windowsfs-release-develop
       version: windowsfs-release-version
   - put: windowsfs-release-develop
     params:
@@ -590,7 +590,7 @@ jobs:
   - task: update-version-and-shas
     file: ci/tasks/update-fs-release-version/task.yml
     input_mapping:
-      windows2016fs-release: windowsfs-release-develop
+      windowsfs-release: windowsfs-release-develop
       version: windowsfs-release-version
   - put: windowsfs-release-develop
     params:
@@ -627,7 +627,7 @@ jobs:
   - task: update-version-and-shas
     file: ci/tasks/update-fs-release-version/task.yml
     input_mapping:
-      windows2016fs-release: windowsfs-release-develop
+      windowsfs-release: windowsfs-release-develop
       version: windowsfs-release-version
   - put: windowsfs-release-develop
     params:
