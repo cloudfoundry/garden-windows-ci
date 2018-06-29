@@ -253,6 +253,7 @@ jobs:
       IMAGE_NAME: cloudfoundry/windows2016fs
       DOCKER_USERNAME: {{DOCKER_USERNAME}}
       DOCKER_PASSWORD: {{DOCKER_PASSWORD}}
+      OS_VERSION: "1709"
   - task: update-image-tag
     file: ci/tasks/update-image-tag/task.yml
     params:
