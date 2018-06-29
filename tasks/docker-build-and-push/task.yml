@@ -21,3 +21,4 @@ params:
   IMAGE_NAME: ""
   DOCKER_USERNAME: ""
   DOCKER_PASSWORD: ""
+  OS_VERSION: ""
