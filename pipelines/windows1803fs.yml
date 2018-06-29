@@ -226,24 +226,32 @@ jobs:
   plan:
   - aggregate:
     - get: ci
+      tags: [vsphere]
     - get: windows2016fs
+      tags: [vsphere]
     - get: windowsservercore
+      tags: [vsphere]
       trigger: true
       params:
         save: false
         rootfs: false
         skip_download: true
     - get: windowsfs-dockerfile
+      tags: [vsphere]
       trigger: true
     - get: git-setup
+      tags: [vsphere]
       trigger: true
       params:
         globs: [Git-*-64-bit.exe]
     - get: tar
+      tags: [vsphere]
       trigger: true
     - get: image-version
+      tags: [vsphere]
       params: {bump: patch}
   - task: build-and-push
+    tags: [1803]
     file: ci/tasks/docker-build-and-push/task.yml
     input_mapping:
       repo: windowsfs-dockerfile
@@ -253,6 +261,7 @@ jobs:
       IMAGE_NAME: cloudfoundry/windows2016fs
       DOCKER_USERNAME: {{DOCKER_USERNAME}}
       DOCKER_PASSWORD: {{DOCKER_PASSWORD}}
+      OS_VERSION: "1803"
   - task: update-image-tag
     file: ci/tasks/update-image-tag/task.yml
     params:
@@ -418,14 +427,18 @@ jobs:
   plan:
   - aggregate:
     - get: ci
+      tags: [vsphere]
     - get: windowsfs-release-develop
+      tags: [vsphere]
       trigger: true
   - aggregate:
     - task: create-dev-release
+      tags: [1803]
       file: ci/tasks/create-fs-release-windows/task.yml
       input_mapping:
         windowsfs-release: windowsfs-release-develop
     - task: run-ginkgo-exe
+      tags: [1803]
       file: ci/tasks/ginkgo-from-gopath-windows/task.yml
       input_mapping: { repo: windowsfs-release-develop}
       params:
