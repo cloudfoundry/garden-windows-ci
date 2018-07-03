@@ -6,7 +6,6 @@ set -o pipefail
 : ${ADMIN_USER:?"!"}
 : ${API:?"!"}
 : ${APPS_DOMAIN:?"!"}
-: ${NUM_WINDOWS_CELLS:?"!"}
 : ${UNALLOCATED_IP:?"!"}
 : ${WINDOWS_STACK:?"!"}
 
@@ -32,7 +31,6 @@ read -r -d '' JSON_TEMPLATE <<EOF || true
   "credhub_mode": "$CREDHUB_MODE",
   "credhub_secret": "$CREDHUB_SECRET",
   "unallocated_ip_for_security_group": "$UNALLOCATED_IP",
-  "num_windows_cells": $NUM_WINDOWS_CELLS,
   "use_windows_test_task": true,
   "use_windows_context_path": true,
   "windows_stack": "$WINDOWS_STACK"

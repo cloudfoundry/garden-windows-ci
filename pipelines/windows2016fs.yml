@@ -516,7 +516,6 @@ jobs:
       ADMIN_USER: admin
       API: api.tartar.cf-app.com
       APPS_DOMAIN: tartar.cf-app.com
-      NUM_WINDOWS_CELLS: 1
       UNALLOCATED_IP: 10.0.0.5
       WINDOWS_STACK: windows2016
   - task: cats
@@ -717,7 +716,6 @@ jobs:
       ADMIN_USER: admin
       API: api.tartar.cf-app.com
       APPS_DOMAIN: tartar.cf-app.com
-      NUM_WINDOWS_CELLS: 1
       UNALLOCATED_IP: 10.0.0.5
       WINDOWS_STACK: windows2016
   - task: cats
