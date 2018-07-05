@@ -1,9 +1,21 @@
+resource_types:
+- name: bosh-deployment
+  type: docker-image
+  source:
+    repository: cloudfoundry/bosh-deployment-resource
+
 resources:
 - name: ci
   type: git
   source:
     branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
+- name: groot-windows-develop
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/groot-windows.git
+    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
 - name: winc-develop
   type: git
   source:
@@ -80,6 +92,21 @@ resources:
     uri: git@github.com:greenhouse-ci/locks
 
 jobs:
+- name: groot-windows
+  serial: true
+  serial_groups: [windows2016]
+  plan:
+  - aggregate:
+    - get: ci
+      tags: [vsphere]
+    - get: groot-windows-develop
+      trigger: true
+      tags: [vsphere]
+  - task: test
+    input_mapping: { groot-windows: groot-windows-develop }
+    file: ci/tasks/test-groot-windows/task.yml
+    tags: [1803]
+
 - name: winc
   serial: true
   serial_groups: [window2016]
