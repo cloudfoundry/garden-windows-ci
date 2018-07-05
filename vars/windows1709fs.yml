@@ -1,0 +1,15 @@
+windowsfs-release-develop-uri: git@github.com:cloudfoundry/windows2016fs-release.git
+windowsfs-release-master-uri: git@github.com:cloudfoundry/windows2016fs-release.git
+windowsfs-online-release-develop-uri: git@github.com:cloudfoundry/windows2016fs-online-release.git
+windowsfs-online-release-master-uri: git@github.com:cloudfoundry/windows2016fs-online-release.git
+os-version: "1709"
+windowsfs-release-repo: windows2016fs-release
+windowsfs-online-release-repo: windows2016fs-online-release
+fs-version: windows2016fs
+initial-image-version: 0.0.19
+initial-release-version: 0.0.6
+initial-online-release-version: 0.0.0
+resource-get-tag:
+task-tag:
+windows-cell-ops-file: cf-deployment/operations/windows2016-cell.yml
+finalized-release-glob: finalized-release/windows2016fs-*.tgz

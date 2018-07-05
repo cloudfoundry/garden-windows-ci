@@ -18,51 +18,51 @@ resources:
   type: git
   source:
     branch: develop
-    uri: git@github.com:cloudfoundry/windows2016fs-release.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_OFFLINE_DEPLOY_KEY}}
+    uri: ((windowsfs-release-develop-uri))
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
 
 - name: windowsfs-release-master
   type: git
   source:
     branch: master
-    uri: git@github.com:cloudfoundry/windows2016fs-release.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_OFFLINE_DEPLOY_KEY}}
+    uri: ((windowsfs-release-master-uri))
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
 
 - name: windowsfs-online-release-develop
   type: git
   source:
     branch: develop
-    uri: git@github.com:cloudfoundry/windows2016fs-online-release.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_ONLINE_DEPLOY_KEY}}
+    uri: ((windowsfs-online-release-develop-uri))
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
 
 - name: windowsfs-online-release-master
   type: git
   source:
     branch: master
-    uri: git@github.com:cloudfoundry/windows2016fs-online-release.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_ONLINE_DEPLOY_KEY}}
+    uri: ((windowsfs-online-release-master-uri))
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
 
 - name: hydrator
   type: git
   source:
     branch: master
     uri: git@github.com:cloudfoundry/hydrator.git
-    private_key: {{CLOUDFOUNDRY_HYDRATOR_DEPLOY_KEY}}
+    private_key: ((CLOUDFOUNDRY_HYDRATOR_DEPLOY_KEY))
 
 - name: windows2016fs
   type: git
   source:
     branch: master
     uri: git@github.com:cloudfoundry/windows2016fs.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_DEPLOY_KEY}}
-    ignore_paths: [ 1709/Dockerfile ]
+    private_key: ((CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_DEPLOY_KEY))
+    ignore_paths: [ ((os-version))/Dockerfile ]
 
 - name: windowsfs-dockerfile
   type: git
   source:
     branch: master
     uri: https://github.com/cloudfoundry/windows2016fs.git
-    paths: [ 1709/Dockerfile ]
+    paths: [ ((os-version))/Dockerfile ]
 
 - name: cf-acceptance-tests
   type: git
@@ -87,7 +87,7 @@ resources:
   type: docker-image
   source:
     repository: microsoft/windowsservercore
-    tag: 1709
+    tag: "((os-version))"
 
 # GitHub Release
 
@@ -96,23 +96,23 @@ resources:
   source:
     user: git-for-windows
     repository: git
-    access_token: {{GREENHOUSE_CI_ACCESS_TOKEN}}
+    access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
 - name: windowsfs-release-github-release
   type: github-release
   source:
     user: cloudfoundry
-    repository: windows2016fs-release
+    repository: ((windowsfs-release-repo))
     drafts: true
-    access_token: {{GREENHOUSE_CI_ACCESS_TOKEN}}
+    access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
 - name: windowsfs-online-release-github-release
   type: github-release
   source:
     user: cloudfoundry
-    repository: windows2016fs-online-release
+    repository: ((windowsfs-online-release-repo))
     drafts: true
-    access_token: {{GREENHOUSE_CI_ACCESS_TOKEN}}
+    access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
 # S3
 
@@ -121,14 +121,14 @@ resources:
   source:
     bucket: bosh-windows-dependencies
     regexp: tar-(.*).exe
-    access_key_id: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
-    secret_access_key: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 
 - name: gcp-windows-stemcell
   type: s3
   source:
     bucket: all-bosh-windows
-    regexp: 1709/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2016-go_agent.tgz
+    regexp: ((os-version))/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2016-go_agent.tgz
     access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 
@@ -137,30 +137,30 @@ resources:
 - name: image-version
   type: semver
   source:
-    access_key_id: {{BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID}}
-    secret_access_key: {{BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY}}
-    bucket: windows2016fs
-    initial_version: 0.0.19
+    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
+    bucket: ((fs-version))
+    initial_version: ((initial-image-version))
     key: image-version
     region_name: us-east-1
 
 - name: windowsfs-release-version
   type: semver
   source:
-    access_key_id: {{BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID}}
-    secret_access_key: {{BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY}}
-    bucket: windows2016fs
-    initial_version: 0.0.6
+    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
+    bucket: ((fs-version))
+    initial_version: ((initial-release-version))
     key: windowsfs-release-version
     region_name: us-east-1
 
 - name: windowsfs-online-release-version
   type: semver
   source:
-    access_key_id: {{BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID}}
-    secret_access_key: {{BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY}}
-    bucket: windows2016fs
-    initial_version: 0.0.0
+    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
+    bucket: ((fs-version))
+    initial_version: ((initial-online-release-version))
     key: windowsfs-online-release-version
     region_name: us-east-1
 
@@ -170,18 +170,18 @@ resources:
   type: bosh-deployment
   source:
     deployment: cf
-    client: {{TARTAR_BOSH_CLIENT}}
-    client_secret: {{TARTAR_BOSH_CLIENT_SECRET}}
-    ca_cert: {{TARTAR_BOSH_CA_CERT}}
-    target: {{TARTAR_BOSH_ENVIRONMENT}}
-    jumpbox_url: {{TARTAR_JUMPBOX_URL}}
-    jumpbox_ssh_key: {{TARTAR_JUMPBOX_SSH_KEY}}
+    client: ((TARTAR_BOSH_CLIENT))
+    client_secret: ((TARTAR_BOSH_CLIENT_SECRET))
+    ca_cert: ((TARTAR_BOSH_CA_CERT))
+    target: ((TARTAR_BOSH_ENVIRONMENT))
+    jumpbox_url: ((TARTAR_JUMPBOX_URL))
+    jumpbox_ssh_key: ((TARTAR_JUMPBOX_SSH_KEY))
     vars_store:
       provider: gcs
       config:
         bucket: cf-greenhouse-tartar
         file_name: cf/creds.yml
-        json_key: {{TARTAR_SERVICE_ACCOUNT_JSON}}
+        json_key: ((TARTAR_SERVICE_ACCOUNT_JSON))
 
 # Lock Pool
 
@@ -190,11 +190,11 @@ resources:
   source:
     branch: master
     pool: tartar
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
 groups:
-- name: windows2016fs
+- name: ((fs-version))
   jobs:
     - test-hydrator-windows
     - test-hydrator-linux
@@ -204,7 +204,7 @@ groups:
     - bump-windowsfs-online-release-hydrator
     - build-and-push
     - create-tracker-story
-- name: windows2016fs-release
+- name: windowsfs-release
   jobs:
     - test-create-release-windows
     - test-create-release-linux
@@ -212,7 +212,7 @@ groups:
     - shipit-offline-major
     - shipit-offline-minor
     - shipit-offline-patch
-- name: windows2016fs-online-release
+- name: windowsfs-online-release
   jobs:
     - tartar-online-cats
     - shipit-online-major
@@ -226,38 +226,46 @@ jobs:
   plan:
   - aggregate:
     - get: ci
+      tags: ((resource-get-tag))
     - get: windows2016fs
+      tags: ((resource-get-tag))
     - get: windowsservercore
+      tags: ((resource-get-tag))
       trigger: true
       params:
         save: false
         rootfs: false
         skip_download: true
     - get: windowsfs-dockerfile
+      tags: ((resource-get-tag))
       trigger: true
     - get: git-setup
+      tags: ((resource-get-tag))
       trigger: true
       params:
         globs: [Git-*-64-bit.exe]
     - get: tar
+      tags: ((resource-get-tag))
       trigger: true
     - get: image-version
+      tags: ((resource-get-tag))
       params: {bump: patch}
   - task: build-and-push
+    tags: ((task-tag))
     file: ci/tasks/docker-build-and-push/task.yml
     input_mapping:
       repo: windowsfs-dockerfile
       version: image-version
     params:
-      DOCKERFILE: repo/1709/Dockerfile
+      DOCKERFILE: repo/((os-version))/Dockerfile
       IMAGE_NAME: cloudfoundry/windows2016fs
-      DOCKER_USERNAME: {{DOCKER_USERNAME}}
-      DOCKER_PASSWORD: {{DOCKER_PASSWORD}}
-      OS_VERSION: "1709"
+      DOCKER_USERNAME: ((DOCKER_USERNAME))
+      DOCKER_PASSWORD: ((DOCKER_PASSWORD))
+      OS_VERSION: "((os-version))"
   - task: update-image-tag
     file: ci/tasks/update-image-tag/task.yml
     params:
-      OS_VERSION: "1709"
+      OS_VERSION: "((os-version))"
   - task: commit-changes
     file: ci/tasks/commit/task.yml
     input_mapping:
@@ -286,8 +294,8 @@ jobs:
     input_mapping:
       version: image-version
     params:
-      TRACKER_TOKEN: {{TRACKER_GITBOT_TOKEN}}
-      TRACKER_PROJECT_ID: {{GARDEN_WINDOWS_PROJECT_ID}}
+      TRACKER_TOKEN: ((TRACKER_GITBOT_TOKEN))
+      TRACKER_PROJECT_ID: "((GARDEN_WINDOWS_PROJECT_ID))"
 
 - name: test-hydrator-windows
   serial: true
@@ -331,8 +339,8 @@ jobs:
   - task: update-blob
     file: ci/tasks/update-windows2016fs-blob/task.yml
     params:
-      FS_VERSION: "windows2016fs"
-      OS_VERSION: "1709"
+      FS_VERSION: ((fs-version))
+      OS_VERSION: "((os-version))"
     input_mapping:
       windowsfs-release: bumped-repo
   - task: commit-changes
@@ -419,14 +427,18 @@ jobs:
   plan:
   - aggregate:
     - get: ci
+      tags: ((resource-get-tag))
     - get: windowsfs-release-develop
+      tags: ((resource-get-tag))
       trigger: true
   - aggregate:
     - task: create-dev-release
+      tags: ((task-tag))
       file: ci/tasks/create-fs-release-windows/task.yml
       input_mapping:
         windowsfs-release: windowsfs-release-develop
     - task: run-ginkgo-exe
+      tags: ((task-tag))
       file: ci/tasks/ginkgo-from-gopath-windows/task.yml
       input_mapping: { repo: windowsfs-release-develop}
       params:
@@ -472,7 +484,7 @@ jobs:
       params:
         BUCKET: cf-greenhouse-tartar
         FILE_NAME: cf/vars.yml
-        SERVICE_ACCOUNT_KEY: {{TARTAR_SERVICE_ACCOUNT_JSON}}
+        SERVICE_ACCOUNT_KEY: ((TARTAR_SERVICE_ACCOUNT_JSON))
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
@@ -485,7 +497,7 @@ jobs:
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
-      FS_VERSION: "windows2016fs"
+      FS_VERSION: ((fs-version))
     input_mapping: { release-tarball: windowsfs-tarball }
   - put: tartar-cf-deployment
     params:
@@ -498,7 +510,7 @@ jobs:
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
-      - cf-deployment/operations/windows2016-cell.yml
+      - ((windows-cell-ops-file))
       - cf-deployment/operations/use-latest-windows2016-stemcell.yml
       - ci/operations/windows2016-prs.yml
       - ci/operations/windows2016-debug.yml
@@ -512,7 +524,7 @@ jobs:
   - task: generate-integration-config
     file: ci/tasks/generate-integration-config/task.yml
     params:
-      ADMIN_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
+      ADMIN_PASSWORD: ((TARTAR_ADMIN_PASSWORD))
       ADMIN_USER: admin
       API: api.tartar.cf-app.com
       APPS_DOMAIN: tartar.cf-app.com
@@ -526,13 +538,13 @@ jobs:
       task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
       params:
-        BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
-        BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
+        BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
+        BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
+        BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
         BOSH_DEPLOYMENT: cf
-        BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
-        JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+        BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
+        JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
+        JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
   ensure:
     put: tartar-lock-pool
     params:
@@ -551,7 +563,7 @@ jobs:
   - task: update-version-and-shas
     file: ci/tasks/update-fs-release-version/task.yml
     params:
-      FS_VERSION: "windows2016fs"
+      FS_VERSION: ((fs-version))
     input_mapping:
       windowsfs-release: windowsfs-release-develop
       version: windowsfs-release-version
@@ -672,7 +684,7 @@ jobs:
       params:
         BUCKET: cf-greenhouse-tartar
         FILE_NAME: cf/vars.yml
-        SERVICE_ACCOUNT_KEY: {{TARTAR_SERVICE_ACCOUNT_JSON}}
+        SERVICE_ACCOUNT_KEY: ((TARTAR_SERVICE_ACCOUNT_JSON))
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
@@ -685,7 +697,7 @@ jobs:
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
-      FS_VERSION: "windows2016fs"
+      FS_VERSION: ((fs-version))
     input_mapping: { release-tarball: windowsfs-tarball }
   - put: tartar-cf-deployment
     params:
@@ -698,7 +710,7 @@ jobs:
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
-      - cf-deployment/operations/windows2016-cell.yml
+      - ((windows-cell-ops-file))
       - cf-deployment/operations/use-latest-windows2016-stemcell.yml
       - ci/operations/windows2016-prs.yml
       - ci/operations/windows2016-debug.yml
@@ -712,7 +724,7 @@ jobs:
   - task: generate-integration-config
     file: ci/tasks/generate-integration-config/task.yml
     params:
-      ADMIN_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
+      ADMIN_PASSWORD: ((TARTAR_ADMIN_PASSWORD))
       ADMIN_USER: admin
       API: api.tartar.cf-app.com
       APPS_DOMAIN: tartar.cf-app.com
@@ -726,13 +738,13 @@ jobs:
       task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
       params:
-        BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
-        BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
+        BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
+        BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
+        BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
         BOSH_DEPLOYMENT: cf
-        BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
-        JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+        BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
+        JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
+        JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
   ensure:
     put: tartar-lock-pool
     params:
@@ -754,9 +766,9 @@ jobs:
       release: windowsfs-online-release-develop
       version: windowsfs-online-release-version
     params:
-      RELEASE_NAME: windows2016fs
-      AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
-      AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+      RELEASE_NAME: ((fs-version))
+      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
       CI_SKIP: true
   - put: windowsfs-online-release-develop
     params:
@@ -779,7 +791,7 @@ jobs:
       name: generated-release/name
       tag: generated-release/version
       globs:
-      - finalized-release/windows2016fs-*.tgz
+      - ((finalized-release-glob))
 
 - name: shipit-online-minor
   serial: true
@@ -797,9 +809,9 @@ jobs:
       release: windowsfs-online-release-develop
       version: windowsfs-online-release-version
     params:
-      RELEASE_NAME: windows2016fs
-      AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
-      AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+      RELEASE_NAME: ((fs-version))
+      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
       CI_SKIP: true
   - put: windowsfs-online-release-develop
     params:
@@ -822,7 +834,7 @@ jobs:
       name: generated-release/name
       tag: generated-release/version
       globs:
-      - finalized-release/windows2016fs-*.tgz
+      - ((finalized-release-glob))
 
 - name: shipit-online-patch
   serial: true
@@ -840,9 +852,9 @@ jobs:
       release: windowsfs-online-release-develop
       version: windowsfs-online-release-version
     params:
-      RELEASE_NAME: windows2016fs
-      AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
-      AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+      RELEASE_NAME: ((fs-version))
+      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
       CI_SKIP: true
   - put: windowsfs-online-release-develop
     params:
@@ -865,4 +877,4 @@ jobs:
       name: generated-release/name
       tag: generated-release/version
       globs:
-      - finalized-release/windows2016fs-*.tgz
+      - ((finalized-release-glob))

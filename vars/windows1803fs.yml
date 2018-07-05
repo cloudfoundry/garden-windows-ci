@@ -1,0 +1,15 @@
+windowsfs-release-develop-uri: git@github.com:cloudfoundry/windows1803fs-release.git
+windowsfs-release-master-uri: git@github.com:cloudfoundry/windows1803fs-release.git
+windowsfs-online-release-develop-uri: git@github.com:cloudfoundry/windows1803fs-online-release.git
+windowsfs-online-release-master-uri: git@github.com:cloudfoundry/windows1803fs-online-release.git
+os-version: "1803"
+windowsfs-release-repo: windows1803fs-release
+windowsfs-online-release-repo: windows1803fs-online-release
+fs-version: windows1803fs
+initial-image-version: 1803.0.1
+initial-release-version: 0.0.1
+initial-online-release-version: 0.0.1
+resource-get-tag: [vsphere]
+task-tag: [1803]
+windows-cell-ops-file: ci/operations/windows1803-cell.yml
+finalized-release-glob: finalized-release/windows1803fs-*.tgz
