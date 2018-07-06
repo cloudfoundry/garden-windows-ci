@@ -31,6 +31,12 @@ resources:
   source:
     branch: develop
     uri: https://github.com/cloudfoundry/winc-release.git
+- name: windows1803fs-online-release-develop
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/windows1803fs-online-release.git
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
 - name: garden-runc-release
   type: git
   source:
@@ -225,6 +231,7 @@ jobs:
       trigger: true
     - get: winc-release-develop
       trigger: true
+    - get: windows1803fs-online-release-develop
     - get: cf-acceptance-tests
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
@@ -247,6 +254,17 @@ jobs:
         release: winc-release-develop
       output_mapping:
         release-tarball: winc-tarball
+    - task: create-windows1803fs-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping:
+        release: windows1803fs-online-release-develop
+      output_mapping:
+        release-tarball: windows1803fs-tarball
+  - task: create-windows1803fs-opsfile
+    file: ci/tasks/write-windows2016fs-opsfile/task.yml
+    params:
+      FS_VERSION: windows1803fs
+    input_mapping: { release-tarball: windows1803fs-tarball }
   - put: pesto-cf-deployment
     params:
       manifest: cf-deployment/cf-deployment.yml
@@ -255,14 +273,15 @@ jobs:
       - gcp-windows-stemcell/*.tgz
       releases:
       - winc-tarball/*.tgz
+      - windows1803fs-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
-      - cf-deployment/operations/use-latest-windows2016-stemcell.yml
       - ci/operations/windows1803-cell.yml
+      - cf-deployment/operations/use-latest-windows2016-stemcell.yml
       - cf-deployment/operations/experimental/use-bosh-dns.yml
       - cf-deployment/operations/experimental/use-bosh-dns-for-containers.yml
-      - cf-deployment/operations/experimental/use-bosh-dns-for-windows2016-containers.yml
+      - ci/operations/use-bosh-dns-for-windows1803-containers.yml
       - cf-deployment/operations/experimental/skip-consul-cell-registrations.yml
       - cf-deployment/operations/experimental/skip-consul-locks.yml
       - cf-deployment/operations/experimental/secure-service-credentials.yml
@@ -273,6 +292,7 @@ jobs:
       - ci/operations/windows2016-debug.yml
       - ci/operations/latest-winc.yml
       - ci/operations/scale-down-windows2016.yml
+      - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
       - cf-vars/vars.yml
       cleanup: true
