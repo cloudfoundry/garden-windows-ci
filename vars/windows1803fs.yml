@@ -7,8 +7,8 @@ windowsfs-release-repo: windows1803fs-release
 windowsfs-online-release-repo: windows1803fs-online-release
 fs-version: windows1803fs
 initial-image-version: 1803.0.1
-initial-release-version: 0.0.1
-initial-online-release-version: 0.0.1
+initial-release-version: 1.0.0
+initial-online-release-version: 1.0.0
 resource-get-tag: [vsphere]
 task-tag: [1803]
 windows-cell-ops-file: ci/operations/windows1803-cell.yml
