@@ -6,5 +6,5 @@ version=$(cat version/version)
 
 pushd ci/tasks/create-rootfs-tracker-story
   bundle install
-  ./create-story $TRACKER_TOKEN $TRACKER_PROJECT_ID $version
+  ./create-story $TRACKER_TOKEN $TRACKER_PROJECT_ID $version $FS_VERSION
 popd
