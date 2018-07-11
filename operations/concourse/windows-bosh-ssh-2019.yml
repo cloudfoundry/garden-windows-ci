@@ -1,0 +1,18 @@
+---
+- type: replace
+  path: /releases/name=windows-utilities?
+  value:
+    name: windows-utilities
+    version: 0.10.0+dev.3
+
+- type: replace
+  path: /addons?/-
+  value:
+    name: enable_ssh
+    release: windows-utilities
+    include:
+      stemcell:
+      - os: windows2016
+    jobs:
+    - name: enable_ssh
+      release: windows-utilities

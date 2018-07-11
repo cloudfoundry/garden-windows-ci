@@ -50,6 +50,7 @@ bosh -d concourse-worker-2019 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-wo
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-external.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-tools.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-2019-windows2016-stemcell.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh-2019.yml \
   -v windows_worker_tag=2019 \
   -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
   -l <(gsutil cat gs://$concourse_vars_project/concourse/vars.yml) \

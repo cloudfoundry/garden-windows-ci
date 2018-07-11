@@ -4,16 +4,16 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
-- name: winc-develop
-  type: git
-  source:
-    branch: develop
-    uri: https://github.com/cloudfoundry/winc.git
 - name: groot-windows-develop
   type: git
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/groot-windows.git
+- name: winc-develop
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry/winc.git
 - name: groot-windows-master
   type: git
   source:
@@ -39,6 +39,21 @@ resources:
   source:
     interval: 2h
 jobs:
+- name: groot-windows
+  serial: true
+  serial_groups: [windows2016]
+  plan:
+  - aggregate:
+    - get: ci
+      tags: [vsphere]
+    - get: groot-windows-develop
+      trigger: true
+      tags: [vsphere]
+  - task: test
+    input_mapping: { groot-windows: groot-windows-develop }
+    file: ci/tasks/test-groot-windows/task.yml
+    tags: [((os_version))]
+
 - name: winc
   serial: true
   serial_groups: [window2016]
@@ -58,30 +73,15 @@ jobs:
   - task: build-groot
     input_mapping: { groot-windows: groot-windows-master }
     file: ci/tasks/build-groot/task.yml
-    tags: [2019]
+    tags: [((os_version))]
   - task: test
     input_mapping: { winc: winc-develop }
     file: ci/tasks/test-winc/task.yml
-    tags: [2019]
+    tags: [((os_version))]
     params:
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:2019
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:((os_version))
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
-      WINDOWS_VERSION: 2019
-
-- name: groot-windows
-  serial: true
-  serial_groups: [window2016]
-  plan:
-  - aggregate:
-    - get: ci
-      tags: [vsphere]
-    - get: groot-windows-develop
-      trigger: true
-      tags: [vsphere]
-  - task: test
-    input_mapping: { groot-windows: groot-windows-develop }
-    file: ci/tasks/test-groot-windows/task.yml
-    tags: [2019]
+      WINDOWS_VERSION: ((os_version))
 
 - name: local-gats
   serial: true
@@ -109,7 +109,7 @@ jobs:
   - aggregate:
     - task: build-winc
       file: ci/tasks/build-binary/task.yml
-      tags: [2019]
+      tags: [((os_version))]
       input_mapping:
         repo: winc-develop
       output_mapping:
@@ -119,17 +119,17 @@ jobs:
         PACKAGE: "./cmd/winc"
     - task: build-winc-network
       file: ci/tasks/build-winc-network/task.yml
-      tags: [2019]
+      tags: [((os_version))]
       input_mapping: { winc: winc-develop }
       params:
-        WINDOWS_VERSION: 2019
+        WINDOWS_VERSION: ((os_version))
     - task: build-groot
       input_mapping: { groot-windows: groot-windows-master }
       file: ci/tasks/build-groot/task.yml
-      tags: [2019]
+      tags: [((os_version))]
     - task: build-nstar
       file: ci/tasks/build-binary/task.yml
-      tags: [2019]
+      tags: [((os_version))]
       input_mapping:
         repo: winc-release-develop
       output_mapping:
@@ -138,7 +138,7 @@ jobs:
         PACKAGE: "./src/nstar"
     - task: build-garden-init
       file: ci/tasks/build-binary/task.yml
-      tags: [2019]
+      tags: [((os_version))]
       input_mapping:
         repo: garden-runc-release
       output_mapping:
@@ -153,9 +153,9 @@ jobs:
       garden-integration-tests: gats-fork
   - task: run-gats
     file: ci/tasks/run-local-gats/task.yml
-    tags: [2019]
+    tags: [((os_version))]
     input_mapping:
       garden-runc-release: garden-runc-release-forks
     params:
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:2019
-      WINDOWS_VERSION: 2019
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:((os_version))
+      WINDOWS_VERSION: ((os_version))

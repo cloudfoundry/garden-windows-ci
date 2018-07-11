@@ -15,7 +15,7 @@ resources:
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/groot-windows.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
+    private_key: ((CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY))
 - name: winc-develop
   type: git
   source:
@@ -77,24 +77,24 @@ resources:
   type: bosh-deployment
   source:
     deployment: cf
-    client: {{PESTO_BOSH_CLIENT}}
-    client_secret: {{PESTO_BOSH_CLIENT_SECRET}}
-    ca_cert: {{PESTO_BOSH_CA_CERT}}
-    target: {{PESTO_BOSH_ENVIRONMENT}}
-    jumpbox_url: {{PESTO_JUMPBOX_URL}}
-    jumpbox_ssh_key: {{PESTO_JUMPBOX_SSH_KEY}}
+    client: ((PESTO_BOSH_CLIENT))
+    client_secret: ((PESTO_BOSH_CLIENT_SECRET))
+    ca_cert: ((PESTO_BOSH_CA_CERT))
+    target: ((PESTO_BOSH_ENVIRONMENT))
+    jumpbox_url: ((PESTO_JUMPBOX_URL))
+    jumpbox_ssh_key: ((PESTO_JUMPBOX_SSH_KEY))
     vars_store:
       provider: gcs
       config:
         bucket: cff-greenhouse-pesto
         file_name: cf/creds.yml
-        json_key: {{PESTO_SERVICE_ACCOUNT_JSON}}
+        json_key: ((PESTO_SERVICE_ACCOUNT_JSON))
 - name: pesto-lock-pool
   type: pool
   source:
     branch: master
     pool: pesto
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
 jobs:
@@ -111,7 +111,7 @@ jobs:
   - task: test
     input_mapping: { groot-windows: groot-windows-develop }
     file: ci/tasks/test-groot-windows/task.yml
-    tags: [1803]
+    tags: [((os_version))]
 
 - name: winc
   serial: true
@@ -132,15 +132,15 @@ jobs:
   - task: build-groot
     input_mapping: { groot-windows: groot-windows-master }
     file: ci/tasks/build-groot/task.yml
-    tags: [1803]
+    tags: [((os_version))]
   - task: test
     input_mapping: { winc: winc-develop }
     file: ci/tasks/test-winc/task.yml
-    tags: [1803]
+    tags: [((os_version))]
     params:
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:((os_version))
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
-      WINDOWS_VERSION: 1803
+      WINDOWS_VERSION: ((os_version))
 
 - name: local-gats
   serial: true
@@ -168,7 +168,7 @@ jobs:
   - aggregate:
     - task: build-winc
       file: ci/tasks/build-binary/task.yml
-      tags: [1803]
+      tags: [((os_version))]
       input_mapping:
         repo: winc-develop
       output_mapping:
@@ -178,17 +178,17 @@ jobs:
         PACKAGE: "./cmd/winc"
     - task: build-winc-network
       file: ci/tasks/build-winc-network/task.yml
-      tags: [1803]
+      tags: [((os_version))]
       input_mapping: { winc: winc-develop }
       params:
-        WINDOWS_VERSION: 1803
+        WINDOWS_VERSION: ((os_version))
     - task: build-groot
       input_mapping: { groot-windows: groot-windows-master }
       file: ci/tasks/build-groot/task.yml
-      tags: [1803]
+      tags: [((os_version))]
     - task: build-nstar
       file: ci/tasks/build-binary/task.yml
-      tags: [1803]
+      tags: [((os_version))]
       input_mapping:
         repo: winc-release-develop
       output_mapping:
@@ -197,7 +197,7 @@ jobs:
         PACKAGE: "./src/nstar"
     - task: build-garden-init
       file: ci/tasks/build-binary/task.yml
-      tags: [1803]
+      tags: [((os_version))]
       input_mapping:
         repo: garden-runc-release
       output_mapping:
@@ -212,12 +212,12 @@ jobs:
       garden-integration-tests: gats-fork
   - task: run-gats
     file: ci/tasks/run-local-gats/task.yml
-    tags: [1803]
+    tags: [((os_version))]
     input_mapping:
       garden-runc-release: garden-runc-release-forks
     params:
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
-      WINDOWS_VERSION: 1803
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:((os_version))
+      WINDOWS_VERSION: ((os_version))
 
 - name: pesto-cats
   serial: true
@@ -244,7 +244,7 @@ jobs:
       params:
         BUCKET: cff-greenhouse-pesto
         FILE_NAME: cf/vars.yml
-        SERVICE_ACCOUNT_KEY: {{PESTO_SERVICE_ACCOUNT_JSON}}
+        SERVICE_ACCOUNT_KEY: ((PESTO_SERVICE_ACCOUNT_JSON))
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
@@ -303,18 +303,18 @@ jobs:
     params:
       CF_API: api.pesto.cf-app.com
       CF_USERNAME: admin
-      CF_PASSWORD: {{PESTO_ADMIN_PASSWORD}}
+      CF_PASSWORD: ((PESTO_ADMIN_PASSWORD))
   - task: generate-integration-config
     file: ci/tasks/generate-integration-config/task.yml
     params:
-      ADMIN_PASSWORD: {{PESTO_ADMIN_PASSWORD}}
+      ADMIN_PASSWORD: ((PESTO_ADMIN_PASSWORD))
       ADMIN_USER: admin
       API: api.pesto.cf-app.com
       APPS_DOMAIN: pesto.cf-app.com
       UNALLOCATED_IP: 10.0.0.5
       WINDOWS_STACK: windows2016
       CREDHUB_MODE: assisted
-      CREDHUB_SECRET: {{PESTO_CREDHUB_SECRET}}
+      CREDHUB_SECRET: ((PESTO_CREDHUB_SECRET))
   - task: cats
     file: cf-deployment-concourse-tasks/run-cats/task.yml
     params:
@@ -323,13 +323,13 @@ jobs:
       task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
       params:
-        BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
-        BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+        BOSH_CA_CERT: ((PESTO_BOSH_CA_CERT))
+        BOSH_CLIENT: ((PESTO_BOSH_CLIENT))
+        BOSH_CLIENT_SECRET: ((PESTO_BOSH_CLIENT_SECRET))
         BOSH_DEPLOYMENT: cf
-        BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
-        JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+        BOSH_ENVIRONMENT: ((PESTO_BOSH_ENVIRONMENT))
+        JUMPBOX_IP: ((PESTO_JUMPBOX_IP))
+        JUMPBOX_SSH_KEY: ((PESTO_JUMPBOX_SSH_KEY))
   ensure:
     put: pesto-lock-pool
     params:

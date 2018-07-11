@@ -255,12 +255,16 @@ fly-winc () {
 
 fly-winc-1803 () {
   fly -t garden-windows sp -p winc-1803 -c $HOME/workspace/garden-windows-ci/pipelines/winc-1803.yml \
+  -l $HOME/workspace/garden-windows-ci/vars/winc-1803.yml \
   -l <(_env_creds_yml pesto) \
   -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 aws-iam-access-keys github-access-tokens pesto-service-account.json)
 }
 
 fly-winc-2019 () {
-  fly -t garden-windows sp -p winc-2019 -c $HOME/workspace/garden-windows-ci/pipelines/winc-2019.yml
+  fly -t garden-windows sp -p winc-2019 -c <(bosh int $HOME/workspace/garden-windows-ci/pipelines/winc-1803.yml \
+    -o $HOME/workspace/garden-windows-ci/vars/make-winc-2019.yml) \
+    -l<(lpass show --notes github-deploy-keys-2) \
+    -l $HOME/workspace/garden-windows-ci/vars/winc-2019.yml
 }
 
 fly-longrunning () {

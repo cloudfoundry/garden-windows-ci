@@ -1,0 +1,27 @@
+---
+- type: remove
+  path: /resource_types/name=bosh-deployment
+
+- type: remove
+  path: /resources/name=windows1803fs-online-release-develop
+
+- type: remove
+  path: /resources/name=cf-acceptance-tests
+
+- type: remove
+  path: /resources/name=cf-deployment-concourse-tasks
+
+- type: remove
+  path: /resources/name=cf-deployment
+
+- type: remove
+  path: /resources/name=gcp-windows-stemcell
+
+- type: remove
+  path: /resources/name=pesto-cf-deployment
+
+- type: remove
+  path: /resources/name=pesto-lock-pool
+
+- type: remove
+  path: /jobs/name=pesto-cats
