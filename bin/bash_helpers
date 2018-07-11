@@ -140,12 +140,12 @@ _cf_creds() {
     return
   fi
 
-  if gsutil ls gs://$project_name/cf/vars.yml 2> /dev/null; then
+  if gsutil ls gs://$project_name/cf/vars.yml 1> /dev/null 2> /dev/null; then
     local admin_password=$(bosh int --path /cf_admin_password <(gsutil cat gs://$project_name/cf/vars.yml))
     echo "export ADMIN_PASSWORD=$admin_password"
   fi
 
-  if gsutil ls gs://$project_name/cf/creds.yml 2> /dev/null; then
+  if gsutil ls gs://$project_name/cf/creds.yml 1> /dev/null 2> /dev/null; then
     local credhub_secret=$(bosh int --path /uaa_clients_cc_service_key_client_secret <(gsutil cat gs://$project_name/cf/creds.yml))
     echo "export CREDHUB_SECRET=$credhub_secret"
   fi
