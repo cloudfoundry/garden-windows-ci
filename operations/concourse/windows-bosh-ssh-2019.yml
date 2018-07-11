@@ -3,7 +3,7 @@
   path: /releases/name=windows-utilities?
   value:
     name: windows-utilities
-    version: 0.10.0+dev.3
+    version: 0.10.0
 
 - type: replace
   path: /addons?/-
