@@ -216,7 +216,7 @@ jobs:
     input_mapping:
       garden-runc-release: garden-runc-release-forks
     params:
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:((os_version))
+      WINC_TEST_ROOTFS: ((winc_test_rootfs))
       WINDOWS_VERSION: ((os_version))
 
 - name: pesto-cats
