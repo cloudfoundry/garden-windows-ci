@@ -1,2 +1,3 @@
 os_version: 2019
 winc_test_rootfs: docker:///microsoft/windowsservercore-insider:10.0.17709.1000
+resource_worker_tags: [vsphere]

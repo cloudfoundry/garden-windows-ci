@@ -45,6 +45,7 @@ bosh -d concourse-worker-1803 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-wo
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/windows-worker.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/windows-worker-ephemeral-disk.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/remove-linux-external-worker.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-tags.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-external.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-tools.yml \

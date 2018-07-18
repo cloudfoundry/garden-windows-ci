@@ -1,2 +1,3 @@
 os_version: 1803
 winc_test_rootfs: docker:///cloudfoundry/windows2016fs:1803
+resource_worker_tags: []
