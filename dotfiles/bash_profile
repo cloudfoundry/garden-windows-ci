@@ -297,6 +297,26 @@ fly-docker () {
   -l<(lpass show --notes docker-creds)
 }
 
+fix-mic-volume () {
+  PIDFILE="/tmp/fix-mic-volume.pid"
+  PID=$(cat ${PIDFILE} 2>/dev/null)
+
+  if [[ -n "${PID}" && -e /proc/${PID}/exe ]]; then
+    echo already running
+  else
+    echo starting volume watcher the background
+
+    # background loop whose pid is recorded in PID
+    while sleep 0.3; do
+      # set mic-boost to zer0
+      # this seems to be what zoom adjusts automatically when there's silence
+      amixer -q sset "Front Mic Boost" 0;
+    done &
+
+    echo $! > ${PIDFILE}
+  fi
+}
+
 source $HOME/workspace/garden-windows-ci/bin/bash_helpers
 alias bt="bosh_target"
 alias ct="cf_target"
