@@ -138,7 +138,7 @@ jobs:
     file: ci/tasks/test-winc/task.yml
     tags: [((os_version))]
     params:
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:((os_version))
+      WINC_TEST_ROOTFS: ((winc_test_rootfs))
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: ((os_version))
 
