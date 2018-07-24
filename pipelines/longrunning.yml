@@ -157,9 +157,6 @@ jobs:
       - cf-deployment/operations/windows2016-cell.yml
       - cf-deployment/operations/use-latest-windows-stemcell.yml
       - cf-deployment/operations/use-latest-windows2016-stemcell.yml
-      - cf-deployment/operations/experimental/use-bosh-dns.yml
-      - cf-deployment/operations/experimental/use-bosh-dns-for-containers.yml
-      - cf-deployment/operations/experimental/use-bosh-dns-for-windows2016-containers.yml
       # - cf-deployment/operations/experimental/disable-consul.yml
       # - cf-deployment/operations/experimental/disable-consul-windows.yml
       # - cf-deployment/operations/experimental/skip-consul-cell-registrations.yml
