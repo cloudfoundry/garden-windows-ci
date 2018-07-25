@@ -20,6 +20,10 @@
     - name: winc
       release: winc
     - name: winc-network-1803
+      properties:
+        winc_network:
+          dns_servers:
+          - 172.30.0.1
       release: winc
     - name: windows1803fs
       release: windows1803fs
