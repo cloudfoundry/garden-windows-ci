@@ -187,7 +187,7 @@ rdp() {
     USERNAME=$3
   fi
 
-  xfreerdp +nego +sec-rdp +sec-tls +sec-nla /u:$USERNAME /p:$PASSWORD /v:$IP /scale:140 /size:1920x1080 +home-drive +clipboard
+  xfreerdp +nego +sec-rdp +sec-tls +sec-nla +fonts /dynamic-resolution /scale-desktop:150 /u:$USERNAME /p:$PASSWORD /v:$IP /scale:140 /size:1920x1080 +home-drive +clipboard
 }
 
 grdp() {
