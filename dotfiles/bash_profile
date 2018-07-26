@@ -317,6 +317,31 @@ fix-mic-volume () {
   fi
 }
 
+vnc-mirror () {
+  PIDFILE="/tmp/vnc-mirror.pid"
+  PID=$(cat ${PIDFILE} 2>/dev/null)
+
+  if [[ -n "${PID}" && -e /proc/${PID}/exe ]]; then
+    echo already running
+  else
+    echo starting vnc server in the background
+
+    if ! which x0tigervncserver; then
+      echo tigervncserver needs to be installed
+      curl -L "https://bintray.com/tigervnc/stable/download_file?file_path=ubuntu-16.04LTS%2Famd64%2Ftigervncserver_1.9.0-1ubuntu1_amd64.deb" > /tmp/tigervnc.deb
+      sudo dpkg -i /tmp/tigervnc.deb
+      rm /tmp/tigervnc.deb
+    fi
+
+    echo set a password for tigervnc
+    vncpasswd /tmp/tigervncpasswd
+
+    DISPLAY=:0 x0vncserver -SecurityTypes=VncAuth -PasswordFile=/tmp/tigervncpasswd &
+
+    echo $! > ${PIDFILE}
+  fi
+}
+
 source $HOME/workspace/garden-windows-ci/bin/bash_helpers
 alias bt="bosh_target"
 alias ct="cf_target"
