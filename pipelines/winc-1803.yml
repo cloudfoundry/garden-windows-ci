@@ -105,6 +105,9 @@ jobs:
   - aggregate:
     - get: ci
       tags: ((resource_worker_tags))
+    - get: every-2hrs
+      trigger: true
+      tags: ((resource_worker_tags))
     - get: groot-windows-develop
       trigger: true
       tags: ((resource_worker_tags))
