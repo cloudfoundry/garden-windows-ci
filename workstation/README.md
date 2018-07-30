@@ -1,4 +1,3 @@
-??? from here until ???END lines may have been inserted/deleted
 # workstation
 
 Workstation setup for osx (High Sierra) and linux (Ubunutu 16.04)

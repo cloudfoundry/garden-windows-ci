@@ -1,0 +1,19 @@
+- name: Clone FreeRDP (linux)
+  when: is_ubuntu
+  git:
+    repo: git://github.com/FreeRDP/FreeRDP.git
+    dest: ~/workspace/FreeRDP
+    version: 2.0.0-rc2
+    update: yes
+    accept_hostkey: yes
+  become: yes
+  become_user: pivotal
+- name: Install FreeRDP (linux)
+  when: is_ubuntu
+  shell: |
+    cmake -GNinja -DCHANNEL_URBDRC=ON -DWITH_DSP_FFMPEG=ON -DWITH_CUPS=ON -DWITH_PULSE=ON .
+    cmake --build .
+    cmake --build . --target install
+  args:
+    chdir: "~/workspace/FreeRDP"
+  become: yes
