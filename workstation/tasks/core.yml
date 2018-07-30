@@ -18,6 +18,48 @@
     - auditd
     - gnome-tweak-tool
     - ubuntu-desktop
+    - ninja-build
+    - git-core
+    - debhelper
+    - cdbs
+    - dpkg-dev
+    - autotools-dev
+    - pkg-config
+    - xmlto
+    - libssl-dev
+    - docbook-xsl
+    - xsltproc
+    - libxkbfile-dev
+    - libx11-dev
+    - libwayland-dev
+    - libxrandr-dev
+    - libxi-dev
+    - libxrender-dev
+    - libxext-dev
+    - libxinerama-dev
+    - libxfixes-dev
+    - libxcursor-dev
+    - libxv-dev
+    - libxdamage-dev
+    - libxtst-dev
+    - libcups2-dev
+    - libpcsclite-dev
+    - libasound2-dev
+    - libpulse-dev
+    - libjpeg-dev
+    - libgsm1-dev
+    - libusb-1.0-0-dev
+    - libudev-dev
+    - libdbus-glib-1-dev
+    - uuid-dev
+    - libxml2-dev
+    - libgstreamer1.0-dev
+    - libgstreamer0.10-dev
+    - libgstreamer-plugins-base1.0-dev
+    - libgstreamer-plugins-base0.10-dev
+    - ibavutil-dev
+    - libavcodec-dev
+    - libavresample-dev
 - name: sync pip
   when: is_ubuntu
   pip: executable=pip3 name={{ item }}

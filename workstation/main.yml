@@ -19,7 +19,6 @@
     - import_tasks: tasks/lpass.yml
     - import_tasks: tasks/vagrant.yml
     - import_tasks: tasks/vimfiles.yml
-    - import_tasks: tasks/freerdp.yml
     - import_tasks: tasks/vmware.yml
     - import_tasks: tasks/chrome.yml
     - import_tasks: tasks/zoom.yml
