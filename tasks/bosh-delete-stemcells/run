@@ -11,7 +11,7 @@ eval "$cmd"
 echo "Trying to delete already uploaded stemcells"
 stemcells=$(bosh stemcells | awk '{print $1 "/" $2}')
 
-if [ -z $stemcells ]
+if [ -z "$stemcells" ]
 then
   echo "No stemcells to delete"
   exit 0
