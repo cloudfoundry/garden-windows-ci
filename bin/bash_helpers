@@ -162,5 +162,9 @@ _project_name() {
     mulgore)
       echo "$1"
       ;;
+    edge.buildpacks-gcp.ci)
+      # Bucket inside spitfire project
+      echo "cf-buildpacks-edge"
+      ;;
   esac
 }
