@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -eu
+
+. ci/bin/ci_helpers
+
+trap _close_ssh_connection EXIT
+cmd=$(_bosh_socks5_env "$JUMPBOX_IP" "$JUMPBOX_SSH_KEY")
+eval "$cmd"
+
+stemcells=$(bosh stemcells --json | jq -r 'foreach .Tables[0].Rows[] as $item ([];0;$item.name + "/" + $item.version)')
+if [ -z $stemcells ]
+then
+  echo "No stemcells to delete"
+  exit 0
+fi
+
+for stemcell in $stemcells;
+do
+  bosh delete-stemcell -n $stemcell
+done

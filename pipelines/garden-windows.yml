@@ -199,6 +199,15 @@ jobs:
         BUCKET: cf-greenhouse-tartar
         FILE_NAME: cf/vars.yml
         SERVICE_ACCOUNT_KEY: {{TARTAR_SERVICE_ACCOUNT_JSON}}
+    - task: delete-stemcells
+      file: ci/tasks/bosh-delete-stemcells/task.yml
+      params:
+        BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
     - put: tartar-cf-deployment
       params:
         manifest: cf-deployment/cf-deployment.yml
