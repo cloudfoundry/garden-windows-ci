@@ -159,6 +159,9 @@ _project_name() {
     pesto | alfredo)
       echo "cff-greenhouse-$1"
       ;;
+    salsa)
+      echo "cf-garden-windows-$1"
+      ;;
     mulgore)
       echo "$1"
       ;;
