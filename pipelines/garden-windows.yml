@@ -6,7 +6,7 @@ resource_types:
 groups:
 - name: main
   jobs:
-  - tartar-deploy-cf
+  - alfredo-deploy-cf
   - bump-garden-windows-blob
   - sync-garden-windows-release-submodules
   - shipit
@@ -51,27 +51,27 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
-- name: tartar-cf-deployment
+- name: alfredo-cf-deployment
   type: bosh-deployment
   source:
     deployment: cf
-    client: {{TARTAR_BOSH_CLIENT}}
-    client_secret: {{TARTAR_BOSH_CLIENT_SECRET}}
-    ca_cert: {{TARTAR_BOSH_CA_CERT}}
-    target: {{TARTAR_BOSH_ENVIRONMENT}}
-    jumpbox_url: {{TARTAR_JUMPBOX_URL}}
-    jumpbox_ssh_key: {{TARTAR_JUMPBOX_SSH_KEY}}
+    client: {{ALFREDO_BOSH_CLIENT}}
+    client_secret: {{ALFREDO_BOSH_CLIENT_SECRET}}
+    ca_cert: {{ALFREDO_BOSH_CA_CERT}}
+    target: {{ALFREDO_BOSH_ENVIRONMENT}}
+    jumpbox_url: {{ALFREDO_JUMPBOX_URL}}
+    jumpbox_ssh_key: {{ALFREDO_JUMPBOX_SSH_KEY}}
     vars_store:
       provider: gcs
       config:
-        bucket: cf-greenhouse-tartar
+        bucket: cf-greenhouse-alfredo
         file_name: cf/creds.yml
-        json_key: {{TARTAR_SERVICE_ACCOUNT_JSON}}
-- name: tartar-lock-pool
+        json_key: {{ALFREDO_SERVICE_ACCOUNT_JSON}}
+- name: alfredo-lock-pool
   type: pool
   source:
     branch: master
-    pool: tartar
+    pool: alfredo
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:greenhouse-ci/locks
 - name: garden-windows-bosh-artifacts
@@ -159,10 +159,10 @@ jobs:
     params:
       repository: bumped-downstream-release
 
-- name: tartar-deploy-cf
+- name: alfredo-deploy-cf
   serial: true
   plan:
-  - put: tartar-lock-pool
+  - put: alfredo-lock-pool
     params:
       acquire: true
   - do:
@@ -196,19 +196,19 @@ jobs:
       file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
       params:
-        BUCKET: cf-greenhouse-tartar
+        BUCKET: cf-greenhouse-alfredo
         FILE_NAME: cf/vars.yml
-        SERVICE_ACCOUNT_KEY: {{TARTAR_SERVICE_ACCOUNT_JSON}}
+        SERVICE_ACCOUNT_KEY: {{ALFREDO_SERVICE_ACCOUNT_JSON}}
     - task: delete-stemcells
       file: ci/tasks/bosh-delete-stemcells/task.yml
       params:
-        BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
-    - put: tartar-cf-deployment
+        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+    - put: alfredo-cf-deployment
       params:
         manifest: cf-deployment/cf-deployment.yml
         stemcells:
@@ -237,38 +237,38 @@ jobs:
     - task: clean-up
       file: ci/tasks/bosh-cleanup/task.yml
       params:
-        BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
     - task: enable-credhub
       file: ci/tasks/enable-credhub/task.yml
       params:
-        CF_API: api.tartar.cf-app.com
+        CF_API: api.alfredo.cf-app.com
         CF_USERNAME: admin
-        CF_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
+        CF_PASSWORD: {{ALFREDO_ADMIN_PASSWORD}}
     - task: warts
       file: ci/tasks/run-warts/task.yml
       params:
-        ADMIN_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
+        ADMIN_PASSWORD: {{ALFREDO_ADMIN_PASSWORD}}
         ADMIN_USER: admin
-        API: api.tartar.cf-app.com
-        APPS_DOMAIN: tartar.cf-app.com
+        API: api.alfredo.cf-app.com
+        APPS_DOMAIN: alfredo.cf-app.com
         NUM_WIN_CELLS: 1
         STACK: windows2012R2
     - task: generate-integration-config
       file: ci/tasks/generate-integration-config/task.yml
       params:
-        ADMIN_PASSWORD: {{TARTAR_ADMIN_PASSWORD}}
+        ADMIN_PASSWORD: {{ALFREDO_ADMIN_PASSWORD}}
         ADMIN_USER: admin
-        API: api.tartar.cf-app.com
-        APPS_DOMAIN: tartar.cf-app.com
+        API: api.alfredo.cf-app.com
+        APPS_DOMAIN: alfredo.cf-app.com
         UNALLOCATED_IP: 10.0.0.5
         WINDOWS_STACK: windows2012R2
         CREDHUB_MODE: assisted
-        CREDHUB_SECRET: {{TARTAR_CREDHUB_SECRET}}
+        CREDHUB_SECRET: {{ALFREDO_CREDHUB_SECRET}}
     - task: cats
       file: cf-deployment-concourse-tasks/run-cats/task.yml
       params:
@@ -278,12 +278,12 @@ jobs:
         file: ci/tasks/bosh-deld/task.yml
         params:
           BOSH_DEPLOYMENT: cf
-          BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
-          BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
-          BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
-          BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
-          JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
-          JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+          BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+          BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+          BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+          BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+          JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+          JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
     - task: rename
       file: ci/tasks/rename/task.yml
       input_mapping: { source: release-tarball }
@@ -295,9 +295,9 @@ jobs:
       params:
         file: garden-windows-output/garden-windows-*.tgz
     ensure:
-      put: tartar-lock-pool
+      put: alfredo-lock-pool
       params:
-        release: tartar-lock-pool
+        release: alfredo-lock-pool
 
 - name: shipit
   serial: true
@@ -308,12 +308,12 @@ jobs:
       params: {bump: final}
     - get: release-develop
       resource: garden-windows-bosh-release-develop
-      passed: [tartar-deploy-cf]
+      passed: [alfredo-deploy-cf]
     - get: release-master
       resource: garden-windows-bosh-release-master
     - get: bucket-develop
       resource: garden-windows-bosh-release-bucket-dev
-      passed: [tartar-deploy-cf]
+      passed: [alfredo-deploy-cf]
   - put: version
     params: {file: version/number}
   - task: finalize-release

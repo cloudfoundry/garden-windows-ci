@@ -243,8 +243,8 @@ fly-garden-windows() {
   fly -t garden-windows sp \
     -p garden-windows \
     -c $HOME/workspace/garden-windows-ci/pipelines/garden-windows.yml \
-    -l <(_env_creds_yml tartar) \
-    -l <(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' 'aws-iam-access-keys' 'github-access-tokens' 'tartar-service-account.json' )
+    -l <(_env_creds_yml alfredo) \
+    -l <(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' 'aws-iam-access-keys' 'github-access-tokens' 'alfredo-service-account.json' )
 }
 
 fly-winc () {
