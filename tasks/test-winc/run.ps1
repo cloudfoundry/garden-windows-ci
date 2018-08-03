@@ -116,15 +116,14 @@ if ($exitCode -ne 0) {
   Exit $exitCode
 }
 
-# Microsoft claims networking is better on 1803, let's see...
-# I'm assuming we should do the same for 2019...again, we will see...
+# Microsoft claims networking is better on 2019, let's see...
 $os = $env:WINC_TEST_ROOTFS.split(":")[-1]
-if ($os -eq "1803" -or $os -eq "2019") {
+if ($os -eq "2019") {
   ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/winc-network
   $exitCode = $LastExitCode
   Exit $exitCode
+} else {
+  ginkgo.exe -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/winc-network
+  $exitCode = $LastExitCode
+  Exit $exitCode
 }
-
-ginkgo.exe -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/winc-network
-$exitCode = $LastExitCode
-Exit $exitCode
