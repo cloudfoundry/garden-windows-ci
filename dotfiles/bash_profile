@@ -389,8 +389,3 @@ if [ -f '/Users/ash/google-cloud-sdk/path.bash.inc' ]; then source '/Users/ash/g
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/ash/google-cloud-sdk/completion.bash.inc' ]; then source '/Users/ash/google-cloud-sdk/completion.bash.inc'; fi
 
-# Run screenkey to display keys in bottom-right corner
-# Install screenskey here: https://github.com/wavexx/screenkey
-if which screenkey > /dev/null && ! pgrep screenkey > /dev/null; then
-  screenkey -t 1 -s small -g 300x1000+1760+1250 #Width x Height + Left (centered) + Top (Bottom)
-fi
