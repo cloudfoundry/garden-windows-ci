@@ -31,7 +31,19 @@ cf_target() {
     return
   fi
 
-  eval "$(_cf_creds $environment)"
+  _is_using_credhub "$environment"
+
+  if [[ $is_using_credhub = true ]]; then
+    eval "$(_bosh_creds $environment true)"
+    eval "$(_cf_creds_credhub $environment)"
+  else
+    eval "$(_cf_creds $environment)"
+  fi
+
+  if [[ $environment = "salsa" ]]; then
+    environment="mild-salsa"
+  fi
+
   cf login --skip-ssl-validation \
     -a https://api.$environment.cf-app.com \
     -u admin \
@@ -132,7 +144,7 @@ _bosh_creds() {
   fi
 }
 
-_cf_creds() {
+_is_using_credhub() {
   local environment=$1
   local project_name=$(_project_name $environment)
   if [[ -z "$project_name" ]]; then
@@ -140,15 +152,38 @@ _cf_creds() {
     return
   fi
 
-  if gsutil ls gs://$project_name/cf/vars.yml 1> /dev/null 2> /dev/null; then
-    local admin_password=$(bosh int --path /cf_admin_password <(gsutil cat gs://$project_name/cf/vars.yml))
-    echo "export ADMIN_PASSWORD=$admin_password"
+  is_using_credhub=true
+  if gsutil ls gs://$project_name/cf/creds.yml > /dev/null 2>&1; then
+    is_using_credhub=false
   fi
+}
 
-  if gsutil ls gs://$project_name/cf/creds.yml 1> /dev/null 2> /dev/null; then
-    local credhub_secret=$(bosh int --path /uaa_clients_cc_service_key_client_secret <(gsutil cat gs://$project_name/cf/creds.yml))
-    echo "export CREDHUB_SECRET=$credhub_secret"
+_cf_creds() {
+  local environment=$1
+  local project_name=$(_project_name $environment)
+  if [[ -z "$project_name" ]]; then
+    echo "Unknown environment: $environment"
+    return
   fi
+  local credhub_secret=$(bosh int --path /uaa_clients_cc_service_key_client_secret <(gsutil cat gs://$project_name/cf/creds.yml))
+  echo "export CREDHUB_SECRET=$credhub_secret"
+
+  local admin_password=$(bosh int --path /cf_admin_password <(gsutil cat gs://$project_name/cf/vars.yml))
+  echo "export ADMIN_PASSWORD=$admin_password"
+}
+
+_cf_creds_credhub() {
+  local environment=$1
+  local project_name=$(_project_name $environment)
+  if [[ -z "$project_name" ]]; then
+    echo "Unknown environment: $environment"
+    return
+  fi
+  local credhub_secret=$(credhub get -n /bosh-$environment/cf/uaa_clients_cc_service_key_client_secret -j | jq -r .value)
+  echo "export CREDHUB_SECRET=$credhub_secret"
+
+  local admin_password=$(credhub get -n /bosh-$environment/cf/cf_admin_password -j | jq -r .value)
+  echo "export ADMIN_PASSWORD=$admin_password"
 }
 
 _project_name() {
