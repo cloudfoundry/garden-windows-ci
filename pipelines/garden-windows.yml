@@ -229,6 +229,7 @@ jobs:
         - cf-deployment/operations/experimental/disable-consul-windows.yml
         - ci/operations/latest-garden-windows.yml
         - ci/operations/scale-down-credhub.yml
+        - ci/operations/enable-rdp.yml
         vars_files:
         - cf-vars/vars.yml
         cleanup: true

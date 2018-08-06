@@ -526,6 +526,7 @@ jobs:
       - ci/operations/windows2016-prs.yml
       - ci/operations/windows2016-debug.yml
       - ci/operations/scale-down-windows2016.yml
+      - ci/operations/enable-rdp-2016.yml
       - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
       - cf-vars/vars.yml

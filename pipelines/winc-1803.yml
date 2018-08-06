@@ -303,6 +303,7 @@ jobs:
       - ci/operations/latest-winc.yml
       - ci/operations/scale-down-windows2016.yml
       - windowsfs-opsfile/specified-windowsfs-version.yml
+      - ci/operations/enable-rdp-2016.yml
       vars_files:
       - cf-vars/vars.yml
       cleanup: true

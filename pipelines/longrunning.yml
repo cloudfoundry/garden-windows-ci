@@ -165,6 +165,8 @@ jobs:
       - ci/operations/latest-winc.yml
       - ci/operations/latest-windows2016fs-release.yml
       - ci/operations/latest-garden-windows.yml
+      - ci/operations/enable-rdp.yml
+      - ci/operations/enable-rdp-2016.yml
       vars_files:
       - cf-vars/vars.yml
       cleanup: true
