@@ -6,7 +6,7 @@ inputs:
 - name: ci
 
 run:
-  path: ci/tasks/bosh-upload-release/run
+  path: ci/tasks/bosh-upload-bosh-dns-release/run
 
 params:
   BOSH_CLIENT:
@@ -15,5 +15,3 @@ params:
   BOSH_CA_CERT:
   JUMPBOX_IP:
   JUMPBOX_SSH_KEY:
-  RELEASE_URL:
-  RELEASE_SHA:
