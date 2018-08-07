@@ -12,4 +12,4 @@ echo "Trying to upload release"
 RELEASE_URL=$(bosh int --path=/releases/name=bosh-dns/url bosh-deployment/runtime-configs/dns.yml)
 RELEASE_SHA=$(bosh int --path=/releases/name=bosh-dns/sha1 bosh-deployment/runtime-configs/dns.yml)
 bosh upload-release --sha1 "$RELEASE_SHA" "$RELEASE_URL"
-bosh update-runtime-config --name=dns bosh-deployment/runtime-configs/dns.yml
+bosh -n update-runtime-config --name=dns bosh-deployment/runtime-configs/dns.yml
