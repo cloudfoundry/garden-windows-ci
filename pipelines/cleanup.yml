@@ -25,6 +25,17 @@ jobs:
       BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
       JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+  - task: upload-bosh-dns
+    file: ci/tasks/bosh-upload-release/task.yml
+    params:
+      BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+      RELEASE_SHA: 3b77329a772483d6c949f1a47ba9734976bc2b31
+      RELEASE_URL: https://bosh.io/d/github.com/cloudfoundry/bosh-dns-release?v=1.8.0
 - name: hummus-cleanup
   plan:
   - get: every-day
@@ -39,6 +50,17 @@ jobs:
       BOSH_CA_CERT: {{HUMMUS_BOSH_CA_CERT}}
       JUMPBOX_IP: {{HUMMUS_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{HUMMUS_JUMPBOX_SSH_KEY}}
+  - task: upload-bosh-dns
+    file: ci/tasks/bosh-upload-release/task.yml
+    params:
+      BOSH_CLIENT: {{HUMMUS_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{HUMMUS_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{HUMMUS_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{HUMMUS_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{HUMMUS_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{HUMMUS_JUMPBOX_SSH_KEY}}
+      RELEASE_SHA: 3046a07083751ae7740bbf7a25a1df6162628469
+      RELEASE_URL: https://bosh.io/d/github.com/cloudfoundry/bosh-dns-release?v=1.7.0
 - name: pesto-cleanup
   plan:
   - get: every-day
@@ -53,6 +75,17 @@ jobs:
       BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
       JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+  - task: upload-bosh-dns
+    file: ci/tasks/bosh-upload-release/task.yml
+    params:
+      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+      RELEASE_SHA: bb7f1cf29c4186fdba4a049fb6feb5638227d9a4
+      RELEASE_URL: https://bosh.io/d/github.com/cloudfoundry/bosh-dns-release?v=1.6.0
 - name: spitfire-cleanup
   plan:
   - get: every-day
@@ -81,6 +114,17 @@ jobs:
       BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
       JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+  - task: upload-bosh-dns
+    file: ci/tasks/bosh-upload-release/task.yml
+    params:
+      BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+      RELEASE_SHA: 3b77329a772483d6c949f1a47ba9734976bc2b31
+      RELEASE_URL: https://bosh.io/d/github.com/cloudfoundry/bosh-dns-release?v=1.8.0
 - name: tzatziki-cleanup
   plan:
   - get: every-day
@@ -95,6 +139,17 @@ jobs:
       BOSH_CA_CERT: {{TZATZIKI_BOSH_CA_CERT}}
       JUMPBOX_IP: {{TZATZIKI_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{TZATZIKI_JUMPBOX_SSH_KEY}}
+  - task: upload-bosh-dns
+    file: ci/tasks/bosh-upload-release/task.yml
+    params:
+      BOSH_CLIENT: {{TZATZIKI_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{TZATZIKI_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{TZATZIKI_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{TZATZIKI_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{TZATZIKI_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{TZATZIKI_JUMPBOX_SSH_KEY}}
+      RELEASE_SHA: 3046a07083751ae7740bbf7a25a1df6162628469
+      RELEASE_URL: https://bosh.io/d/github.com/cloudfoundry/bosh-dns-release?v=1.7.0
 - name: mulgore-cleanup
   plan:
   - get: every-day
@@ -112,3 +167,53 @@ jobs:
       BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
       JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
+  - task: upload-bosh-dns
+    file: ci/tasks/bosh-upload-release/task.yml
+    params:
+      BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{MULGORE_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
+      RELEASE_SHA: bb7f1cf29c4186fdba4a049fb6feb5638227d9a4
+      RELEASE_URL: https://bosh.io/d/github.com/cloudfoundry/bosh-dns-release?v=1.6.0
+- name: salsa-cleanup
+  plan:
+  - get: every-day
+    trigger: true
+  - get: ci
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CLIENT: {{SALSA_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{SALSA_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{SALSA_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{SALSA_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{SALSA_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{SALSA_JUMPBOX_SSH_KEY}}
+  - task: upload-bosh-dns
+    file: ci/tasks/bosh-upload-release/task.yml
+    params:
+      BOSH_CLIENT: {{SALSA_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{SALSA_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{SALSA_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{SALSA_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{SALSA_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{SALSA_JUMPBOX_SSH_KEY}}
+      RELEASE_SHA: 3046a07083751ae7740bbf7a25a1df6162628469
+      RELEASE_URL: https://bosh.io/d/github.com/cloudfoundry/bosh-dns-release?v=1.7.0
+- name: guac-cleanup
+  plan:
+  - get: every-day
+    trigger: true
+  - get: ci
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{GUAC_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
