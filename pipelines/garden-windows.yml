@@ -199,6 +199,16 @@ jobs:
         BUCKET: cff-greenhouse-alfredo
         FILE_NAME: cf/vars.yml
         SERVICE_ACCOUNT_KEY: {{ALFREDO_SERVICE_ACCOUNT_JSON}}
+    - task: delete-deployment
+      file: ci/tasks/bosh-deld/task.yml
+      params:
+        BOSH_DEPLOYMENT: cf
+        BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
     - task: delete-stemcells
       file: ci/tasks/bosh-delete-stemcells/task.yml
       params:
