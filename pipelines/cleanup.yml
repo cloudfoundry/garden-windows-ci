@@ -203,3 +203,12 @@ jobs:
       BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
       JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
+  - task: upload-bosh-dns
+    file: ci/tasks/bosh-upload-bosh-dns-release/task.yml
+    params:
+      BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{GUAC_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
