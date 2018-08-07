@@ -10,7 +10,7 @@ eval "$cmd"
 
 echo "Trying to upload release"
 bosh runtime-config --name=dns > /tmp/rc.yml
-if [[$? != 0]]; then
+if [[ $? != 0 ]]; then
   echo "No runtime config to update"
   exit 0
 fi
