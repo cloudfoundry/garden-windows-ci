@@ -10,7 +10,7 @@ eval "$cmd"
 
 echo "Trying to upload release"
 $(bosh runtime-config --name=dns > /tmp/rc.yml) || true
-if [[ -s /tmp/rc.yml ]]; then
+if [[ $(grep . /tmp/rc.yml) != "" ]]; then
   RELEASE_URL=$(bosh int --path=/releases/name=bosh-dns/url /tmp/rc.yml)
   RELEASE_SHA=$(bosh int --path=/releases/name=bosh-dns/sha1 /tmp/rc.yml)
   bosh upload-release --sha1 "$RELEASE_SHA" "$RELEASE_URL"
