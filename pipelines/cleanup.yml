@@ -10,12 +10,20 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
+
+- name: bosh-deployment
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/bosh-deployment.git
+
 jobs:
 - name: alfredo-cleanup
   plan:
   - get: every-day
     trigger: true
   - get: ci
+  - get: bosh-deployment
   - task: clean-up
     file: ci/tasks/bosh-cleanup/task.yml
     params:
@@ -39,6 +47,7 @@ jobs:
   - get: every-day
     trigger: true
   - get: ci
+  - get: bosh-deployment
   - task: clean-up
     file: ci/tasks/bosh-cleanup/task.yml
     params:
@@ -62,6 +71,7 @@ jobs:
   - get: every-day
     trigger: true
   - get: ci
+  - get: bosh-deployment
   - task: clean-up
     file: ci/tasks/bosh-cleanup/task.yml
     params:
@@ -99,6 +109,7 @@ jobs:
   - get: every-day
     trigger: true
   - get: ci
+  - get: bosh-deployment
   - task: clean-up
     file: ci/tasks/bosh-cleanup/task.yml
     params:
@@ -122,6 +133,7 @@ jobs:
   - get: every-day
     trigger: true
   - get: ci
+  - get: bosh-deployment
   - task: clean-up
     file: ci/tasks/bosh-cleanup/task.yml
     params:
@@ -147,6 +159,8 @@ jobs:
     tags: [vsphere]
   - get: ci
     tags: [vsphere]
+  - get: bosh-deployment
+    tags: [vsphere]
   - task: clean-up
     file: ci/tasks/bosh-cleanup/task.yml
     tags: [vsphere]
@@ -171,6 +185,7 @@ jobs:
   - get: every-day
     trigger: true
   - get: ci
+  - get: bosh-deployment
   - task: clean-up
     file: ci/tasks/bosh-cleanup/task.yml
     params:
@@ -194,6 +209,7 @@ jobs:
   - get: every-day
     trigger: true
   - get: ci
+  - get: bosh-deployment
   - task: clean-up
     file: ci/tasks/bosh-cleanup/task.yml
     params:

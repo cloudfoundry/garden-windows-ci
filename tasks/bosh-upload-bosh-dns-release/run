@@ -9,11 +9,7 @@ cmd=$(_bosh_socks5_env "$JUMPBOX_IP" "$JUMPBOX_SSH_KEY")
 eval "$cmd"
 
 echo "Trying to upload release"
-$(bosh runtime-config --name=dns > /tmp/rc.yml) || true
-if [[ $(grep . /tmp/rc.yml) != "" ]]; then
-  RELEASE_URL=$(bosh int --path=/releases/name=bosh-dns/url /tmp/rc.yml)
-  RELEASE_SHA=$(bosh int --path=/releases/name=bosh-dns/sha1 /tmp/rc.yml)
-  bosh upload-release --sha1 "$RELEASE_SHA" "$RELEASE_URL"
-else
-  echo "No runtime config to update"
-fi
+RELEASE_URL=$(bosh int --path=/releases/name=bosh-dns/url bosh-deployment/runtime-configs/dns.yml)
+RELEASE_SHA=$(bosh int --path=/releases/name=bosh-dns/sha1 bosh-deployment/runtime-configs/dns.yml)
+bosh upload-release --sha1 "$RELEASE_SHA" "$RELEASE_URL"
+bosh update-runtime-config --name=dns bosh-deployment/runtime-configs/dns.yml
