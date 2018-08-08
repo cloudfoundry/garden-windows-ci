@@ -173,6 +173,7 @@ jobs:
       JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
   - task: upload-bosh-dns
     file: ci/tasks/bosh-upload-bosh-dns-release/task.yml
+    tags: [vsphere]
     params:
       BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
       BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
