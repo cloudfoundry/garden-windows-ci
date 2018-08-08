@@ -7,7 +7,7 @@ inputs:
 - name: bosh-deployment
 
 run:
-  path: ci/tasks/bosh-upload-bosh-dns-release/run
+  path: ci/tasks/bosh-update-runtime-config-dns/run
 
 params:
   BOSH_CLIENT:

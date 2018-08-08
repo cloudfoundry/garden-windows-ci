@@ -33,8 +33,8 @@ jobs:
       BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
       JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
-  - task: upload-bosh-dns
-    file: ci/tasks/bosh-upload-bosh-dns-release/task.yml
+  - task: update-runtime-config-dns
+    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
     params:
       BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
       BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
@@ -57,8 +57,8 @@ jobs:
       BOSH_CA_CERT: {{HUMMUS_BOSH_CA_CERT}}
       JUMPBOX_IP: {{HUMMUS_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{HUMMUS_JUMPBOX_SSH_KEY}}
-  - task: upload-bosh-dns
-    file: ci/tasks/bosh-upload-bosh-dns-release/task.yml
+  - task: update-runtime-config-dns
+    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
     params:
       BOSH_CLIENT: {{HUMMUS_BOSH_CLIENT}}
       BOSH_CLIENT_SECRET: {{HUMMUS_BOSH_CLIENT_SECRET}}
@@ -81,8 +81,8 @@ jobs:
       BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
       JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
-  - task: upload-bosh-dns
-    file: ci/tasks/bosh-upload-bosh-dns-release/task.yml
+  - task: update-runtime-config-dns
+    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
     params:
       BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
       BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
@@ -119,8 +119,8 @@ jobs:
       BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
       JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
-  - task: upload-bosh-dns
-    file: ci/tasks/bosh-upload-bosh-dns-release/task.yml
+  - task: update-runtime-config-dns
+    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
     params:
       BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
       BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
@@ -143,8 +143,8 @@ jobs:
       BOSH_CA_CERT: {{TZATZIKI_BOSH_CA_CERT}}
       JUMPBOX_IP: {{TZATZIKI_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{TZATZIKI_JUMPBOX_SSH_KEY}}
-  - task: upload-bosh-dns
-    file: ci/tasks/bosh-upload-bosh-dns-release/task.yml
+  - task: update-runtime-config-dns
+    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
     params:
       BOSH_CLIENT: {{TZATZIKI_BOSH_CLIENT}}
       BOSH_CLIENT_SECRET: {{TZATZIKI_BOSH_CLIENT_SECRET}}
@@ -171,8 +171,8 @@ jobs:
       BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
       JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
-  - task: upload-bosh-dns
-    file: ci/tasks/bosh-upload-bosh-dns-release/task.yml
+  - task: update-runtime-config-dns
+    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
     tags: [vsphere]
     params:
       BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
@@ -196,8 +196,8 @@ jobs:
       BOSH_CA_CERT: {{SALSA_BOSH_CA_CERT}}
       JUMPBOX_IP: {{SALSA_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{SALSA_JUMPBOX_SSH_KEY}}
-  - task: upload-bosh-dns
-    file: ci/tasks/bosh-upload-bosh-dns-release/task.yml
+  - task: update-runtime-config-dns
+    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
     params:
       BOSH_CLIENT: {{SALSA_BOSH_CLIENT}}
       BOSH_CLIENT_SECRET: {{SALSA_BOSH_CLIENT_SECRET}}
@@ -220,8 +220,8 @@ jobs:
       BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
       JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
       JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
-  - task: upload-bosh-dns
-    file: ci/tasks/bosh-upload-bosh-dns-release/task.yml
+  - task: update-runtime-config-dns
+    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
     params:
       BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
       BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
