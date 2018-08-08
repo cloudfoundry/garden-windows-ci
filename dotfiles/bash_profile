@@ -299,6 +299,23 @@ fly-docker () {
   -l<(lpass show --notes docker-creds)
 }
 
+ci-failure () {
+  if [[ -z "$1" ]]; then
+      echo "error: expected at least one argument to ci-failure"
+      echo "usage: ci-failure <pipeline/job>"
+      return
+  fi
+  pipeline="$1"
+
+  index=0
+  if [[ ! -z "$2" ]]; then
+      index=$2
+  fi
+  line=$(($index + 1))
+
+  fly -t garden-windows builds -c 100 -j "$pipeline" | awk "/failed/" | awk "FNR == $line {print \$3}" | xargs -I {} fly -t garden-windows watch -j "$pipeline" -b {} | less -r
+}
+
 fix-mic-volume () {
   PIDFILE="/tmp/fix-mic-volume.pid"
   PID=$(cat ${PIDFILE} 2>/dev/null)
