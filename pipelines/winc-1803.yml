@@ -300,7 +300,7 @@ jobs:
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
-      - cf-deployment/operations/experimental/windows-cell.yml
+      - cf-deployment/operations/experimental/windows1803-cell.yml
       - cf-deployment/operations/use-latest-windows2016-stemcell.yml
       - cf-deployment/operations/experimental/skip-consul-cell-registrations.yml
       - cf-deployment/operations/experimental/skip-consul-locks.yml
