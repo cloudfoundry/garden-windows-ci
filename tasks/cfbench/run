@@ -9,8 +9,9 @@ pushd src/github.com/teddyking/cfbench
 go install
 popd
 
+export CF_DIAL_TIMEOUT=60
 cf api "$CF_API" --skip-ssl-validation
-CF_DIAL_TIMEOUT=20 cf login -u "$CF_USERNAME" -p "$CF_PASSWORD" -s "$CF_SPACE" -o "$CF_ORG" --skip-ssl-validation
+cf login -u "$CF_USERNAME" -p "$CF_PASSWORD" -s "$CF_SPACE" -o "$CF_ORG" --skip-ssl-validation
 
 function finish {
 	# delete any orphaned apps and routes
