@@ -3,5 +3,6 @@
 set -eu
 
 pushd envoy
+  export ENVOY_SRCDIR=$PWD
   ./ci/do_ci.sh  "bazel.release"
 popd
