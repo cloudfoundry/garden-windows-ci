@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -eu
+
+pushd envoy
+  ./ci/do_ci.sh  "bazel.release"
+popd
