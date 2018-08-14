@@ -5,9 +5,16 @@ $env:BAZEL_SH="c:\var\vcap\packages\msys2\usr\bin\bash.exe"
 $env:BAZEL_VC="c:\var\vcap\packages\vs_buildtools\VC"
 $env:ENVOY_BAZEL_ROOT="c:\_eb"
 
+$tempDir = "$env:TEMP\envoy-build-dir"
+
+Remove-Item -Recurse -Force $tempDir -ErrorAction Ignore
 cmd.exe /c rd /s /q $env:ENVOY_BAZEL_ROOT
 
-cd envoy
+New-Item -Type Directory $tempDir
+Copy-Item -Recurse -Force .\envoy $tempDir
+
+
+cd "$tempDir\envoy"
 powershell "./ci/do_ci.ps1"
 $ec = $LASTEXITCODE
 if ($ec -ne 0) {
@@ -15,6 +22,7 @@ if ($ec -ne 0) {
   exit $ec
 }
 
+Remove-Item -Recurse -Force $tempDir
 cmd.exe /c rd /s /q $env:ENVOY_BAZEL_ROOT
 $ec = $LASTEXITCODE
 if ($ec -ne 0) {
