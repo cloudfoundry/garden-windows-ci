@@ -308,7 +308,17 @@ ci-failure () {
   fi
   line=$(($index + 1))
 
-  fly -t garden-windows builds -c 100 -j "$pipeline" | awk "/failed/" | awk "FNR == $line {print \$3}" | xargs -I {} fly -t garden-windows watch -j "$pipeline" -b {} | less -r
+  dir=`mktemp -d`
+  file="log.txt"
+  pushd $dir
+    fly -t garden-windows builds -c 100 -j "$pipeline" \
+      | awk "/failed/" | awk "FNR == $line {print \$3}" \
+      | xargs -I {} fly -t garden-windows watch -j "$pipeline" -b {} \
+      | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" \
+      > $file
+    nvim $file
+  popd
+  rm -rf $dir
 }
 
 fix-mic-volume () {
