@@ -275,11 +275,6 @@ fly-longrunning () {
   -l<(lpass show --notes github-deploy-keys aws-iam-access-keys github-access-tokens spitfire-service-account.json datadog-secrets)
 }
 
-fly-concourse-windows () {
-  fly -t garden-windows sp -p concourse-windows -c $HOME/workspace/garden-windows-ci/pipelines/concourse-windows.yml \
-  -l<(lpass show --notes github-deploy-keys aws-iam-access-keys github-access-tokens)
-}
-
 fly-windows1709fs () {
   fly -t garden-windows sp -p windows1709fs -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs.yml \
     -l <(_env_creds_yml tartar) \
