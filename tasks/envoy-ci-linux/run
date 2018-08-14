@@ -4,6 +4,7 @@ set -eu
 
 pushd envoy
   export ENVOY_SRCDIR=$PWD
+  export BAZEL_EXTRA_TEST_OPTIONS="--test_env=ENVOY_IP_TEST_VERSIONS=v4only"
   ln -s $PWD /source
   ./ci/do_ci.sh  "bazel.release"
 popd
