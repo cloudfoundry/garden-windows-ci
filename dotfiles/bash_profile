@@ -297,10 +297,20 @@ fly-docker () {
 ci-failure () {
   if [[ -z "$1" ]]; then
       echo "error: expected at least one argument to ci-failure"
-      echo "usage: ci-failure <pipeline/job>"
+      echo "usage: ci-failure <pipeline[/job]>"
       return
   fi
-  pipeline="$1"
+  arg="$1"
+
+  pipeline=0
+  job=0
+  if [[ "$arg" = *"/"* ]]; then
+    job=1
+    flyargs="-j $arg"
+  else
+    pipeline=1
+    flyargs="-p $arg"
+  fi
 
   index=0
   if [[ ! -z "$2" ]]; then
@@ -310,15 +320,20 @@ ci-failure () {
 
   dir=`mktemp -d`
   file="log.txt"
-  pushd $dir
-    fly -t garden-windows builds -c 100 -j "$pipeline" \
-      | awk "/failed/" | awk "FNR == $line {print \$3}" \
-      | xargs -I {} fly -t garden-windows watch -j "$pipeline" -b {} \
-      | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" \
-      > $file
-    nvim $file
-  popd
-  rm -rf $dir
+  pushd $dir > /dev/null
+    builds="$(fly -t garden-windows builds -c 100 $flyargs | awk '/failed/')"
+    if [[ $pipeline -eq 1 ]]; then
+      echo "$builds"
+    else
+      echo "$builds" \
+	| awk "FNR == $line {print \$3}" \
+	| xargs -I {} fly -t garden-windows watch $flyargs -b {} \
+	| sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" \
+	> $file
+      nvim $file
+      rm -rf $dir
+    fi
+  popd > /dev/null
 }
 
 fix-mic-volume () {
