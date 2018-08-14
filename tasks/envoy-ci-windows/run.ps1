@@ -10,7 +10,7 @@ $tempDir = "$env:TEMP\envoy-build-dir"
 Remove-Item -Recurse -Force $tempDir -ErrorAction Ignore
 cmd.exe /c rd /s /q $env:ENVOY_BAZEL_ROOT
 
-New-Item -Type Directory $tempDir
+New-Item -Type Directory -Force $tempDir
 Copy-Item -Recurse -Force .\envoy $tempDir
 
 
@@ -19,6 +19,14 @@ powershell "./ci/do_ci.ps1"
 $ec = $LASTEXITCODE
 if ($ec -ne 0) {
   Write-Host "ci failed"
+  bazel shutdown
+  exit $ec
+}
+
+bazel shutdown
+$ec = $LASTEXITCODE
+if ($ec -ne 0) {
+  Write-Host "failed to shutdown bazel server"
   exit $ec
 }
 
