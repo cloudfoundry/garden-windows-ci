@@ -2,7 +2,7 @@
 trap { $host.SetShouldExit(1) }
 
 $env:BAZEL_SH="c:\var\vcap\packages\msys2\usr\bin\bash.exe"
-$env:BAZEL_VC="c:\var\vcap\packages\vs_buildtools\VC"
+$env:BAZEL_VC="c:\var\vcap\packages\vs_bt_2017\vc"
 $env:ENVOY_BAZEL_ROOT="c:\_eb"
 
 $tempDir = "$env:TEMP\envoy-build-dir"
