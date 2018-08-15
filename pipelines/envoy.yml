@@ -1,0 +1,30 @@
+resources:
+- name: ci
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
+
+- name: envoy
+  type: git
+  source:
+    branch: windows-linux-build
+    uri: https://github.com/greenhouse-org/envoy.git
+
+jobs:
+- name: envoy-linux
+  plan:
+  - get: ci
+  - get: envoy
+    trigger: true
+  - task: envoy-ci-linux
+    file: ci/tasks/envoy-ci-linux/task.yml
+
+- name: envoy-windows
+  plan:
+  - get: ci
+  - get: envoy
+    trigger: true
+  - task: envoy-ci-windows
+    tags: [1803]
+    file: ci/tasks/envoy-ci-windows/task.yml
