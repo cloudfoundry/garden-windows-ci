@@ -2,7 +2,7 @@
 trap { $host.SetShouldExit(1) }
 
 $env:BAZEL_SH="c:\var\vcap\packages\msys2\usr\bin\bash.exe"
-$env:BAZEL_VC="c:\var\vcap\packages\vs_bt_2017\vc"
+$env:BAZEL_VC="C:\var\vcap\data\VSBuildTools\2017\vc"
 $env:ENVOY_BAZEL_ROOT="c:\_eb"
 
 # add tar.exe to path. Once we update to concourse 4.0, this can be removed
