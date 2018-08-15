@@ -281,6 +281,93 @@ jobs:
       DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
     tags: [vsphere]
 
+- name: mulgore-cfbench-windows1803
+  serial: true
+  serial_groups:
+  - cfbench
+  plan:
+  - aggregate:
+    - get: ci
+      tags: [vsphere]
+    - get: cfbench
+      tags: [vsphere]
+    - get: cf-acceptance-tests
+      tags: [vsphere]
+    - get: every-5mins
+      trigger: true
+      tags: [vsphere]
+    - get: mulgore-cf-deployment
+      trigger: true
+      passed: [mulgore-deploy-cf]
+      tags: [vsphere]
+  - task: cfbench
+    file: ci/tasks/cfbench/task.yml
+    input_mapping: {app: cf-acceptance-tests}
+    params:
+      CF_API: api.mulgore.cf-app.com
+      CF_STACK: windows2016
+      CF_USERNAME: admin
+      CF_PASSWORD: {{MULGORE_ADMIN_PASSWORD}}
+      CF_ORG: cfbench
+      CF_SPACE: windows1803
+      APP_DIR: app/assets/nora/NoraPublished
+      APP_BUILDPACK: hwc_buildpack
+      DATADOG_API_KEY: {{DATADOG_API_KEY}}
+      DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
+    tags: [vsphere]
+
+- name: mulgore-push-longrunning-app-windows1803
+  serial: true
+  serial_groups:
+  - longrunning-windows1803
+  plan:
+  - aggregate:
+    - get: ci
+      tags: [vsphere]
+    - get: cf-acceptance-tests
+      tags: [vsphere]
+    - get: mulgore-cf-deployment
+      trigger: true
+      passed: [mulgore-deploy-cf]
+      tags: [vsphere]
+  - task: push-app
+    file: ci/tasks/push-app/task.yml
+    input_mapping: {app: cf-acceptance-tests}
+    params:
+      CF_API: api.mulgore.cf-app.com
+      CF_STACK: windows2016
+      CF_USERNAME: admin
+      CF_PASSWORD: {{MULGORE_ADMIN_PASSWORD}}
+      CF_ORG: longrunning
+      CF_SPACE: windows1803
+      APP_DIR: app/assets/nora/NoraPublished
+      APP_BUILDPACK: hwc_buildpack
+    tags: [vsphere]
+
+- name: mulgore-curl-longrunning-app-windows1803
+  serial: true
+  serial_groups:
+  - longrunning-windows1803
+  plan:
+  - aggregate:
+    - get: ci
+      tags: [vsphere]
+    - get: every-1min
+      trigger: true
+      tags: [vsphere]
+    - get: mulgore-cf-deployment
+      trigger: true
+      passed: [mulgore-push-longrunning-app-windows1803]
+      tags: [vsphere]
+  - task: curl-app
+    file: ci/tasks/curl-app/task.yml
+    params:
+      CF_APP_URL: longrunning-windows1803.mulgore.cf-app.com
+      DATADOG_TAG: windows1803
+      DATADOG_API_KEY: {{DATADOG_API_KEY}}
+      DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
+    tags: [vsphere]
+
 - name: mulgore-cfbench-windows2012R2
   serial: true
   serial_groups:

@@ -5,12 +5,20 @@ set -eu
 cf api "$CF_API" --skip-ssl-validation
 cf login -u "$CF_USERNAME" -p "$CF_PASSWORD" -o system
 
+cf create-isolation-segment windows1803
+
 cf create-org cfbench
 cf target -o cfbench
 cf create-space windows2012R2
 cf create-space windows2016
+cf create-space windows1803
+cf set-space-isolation-segment windows1803 windows1803
 
 cf create-org longrunning
 cf target -o longrunning
 cf create-space windows2012R2
 cf create-space windows2016
+cf create-space windows1803
+cf set-space-isolation-segment windows1803 windows1803
+
+
