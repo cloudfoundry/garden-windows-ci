@@ -17,21 +17,22 @@ New-Item -Type Directory -Force $tempDir
 Copy-Item -Recurse -Force .\envoy $tempDir
 
 
-cd "$tempDir\envoy"
-powershell "./ci/do_ci.ps1"
-$ec = $LASTEXITCODE
-if ($ec -ne 0) {
-  Write-Host "ci failed"
-  bazel shutdown
-  exit $ec
-}
+pushd "$tempDir\envoy"
+  powershell "./ci/do_ci.ps1"
+  $ec = $LASTEXITCODE
+  if ($ec -ne 0) {
+    Write-Host "ci failed"
+    bazel shutdown
+    exit $ec
+  }
 
-bazel shutdown
-$ec = $LASTEXITCODE
-if ($ec -ne 0) {
-  Write-Host "failed to shutdown bazel server"
-  exit $ec
-}
+  bazel shutdown
+  $ec = $LASTEXITCODE
+  if ($ec -ne 0) {
+    Write-Host "failed to shutdown bazel server"
+    exit $ec
+  }
+popd
 
 Remove-Item -Recurse -Force $tempDir
 cmd.exe /c rd /s /q $env:ENVOY_BAZEL_ROOT
