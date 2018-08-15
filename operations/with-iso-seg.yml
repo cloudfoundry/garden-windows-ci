@@ -2,4 +2,4 @@
 - type: replace
   path: /instance_groups/name=windows1803-cell/jobs/name=rep_windows/properties/diego/rep/placement_tags?
   value:
-  - "my-seg"
+  - "((isolation_segment))"
