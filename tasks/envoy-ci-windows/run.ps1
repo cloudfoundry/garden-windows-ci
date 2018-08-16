@@ -5,9 +5,6 @@ $env:BAZEL_SH="c:\var\vcap\packages\msys2\usr\bin\bash.exe"
 $env:BAZEL_VC="C:\var\vcap\data\VSBuildTools\2017\vc"
 $env:ENVOY_BAZEL_ROOT="c:\_eb"
 
-# add tar.exe to path. Once we update to concourse 4.0, this can be removed
-$env:PATH+=";C:\var\vcap\bosh\bin\"
-
 $tempDir = "$env:TEMP\envoy-build-dir"
 
 Remove-Item -Recurse -Force $tempDir -ErrorAction Ignore
