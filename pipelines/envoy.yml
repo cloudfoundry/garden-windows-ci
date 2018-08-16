@@ -12,14 +12,6 @@ resources:
     uri: https://github.com/greenhouse-org/envoy.git
 
 jobs:
-- name: envoy-linux
-  plan:
-  - get: ci
-  - get: envoy
-    trigger: true
-  - task: envoy-ci-linux
-    file: ci/tasks/envoy-ci-linux/task.yml
-
 - name: envoy-windows
   plan:
   - get: ci
