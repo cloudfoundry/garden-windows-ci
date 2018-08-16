@@ -22,11 +22,11 @@ pushd "$tempDir\envoy"
   $ec = $LASTEXITCODE
   if ($ec -ne 0) {
     Write-Host "ci failed"
-    bazel shutdown
+    bazel --output_base=$env:ENVOY_BAZEL_ROOT shutdown
     exit $ec
   }
 
-  bazel shutdown
+  bazel --output_base=$env:ENVOY_BAZEL_ROOT shutdown
   $ec = $LASTEXITCODE
   if ($ec -ne 0) {
     Write-Host "failed to shutdown bazel server"
