@@ -38,7 +38,7 @@ cfbench \
   $APP_BUILDPACK \
   $APP_START_COMMAND \
   -doppler-address "$DOPPLER_ADDRESS" \
-  -tag $CF_STACK \
+  -tag $CF_SPACE \
   -json > metrics.json
 
 pushExitStatus=$?
