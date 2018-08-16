@@ -54,7 +54,7 @@ else
            [{\"metric\": \"cfbench.failed\",
             \"points\": [[$(date +%s), $pushExitStatus]],
             \"type\": \"gauge\",
-            \"tags\": [\"$CF_STACK\"]
+            \"tags\": [\"$CF_SPACE\"]
           }]
         }" \
   "https://app.datadoghq.com/api/v1/series?api_key=${DATADOG_API_KEY}&application_key=$DATADOG_APPLICATION_KEY"
