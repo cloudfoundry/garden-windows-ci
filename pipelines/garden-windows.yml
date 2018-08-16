@@ -256,6 +256,7 @@ jobs:
         JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
     - task: enable-credhub
       file: ci/tasks/enable-credhub/task.yml
+      attempts: 3
       params:
         CF_API: api.alfredo.cf-app.com
         CF_USERNAME: admin
