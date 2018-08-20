@@ -13,3 +13,4 @@ resource-get-tag: [vsphere]
 task-tag: [1803]
 windows-cell-ops-file: cf-deployment/operations/experimental/windows1803-cell.yml
 finalized-release-glob: finalized-release/windows1803fs-*.tgz
+windowsfs-uses-tar: false

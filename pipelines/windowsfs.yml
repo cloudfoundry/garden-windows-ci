@@ -246,7 +246,7 @@ jobs:
         globs: [Git-*-64-bit.exe]
     - get: tar
       tags: ((resource-get-tag))
-      trigger: true
+      trigger: ((windowsfs-uses-tar))
     - get: image-version
       tags: ((resource-get-tag))
       params: {bump: patch}

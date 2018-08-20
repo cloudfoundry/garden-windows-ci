@@ -13,3 +13,4 @@ resource-get-tag:
 task-tag:
 windows-cell-ops-file: cf-deployment/operations/windows2016-cell.yml
 finalized-release-glob: finalized-release/windows2016fs-*.tgz
+windowsfs-uses-tar: true
