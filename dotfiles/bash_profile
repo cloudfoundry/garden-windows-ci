@@ -127,6 +127,16 @@ box () {
   fi
 }
 
+ssh-add-vagrant () {
+  vagrant_id_file=~/.ssh/id_rsa_vagrant
+  if ! [ -f $vagrant_id_file ]; then
+    curl -L https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant > $vagrant_id_file
+    chmod 0600 $vagrant_id_file
+  fi
+
+  ssh-add $vagrant_id_file
+}
+
 # Load ssh key from lastpass
 function load-key() {
   local NAME=$1
