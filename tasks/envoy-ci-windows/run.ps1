@@ -15,7 +15,7 @@ Copy-Item -Recurse -Force .\envoy $tempDir
 
 
 pushd "$tempDir\envoy"
-  powershell "./ci/do_ci.ps1"
+  powershell "./ci/do_ci.ps1" "bazel.debug"
   $ec = $LASTEXITCODE
   if ($ec -ne 0) {
     Write-Host "ci failed"
