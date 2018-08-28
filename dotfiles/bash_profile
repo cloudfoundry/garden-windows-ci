@@ -37,6 +37,9 @@ fi
 # Homebrew
 export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 
+# vmrun
+export PATH="$PATH:/Applications/VMware Fusion.app//Contents/Library"
+
 # Go
 export GOPATH="$HOME/go"
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -113,6 +116,13 @@ gv () {
   else
     GOOS=windows nvim $@
   fi
+}
+
+vm_ip () {
+  box=$1
+  vmx=$(vmrun list | grep $box)
+  ip=$(vmrun getGuestIpAddress $vmx)
+  echo $ip
 }
 
 box () {
