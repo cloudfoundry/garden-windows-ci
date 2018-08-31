@@ -3,9 +3,9 @@
   path: /releases/name=windows-tools?
   value:
     name: windows-tools
-    version: 12
-    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=12
-    sha1: a381263ac61b503ceb6316effd0c890207d5fdae
+    version: 14
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=14
+    sha1: 12b8218b8eab1d40fd9ccd2143909b2021ee09e8
 
 - type: replace
   path: /instance_groups/name=windows-worker/jobs/-
@@ -89,4 +89,10 @@
   path: /instance_groups/name=windows-worker/jobs/-
   value:
     name: vc_redist
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: python
     release: windows-tools
