@@ -79,27 +79,6 @@ jobs:
     params:
       file: tar-output/tar-*.exe
 
-- name: windows-app-lifecycle-update-tar
-  serial: true
-  plan:
-  - aggregate:
-    - get: s3-bucket
-      trigger: true
-      passed: [build-tar]
-  - task: create-tracker-task
-    params:
-      TOKEN: {{TRACKER_GITBOT_TOKEN}}
-      PROJECT_ID: {{GARDEN_WINDOWS_PROJECT_ID}}
-    config:
-      platform: linux
-      image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
-      run:
-        path: /bin/bash
-        args:
-        - -c
-        - |
-          curl -f -X POST -H "X-TrackerToken: $TOKEN" -H "Content-Type: application/json" -d '{"name":"New Build of Tar available!", "description": "A new build of tar.exe is available at https://greenhouse.ci.cf-app.com/teams/main/pipelines/tar. An update should be made to https://github.com/cloudfoundry/windows_app_lifecycle."}' "https://www.pivotaltracker.com/services/v5/projects/$PROJECT_ID/stories"
-
 - name: bosh-agent-update-tar
   serial: true
   plan:
