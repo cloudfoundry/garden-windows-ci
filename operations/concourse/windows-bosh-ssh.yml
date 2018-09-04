@@ -15,6 +15,7 @@
     include:
       stemcell:
       - os: windows2016
+      - os: windows1803
     jobs:
     - name: enable_ssh
       release: windows-utilities
