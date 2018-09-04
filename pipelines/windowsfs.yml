@@ -754,10 +754,10 @@ jobs:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
       - ((windows-cell-ops-file))
-      - cf-deployment/operations/use-latest-windows2016-stemcell.yml
-      - ci/operations/windows2016-prs.yml
-      - ci/operations/windows2016-debug.yml
-      - ci/operations/scale-down-windows2016.yml
+      - ((latest-windows-stemcell-ops-file))
+      - ((windows-debug-ops-file))
+      - ((windows-scale-down-ops-file))
+      - ((windows-rdp-ops-file))
       - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
       - cf-vars/vars.yml
