@@ -13,6 +13,7 @@ resources:
 
 jobs:
 - name: envoy-windows
+  public: true
   plan:
   - get: ci
   - get: envoy
