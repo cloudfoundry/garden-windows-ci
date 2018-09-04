@@ -130,7 +130,7 @@ resources:
   type: s3
   source:
     bucket: all-bosh-windows
-    regexp: ((os-version))/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2016-go_agent.tgz
+    regexp: ((stemcell-regexp))
     access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 
@@ -534,11 +534,10 @@ jobs:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/workaround/use-3-azs-for-router.yml
       - ((windows-cell-ops-file))
-      - cf-deployment/operations/use-latest-windows2016-stemcell.yml
-      - ci/operations/windows2016-prs.yml
-      - ci/operations/windows2016-debug.yml
-      - ci/operations/scale-down-windows2016.yml
-      - ci/operations/enable-rdp-2016.yml
+      - ((latest-windows-stemcell-ops-file))
+      - ((windows-debug-ops-file))
+      - ((windows-scale-down-ops-file))
+      - ((windows-rdp-ops-file))
       - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
       - cf-vars/vars.yml

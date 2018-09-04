@@ -18,8 +18,10 @@ resources:
 - name: cf-deployment
   type: git
   source:
-    branch: release-candidate
-    uri: https://github.com/cloudfoundry/cf-deployment.git
+    branch: 1803-instance-group
+    uri: https://github.com/greenhouse-org/cf-deployment.git
+    #branch: release-candidate
+    #uri: https://github.com/cloudfoundry/cf-deployment.git
 - name: winc-release-develop
   type: git
   source:
@@ -53,7 +55,7 @@ resources:
   type: s3
   source:
    bucket: bosh-windows-stemcells-private
-   regexp: 1803/bosh-stemcell-(.*)-vsphere-esxi-windows2016-go_agent.tgz
+   regexp: 1803/bosh-stemcell-(.*)-vsphere-esxi-windows1803-go_agent.tgz
    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 - name: mulgore-cf-deployment
