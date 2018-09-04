@@ -78,8 +78,10 @@ resources:
 - name: cf-deployment
   type: git
   source:
-    branch: release-candidate
-    uri: https://github.com/cloudfoundry/cf-deployment.git
+    branch: 1803-instance-group
+    uri: https://github.com/greenhouse-org/cf-deployment.git
+    #branch: release-candidate
+    #uri: https://github.com/cloudfoundry/cf-deployment.git
 
 # Docker Image
 
