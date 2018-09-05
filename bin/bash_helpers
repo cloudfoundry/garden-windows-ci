@@ -48,6 +48,37 @@ cf_target() {
     -p $ADMIN_PASSWORD
 }
 
+buildpacks_cf_target() {
+  environment=$1
+  envs_dir=$(mktemp -d)
+
+  ## shallow clone to tempdir
+  git clone --depth=1 git@github.com:cloudfoundry/buildpacks-envs.git $envs_dir
+  vars_file=$envs_dir/$environment/vars-store.yml
+
+  # do minimal check and cleanup if failed
+  if [ ! -f $vars_file ]; then
+    echo failed to clone vars file: $vars_file
+    rm -rf $envs_dir # cleanup
+
+    return
+  fi
+
+  # do minimal read and cleanup immediately
+  vars_file_content=$(cat $vars_file)
+  rm -rf $envs_dir #cleanup
+
+  local admin_password=$(bosh int --path /cf_admin_password <(echo "$vars_file_content"))
+
+  cf login --skip-ssl-validation \
+    -a https://api.$environment.buildpacks-gcp.ci.cf-app.com \
+    -u admin \
+    -p $admin_password \
+    -o garden-windows \
+    -s garden-windows \
+    ;
+}
+
 # Helper functions
 _env_creds_yml() {
   local environment=$1
