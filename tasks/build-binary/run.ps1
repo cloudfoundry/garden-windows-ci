@@ -28,18 +28,15 @@ if ($env:BINARY_NAME -ne "") {
   $BINARY=(Get-Item $env:PACKAGE).BaseName + ".exe"
 }
 
-go.exe build -o "binary-output/$BINARY" $env:PACKAGE
-if ($LastExitCode -ne 0) {
-  exit $LastExitCode
+$binaryDir = "$PWD\binary-output"
+
+# work around https://github.com/golang/go/issues/27515
+$linkType = (get-item $binaryDir).LinkType
+if ($linkType -ne "") {
+  $binaryDir = (get-item $binaryDir).Target
 }
 
-if ($BINARY -eq "winc-network") {
-  gcc.exe -c "repo\network\firewall\dll\firewall.c" -o "$env:TEMP\firewall.o"
-  if ($LastExitCode -ne 0) {
-    exit $LastExitCode
-  }
-  gcc.exe -shared -o "binary-output\firewall.dll" "$env:TEMP\firewall.o" -lole32 -loleaut32
-  if ($LastExitCode -ne 0) {
-    exit $LastExitCode
-  }
+go.exe build -o "$binaryDir\$BINARY" $env:PACKAGE
+if ($LastExitCode -ne 0) {
+  exit $LastExitCode
 }

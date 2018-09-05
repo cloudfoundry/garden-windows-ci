@@ -6,6 +6,12 @@ go.exe version
 $env:GOPATH=$PWD
 $binaryDir = "$PWD\groot-binary"
 
+# work around https://github.com/golang/go/issues/27515
+$linkType = (get-item $binaryDir).LinkType
+if ($linkType -ne "") {
+  $binaryDir = (get-item $binaryDir).Target
+}
+
 pushd src\code.cloudfoundry.org\groot-windows
   go build -o "$binaryDir\groot.exe" main.go
   if ($LastExitCode -ne 0) {

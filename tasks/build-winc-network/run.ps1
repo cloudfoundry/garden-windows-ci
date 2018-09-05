@@ -6,6 +6,12 @@ go.exe version
 $env:GOPATH=$PWD
 $binaryDir = "$PWD\winc-network-binary"
 
+# work around https://github.com/golang/go/issues/27515
+$linkType = (get-item $binaryDir).LinkType
+if ($linkType -ne "") {
+  $binaryDir = (get-item $binaryDir).Target
+}
+
 pushd src\code.cloudfoundry.org\winc
   if ($env:WINDOWS_VERSION -eq "1709") {
     go build -o "$binaryDir\winc-network.exe" .\cmd\winc-network
