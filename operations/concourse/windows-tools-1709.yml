@@ -3,9 +3,9 @@
   path: /releases/name=windows-tools?
   value:
     name: windows-tools
-    version: 14
-    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=14
-    sha1: 12b8218b8eab1d40fd9ccd2143909b2021ee09e8
+    version: 15
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=15
+    sha1: 3a2c9a8be41a8c8c5ef8c3a71f91d4690294a112
 
 - type: replace
   path: /instance_groups/name=windows-worker/jobs/-
@@ -59,40 +59,4 @@
   path: /instance_groups/name=windows-worker/jobs/-
   value:
     name: make
-    release: windows-tools
-
-- type: replace
-  path: /instance_groups/name=windows-worker/jobs/-
-  value:
-    name: bazel
-    release: windows-tools
-
-- type: replace
-  path: /instance_groups/name=windows-worker/jobs/-
-  value:
-    name: vs_buildtools
-    release: windows-tools
-
-- type: replace
-  path: /instance_groups/name=windows-worker/jobs/-
-  value:
-    name: msys2
-    release: windows-tools
-
-- type: replace
-  path: /instance_groups/name=windows-worker/jobs/-
-  value:
-    name: ninja
-    release: windows-tools
-
-- type: replace
-  path: /instance_groups/name=windows-worker/jobs/-
-  value:
-    name: vc_redist
-    release: windows-tools
-
-- type: replace
-  path: /instance_groups/name=windows-worker/jobs/-
-  value:
-    name: python
     release: windows-tools
