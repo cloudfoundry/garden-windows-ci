@@ -9,7 +9,9 @@ $binaryDir = "$PWD\winc-network-binary"
 pushd src\code.cloudfoundry.org\winc
   if ($env:WINDOWS_VERSION -eq "1709") {
     go build -o "$binaryDir\winc-network.exe" .\cmd\winc-network
-
+    if ($LastExitCode -ne 0) {
+      exit $LastExitCode
+    }
     gcc.exe -c ".\network\firewall\dll\firewall.c" -o "$env:TEMP\firewall.o"
     if ($LastExitCode -ne 0) {
       exit $LastExitCode

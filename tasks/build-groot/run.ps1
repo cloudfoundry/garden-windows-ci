@@ -8,7 +8,9 @@ $binaryDir = "$PWD\groot-binary"
 
 pushd src\code.cloudfoundry.org\groot-windows
   go build -o "$binaryDir\groot.exe" main.go
-
+  if ($LastExitCode -ne 0) {
+    exit $LastExitCode
+  }
   gcc.exe -c ".\volume\quota\quota.c" -o "$env:TEMP\quota.o"
   if ($LastExitCode -ne 0) {
     exit $LastExitCode
