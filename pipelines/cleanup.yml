@@ -17,215 +17,369 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/bosh-deployment.git
 
+# Lock Pools
+
+- name: alfredo-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: alfredo
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
+- name: hummus-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: hummus
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
+- name: guac-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: guac
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
+- name: mulgore-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: mulgore
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
+- name: pesto-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: pesto
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
+- name: salsa-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: salsa
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
+- name: spitfire-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: spitfire
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
+- name: tartar-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: tartar
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
+- name: tzatziki-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: tzatziki
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
 jobs:
 - name: alfredo-cleanup
   plan:
-  - get: every-day
-    trigger: true
-  - get: ci
-  - get: bosh-deployment
-  - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
-    params:
-      BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
-  - task: update-runtime-config-dns
-    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-    params:
-      BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+  - do:
+    - put: alfredo-lock-pool
+      params:
+        acquire: true
+    - get: every-day
+      trigger: true
+    - get: ci
+    - get: bosh-deployment
+    - task: clean-up
+      file: ci/tasks/bosh-cleanup/task.yml
+      params:
+        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+    - task: update-runtime-config-dns
+      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+      params:
+        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+    ensure:
+      put: alfredo-lock-pool
+      params:
+        release: alfredo-lock-pool
+
 - name: hummus-cleanup
   plan:
-  - get: every-day
-    trigger: true
-  - get: ci
-  - get: bosh-deployment
-  - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
-    params:
-      BOSH_CLIENT: {{HUMMUS_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{HUMMUS_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{HUMMUS_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{HUMMUS_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{HUMMUS_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{HUMMUS_JUMPBOX_SSH_KEY}}
-  - task: update-runtime-config-dns
-    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-    params:
-      BOSH_CLIENT: {{HUMMUS_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{HUMMUS_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{HUMMUS_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{HUMMUS_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{HUMMUS_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{HUMMUS_JUMPBOX_SSH_KEY}}
+  - do:
+    - put: hummus-lock-pool
+      params:
+        acquire: true
+    - get: every-day
+      trigger: true
+    - get: ci
+    - get: bosh-deployment
+    - task: clean-up
+      file: ci/tasks/bosh-cleanup/task.yml
+      params:
+        BOSH_CLIENT: {{HUMMUS_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{HUMMUS_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{HUMMUS_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{HUMMUS_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{HUMMUS_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{HUMMUS_JUMPBOX_SSH_KEY}}
+    - task: update-runtime-config-dns
+      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+      params:
+        BOSH_CLIENT: {{HUMMUS_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{HUMMUS_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{HUMMUS_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{HUMMUS_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{HUMMUS_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{HUMMUS_JUMPBOX_SSH_KEY}}
+    ensure:
+      put: hummus-lock-pool
+      params:
+        release: hummus-lock-pool
+
 - name: pesto-cleanup
   plan:
-  - get: every-day
-    trigger: true
-  - get: ci
-  - get: bosh-deployment
-  - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
-    params:
-      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
-  - task: update-runtime-config-dns
-    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-    params:
-      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+  - do:
+    - put: pesto-lock-pool
+      params:
+        acquire: true
+    - get: every-day
+      trigger: true
+    - get: ci
+    - get: bosh-deployment
+    - task: clean-up
+      file: ci/tasks/bosh-cleanup/task.yml
+      params:
+        BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+    - task: update-runtime-config-dns
+      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+      params:
+        BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+    ensure:
+      put: pesto-lock-pool
+      params:
+        release: pesto-lock-pool
+
 - name: spitfire-cleanup
   plan:
-  - get: every-day
-    trigger: true
-  - get: ci
-  - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
-    params:
-      BOSH_CLIENT: {{SPITFIRE_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{SPITFIRE_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{SPITFIRE_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{SPITFIRE_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{SPITFIRE_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{SPITFIRE_JUMPBOX_SSH_KEY}}
+  - do:
+    - put: spitfire-lock-pool
+      params:
+        acquire: true
+    - get: every-day
+      trigger: true
+    - get: ci
+    - task: clean-up
+      file: ci/tasks/bosh-cleanup/task.yml
+      params:
+        BOSH_CLIENT: {{SPITFIRE_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{SPITFIRE_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{SPITFIRE_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{SPITFIRE_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{SPITFIRE_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{SPITFIRE_JUMPBOX_SSH_KEY}}
+    ensure:
+      put: spitfire-lock-pool
+      params:
+        release: spitfire-lock-pool
+
 - name: tartar-cleanup
   plan:
-  - get: every-day
-    trigger: true
-  - get: ci
-  - get: bosh-deployment
-  - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
-    params:
-      BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
-  - task: update-runtime-config-dns
-    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-    params:
-      BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+  - do:
+    - put: tartar-lock-pool
+      params:
+        acquire: true
+    - get: every-day
+      trigger: true
+    - get: ci
+    - get: bosh-deployment
+    - task: clean-up
+      file: ci/tasks/bosh-cleanup/task.yml
+      params:
+        BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+    - task: update-runtime-config-dns
+      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+      params:
+        BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+    ensure:
+      put: tartar-lock-pool
+      params:
+        release: tartar-lock-pool
+
 - name: tzatziki-cleanup
   plan:
-  - get: every-day
-    trigger: true
-  - get: ci
-  - get: bosh-deployment
-  - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
-    params:
-      BOSH_CLIENT: {{TZATZIKI_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{TZATZIKI_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{TZATZIKI_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{TZATZIKI_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{TZATZIKI_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{TZATZIKI_JUMPBOX_SSH_KEY}}
-  - task: update-runtime-config-dns
-    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-    params:
-      BOSH_CLIENT: {{TZATZIKI_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{TZATZIKI_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{TZATZIKI_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{TZATZIKI_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{TZATZIKI_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{TZATZIKI_JUMPBOX_SSH_KEY}}
+  - do:
+    - put: tzatziki-lock-pool
+      params:
+        acquire: true
+    - get: every-day
+      trigger: true
+    - get: ci
+    - get: bosh-deployment
+    - task: clean-up
+      file: ci/tasks/bosh-cleanup/task.yml
+      params:
+        BOSH_CLIENT: {{TZATZIKI_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{TZATZIKI_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{TZATZIKI_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{TZATZIKI_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{TZATZIKI_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{TZATZIKI_JUMPBOX_SSH_KEY}}
+    - task: update-runtime-config-dns
+      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+      params:
+        BOSH_CLIENT: {{TZATZIKI_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{TZATZIKI_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{TZATZIKI_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{TZATZIKI_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{TZATZIKI_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{TZATZIKI_JUMPBOX_SSH_KEY}}
+    ensure:
+      put: tzatziki-lock-pool
+      params:
+        release: tzatziki-lock-pool
+
 - name: mulgore-cleanup
   plan:
-  - get: every-day
-    trigger: true
-    tags: [vsphere]
-  - get: ci
-    tags: [vsphere]
-  - get: bosh-deployment
-    tags: [vsphere]
-  - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
-    tags: [vsphere]
-    params:
-      BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{MULGORE_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
-  - task: update-runtime-config-dns
-    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-    tags: [vsphere]
-    params:
-      BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{MULGORE_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
+  - do:
+    - put: mulgore-lock-pool
+      params:
+        acquire: true
+    - get: every-day
+      trigger: true
+      tags: [vsphere]
+    - get: ci
+      tags: [vsphere]
+    - get: bosh-deployment
+      tags: [vsphere]
+    - task: clean-up
+      file: ci/tasks/bosh-cleanup/task.yml
+      tags: [vsphere]
+      params:
+        BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{MULGORE_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
+    - task: update-runtime-config-dns
+      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+      tags: [vsphere]
+      params:
+        BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{MULGORE_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
+    ensure:
+      put: mulgore-lock-pool
+      params:
+        release: mulgore-lock-pool
+
 - name: salsa-cleanup
   plan:
-  - get: every-day
-    trigger: true
-  - get: ci
-  - get: bosh-deployment
-  - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
-    params:
-      BOSH_CLIENT: {{SALSA_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{SALSA_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{SALSA_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{SALSA_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{SALSA_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{SALSA_JUMPBOX_SSH_KEY}}
-  - task: update-runtime-config-dns
-    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-    params:
-      BOSH_CLIENT: {{SALSA_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{SALSA_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{SALSA_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{SALSA_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{SALSA_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{SALSA_JUMPBOX_SSH_KEY}}
+  - do:
+    - put: salsa-lock-pool
+      params:
+        acquire: true
+    - get: every-day
+      trigger: true
+    - get: ci
+    - get: bosh-deployment
+    - task: clean-up
+      file: ci/tasks/bosh-cleanup/task.yml
+      params:
+        BOSH_CLIENT: {{SALSA_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{SALSA_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{SALSA_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{SALSA_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{SALSA_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{SALSA_JUMPBOX_SSH_KEY}}
+    - task: update-runtime-config-dns
+      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+      params:
+        BOSH_CLIENT: {{SALSA_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{SALSA_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{SALSA_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{SALSA_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{SALSA_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{SALSA_JUMPBOX_SSH_KEY}}
+    ensure:
+      put: salsa-lock-pool
+      params:
+        release: salsa-lock-pool
+
 - name: guac-cleanup
   plan:
-  - get: every-day
-    trigger: true
-  - get: ci
-  - get: bosh-deployment
-  - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
-    params:
-      BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{GUAC_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
-  - task: update-runtime-config-dns
-    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-    params:
-      BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{GUAC_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
+  - do:
+    - put: guac-lock-pool
+      params:
+        acquire: true
+    - get: every-day
+      trigger: true
+    - get: ci
+    - get: bosh-deployment
+    - task: clean-up
+      file: ci/tasks/bosh-cleanup/task.yml
+      params:
+        BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{GUAC_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
+    - task: update-runtime-config-dns
+      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+      params:
+        BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{GUAC_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
+    ensure:
+      put: guac-lock-pool
+      params:
+        release: guac-lock-pool

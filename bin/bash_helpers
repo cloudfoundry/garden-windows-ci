@@ -81,15 +81,22 @@ buildpacks_cf_target() {
 
 # Helper functions
 _env_creds_yml() {
+  _bosh_creds_yml $1
+  _cf_creds_yml $1
+}
+
+_bosh_creds_yml() {
   local environment=$1
-  if [[ -z "(_project_name $environment)" ]]; then
+
+  project_name=$(_project_name $environment)
+  if [[ -z "$project_name" ]]; then
     echo "Unknown environment: $environment"
     return
   fi
+
   local uppercase_environment=$(echo "$environment" | awk '{print toupper($0)}')
 
   eval "$(_bosh_creds $environment)"
-  eval "$(_cf_creds $environment)"
 
   echo "${uppercase_environment}_BOSH_CLIENT: $BOSH_CLIENT"
   echo "${uppercase_environment}_BOSH_CLIENT_SECRET: $BOSH_CLIENT_SECRET"
@@ -97,15 +104,6 @@ _env_creds_yml() {
 
   local formatted_cert=$(echo "$BOSH_CA_CERT" | sed 's/^/  /')
   echo -e "${uppercase_environment}_BOSH_CA_CERT: |\n$formatted_cert"
-
-  echo "${uppercase_environment}_ADMIN_PASSWORD: $ADMIN_PASSWORD"
-  echo "${uppercase_environment}_CREDHUB_SECRET: $CREDHUB_SECRET"
-
-  project_name=$(_project_name $environment)
-  if [[ -z "$project_name" ]]; then
-    echo "Unknown environment: $environment"
-    return
-  fi
 
   if gsutil ls gs://$project_name/bbl-state.json > /dev/null 2>&1; then
     local bbl_state_dir=$(mktemp -d)
@@ -134,6 +132,16 @@ _env_creds_yml() {
   else
     echo "echo \"bbl-state.json missing for $project_name\""
   fi
+}
+
+_cf_creds_yml() {
+  local environment=$1
+  local uppercase_environment=$(echo "$environment" | awk '{print toupper($0)}')
+
+  eval "$(_cf_creds $environment)"
+
+  echo "${uppercase_environment}_ADMIN_PASSWORD: $ADMIN_PASSWORD"
+  echo "${uppercase_environment}_CREDHUB_SECRET: $CREDHUB_SECRET"
 }
 
 _bosh_creds() {
