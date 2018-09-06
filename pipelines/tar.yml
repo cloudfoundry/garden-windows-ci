@@ -98,4 +98,4 @@ jobs:
         args:
         - -c
         - |
-          curl -f -X POST -H "X-TrackerToken: $TOKEN" -H "Content-Type: application/json" -d '{"name":"New Build of Tar available!", "description": "A new build of tar.exe is available at https://greenhouse.ci.cf-app.com/teams/main/pipelines/tar. An update should be made to https://github.com/cloudfoundry/bosh-agent."}' "https://www.pivotaltracker.com/services/v5/projects/$PROJECT_ID/stories"
+          curl -f -X POST -H "X-TrackerToken: $TOKEN" -H "Content-Type: application/json" -d '{"name":"New Build of Tar available!", "description": "A new build of tar.exe is available at https://garden-windows.ci.cf-app.com/teams/main/pipelines/tar. An update should be made to https://github.com/cloudfoundry/bosh-agent."}' "https://www.pivotaltracker.com/services/v5/projects/$PROJECT_ID/stories"
