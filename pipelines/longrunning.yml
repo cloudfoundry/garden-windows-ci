@@ -54,10 +54,8 @@ resources:
 - name: vsphere-windows1803-stemcell
   type: s3
   source:
-   #bucket: bosh-windows-stemcells-private
-   #regexp: 1803/bosh-stemcell-(.*)-vsphere-esxi-windows1803-go_agent.tgz
-   bucket: all-bosh-windows
-   regexp: 1803/tested/vsphere/internal/bosh-stemcell-(.*)-vsphere-esxi-windows1803-go_agent.tgz
+   bucket: bosh-windows-stemcells-private
+   regexp: 1803/bosh-stemcell-(.*)-vsphere-esxi-windows1803-go_agent.tgz
    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 - name: mulgore-cf-deployment
