@@ -207,13 +207,13 @@ _cf_creds() {
   _is_using_credhub "$environment"
 
   if [[ $is_using_credhub = true ]]; then
-    local credhub_secret=$(credhub get -n /bosh-$environment/cf/uaa_clients_cc_service_key_client_secret -j | jq -r .value)
+    local credhub_secret=$(credhub get -n /bosh-$environment/cf/credhub_admin_client_secret -j | jq -r .value)
     echo "export CREDHUB_SECRET=$credhub_secret"
 
     local admin_password=$(credhub get -n /bosh-$environment/cf/cf_admin_password -j | jq -r .value)
     echo "export ADMIN_PASSWORD=$admin_password"
   else
-    local credhub_secret=$(bosh int --path /uaa_clients_cc_service_key_client_secret <(gsutil cat gs://$project_name/cf/creds.yml))
+    local credhub_secret=$(bosh int --path /credhub_admin_client_secret <(gsutil cat gs://$project_name/cf/creds.yml))
     echo "export CREDHUB_SECRET=$credhub_secret"
 
     local admin_password=$(bosh int --path /cf_admin_password <(gsutil cat gs://$project_name/cf/vars.yml))
