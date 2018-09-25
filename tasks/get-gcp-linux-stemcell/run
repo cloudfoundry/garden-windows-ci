@@ -2,6 +2,6 @@
 
 set -eux
 
-version=$(bosh int --path '/stemcells/os=ubuntu-trusty/version' $bosh_manifest_path)
+version=$(bosh int --path '/stemcells/os=ubuntu-xenial/version' $bosh_manifest_path)
 cd stemcell
-curl -LO "https://s3.amazonaws.com/bosh-gce-light-stemcells/light-bosh-stemcell-${version}-google-kvm-ubuntu-trusty-go_agent.tgz"
+curl -LO "https://s3.amazonaws.com/bosh-gce-light-stemcells/light-bosh-stemcell-${version}-google-kvm-ubuntu-xenial-go_agent.tgz"
