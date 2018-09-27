@@ -29,7 +29,7 @@ read -r -d '' JSON_TEMPLATE <<EOF || true
   "include_windows": true,
   "include_ssh": true,
   "credhub_mode": "$CREDHUB_MODE",
-  "credhub_cilent": "credhub_admin_client",
+  "credhub_client": "credhub_admin_client",
   "credhub_secret": "$CREDHUB_SECRET",
   "unallocated_ip_for_security_group": "$UNALLOCATED_IP",
   "use_windows_test_task": true,
