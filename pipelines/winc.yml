@@ -53,6 +53,11 @@ resources:
   source:
     branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-deployment.git
+- name: cf-deployment-fork
+  type: git
+  source:
+    branch: 1803-instance-group
+    uri: https://github.com/greenhouse-org/cf-deployment.git
 - name: winc-release-develop
   type: git
   source:
@@ -75,13 +80,21 @@ resources:
   source:
     branch: fork-master
     uri: https://github.com/greenhouse-org/garden-integration-tests.git
-- name: gcp-windows-stemcell
+- name: gcp-1709-stemcell
   type: s3
   source:
     bucket: all-bosh-windows
     regexp: 1709/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2016-go_agent.tgz
     access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+- name: gcp-1803-stemcell
+  type: s3
+  source:
+    bucket: all-bosh-windows
+    regexp: 1803/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows1803-go_agent.tgz
+    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+
 - name: pesto-lock-pool
   type: pool
   source:
@@ -128,7 +141,7 @@ resources:
 jobs:
 - name: generate-readme
   serial: true
-  serial_groups: [windows2016]
+  serial_groups: [1709]
   plan:
   - aggregate:
     - get: ci
@@ -171,9 +184,9 @@ jobs:
   - put: groot-windows-develop
     params: { repository: bumped-repo }
 
-- name: groot-windows
+- name: groot-1709
   serial: true
-  serial_groups: [windows2016]
+  serial_groups: [1709]
   plan:
   - aggregate:
     - get: ci
@@ -185,6 +198,32 @@ jobs:
   - task: test
     input_mapping: { groot-windows: groot-windows-develop }
     file: ci/tasks/test-groot-windows/task.yml
+
+- name: groot-1803
+  serial: true
+  serial_groups: [1803]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: every-2hrs
+      trigger: true
+    - get: groot-windows-develop
+      trigger: true
+    - get: groot-windows-master
+  - task: test
+    input_mapping: { groot-windows: groot-windows-develop }
+    file: ci/tasks/test-groot-windows/task.yml
+    tags: [1803]
+
+- name: bump-submoduled-groot
+  serial: true
+  serial_groups: [1709,1803]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: groot-windows-develop
+      passed: [groot-1709, groot-1803]
+    - get: groot-windows-master
   - task: merge-develop-to-master
     input_mapping: { from-repo: groot-windows-develop, to-repo: groot-windows-master}
     file: ci/tasks/merge-repo/task.yml
@@ -192,9 +231,9 @@ jobs:
   - put: groot-windows-master
     params: { repository: merged-repo/to-repo }
 
-- name: winc
+- name: winc-1709
   serial: true
-  serial_groups: [windows2016]
+  serial_groups: [1709]
   plan:
   - aggregate:
     - get: ci
@@ -202,7 +241,6 @@ jobs:
       trigger: true
     - get: winc-develop
       trigger: true
-    - get: winc-master
     - get: groot-windows-master
       trigger: true
   - task: build-groot
@@ -215,6 +253,41 @@ jobs:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1709
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 1709
+
+- name: winc-1803
+  serial: true
+  serial_groups: [1803]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: every-2hrs
+      trigger: true
+    - get: winc-develop
+      trigger: true
+    - get: groot-windows-master
+      trigger: true
+  - task: build-groot
+    input_mapping: { groot-windows: groot-windows-master }
+    file: ci/tasks/build-groot/task.yml
+    tags: [1803]
+  - task: test
+    input_mapping: { winc: winc-develop }
+    file: ci/tasks/test-winc/task.yml
+    tags: [1803]
+    params:
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
+      WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
+      WINDOWS_VERSION: 1803
+
+- name: bump-submoduled-winc
+  serial: true
+  serial_groups: [1709, 1803]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: winc-develop
+      passed: [winc-1709, winc-1803]
+    - get: winc-master
   - task: merge-develop-to-master
     input_mapping: { from-repo: winc-develop, to-repo: winc-master }
     file: ci/tasks/merge-repo/task.yml
@@ -222,9 +295,9 @@ jobs:
   - put: winc-master
     params: { repository: merged-repo/to-repo }
 
-- name: local-gats
+- name: gats-1709
   serial: true
-  serial_groups: [windows2016]
+  serial_groups: [1709]
   plan:
   - aggregate:
     - get: ci
@@ -234,7 +307,7 @@ jobs:
     - get: garden-runc-release
       trigger: true
     - get: winc-master
-      passed: [winc]
+      passed: [bump-submoduled-winc]
       trigger: true
     - get: winc-release-develop
     - get: groot-windows-master
@@ -285,6 +358,75 @@ jobs:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1709
       WINDOWS_VERSION: 1709
 
+- name: gats-1803
+  serial: true
+  serial_groups: [1803]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: every-2hrs
+      trigger: true
+    - get: gats-fork
+    - get: garden-runc-release
+      trigger: true
+    - get: winc-master
+      passed: [bump-submoduled-winc]
+      trigger: true
+    - get: winc-release-develop
+    - get: groot-windows-master
+  - aggregate:
+    - task: build-winc
+      file: ci/tasks/build-binary/task.yml
+      tags: [1803]
+      input_mapping:
+        repo: winc-master
+      output_mapping:
+        binary-output: winc-binary
+      params:
+        IMPORT_PATH: "code.cloudfoundry.org/winc"
+        PACKAGE: "./cmd/winc"
+    - task: build-winc-network
+      file: ci/tasks/build-winc-network/task.yml
+      tags: [1803]
+      input_mapping: { winc: winc-master }
+      params:
+        WINDOWS_VERSION: 1803
+    - task: build-groot
+      input_mapping: { groot-windows: groot-windows-master }
+      file: ci/tasks/build-groot/task.yml
+      tags: [1803]
+    - task: build-nstar
+      file: ci/tasks/build-binary/task.yml
+      tags: [1803]
+      input_mapping:
+        repo: winc-release-develop
+      output_mapping:
+        binary-output: nstar-binary
+      params:
+        PACKAGE: "./src/nstar"
+    - task: build-garden-init
+      file: ci/tasks/build-binary/task.yml
+      tags: [1803]
+      input_mapping:
+        repo: garden-runc-release
+      output_mapping:
+        binary-output: garden-init-binary
+      params:
+        PACKAGE: "src/code.cloudfoundry.org/guardian/cmd/winit"
+        BINARY_NAME: "garden-init.exe"
+  - task: copy-forks
+    file: ci/tasks/copy-forks/task.yml
+    input_mapping:
+      garden-integration-tests: gats-fork
+  - task: run-gats
+    file: ci/tasks/run-local-gats/task.yml
+    tags: [1803]
+    input_mapping:
+      garden-runc-release: garden-runc-release-forks
+    params:
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
+      WINDOWS_VERSION: 1803
+
 - name: bump-winc-release
   serial: true
   plan:
@@ -293,11 +435,11 @@ jobs:
     - get: winc-release-develop
     - get: winc-master
       passed:
-      - local-gats
+      - bump-submoduled-winc
       trigger: true
     - get: groot-windows-master
       passed:
-      - groot-windows
+      - bump-submoduled-groot
       trigger: true
   - task: bump-submodule
     file: ci/tasks/bump-submodule/task.yml
@@ -339,8 +481,9 @@ jobs:
     params:
       TEST_PATH: "src/nstar"
 
-- name: pesto-cats
+- name: pesto-cats-1709
   serial: true
+  serial_groups: [1709]
   plan:
   - put: pesto-lock-pool
     params:
@@ -356,7 +499,7 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
       trigger: true
-    - get: gcp-windows-stemcell
+    - get: gcp-1709-stemcell
   - aggregate:
     - task: get-cf-vars
       file: ci/tasks/get-gcs-file/task.yml
@@ -399,7 +542,7 @@ jobs:
       manifest: cf-deployment/cf-deployment.yml
       stemcells:
       - gcp-linux-stemcell/*.tgz
-      - gcp-windows-stemcell/*.tgz
+      - gcp-1709-stemcell/*.tgz
       releases:
       - winc-tarball/*.tgz
       ops_files:
@@ -456,13 +599,132 @@ jobs:
     params:
       release: pesto-lock-pool
 
+- name: pesto-cats-1803
+  serial: true
+  serial_groups: [1803]
+  plan:
+  - put: pesto-lock-pool
+    params:
+      acquire: true
+  - aggregate:
+    - get: ci
+    - get: every-2hrs
+      trigger: true
+    - get: winc-release-develop
+      passed: [test-nstar]
+      trigger: true
+    - get: cf-acceptance-tests
+    - get: cf-deployment-concourse-tasks
+    - resource: cf-deployment-fork
+      trigger: true
+      get: cf-deployment
+    - get: gcp-1803-stemcell
+  - aggregate:
+    - task: get-cf-vars
+      file: ci/tasks/get-gcs-file/task.yml
+      output_mapping: { output: cf-vars }
+      params:
+        BUCKET: cff-greenhouse-pesto
+        FILE_NAME: cf/vars.yml
+        SERVICE_ACCOUNT_KEY: {{PESTO_SERVICE_ACCOUNT_JSON}}
+    - task: get-linux-stemcell
+      file: ci/tasks/get-gcp-linux-stemcell/task.yml
+      output_mapping: { stemcell: gcp-linux-stemcell }
+    - task: create-winc-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping:
+        release: winc-release-develop
+      output_mapping:
+        release-tarball: winc-tarball
+  - task: delete-deployment
+    file: ci/tasks/bosh-deld/task.yml
+    params:
+      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+      BOSH_DEPLOYMENT: cf
+      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+  - task: delete-stemcells
+    file: ci/tasks/bosh-delete-stemcells/task.yml
+    params:
+      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+      BOSH_DEPLOYMENT: cf
+      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+  - put: pesto-cf-deployment
+    params:
+      manifest: cf-deployment/cf-deployment.yml
+      stemcells:
+      - gcp-linux-stemcell/*.tgz
+      - gcp-1803-stemcell/*.tgz
+      releases:
+      - winc-tarball/*.tgz
+      ops_files:
+      - cf-deployment/operations/scale-to-one-az.yml
+      - ci/operations/use-3-azs-for-router.yml
+      - cf-deployment/operations/experimental/windows1803-cell.yml
+      - cf-deployment/operations/experimental/use-latest-windows1803-stemcell.yml
+      - cf-deployment/operations/experimental/disable-consul.yml
+      - cf-deployment/operations/experimental/disable-consul-windows1803.yml
+      - cf-deployment/operations/test/windows1803-debug.yml
+      - ci/operations/latest-winc.yml
+      - ci/operations/scale-down-windows1803.yml
+      - ci/operations/enable-rdp-1803.yml
+      vars_files:
+      - cf-vars/vars.yml
+      cleanup: true
+    get_params:
+      skip_export: true
+  - task: enable-credhub
+    file: ci/tasks/enable-credhub/task.yml
+    attempts: 3
+    params:
+      CF_API: api.pesto.cf-app.com
+      CF_USERNAME: admin
+      CF_PASSWORD: {{PESTO_ADMIN_PASSWORD}}
+  - task: generate-integration-config
+    file: ci/tasks/generate-integration-config/task.yml
+    params:
+      ADMIN_PASSWORD: {{PESTO_ADMIN_PASSWORD}}
+      ADMIN_USER: admin
+      API: api.pesto.cf-app.com
+      APPS_DOMAIN: pesto.cf-app.com
+      UNALLOCATED_IP: 10.0.0.5
+      WINDOWS_STACK: windows2016
+      CREDHUB_MODE: assisted
+      CREDHUB_SECRET: {{PESTO_CREDHUB_SECRET}}
+  - task: cats
+    file: cf-deployment-concourse-tasks/run-cats/task.yml
+    params:
+      NODES: 4
+    on_success:
+      task: delete-deployment
+      file: ci/tasks/bosh-deld/task.yml
+      params:
+        BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+        BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+        BOSH_DEPLOYMENT: cf
+        BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+        JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+  ensure:
+    put: pesto-lock-pool
+    params:
+      release: pesto-lock-pool
+
 - name: shipit-major
   serial: true
   plan:
   - aggregate:
     - get: ci
     - get: winc-release-develop
-      passed: [pesto-cats]
+      passed: [pesto-cats-1709, pesto-cats-1803]
     - get: version
       params: {bump: major}
   - task: finalize-release
@@ -499,7 +761,7 @@ jobs:
   - aggregate:
     - get: ci
     - get: winc-release-develop
-      passed: [pesto-cats]
+      passed: [pesto-cats-1709, pesto-cats-1803]
     - get: version
       params: {bump: minor}
   - task: finalize-release
@@ -536,7 +798,7 @@ jobs:
   - aggregate:
     - get: ci
     - get: winc-release-develop
-      passed: [pesto-cats]
+      passed: [pesto-cats-1709, pesto-cats-1803]
     - get: version
       params: {bump: patch}
   - task: finalize-release
