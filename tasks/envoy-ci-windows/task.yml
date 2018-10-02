@@ -5,6 +5,9 @@ inputs:
 - name: ci
 - name: envoy
 
+outputs:
+- name: envoy-exe
+
 run:
   path: powershell
   args:

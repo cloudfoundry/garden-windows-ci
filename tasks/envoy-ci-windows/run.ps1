@@ -8,6 +8,7 @@ $env:BAZEL_VC="C:\var\vcap\data\VSBuildTools\2017\vc"
 $env:ENVOY_BAZEL_ROOT="c:\_eb"
 
 $tempDir = "$env:TEMP\envoy-build-dir"
+$envoyOutputDir = "$PWD\envoy-exe"
 
 Remove-Item -Recurse -Force $tempDir -ErrorAction Ignore
 cmd.exe /c rd /s /q $env:ENVOY_BAZEL_ROOT
@@ -23,6 +24,17 @@ pushd "$tempDir\envoy"
     Write-Host "ci failed"
     bazel --output_base=$env:ENVOY_BAZEL_ROOT shutdown
     exit $ec
+  }
+
+  if ("$env:BUILD_TYPE" == "release") {
+    $gitsha = $(git rev-parse HEAD).Substring(0, 8)
+    $ec = $LASTEXITCODE
+    if ($ec -ne 0) {
+      Write-Host "failed to get sha of HEAD commit"
+      exit $ec
+    }
+    $timestamp = $(Get-Date -UFormat "%s").Split(".")[0]
+    Copy-Item "./bazel-out/x64_windows-opt/bin/source/exe/envoy-static.exe" "$envoyOutputDir/envoy-$timestamp-$gitsha.exe"
   }
 
   bazel --output_base=$env:ENVOY_BAZEL_ROOT shutdown
