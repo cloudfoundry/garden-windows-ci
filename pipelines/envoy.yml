@@ -12,12 +12,30 @@ resources:
     uri: https://github.com/greenhouse-org/envoy.git
 
 jobs:
-- name: envoy-windows
+- name: envoy-windows-debug
+  serial: true
+  serial_groups: [envoy]
   public: true
   plan:
   - get: ci
   - get: envoy
     trigger: true
   - task: envoy-ci-windows
-    tags: [1803]
+    tags: [envoy]
     file: ci/tasks/envoy-ci-windows/task.yml
+    params:
+      BUILD_TYPE: debug
+
+- name: envoy-windows-release
+  serial: true
+  serial_groups: [envoy]
+  public: true
+  plan:
+  - get: ci
+  - get: envoy
+    trigger: true
+  - task: envoy-ci-windows
+    tags: [envoy]
+    file: ci/tasks/envoy-ci-windows/task.yml
+    params:
+      BUILD_TYPE: release
