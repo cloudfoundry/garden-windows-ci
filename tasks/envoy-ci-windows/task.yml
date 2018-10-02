@@ -12,3 +12,6 @@ run:
   - "Bypass"
   - "-File"
   - ci/tasks/envoy-ci-windows/run.ps1
+
+params:
+  BUILD_TYPE:
