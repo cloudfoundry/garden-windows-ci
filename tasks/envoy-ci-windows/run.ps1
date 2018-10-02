@@ -26,7 +26,7 @@ pushd "$tempDir\envoy"
     exit $ec
   }
 
-  if ("$env:BUILD_TYPE" == "release") {
+  if ("$env:BUILD_TYPE" -eq "release") {
     $gitsha = $(git rev-parse HEAD).Substring(0, 8)
     $ec = $LASTEXITCODE
     if ($ec -ne 0) {
