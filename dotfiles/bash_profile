@@ -284,8 +284,7 @@ fly-winc () {
 }
 
 fly-winc-2019 () {
-  fly -t garden-windows sp -p winc-2019 -c <(bosh int $HOME/workspace/garden-windows-ci/pipelines/winc-2019.yml \
-    -o $HOME/workspace/garden-windows-ci/vars/make-winc-2019.yml) \
+  fly -t garden-windows sp -p winc-2019 -c $HOME/workspace/garden-windows-ci/pipelines/winc-2019.yml \
     -l<(lpass show --notes github-deploy-keys-2) \
     -l $HOME/workspace/garden-windows-ci/vars/winc-2019.yml
 }
