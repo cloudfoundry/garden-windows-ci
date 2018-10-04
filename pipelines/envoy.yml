@@ -11,6 +11,14 @@ resources:
     branch: windows-linux-build
     uri: https://github.com/greenhouse-org/envoy.git
 
+- name: envoy-windows-bucket
+  type: s3
+  source:
+    bucket: garden-windows-envoy
+    regexp: envoy-(.*)-.*.exe
+    access_key_id: {{BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID}}
+    secret_access_key: {{BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY}}
+
 jobs:
 - name: envoy-windows-debug
   serial: true
@@ -39,3 +47,6 @@ jobs:
     file: ci/tasks/envoy-ci-windows/task.yml
     params:
       BUILD_TYPE: release
+  - put: envoy-windows-bucket
+    params:
+      file: envoy-exe/envoy-*-*.exe
