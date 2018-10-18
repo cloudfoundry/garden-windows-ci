@@ -62,7 +62,7 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/windows2016fs.git
-    paths: [ ((os-version))/Dockerfile, enable-vcap-custom-cert.ps1, verify-vcap-custom-cert.ps1 ]
+    paths: [ ((os-version))/Dockerfile ]
 
 - name: cf-acceptance-tests
   type: git

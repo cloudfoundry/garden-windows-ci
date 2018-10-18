@@ -22,5 +22,3 @@ params:
   DOCKER_USERNAME: ""
   DOCKER_PASSWORD: ""
   OS_VERSION: ""
-  ENABLE_VCAP_CUSTOM_CERT: "repo/enable-vcap-custom-cert.ps1"
-  VERIFY_VCAP_CUSTOM_CERT: "repo/verify-vcap-custom-cert.ps1"
