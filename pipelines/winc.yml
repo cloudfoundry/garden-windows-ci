@@ -215,14 +215,14 @@ jobs:
     file: ci/tasks/test-groot-windows/task.yml
     tags: [1803]
 
-- name: bump-submoduled-groot
+- name: merge-groot-to-master
   serial: true
-  serial_groups: [1709,1803]
   plan:
   - aggregate:
     - get: ci
     - get: groot-windows-develop
       passed: [groot-1709, groot-1803]
+      trigger: true
     - get: groot-windows-master
   - task: merge-develop-to-master
     input_mapping: { from-repo: groot-windows-develop, to-repo: groot-windows-master}
@@ -279,14 +279,14 @@ jobs:
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 1803
 
-- name: bump-submoduled-winc
+- name: merge-winc-to-master
   serial: true
-  serial_groups: [1709, 1803]
   plan:
   - aggregate:
     - get: ci
     - get: winc-develop
       passed: [winc-1709, winc-1803]
+      trigger: true
     - get: winc-master
   - task: merge-develop-to-master
     input_mapping: { from-repo: winc-develop, to-repo: winc-master }
@@ -307,7 +307,7 @@ jobs:
     - get: garden-runc-release
       trigger: true
     - get: winc-master
-      passed: [bump-submoduled-winc]
+      passed: [merge-winc-to-master]
       trigger: true
     - get: winc-release-develop
     - get: groot-windows-master
@@ -370,7 +370,7 @@ jobs:
     - get: garden-runc-release
       trigger: true
     - get: winc-master
-      passed: [bump-submoduled-winc]
+      passed: [merge-winc-to-master]
       trigger: true
     - get: winc-release-develop
     - get: groot-windows-master
@@ -435,11 +435,11 @@ jobs:
     - get: winc-release-develop
     - get: winc-master
       passed:
-      - bump-submoduled-winc
+      - merge-winc-to-master
       trigger: true
     - get: groot-windows-master
       passed:
-      - bump-submoduled-groot
+      - merge-groot-to-master
       trigger: true
   - task: bump-submodule
     file: ci/tasks/bump-submodule/task.yml
@@ -483,7 +483,6 @@ jobs:
 
 - name: pesto-cats-1709
   serial: true
-  serial_groups: [1709]
   plan:
   - put: pesto-lock-pool
     params:
@@ -601,7 +600,6 @@ jobs:
 
 - name: pesto-cats-1803
   serial: true
-  serial_groups: [1803]
   plan:
   - put: pesto-lock-pool
     params:
