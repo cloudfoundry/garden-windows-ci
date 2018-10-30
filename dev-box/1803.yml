@@ -3,10 +3,9 @@ name: "1803"
 
 releases:
 - name: windows-tools
-  #sha1: a8b853548debfb1d4b87d8ef3d2bbbf0d600a5b5
-  #url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=22
-  #version: 22
-  version: 21+dev.1
+  sha1: b4eb3bead6d80e2e36549384844771ce79a13f44
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=23
+  version: 23
 - name: windows-utilities
   sha1: efc10ac0f4acae23637ce2c6f864d20df2e3a781
   url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.11.0
