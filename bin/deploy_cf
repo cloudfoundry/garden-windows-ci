@@ -1,0 +1,82 @@
+#!/bin/bash
+
+set -e
+
+if [ "$BOSH_TARGET_NAME" != "$1" ]; then
+  echo "Current bosh target is \"$BOSH_TARGET_NAME\". Please 'bt $1' and run the script again"
+  exit 1
+fi
+if [[ -z "$(gcloud config list --format='value(core.account)')" ]]; then
+  echo 'Must log in using `gcloud auth login`'
+  exit 1
+fi
+
+environment=$1
+case "$1" in
+  pesto | alfredo)
+    project_name=cff-greenhouse-$1
+    ;;
+  tartar | hummus | tzatziki | guac)
+    project_name=cf-greenhouse-$1
+    ;;
+  salsa)
+    project_name=cf-garden-windows-$1
+    environment=mild-salsa
+    ;;
+  mulgore)
+    project_name=$1
+    ;;
+  *)
+    echo "Cannot deploy environment: $1"
+    exit 1
+esac
+
+echo "deploying $environment..."
+CF_DEPLOYMENT=${CF_DEPLOYMENT:-$HOME/workspace/cf-deployment}
+GARDEN_WINDOWS_CI=${GARDEN_WINDOWS_CI:-$HOME/workspace/garden-windows-ci}
+BOSH_DEPLOYMENT=${BOSH_DEPLOYMENT:-$HOME/workspace/bosh-deployment}
+
+bosh -d cf update-runtime-config ${BOSH_DEPLOYMENT}/runtime-configs/dns.yml --name dns
+
+if [ "$2" = "--use-credhub" ]
+then
+  echo "Deploying cf on $environment with credhub"
+  bosh -d cf deploy ${CF_DEPLOYMENT}/cf-deployment.yml \
+    -o ${CF_DEPLOYMENT}/operations/use-latest-stemcell.yml \
+    -o ${CF_DEPLOYMENT}/operations/windows-cell.yml \
+    -o ${CF_DEPLOYMENT}/operations/use-latest-windows-stemcell.yml \
+    -o ${CF_DEPLOYMENT}/operations/windows2016-cell.yml \
+    -o ${CF_DEPLOYMENT}/operations/use-latest-windows2016-stemcell.yml \
+    -o ${CF_DEPLOYMENT}/operations/scale-to-one-az.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/windows2016-debug.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/windows2016-prs.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/latest-garden-runc.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/latest-winc.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2016.yml \
+    -v system_domain=$environment.cf-app.com \
+    --skip-drain
+else
+  echo "Deploying cf on $environment without credhub. To use credhub use option --use-credhub"
+  DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+  gsutil cp gs://$project_name/cf/creds.yml $DIR/creds.yml
+  bosh -d cf deploy ${CF_DEPLOYMENT}/cf-deployment.yml \
+    -o ${CF_DEPLOYMENT}/operations/use-latest-stemcell.yml \
+    -o ${CF_DEPLOYMENT}/operations/windows-cell.yml \
+    -o ${CF_DEPLOYMENT}/operations/use-latest-windows-stemcell.yml \
+    -o ${CF_DEPLOYMENT}/operations/windows2016-cell.yml \
+    -o ${CF_DEPLOYMENT}/operations/use-latest-windows2016-stemcell.yml \
+    -o ${CF_DEPLOYMENT}/operations/scale-to-one-az.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/windows2016-debug.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/windows2016-prs.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/latest-garden-runc.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/latest-winc.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2016.yml \
+    -l <(gsutil cat gs://$project_name/cf/vars.yml) \
+    --vars-store $DIR/creds.yml \
+    -v system_domain=$environment.cf-app.com \
+    --skip-drain
+  gsutil cp $DIR/creds.yml gs://$project_name/cf/creds.yml
+  rm $DIR/creds.yml
+fi
