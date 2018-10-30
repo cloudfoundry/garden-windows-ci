@@ -1,0 +1,67 @@
+#!/bin/bash
+set -o errexit
+set -o pipefail
+set -o nounset
+
+create-dev-box-director() {
+  local garden_windows_ci=${GARDEN_WINDOWS_CI:-$HOME/workspace/garden-windows-ci}
+  local bosh_deployment=${BOSH_DEPLOYMENT:-$HOME/workspace/bosh-deployment}
+  local cidr=$(ip -o -4 -h addr list vmnet8 | awk '{ print $4}')
+  local cidr_prefix="$(echo $cidr | cut -d '.' -f 1,2,3)"
+  local internal_gw="$cidr_prefix.2"
+  local network_name="/dev/vmnet8"
+  local state_dir="$HOME/workspace/vmfiles/director"
+  local store_dir="$state_dir/store"
+  mkdir -p $state_dir
+  mkdir -p "$store_dir"
+
+  . $garden_windows_ci/bin/bash_helpers
+  _unset_prefix "BOSH_"
+
+  bosh create-env $bosh_deployment/bosh.yml \
+    -o $garden_windows_ci/dev-box/vmrun-cpi-opsfile.yml \
+    -o $bosh_deployment/jumpbox-user.yml \
+    --vars-store $state_dir/creds.yml \
+    --state $state_dir/state.json \
+    -v director_name="vmrun" \
+    -v blobstore_agent_password="foo" \
+    -v nats_password="bar" \
+    -v cpi_url="https://storage.googleapis.com/garden-windows-temp/bosh-vmrun-cpi-release-fixed.tgz" \
+    -v cpi_sha1="83a571187ed991e06e817d892a5c068d82f67bfe" \
+    -v internal_ip="$cidr_prefix.6" \
+    -v internal_cidr="$cidr" \
+    -v internal_gw="$internal_gw" \
+    -v stemcell_url="https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-xenial-go_agent?v=97.28" \
+    -v stemcell_sha1="6fca8124ae7455bd95ebb074ddb0436bf1832fb1" \
+    -v stemcell_store_path="$HOME/workspace/vmfiles/stemcells" \
+    -v network_name="$network_name" \
+    -v vm_store_path="$store_dir" \
+    -v vmrun_bin_path="$(which vmrun)" \
+    -v ovftool_bin_path="$(which ovftool)" \
+    -v vdiskmanager_bin_path="$(which vmware-vdiskmanager)" \
+    -v ssh_tunnel_host="$cidr_prefix.1" \
+    -v ssh_tunnel_username="$(whoami)" \
+    -v ssh_tunnel_platform="linux" \
+    --var-file ssh_tunnel_private_key=<(bosh int <(lpass show --notes 'dev-box-secerts.yml') --path /DEV_BOX_PRIVATE_KEY) \
+    ;
+
+  bosh -e "$cidr_prefix.6" alias-env dev-box \
+    --ca-cert=<(bosh int $state_dir/creds.yml --path /default_ca/certificate) \
+  ;
+
+  bosh -e dev-box login \
+    --client=admin \
+    --client-secret=$(bosh int $state_dir/creds.yml --path /admin_password) \
+    --ca-cert=<(bosh int $state_dir/creds.yml --path /default_ca/certificate) \
+  ;
+
+  bosh -e dev-box update-cloud-config -n \
+    $garden_windows_ci/dev-box/cloud-config.yml \
+    -v internal_reserved_range="$cidr_prefix.1 - $cidr_prefix.10" \
+    -v internal_cidr="$cidr" \
+    -v internal_gw="$internal_gw" \
+    -v network_name="$network_name" \
+  ;
+}
+
+create-dev-box-director

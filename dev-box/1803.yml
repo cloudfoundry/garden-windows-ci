@@ -1,0 +1,66 @@
+---
+name: "1803"
+
+releases:
+- name: windows-tools
+  #sha1: a8b853548debfb1d4b87d8ef3d2bbbf0d600a5b5
+  #url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=22
+  #version: 22
+  version: 21+dev.1
+- name: windows-utilities
+  sha1: efc10ac0f4acae23637ce2c6f864d20df2e3a781
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.11.0
+  version: 0.11.0
+
+stemcells:
+- alias: windows1803
+  os: windows1803
+  version: latest
+
+update:
+  canaries: 1
+  canary_watch_time: 30000-300000
+  update_watch_time: 30000-300000
+  max_in_flight: 3
+  max_errors: 2
+  serial: false
+
+instance_groups:
+- name: 1803-vm
+  stemcell: windows1803
+  vm_type: winc-vm
+  azs: [z1]
+  networks:
+  - name: default
+  jobs:
+  - name: diego-ssh
+    properties:
+      diego_ssh:
+        public_key: ((DEV_BOX_PUBLIC_KEY))
+        port: 2222
+    release: windows-tools
+  - name: docker
+    release: windows-tools
+  - name: git
+    release: windows-tools
+  - name: golang-windows
+    release: windows-tools
+  - name: load-powershell-env
+    release: windows-tools
+  - name: mingw64
+    release: windows-tools
+  - name: processhacker
+    release: windows-tools
+  - name: enable_rdp
+    properties:
+      enable_rdp:
+        enabled: true
+    release: windows-utilities
+  - name: set_password
+    properties:
+      set_password:
+        username: "Administrator"
+        password: ((DEV_BOX_PASSWORD))
+    release: windows-utilities
+  instances: 1
+  lifecycle: service

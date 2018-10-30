@@ -241,3 +241,9 @@ _project_name() {
       ;;
   esac
 }
+
+_unset_prefix() {
+  local prefix=$1
+  unset $(printenv |grep $prefix |awk 'BEGIN{FS="=";}{print $1;}')
+}
+
