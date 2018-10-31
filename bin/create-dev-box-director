@@ -42,7 +42,7 @@ create-dev-box-director() {
     -v ssh_tunnel_host="$cidr_prefix.1" \
     -v ssh_tunnel_username="$(whoami)" \
     -v ssh_tunnel_platform="linux" \
-    --var-file ssh_tunnel_private_key=<(bosh int <(lpass show --notes 'dev-box-secerts.yml') --path /DEV_BOX_PRIVATE_KEY) \
+    --var-file ssh_tunnel_private_key=<(bosh int <(lpass show --notes 'dev-box-secrets.yml') --path /DEV_BOX_PRIVATE_KEY) \
     ;
 
   bosh -e "$cidr_prefix.6" alias-env dev-box \
