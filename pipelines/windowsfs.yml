@@ -538,6 +538,7 @@ jobs:
       - ((windows-debug-ops-file))
       - ((windows-scale-down-ops-file))
       - ((windows-rdp-ops-file))
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
       - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
       - cf-vars/vars.yml
@@ -758,6 +759,7 @@ jobs:
       - ((windows-debug-ops-file))
       - ((windows-scale-down-ops-file))
       - ((windows-rdp-ops-file))
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
       - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
       - cf-vars/vars.yml

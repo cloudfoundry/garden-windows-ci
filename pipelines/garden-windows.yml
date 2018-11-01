@@ -233,6 +233,7 @@ jobs:
         - cf-deployment/operations/use-latest-windows-stemcell.yml
         - cf-deployment/operations/experimental/disable-consul.yml
         - cf-deployment/operations/experimental/disable-consul-windows.yml
+        - cf-deployment/operations/stop-skipping-tls-validation.yml
         - ci/operations/latest-garden-windows.yml
         - ci/operations/scale-down-credhub.yml
         - ci/operations/enable-rdp.yml

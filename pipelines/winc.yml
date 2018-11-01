@@ -552,6 +552,7 @@ jobs:
       - cf-deployment/operations/experimental/disable-consul.yml
       - cf-deployment/operations/experimental/disable-consul-windows2016.yml
       - cf-deployment/operations/test/windows2016-debug.yml
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
       - ci/operations/latest-winc.yml
       - ci/operations/scale-down-windows2016.yml
       - ci/operations/enable-rdp-2016.yml
@@ -670,6 +671,7 @@ jobs:
       - cf-deployment/operations/experimental/disable-consul.yml
       - cf-deployment/operations/experimental/disable-consul-windows1803.yml
       - cf-deployment/operations/test/windows1803-debug.yml
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
       - ci/operations/latest-winc.yml
       - ci/operations/scale-down-windows1803.yml
       - ci/operations/enable-rdp-1803.yml

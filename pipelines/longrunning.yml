@@ -172,6 +172,7 @@ jobs:
       - cf-deployment/operations/experimental/use-latest-windows1803-stemcell.yml
       - cf-deployment/operations/test/windows2016-debug.yml
       - cf-deployment/operations/test/windows1803-debug.yml
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
       - ci/operations/latest-winc.yml
       - ci/operations/latest-windows2016fs-release.yml
       - ci/operations/latest-windows1803fs-release.yml

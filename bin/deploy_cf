@@ -46,10 +46,10 @@ then
     -o ${CF_DEPLOYMENT}/operations/windows-cell.yml \
     -o ${CF_DEPLOYMENT}/operations/use-latest-windows-stemcell.yml \
     -o ${CF_DEPLOYMENT}/operations/windows2016-cell.yml \
+    -o ${CF_DEPLOYMENT}/operations/test/windows2016-debug.yml \
     -o ${CF_DEPLOYMENT}/operations/use-latest-windows2016-stemcell.yml \
     -o ${CF_DEPLOYMENT}/operations/scale-to-one-az.yml \
-    -o ${GARDEN_WINDOWS_CI}/operations/windows2016-debug.yml \
-    -o ${GARDEN_WINDOWS_CI}/operations/windows2016-prs.yml \
+    -o ${CF_DEPLOYMENT}/operations/stop-skipping-tls-validation.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/latest-garden-runc.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/latest-winc.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp.yml \
@@ -65,10 +65,10 @@ else
     -o ${CF_DEPLOYMENT}/operations/windows-cell.yml \
     -o ${CF_DEPLOYMENT}/operations/use-latest-windows-stemcell.yml \
     -o ${CF_DEPLOYMENT}/operations/windows2016-cell.yml \
+    -o ${CF_DEPLOYMENT}/operations/test/windows2016-debug.yml \
     -o ${CF_DEPLOYMENT}/operations/use-latest-windows2016-stemcell.yml \
     -o ${CF_DEPLOYMENT}/operations/scale-to-one-az.yml \
-    -o ${GARDEN_WINDOWS_CI}/operations/windows2016-debug.yml \
-    -o ${GARDEN_WINDOWS_CI}/operations/windows2016-prs.yml \
+    -o ${CF_DEPLOYMENT}/operations/stop-skipping-tls-validation.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/latest-garden-runc.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/latest-winc.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp.yml \
