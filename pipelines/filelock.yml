@@ -9,6 +9,10 @@ resources:
   source:
     branch: master
     uri: http://github.com/cloudfoundry/garden-windows-ci.git
+- name: every-day
+  type: time
+  source:
+    interval: 24h
 
 jobs:
 - name: test
@@ -17,6 +21,8 @@ jobs:
   - aggregate:
     - get: ci
     - get: filelock
+      trigger: true
+    - get: every-day
       trigger: true
   - aggregate:
     - task: test-linux
