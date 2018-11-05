@@ -15,7 +15,6 @@ finalized-release-glob: finalized-release/windows1803fs-*.tgz
 windowsfs-uses-tar: false
 windows-cell-ops-file: cf-deployment/operations/experimental/windows1803-cell.yml
 latest-windows-stemcell-ops-file: cf-deployment/operations/experimental/use-latest-windows1803-stemcell.yml
-windows-debug-ops-file: cf-deployment/operations/test/windows1803-debug.yml
 windows-scale-down-ops-file: ci/operations/scale-down-windows1803.yml
 windows-rdp-ops-file: ci/operations/enable-rdp-1803.yml
 stemcell-regexp: 1803/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows1803-go_agent.tgz

@@ -53,11 +53,6 @@ resources:
   source:
     branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-deployment.git
-- name: cf-deployment-fork
-  type: git
-  source:
-    branch: 1803-instance-group
-    uri: https://github.com/greenhouse-org/cf-deployment.git
 - name: winc-release-develop
   type: git
   source:
@@ -549,9 +544,6 @@ jobs:
       - ci/operations/use-3-azs-for-router.yml
       - cf-deployment/operations/windows2016-cell.yml
       - cf-deployment/operations/use-latest-windows2016-stemcell.yml
-      - cf-deployment/operations/experimental/disable-consul.yml
-      - cf-deployment/operations/experimental/disable-consul-windows2016.yml
-      - cf-deployment/operations/test/windows2016-debug.yml
       - ci/operations/latest-winc.yml
       - ci/operations/scale-down-windows2016.yml
       - ci/operations/enable-rdp-2016.yml
@@ -613,7 +605,7 @@ jobs:
       trigger: true
     - get: cf-acceptance-tests
     - get: cf-deployment-concourse-tasks
-    - resource: cf-deployment-fork
+    - resource: cf-deployment
       trigger: true
       get: cf-deployment
     - get: gcp-1803-stemcell
@@ -667,9 +659,6 @@ jobs:
       - ci/operations/use-3-azs-for-router.yml
       - cf-deployment/operations/experimental/windows1803-cell.yml
       - cf-deployment/operations/experimental/use-latest-windows1803-stemcell.yml
-      - cf-deployment/operations/experimental/disable-consul.yml
-      - cf-deployment/operations/experimental/disable-consul-windows1803.yml
-      - cf-deployment/operations/test/windows1803-debug.yml
       - ci/operations/latest-winc.yml
       - ci/operations/scale-down-windows1803.yml
       - ci/operations/enable-rdp-1803.yml

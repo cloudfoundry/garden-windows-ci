@@ -15,7 +15,6 @@ finalized-release-glob: finalized-release/windows2016fs-*.tgz
 windowsfs-uses-tar: true
 windows-cell-ops-file: cf-deployment/operations/windows2016-cell.yml
 latest-windows-stemcell-ops-file: cf-deployment/operations/use-latest-windows2016-stemcell.yml
-windows-debug-ops-file: cf-deployment/operations/test/windows2016-debug.yml
 windows-scale-down-ops-file: ci/operations/scale-down-windows2016.yml
 windows-rdp-ops-file: ci/operations/enable-rdp-2016.yml
 stemcell-regexp: 1709/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2016-go_agent.tgz

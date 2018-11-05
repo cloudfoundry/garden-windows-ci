@@ -18,10 +18,8 @@ resources:
 - name: cf-deployment
   type: git
   source:
-    branch: 1803-instance-group
-    uri: https://github.com/greenhouse-org/cf-deployment.git
-    #branch: release-candidate
-    #uri: https://github.com/cloudfoundry/cf-deployment.git
+    branch: release-candidate
+    uri: https://github.com/cloudfoundry/cf-deployment.git
 - name: winc-release-develop
   type: git
   source:
@@ -164,14 +162,12 @@ jobs:
       - garden-windows-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
-      - cf-deployment/operations/windows-cell.yml
+      - cf-deployment/operations/windows2012R2-cell.yml
       - cf-deployment/operations/windows2016-cell.yml
       - cf-deployment/operations/experimental/windows1803-cell.yml
       - cf-deployment/operations/use-latest-windows-stemcell.yml
       - cf-deployment/operations/use-latest-windows2016-stemcell.yml
       - cf-deployment/operations/experimental/use-latest-windows1803-stemcell.yml
-      - cf-deployment/operations/test/windows2016-debug.yml
-      - cf-deployment/operations/test/windows1803-debug.yml
       - ci/operations/latest-winc.yml
       - ci/operations/latest-windows2016fs-release.yml
       - ci/operations/latest-windows1803fs-release.yml
