@@ -45,7 +45,7 @@
 - name: bosh cli (linux)
   when: is_ubuntu
   get_url:
-    url: "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.48-linux-amd64"
+    url: "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-5.3.1-linux-amd64"
     dest: "/usr/local/bin/bosh"
 - name: "bosh exec flag"
   when: is_ubuntu
@@ -57,7 +57,7 @@
 - name: bbl cli (linux)
   when: is_ubuntu
   get_url:
-    url: "https://github.com/cloudfoundry/bosh-bootloader/releases/download/v6.6.4/bbl-v6.6.4_linux_x86-64"
+    url: "https://github.com/cloudfoundry/bosh-bootloader/releases/download/v6.10.18/bbl-v6.10.18_linux_x86-64"
     dest: "/usr/local/bin/bbl"
 - name: "bbl exec flag"
   when: is_ubuntu

@@ -8,9 +8,7 @@
   when: is_ubuntu
   apt_repository: repo={{ item }}
   with_items:
-    - 'deb http://dell.archive.canonical.com/updates/ trusty-dell public'
-    - 'deb-src http://dell.archive.canonical.com/updates/ trusty-dell public'
-    - 'deb http://dell.archive.canonical.com/updates/ xenial-dell public'
-    - 'deb-src http://dell.archive.canonical.com/updates/ xenial-dell public'
-    - 'deb http://dell.archive.canonical.com/updates/ xenial-oem public'
-    - 'deb-src http://dell.archive.canonical.com/updates/ xenial-oem public'
+    - 'deb http://dell.archive.canonical.com/updates/ bionic-dell public'
+    - 'deb-src http://dell.archive.canonical.com/updates/ bionic-dell public'
+    - 'deb http://dell.archive.canonical.com/updates/ bionic-oem public'
+    - 'deb-src http://dell.archive.canonical.com/updates/ bionic-oem public'

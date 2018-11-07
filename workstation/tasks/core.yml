@@ -54,17 +54,10 @@
     - uuid-dev
     - libxml2-dev
     - libgstreamer1.0-dev
-    - libgstreamer0.10-dev
     - libgstreamer-plugins-base1.0-dev
-    - libgstreamer-plugins-base0.10-dev
     - libavutil-dev
     - libavcodec-dev
     - libavresample-dev
-- name: Install pip3 (linux)
-  when: is_ubuntu
-  shell: |
-    easy_install3 pip
-  become: yes
 - name: sync pip
   when: is_ubuntu
   pip: executable=pip3 name={{ item }}
