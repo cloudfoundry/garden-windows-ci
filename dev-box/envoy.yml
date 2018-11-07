@@ -44,6 +44,8 @@ instance_groups:
     release: windows-tools
   - name: git
     release: windows-tools
+  - name: load-powershell-env
+    release: windows-tools
   - name: make
     release: windows-tools
   - name: msys2
