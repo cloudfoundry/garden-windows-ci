@@ -41,7 +41,6 @@ vm_types:
   name: large
 - cloud_properties:
     cpu: 8
-    disk: 131072
     ram: 24576
   name: envoy-builder
 - cloud_properties:
