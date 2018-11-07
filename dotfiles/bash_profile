@@ -453,15 +453,26 @@ box_ssh() {
   local tmpfile=$(mktemp /tmp/dev-box-ssh.XXXXXX)
   echo "$(bosh int <(lpass show --notes 'dev-box-secrets.yml') --path /DEV_BOX_PRIVATE_KEY)" > $tmpfile
   chmod 600 $tmpfile
-  vm_ip="$(box_ip $name)"
+  local vm_ip="$(box_ip $name)"
   ssh -i $tmpfile -p 2222 "Administrator@$vm_ip"
   rm $tmpfile
 }
 
 box_rdp() {
   local name=$1
-  vm_ip="$(box_ip $name)"
+  local vm_ip="$(box_ip $name)"
   rdp $vm_ip
+}
+
+box_mount_smb() {
+  local name=$1
+  local vm_ip="$(box_ip $name)"
+  local mount_dir="/home/pivotal/workspace/vmfiles/vmshare/$name"
+
+  mkdir -p $mount_dir
+  sudo mount -t cifs -o "vers=3.0,user=Administrator,password=Password123!,uid=pivotal,gid=pivotal" \
+      "//$vm_ip/workspace" \
+      $mount_dir
 }
 
 # The next line updates PATH for the Google Cloud SDK.
