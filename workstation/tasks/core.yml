@@ -58,12 +58,6 @@
     - libavutil-dev
     - libavcodec-dev
     - libavresample-dev
-- name: sync pip
-  when: is_ubuntu
-  pip: executable=pip3 name={{ item }}
-  with_items:
-    - pip
-    - setuptools
 - name: Turn on firewall
   when: is_ubuntu
   shell: ufw enable

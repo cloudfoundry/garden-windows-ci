@@ -26,5 +26,4 @@
     dest: /usr/local/bin/nvim
     mode: "u+x"
   become: yes
-  become_user: pivotal
     
