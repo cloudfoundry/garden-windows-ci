@@ -397,7 +397,9 @@ alias bt="bosh_target"
 alias ct="cf_target"
 
 __bosh_ps1() {
-  if [[ -n "$BOSH_ENVIRONMENT" && -n "$BOSH_TARGET_NAME" && -n "$BOSH_ALL_PROXY" ]]; then
+  if [[ "$BOSH_ENVIRONMENT" = "dev-box" ]]; then
+    echo "[$BOSH_ENVIRONMENT] "
+  elif [[ -n "$BOSH_ENVIRONMENT" && -n "$BOSH_TARGET_NAME" && -n "$BOSH_ALL_PROXY" ]]; then
     echo "[$BOSH_TARGET_NAME] "
   fi
 }
@@ -433,15 +435,16 @@ ls_lpass() {
   lpass show -G "$1"
 }
 
-alias box_bosh="bosh -e dev-box"
 box_deploy() {
   local name=$1
-  box_bosh -d $name deploy <(bosh int ~/workspace/garden-windows-ci/dev-box/$name.yml -l <(lpass show --notes dev-box-secrets.yml))
+  bosh_target "dev-box"
+  bosh -d $name deploy <(bosh int ~/workspace/garden-windows-ci/dev-box/$name.yml -l <(lpass show --notes dev-box-secrets.yml))
 }
 
 box_ip() {
   local name=$1
-  local vm_ip=$(box_bosh vms | grep $name | awk '{print $4}')
+  bosh_target "dev-box"
+  local vm_ip=$(bosh vms | grep $name | awk '{print $4}')
   echo $vm_ip
 }
 

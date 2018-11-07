@@ -4,6 +4,13 @@
 bosh_target() {
   local environment=$1
 
+  _unset_prefix BOSH_
+
+  if [[ "$environment" = "dev-box" ]]; then
+    export BOSH_ENVIRONMENT="dev-box"
+    return
+  fi
+
   if [[ -z "$(gcloud config list --format='value(core.account)')" ]]; then
     echo 'Must log in using `gcloud auth login`'
     return
