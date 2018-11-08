@@ -46,7 +46,6 @@ then
     -o ${CF_DEPLOYMENT}/operations/windows-cell.yml \
     -o ${CF_DEPLOYMENT}/operations/use-latest-windows-stemcell.yml \
     -o ${CF_DEPLOYMENT}/operations/windows2016-cell.yml \
-    -o ${CF_DEPLOYMENT}/operations/test/windows2016-debug.yml \
     -o ${CF_DEPLOYMENT}/operations/use-latest-windows2016-stemcell.yml \
     -o ${CF_DEPLOYMENT}/operations/scale-to-one-az.yml \
     -o ${CF_DEPLOYMENT}/operations/stop-skipping-tls-validation.yml \
@@ -54,6 +53,7 @@ then
     -o ${GARDEN_WINDOWS_CI}/operations/latest-winc.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2016.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/windows2016-debug.yml \
     -v system_domain=$environment.cf-app.com \
     --skip-drain
 else
@@ -65,7 +65,6 @@ else
     -o ${CF_DEPLOYMENT}/operations/windows-cell.yml \
     -o ${CF_DEPLOYMENT}/operations/use-latest-windows-stemcell.yml \
     -o ${CF_DEPLOYMENT}/operations/windows2016-cell.yml \
-    -o ${CF_DEPLOYMENT}/operations/test/windows2016-debug.yml \
     -o ${CF_DEPLOYMENT}/operations/use-latest-windows2016-stemcell.yml \
     -o ${CF_DEPLOYMENT}/operations/scale-to-one-az.yml \
     -o ${CF_DEPLOYMENT}/operations/stop-skipping-tls-validation.yml \
@@ -73,6 +72,7 @@ else
     -o ${GARDEN_WINDOWS_CI}/operations/latest-winc.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2016.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/windows2016-debug.yml \
     -l <(gsutil cat gs://$project_name/cf/vars.yml) \
     --vars-store $DIR/creds.yml \
     -v system_domain=$environment.cf-app.com \
