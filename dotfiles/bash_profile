@@ -49,7 +49,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 fi
 export VAGRANT_HOME="/opt/vagrant.d"
 export PATH="$PATH:/usr/local/opt/go/libexec/bin:$GOROOT/bin"
-export PATH="$GOPATH/bin:$PATH:$HOME/workspace/garden-windows-private/bin"
+export PATH="$GOPATH/bin:$PATH:$HOME/workspace/garden-windows-ci/bin"
 
 # Homebrew gnu-tar: override defualt BSD tar
 export MANPATH="/usr/local/Cellar/gnu-tar/1.29/share/man:$MANPATH"
