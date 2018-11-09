@@ -68,7 +68,7 @@ instance_groups:
   - name: winc-setup
     properties:
       winc_setup:
-         docker_tag: "1803"
+         docker_tag: "1709"
     release: windows-tools
   instances: 1
   lifecycle: service
