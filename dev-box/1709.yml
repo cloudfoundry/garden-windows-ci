@@ -3,9 +3,9 @@ name: "1709"
 
 releases:
 - name: windows-tools
-  sha1: 7623d7ef1518fbb396747c2d9e60e337eb80d2c2
-  url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=24
-  version: 24
+  sha1: 68925c2e6bfbf1decb72476f4d5f90149844d33c
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=25
+  version: 25
 - name: windows-utilities
   sha1: efc10ac0f4acae23637ce2c6f864d20df2e3a781
   url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.11.0
@@ -50,6 +50,8 @@ instance_groups:
     release: windows-tools
   - name: mingw64
     release: windows-tools
+  - name: ginkgo
+    release: windows-tools
   - name: processhacker
     release: windows-tools
   - name: enable_rdp
@@ -63,5 +65,10 @@ instance_groups:
         username: "Administrator"
         password: ((DEV_BOX_PASSWORD))
     release: windows-utilities
+  - name: winc-setup
+    properties:
+      winc_setup:
+         docker_tag: "1803"
+    release: windows-tools
   instances: 1
   lifecycle: service
