@@ -468,10 +468,15 @@ box_mount_smb() {
   local vm_ip="$(box_ip $name)"
   local mount_dir="/home/pivotal/workspace/vmfiles/vmshare/$name"
 
+  sudo umount $mount_dir
   mkdir -p $mount_dir
   sudo mount -t cifs -o "vers=3.0,user=Administrator,password=Password123!,uid=pivotal,gid=pivotal" \
       "//$vm_ip/workspace" \
       $mount_dir
+}
+
+del_line() {
+  sed -i "$1d" $2
 }
 
 # The next line updates PATH for the Google Cloud SDK.
