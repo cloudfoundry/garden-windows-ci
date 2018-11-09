@@ -45,10 +45,6 @@ cf_target() {
   fi
   eval "$(_cf_creds $environment)"
 
-  if [[ $environment = "salsa" ]]; then
-    environment="mild-salsa"
-  fi
-
   cf login --skip-ssl-validation \
     -a https://api.$environment.cf-app.com \
     -u admin \
@@ -235,9 +231,6 @@ _project_name() {
       ;;
     pesto | alfredo)
       echo "cff-greenhouse-$1"
-      ;;
-    salsa)
-      echo "cf-garden-windows-$1"
       ;;
     mulgore)
       echo "$1"

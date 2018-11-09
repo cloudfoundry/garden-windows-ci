@@ -59,14 +59,6 @@ resources:
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:greenhouse-ci/locks
 
-- name: salsa-lock-pool
-  type: pool
-  source:
-    branch: master
-    pool: salsa
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
-    uri: git@github.com:greenhouse-ci/locks
-
 - name: spitfire-lock-pool
   type: pool
   source:
@@ -317,39 +309,6 @@ jobs:
       put: mulgore-lock-pool
       params:
         release: mulgore-lock-pool
-
-- name: salsa-cleanup
-  plan:
-  - do:
-    - put: salsa-lock-pool
-      params:
-        acquire: true
-    - get: every-day
-      trigger: true
-    - get: ci
-    - get: bosh-deployment
-    - task: clean-up
-      file: ci/tasks/bosh-cleanup/task.yml
-      params:
-        BOSH_CLIENT: {{SALSA_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{SALSA_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{SALSA_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{SALSA_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{SALSA_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{SALSA_JUMPBOX_SSH_KEY}}
-    - task: update-runtime-config-dns
-      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-      params:
-        BOSH_CLIENT: {{SALSA_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{SALSA_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{SALSA_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{SALSA_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{SALSA_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{SALSA_JUMPBOX_SSH_KEY}}
-    ensure:
-      put: salsa-lock-pool
-      params:
-        release: salsa-lock-pool
 
 - name: guac-cleanup
   plan:

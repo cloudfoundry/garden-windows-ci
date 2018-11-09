@@ -19,10 +19,6 @@ case "$1" in
   tartar | hummus | tzatziki | guac)
     project_name=cf-greenhouse-$1
     ;;
-  salsa)
-    project_name=cf-garden-windows-$1
-    environment=mild-salsa
-    ;;
   mulgore)
     project_name=$1
     ;;
