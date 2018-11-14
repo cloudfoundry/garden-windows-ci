@@ -16,7 +16,7 @@
     - ruby
     - mingw-w64
     - auditd
-    - gnome-tweak-tool
+    - gnome-tweaks
     - ubuntu-desktop
     - ninja-build
     - git-core

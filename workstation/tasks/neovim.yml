@@ -26,4 +26,11 @@
     dest: /usr/local/bin/nvim
     mode: "u+x"
   become: yes
+
+- name: "neovim exec flag"
+  when: is_ubuntu
+  file:
+    path: "/usr/local/bin/nvim"
+    owner: pivotal
+    mode: "a+x"
     

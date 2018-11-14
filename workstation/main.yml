@@ -30,7 +30,7 @@
   roles:
     - role: fubarhouse.golang
       when: is_ubuntu
-      go_version: "1.11"
+      go_version: "1.11.2"
       GOROOT: /usr/local/src/go
       go_install_clean: true
       shell_profiles: []
