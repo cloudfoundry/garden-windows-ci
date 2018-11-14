@@ -47,7 +47,6 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
   alias pbcopy="xclip -selection clipboard"
   alias pbpaste="xclip -out -selection clipboard"
 fi
-export VAGRANT_HOME="/opt/vagrant.d"
 export PATH="$PATH:/usr/local/opt/go/libexec/bin:$GOROOT/bin"
 export PATH="$GOPATH/bin:$PATH:$HOME/workspace/garden-windows-ci/bin"
 
@@ -118,34 +117,6 @@ gv () {
   fi
 }
 
-vm_ip () {
-  box=$1
-  vmx=$(vmrun list | grep $box)
-  ip=$(vmrun getGuestIpAddress $vmx)
-  echo $ip
-}
-
-box () {
-  box=$1
-  cmd=$2
-  shift 2
-  if [[ $cmd == "rdp" ]]; then
-    local ip=$(VAGRANT_CWD="$HOME/workspace/boxes/$box" vagrant ssh-config | grep HostName | awk '{ print $2 }')
-    rdp $ip vagrant vagrant
-  else
-    VAGRANT_CWD="$HOME/workspace/boxes/$box" vagrant $cmd $@
-  fi
-}
-
-ssh-add-vagrant () {
-  vagrant_id_file=~/.ssh/id_rsa_vagrant
-  if ! [ -f $vagrant_id_file ]; then
-    curl -L https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant > $vagrant_id_file
-    chmod 0600 $vagrant_id_file
-  fi
-
-  ssh-add $vagrant_id_file
-}
 
 # Load ssh key from lastpass
 function load-key() {
@@ -227,18 +198,6 @@ grdp() {
   local password=$(echo $auth | jq -r .password)
   rdp $ip $password $username
 }
-
-vrdp() {
-  pushd $HOME/workspace/windows2016-core >/dev/null
-    if ! vagrant status 2>/dev/null | grep -q running; then
-      echo "windows2016-core VM is not running"
-      return
-    fi
-    local ip=$(vagrant ssh-config | grep HostName | awk '{ print $2 }')
-  popd >/dev/null
-  rdp $ip vagrant vagrant
-}
-
 
 # Set Pipelines
 alias fly-hwc-exe="fly -t garden-windows sp -p hwc-exe -c $HOME/workspace/garden-windows-ci/pipelines/hwc-exe.yml -l<(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' 'aws-iam-access-keys' 'github-access-tokens')"
