@@ -14,7 +14,8 @@ name = "New version of cloudfoundry/windows2016fs #{image_version}"
 description = 'A new version of cloudfoundry/windows2016fs is available. Once all the pipelines are green, release new versions of the BOSH releases that consume it'
 tasks = [{description: "release cloudfoundry/#{fs_version}-release"},
          {description: "release cloudfoundry/#{fs_version}-online-release"},
-         {description: 'Link releases in comment'}]
+         {description: 'Link releases in comment'},
+         {description: 'Add KB number to release notes'}]
 labels = ["#{fs_version}-release", "#{fs_version}-online-release"]
 
 project.create_story(
