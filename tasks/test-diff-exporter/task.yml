@@ -1,0 +1,21 @@
+---
+platform: windows
+
+inputs:
+- name: ci
+- name: diff-exporter
+  path: src/code.cloudfoundry.org/diff-exporter
+- name: groot-binary
+- name: winc-binary
+
+run:
+  path: powershell
+  args:
+  - "-ExecutionPolicy"
+  - "Bypass"
+  - "-File"
+  - ci/tasks/test-diff-exporter/run.ps1
+
+params:
+  WINC_TEST_ROOTFS:
+  GROOT_IMAGE_STORE:

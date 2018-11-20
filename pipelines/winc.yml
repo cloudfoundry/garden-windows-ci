@@ -10,6 +10,18 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
+- name: diff-exporter-develop
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
+    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
+- name: diff-exporter-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
+    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
 - name: groot-windows-develop
   type: git
   source:
@@ -304,6 +316,86 @@ jobs:
   - put: winc-master
     params: { repository: merged-repo/to-repo }
 
+- name: diff-exporter-1709
+  serial: true
+  serial_groups: [1709]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: every-2hrs
+      trigger: true
+    - get: groot-windows-master
+      trigger: true
+    - get: winc-master
+    - get: diff-exporter-develop
+      trigger: true
+  - task: build-groot
+    input_mapping: { groot-windows: groot-windows-master }
+    file: ci/tasks/build-groot/task.yml
+  - task: build-winc
+    file: ci/tasks/build-binary/task.yml
+    input_mapping:
+      repo: winc-master
+    output_mapping:
+      binary-output: winc-binary
+    params:
+      IMPORT_PATH: "code.cloudfoundry.org/winc"
+      PACKAGE: "./cmd/winc"
+  - task: test
+    input_mapping: { diff-exporter: diff-exporter-develop }
+    file: ci/tasks/test-diff-exporter/task.yml
+    params:
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1709
+      GROOT_IMAGE_STORE: "C:\\ProgramData\\groot"
+
+- name: diff-exporter-1803
+  serial: true
+  serial_groups: [1803]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: every-2hrs
+      trigger: true
+    - get: groot-windows-master
+      trigger: true
+    - get: winc-master
+    - get: diff-exporter-develop
+      trigger: true
+  - task: build-groot
+    input_mapping: { groot-windows: groot-windows-master }
+    file: ci/tasks/build-groot/task.yml
+  - task: build-winc
+    file: ci/tasks/build-binary/task.yml
+    input_mapping:
+      repo: winc-master
+    output_mapping:
+      binary-output: winc-binary
+    params:
+      IMPORT_PATH: "code.cloudfoundry.org/winc"
+      PACKAGE: "./cmd/winc"
+  - task: test
+    input_mapping: { diff-exporter: diff-exporter-develop }
+    file: ci/tasks/test-diff-exporter/task.yml
+    params:
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
+      GROOT_IMAGE_STORE: "C:\\ProgramData\\groot"
+
+- name: merge-diff-exporter-to-master
+  serial: true
+  plan:
+  - aggregate:
+    - get: ci
+    - get: diff-exporter-develop
+      passed: [diff-exporter-1709, diff-exporter-1803]
+      trigger: true
+    - get: diff-exporter-master
+  - task: merge-develop-to-master
+    input_mapping: { from-repo: diff-exporter-develop, to-repo: diff-exporter-master}
+    file: ci/tasks/merge-repo/task.yml
+    params: { FROM_BRANCH: develop }
+  - put: diff-exporter-master
+    params: { repository: merged-repo/to-repo }
+
 - name: gats-1709
   serial: true
   serial_groups: [1709]
@@ -460,6 +552,10 @@ jobs:
       passed:
       - merge-groot-to-master
       trigger: true
+    - get: diff-exporter-master
+      passed:
+      - merge-diff-exporter-to-master
+      trigger: true
   - task: bump-submodule
     file: ci/tasks/bump-submodule/task.yml
     params:
@@ -478,10 +574,19 @@ jobs:
       module-repo: groot-windows-master
     output_mapping:
       bumped-repo: winc-groot-bumped
+  - task: bump-submodule
+    file: ci/tasks/bump-submodule/task.yml
+    params:
+      SUBMODULE: "src/code.cloudfoundry.org/diff-exporter"
+    input_mapping:
+      source-repo: winc-groot-bumped
+      module-repo: diff-exporter-master
+    output_mapping:
+      bumped-repo: winc-groot-diff-exporter-bumped
   - task: sync-packages
     file: ci/tasks/sync-packages/task.yml
     input_mapping:
-      repo: winc-groot-bumped
+      repo: winc-groot-diff-exporter-bumped
   - put: winc-release-develop
     params:
       repository: synced-repo
