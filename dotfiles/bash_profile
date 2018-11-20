@@ -207,7 +207,7 @@ fly-envoy() {
   fly -t garden-windows sp \
     -p envoy \
     -c "$HOME/workspace/garden-windows-ci/pipelines/envoy.yml" \
-    -l <(lpass show --notes 'aws-iam-access-keys' 'github-deploy-keys-3')
+    -l <(lpass show --notes 'aws-iam-access-keys' 'github-deploy-keys-3' 'github-access-tokens')
 }
 
 fly-cleanup() {

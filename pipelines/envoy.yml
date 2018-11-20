@@ -21,6 +21,13 @@ resources:
     uri: git@github.com:cloudfoundry/envoy-release
     private_key: {{CLOUDFOUNDRY_ENVOY_RELEASE_DEPLOY_KEY}}
 
+- name: envoy-release-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/envoy-release
+    private_key: {{CLOUDFOUNDRY_ENVOY_RELEASE_DEPLOY_KEY}}
+
 # S3 Buckets
 
 - name: envoy-windows-bucket
@@ -30,6 +37,28 @@ resources:
     regexp: envoy-(.*)-.*.exe
     access_key_id: {{BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID}}
     secret_access_key: {{BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY}}
+
+# Semver
+
+- name: version
+  type: semver
+  source:
+    access_key_id: {{BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID}}
+    secret_access_key: {{BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY}}
+    bucket: envoy-release
+    initial_version: 0.1.0
+    key: version
+    region_name: us-east-1
+
+# Github Releases
+
+- name: envoy-release-github-release
+  type: github-release
+  source:
+    user: cloudfoundry
+    repository: envoy-release
+    drafts: true
+    access_token: {{GREENHOUSE_CI_ACCESS_TOKEN}}
 
 jobs:
 - name: envoy-windows-debug
@@ -80,3 +109,111 @@ jobs:
     params:
       repository: envoy-release-develop-updated
       rebase: true
+
+- name: shipit-major
+  serial: true
+  plan:
+  - aggregate:
+    - get: ci
+    - get: envoy-release-develop
+    - get: version
+      params: {bump: major}
+  - task: finalize-release
+    file: ci/tasks/finalize-release/task.yml
+    input_mapping: { release: envoy-release-develop }
+    params:
+      RELEASE_NAME: envoy
+      AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+  - put: envoy-release-develop
+    params:
+      repository: finalized-release/release
+      tag: version/number
+      tag_prefix: v
+  - put: envoy-release-master
+    params:
+      repository: finalized-release/release
+  - put: version
+    params: {file: version/number}
+  - task: generate-github-release
+    input_mapping: { release: finalized-repo }
+    file: ci/tasks/generate-github-release/task.yml
+  - put: envoy-release-github-release
+    params:
+      commitish: generated-release/commitish
+      name: generated-release/name
+      tag: generated-release/version
+      globs:
+      - finalized-release/envoy-*.tgz
+
+- name: shipit-minor
+  serial: true
+  plan:
+  - aggregate:
+    - get: ci
+    - get: envoy-release-develop
+    - get: version
+      params: {bump: minor}
+  - task: finalize-release
+    file: ci/tasks/finalize-release/task.yml
+    input_mapping: { release: envoy-release-develop }
+    params:
+      RELEASE_NAME: envoy
+      AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+  - put: envoy-release-develop
+    params:
+      repository: finalized-release/release
+      tag: version/number
+      tag_prefix: v
+  - put: envoy-release-master
+    params:
+      repository: finalized-release/release
+  - put: version
+    params: {file: version/number}
+  - task: generate-github-release
+    input_mapping: { release: finalized-repo }
+    file: ci/tasks/generate-github-release/task.yml
+  - put: envoy-release-github-release
+    params:
+      commitish: generated-release/commitish
+      name: generated-release/name
+      tag: generated-release/version
+      globs:
+      - finalized-release/envoy-*.tgz
+
+- name: shipit-patch
+  serial: true
+  plan:
+  - aggregate:
+    - get: ci
+    - get: envoy-release-develop
+    - get: version
+      params: {bump: patch}
+  - task: finalize-release
+    file: ci/tasks/finalize-release/task.yml
+    input_mapping: { release: envoy-release-develop }
+    params:
+      RELEASE_NAME: envoy
+      AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+  - put: envoy-release-develop
+    params:
+      repository: finalized-release/release
+      tag: version/number
+      tag_prefix: v
+  - put: envoy-release-master
+    params:
+      repository: finalized-release/release
+  - put: version
+    params: {file: version/number}
+  - task: generate-github-release
+    input_mapping: { release: finalized-repo }
+    file: ci/tasks/generate-github-release/task.yml
+  - put: envoy-release-github-release
+    params:
+      commitish: generated-release/commitish
+      name: generated-release/name
+      tag: generated-release/version
+      globs:
+      - finalized-release/envoy-*.tgz
