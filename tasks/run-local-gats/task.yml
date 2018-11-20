@@ -17,7 +17,14 @@ run:
   - "Bypass"
   - "-File"
   - ci/tasks/run-local-gats/run.ps1
+  path: powershell
+  args:
+  - "/C"
+  - "mkdir $env:TMP -ea 0"
 
 params:
   WINC_TEST_ROOTFS:
   WINDOWS_VERSION:
+  GROOT_IMAGE_STORE:
+  TMP:
+  TEMP:

@@ -78,7 +78,7 @@ $env:PATH= "$env:GOPATH/bin;" + $env:PATH
 $gardenInitBinary = "$PWD\garden-init-binary\garden-init.exe"
 
 $grootBinary = "$PWD\groot-binary\groot.exe"
-$grootImageStore = "C:\ProgramData\groot"
+$grootImageStore = "$env:GROOT_IMAGE_STORE"
 
 & $grootBinary --driver-store "$grootImageStore" pull "$env:WINC_TEST_ROOTFS"
 

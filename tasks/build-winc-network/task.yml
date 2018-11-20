@@ -16,6 +16,12 @@ run:
   - "Bypass"
   - "-File"
   - ci/tasks/build-winc-network/run.ps1
+  path: powershell
+  args:
+  - "/C"
+  - "mkdir $env:TMP -ea 0"
 
 params:
   WINDOWS_VERSION:
+  TMP:
+  TEMP:

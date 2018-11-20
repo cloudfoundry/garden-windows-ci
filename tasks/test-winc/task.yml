@@ -14,8 +14,15 @@ run:
   - "Bypass"
   - "-File"
   - ci/tasks/test-winc/run.ps1
+  path: powershell
+  args:
+  - "/C"
+  - "mkdir $env:TMP -ea 0"
 
 params:
   WINC_TEST_ROOTFS:
   WINC_TEST_PERF_CONCURRENT_CONTAINERS: 15
   WINDOWS_VERSION:
+  GROOT_IMAGE_STORE:
+  TMP:
+  TEMP:

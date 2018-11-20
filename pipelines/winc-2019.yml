@@ -87,6 +87,7 @@ jobs:
       WINC_TEST_ROOTFS: ((winc_test_rootfs))
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: ((os_version))
+      GROOT_IMAGE_STORE: "C:\\var\\vcap\\data\\tmp\\groot"
 
 - name: local-gats
   serial: true
@@ -164,3 +165,4 @@ jobs:
     params:
       WINC_TEST_ROOTFS: ((winc_test_rootfs))
       WINDOWS_VERSION: ((os_version))
+      GROOT_IMAGE_STORE: "C:\\var\\vcap\\data\\tmp\\groot"

@@ -69,7 +69,6 @@ $env:GOPATH = $PWD
 $env:PATH="$env:GOPATH\bin;" +$env:PATH
 
 $env:GROOT_BINARY = "$PWD\groot-binary\groot.exe"
-$env:GROOT_IMAGE_STORE = "C:\ProgramData\groot"
 
 & "$env:GROOT_BINARY" --driver-store "$env:GROOT_IMAGE_STORE" pull "$env:WINC_TEST_ROOTFS"
 
