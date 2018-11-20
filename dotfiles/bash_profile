@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 export HISTSIZE='32768'
 export HISTFILESIZE=$HISTSIZE
 export HISTCONTROL='ignoredups'
@@ -208,7 +207,7 @@ fly-envoy() {
   fly -t garden-windows sp \
     -p envoy \
     -c "$HOME/workspace/garden-windows-ci/pipelines/envoy.yml" \
-    -l <(lpass show --notes 'aws-iam-access-keys' )
+    -l <(lpass show --notes 'aws-iam-access-keys' 'github-deploy-keys-3' 'github-access-tokens')
 }
 
 fly-cleanup() {
