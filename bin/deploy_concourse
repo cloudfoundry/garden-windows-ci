@@ -64,8 +64,8 @@ bosh -d concourse-worker-envoy deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-w
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/remove-linux-external-worker.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-tags.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-external.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-tools-1803.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-1803-windows2016-stemcell.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-tools-envoy-1803.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-1803.1-windows2016-stemcell.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh.yml \
   -v windows_worker_tag=envoy \
   -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
