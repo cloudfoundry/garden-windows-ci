@@ -16,10 +16,6 @@ run:
   - "Bypass"
   - "-File"
   - ci/tasks/build-groot/run.ps1
-  path: powershell
-  args:
-  - "/C"
-  - "mkdir $env:TMP -ea 0"
 
 params:
   TMP:

@@ -12,10 +12,6 @@ run:
   - "Bypass"
   - "-File"
   - ci/tasks/ginkgo-to-gopath-windows/run.ps1
-  path: powershell
-  args:
-  - "/C"
-  - "mkdir $env:TMP -ea 0"
 
 params:
   IMPORT_PATH:

@@ -1,6 +1,8 @@
 ﻿$ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
+mkdir $env:TMP -ea 0
+
 function get-firewall {
 	param([string] $profile)
 	$firewall = (Get-NetFirewallProfile -Name $profile)
