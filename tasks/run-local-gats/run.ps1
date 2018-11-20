@@ -1,7 +1,7 @@
 ﻿$ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
-mkdir $env:TMP -ea 0
+mkdir "$env:TMP" -ea 0
 
 function Kill-Garden {
   Get-Process | foreach { if ($_.name -eq "gdn") { kill -Force $_.Id } }
