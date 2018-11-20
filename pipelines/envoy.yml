@@ -1,4 +1,7 @@
 resources:
+
+# Git Repos
+
 - name: ci
   type: git
   source:
@@ -10,6 +13,15 @@ resources:
   source:
     branch: windows-linux-build
     uri: https://github.com/greenhouse-org/envoy.git
+
+- name: envoy-release-develop
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/envoy-release
+    private_key: {{CLOUDFOUNDRY_ENVOY_RELEASE_DEPLOY_KEY}}
+
+# S3 Buckets
 
 - name: envoy-windows-bucket
   type: s3
@@ -50,3 +62,21 @@ jobs:
   - put: envoy-windows-bucket
     params:
       file: envoy-exe/envoy-*-*.exe
+
+- name: bump-envoy-blob
+  plan:
+  - aggregate:
+    - get: ci
+    - get: envoy-release-develop
+    - get: envoy-windows-bucket
+      trigger: true
+      passed: [envoy-windows-release]
+  - task: bump-blob-in-envoy-release
+    file: ci/tasks/bump-envoy-in-envoy-release/task.yml
+    params:
+      AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY}}
+  - put: envoy-release-develop
+    params:
+      repository: envoy-release-develop-updated
+      rebase: true
