@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -eu
+
+pushd envoy-windows-bucket
+  commit_sha="$(ls envoy-*.exe | awk -F'[-.]' '{print $3}')"
+  mv envoy-*.exe envoy.exe
+  zip_filename="envoy-$commit_sha.zip"
+  zip $zip_filename envoy.exe
+popd
+
+rsync -a envoy-release-develop/ envoy-release-develop-updated
+
+pushd envoy-release-develop-updated
+  # remove the old envoy-*.zip blob
+  rm config/blobs.yml
+  touch config/blobs.yml
+
+  # load S3 credentials from the environment
+  cat > config/private.yml <<-EOF
+---
+blobstore:
+  provider: s3
+  options:
+    credentials_source: env_or_profile
+EOF
+
+  # add the new blob + upload to S3
+  bosh add-blob "../envoy-windows-bucket/$zip_filename" "envoy_windows/$zip_filename"
+  bosh upload-blobs
+
+  # make the commit
+  git config user.email "pivotal-netgarden-eng@pivotal.io"
+  git config user.name "CI (Automated)"
+  git add config/blobs.yml
+  git commit -m "Bump Envoy Windows executable to $commit_sha"
+popd

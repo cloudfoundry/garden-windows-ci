@@ -1,0 +1,19 @@
+---
+platform: linux
+
+image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
+
+inputs:
+- name: ci
+- name: envoy-release-develop
+- name: envoy-windows-bucket
+
+outputs:
+- name: envoy-release-develop-updated
+
+run:
+  path: ci/tasks/bump-envoy-in-envoy-release/run
+
+params:
+  AWS_ACCESS_KEY_ID:
+  AWS_SECRET_ACCESS_KEY:
