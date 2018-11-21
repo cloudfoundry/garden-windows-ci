@@ -19,5 +19,4 @@ run:
 
 params:
   WINDOWS_VERSION:
-  TMP:
   TEMP:

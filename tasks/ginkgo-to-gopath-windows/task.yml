@@ -16,5 +16,4 @@ run:
 params:
   IMPORT_PATH:
   NODES: 4
-  TMP:
   TEMP:

@@ -19,5 +19,4 @@ run:
 params:
   WINC_TEST_ROOTFS:
   GROOT_IMAGE_STORE:
-  TMP:
   TEMP:

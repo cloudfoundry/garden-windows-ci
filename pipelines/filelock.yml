@@ -28,11 +28,10 @@ jobs:
     - task: test-linux
       input_mapping: { repo: filelock }
       file: ci/tasks/ginkgo-to-gopath-linux/task.yml
-      params:
-        IMPORT_PATH: "code.cloudfoundry.org/filelock"
-        TMP: "C:\\var\\vcap\\data\\tmp"
-        TEMP: "C:\\var\\vcap\\data\\tmp"
+      params: { IMPORT_PATH: "code.cloudfoundry.org/filelock" }
     - task: test-windows
       input_mapping: { repo: filelock }
       file: ci/tasks/ginkgo-to-gopath-windows/task.yml
-      params: { IMPORT_PATH: "code.cloudfoundry.org/filelock" }
+      params:
+        IMPORT_PATH: "code.cloudfoundry.org/filelock"
+        TEMP: "C:\\var\\vcap\\data\\tmp"

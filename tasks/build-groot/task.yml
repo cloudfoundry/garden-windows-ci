@@ -18,5 +18,4 @@ run:
   - ci/tasks/build-groot/run.ps1
 
 params:
-  TMP:
   TEMP:
