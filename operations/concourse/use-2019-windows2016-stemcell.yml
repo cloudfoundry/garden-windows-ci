@@ -1,4 +1,4 @@
 - path: /stemcells/alias=windows/version
   type: replace
-  value: "2019.17744"
+  value: "1809.17763"
 
