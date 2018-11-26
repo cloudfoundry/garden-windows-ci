@@ -2,7 +2,8 @@
 trap { $host.SetShouldExit(1) }
 
 # Go uses $env:TMP as its TempDir if set
-$env:TMP = $env:TEMP
+# Go build places intermediate files in GOTMPDIR if set since 1.10
+$env:GOTMPDIR = $env:TMP = $env:TEMP
 mkdir "$env:TMP" -ea 0
 
 function get-firewall {
