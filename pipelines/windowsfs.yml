@@ -262,6 +262,7 @@ jobs:
       DOCKER_USERNAME: ((DOCKER_USERNAME))
       DOCKER_PASSWORD: ((DOCKER_PASSWORD))
       OS_VERSION: "((os-version))"
+      TEMP: "C:\\var\\vcap\\data\\tmp"
   - task: update-image-tag
     file: ci/tasks/update-image-tag/task.yml
     params:
