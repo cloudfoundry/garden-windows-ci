@@ -12,3 +12,6 @@ run:
   - "Bypass"
   - "-File"
   - ci/tasks/create-fs-release-windows/run.ps1
+
+params:
+  TEMP:

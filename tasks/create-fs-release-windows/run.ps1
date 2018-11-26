@@ -4,6 +4,10 @@ trap { $host.SetShouldExit(1) }
 # get tar on the path
 $env:PATH="$env:PATH;C:\var\vcap\bosh\bin"
 
+# Go uses $env:TMP as its TempDir if set
+$env:TMP = $env:TEMP
+mkdir "$env:TMP" -ea 0
+
 push-location windowsfs-release
   git config core.filemode false
   if ($LastExitCode -ne 0) {
