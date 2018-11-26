@@ -13,3 +13,6 @@ run:
   - "Bypass"
   - "-File"
   - ci/tasks/test-groot-windows/run.ps1
+
+params:
+  TEMP:

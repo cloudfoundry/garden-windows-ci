@@ -206,6 +206,8 @@ jobs:
   - task: test
     input_mapping: { groot-windows: groot-windows-develop }
     file: ci/tasks/test-groot-windows/task.yml
+    params:
+      TEMP: "C:\\var\\vcap\\data\\tmp"
 
 - name: groot-1803
   serial: true
@@ -221,6 +223,8 @@ jobs:
   - task: test
     input_mapping: { groot-windows: groot-windows-develop }
     file: ci/tasks/test-groot-windows/task.yml
+    params:
+      TEMP: "C:\\var\\vcap\\data\\tmp"
     tags: [1803]
 
 - name: merge-groot-to-master

@@ -5,7 +5,7 @@ trap { $host.SetShouldExit(1) }
 $env:PATH="$env:PATH;C:\var\vcap\bosh\bin"
 
 # Go uses $env:TMP as its TempDir if set
-$env:TMP = $env:TEMP
+$env:GOTMPDIR = $env:TMP = $env:TEMP
 mkdir "$env:TMP" -ea 0
 
 push-location windowsfs-release
