@@ -22,3 +22,4 @@ params:
   DOCKER_USERNAME: ""
   DOCKER_PASSWORD: ""
   OS_VERSION: ""
+  TMPDIR:
