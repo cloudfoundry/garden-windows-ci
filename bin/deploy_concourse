@@ -32,7 +32,7 @@ bosh -d concourse deploy ${CONCOURSE_DEPLOYMENT}/cluster/concourse.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/privileged-https.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/web-network.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-tools-1709.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-1709-windows2016-stemcell.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-1709.12-windows2016-stemcell.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh.yml \
   -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
   -l <(gsutil cat gs://$concourse_vars_project/concourse/vars.yml) \
@@ -49,7 +49,7 @@ bosh -d concourse-worker-1803 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-wo
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-tags.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-external.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-tools-1803.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-1803-windows2016-stemcell.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-1803.1-windows2016-stemcell.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh.yml \
   -v windows_worker_tag=1803 \
   -l ${CONCOURSE_DEPLOYMENT}/versions.yml \

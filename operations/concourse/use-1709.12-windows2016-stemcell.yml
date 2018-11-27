@@ -1,0 +1,8 @@
+# This file exists to pin our concourse worker to a version of the stemcell that does not have ephemeral disk support - see #161954157.
+# Delete this file when the issue is fixed.
+- path: /stemcells/alias=windows
+  type: replace
+  value:
+    version: '1709.12'
+    os: windows2016
+    alias: windows

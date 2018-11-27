@@ -1,5 +1,6 @@
 # This file exists because msys2 job fails when deploying with 1803.3
-# Delete this file when the issue is fixed.
+# We are also using it to pin our concourse worker to a version of the stemcell that does not have ephemeral disk support - see #161954157.
+# Delete this file when the issues are fixed.
 - path: /stemcells/alias=windows
   type: replace
   value:
