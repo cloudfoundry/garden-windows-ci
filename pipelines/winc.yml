@@ -379,6 +379,7 @@ jobs:
   - task: test
     input_mapping: { diff-exporter: diff-exporter-develop }
     file: ci/tasks/test-diff-exporter/task.yml
+    tags: [1803]
     params:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
       GROOT_IMAGE_STORE: "C:\\ProgramData\\groot"
