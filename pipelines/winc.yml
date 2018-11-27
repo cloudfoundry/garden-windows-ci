@@ -348,6 +348,7 @@ jobs:
     params:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1709
       GROOT_IMAGE_STORE: "C:\\ProgramData\\groot"
+      WINDOWS_VERSION: "1709"
 
 - name: diff-exporter-1803
   serial: true
@@ -383,6 +384,7 @@ jobs:
     params:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
       GROOT_IMAGE_STORE: "C:\\ProgramData\\groot"
+      WINDOWS_VERSION: "1803"
 
 - name: merge-diff-exporter-to-master
   serial: true

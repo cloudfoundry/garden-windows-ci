@@ -4,7 +4,11 @@ trap { $host.SetShouldExit(1) }
 go.exe version
 
 $env:GOPATH = $PWD
-$env:PATH="$env:GOPATH\bin;" +$env:PATH
+$env:PATH="$env:GOPATH\bin;" + $env:PATH
+# Because 1709 needs tar
+if ($env:WINDOWS_VERSION -eq "1709") {
+  $env:PATH="C:\var\vcap\bosh\bin;" + $env:PATH
+}
 
 $env:GROOT_BINARY = "$PWD\groot-binary\groot.exe"
 $env:WINC_BINARY = "$PWD\winc-binary\winc.exe"
