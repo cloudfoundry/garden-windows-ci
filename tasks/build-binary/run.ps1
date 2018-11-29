@@ -1,6 +1,8 @@
 ﻿$ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
+. "$PSScriptRoot\..\shared-functions.ps1"
+
 $env:PATH = "$env:GOPATH\bin;" + $env:PATH
 
 go.exe version
@@ -30,11 +32,7 @@ if ($env:BINARY_NAME -ne "") {
 
 $binaryDir = "$PWD\binary-output"
 
-# work around https://github.com/golang/go/issues/27515
-$linkType = (get-item $binaryDir).LinkType
-if ($linkType -ne $null) {
-  $binaryDir = (get-item $binaryDir).Target
-}
+$binaryDir = updateDirIfSymlink "$binaryDir"
 
 go.exe build -o "$binaryDir\$BINARY" $env:PACKAGE
 if ($LastExitCode -ne 0) {

@@ -1,6 +1,8 @@
 ﻿$ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
+. "$PSScriptRoot\..\shared-functions.ps1"
+
 # Go uses $env:TMP as its TempDir if set
 $env:GOTMPDIR = $env:TMP = $env:TEMP
 mkdir "$env:TMP" -ea 0
@@ -9,11 +11,7 @@ go.exe version
 $env:GOPATH=$PWD
 $binaryDir = "$PWD\groot-binary"
 
-# work around https://github.com/golang/go/issues/27515
-$linkType = (get-item $binaryDir).LinkType
-if ($linkType -ne $null) {
-  $binaryDir = (get-item $binaryDir).Target
-}
+$binaryDir = updateDirIfSymlink "$binaryDir"
 
 pushd src\code.cloudfoundry.org\groot-windows
   go build -o "$binaryDir\groot.exe" main.go
