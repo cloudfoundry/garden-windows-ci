@@ -11,7 +11,7 @@ $binaryDir = "$PWD\groot-binary"
 
 # work around https://github.com/golang/go/issues/27515
 $linkType = (get-item $binaryDir).LinkType
-if ($linkType -ne "") {
+if ($linkType -ne $null) {
   $binaryDir = (get-item $binaryDir).Target
 }
 
