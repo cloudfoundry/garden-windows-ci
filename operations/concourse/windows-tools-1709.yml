@@ -3,9 +3,9 @@
   path: /releases/name=windows-tools?
   value:
     name: windows-tools
-    version: 25
-    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=25
-    sha1: 68925c2e6bfbf1decb72476f4d5f90149844d33c
+    version: 27
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=27
+    sha1: eb8d32812f1d73766c0e9ebc9d22f6939e2c2da8
 
 - type: replace
   path: /instance_groups/name=windows-worker/jobs/-
@@ -59,4 +59,10 @@
   path: /instance_groups/name=windows-worker/jobs/-
   value:
     name: make
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: ephemeral-disk-concourse
     release: windows-tools
