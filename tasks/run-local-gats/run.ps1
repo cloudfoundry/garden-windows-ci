@@ -1,10 +1,6 @@
 ﻿$ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
-# Go uses $env:TMP as its TempDir if set
-$env:GOTMPDIR = $env:TMP = $env:TEMP
-mkdir "$env:TMP" -ea 0
-
 function Kill-Garden {
   Get-Process | foreach { if ($_.name -eq "gdn") { kill -Force $_.Id } }
 }

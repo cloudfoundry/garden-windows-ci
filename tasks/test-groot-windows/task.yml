@@ -16,3 +16,5 @@ run:
 
 params:
   TMP: "C:\\var\\vcap\\data\\tmp"
+  GOTMPDIR: "C:\\var\\vcap\\data\\tmp"
+  TEMP: "C:\\var\\vcap\\data\\tmp"

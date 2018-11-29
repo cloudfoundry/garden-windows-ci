@@ -1,8 +1,6 @@
 ﻿$ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
-mkdir "$env:TMP" -ea 0
-
 go.exe version
 
 $env:GOPATH = $PWD

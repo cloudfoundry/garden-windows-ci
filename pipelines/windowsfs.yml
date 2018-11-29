@@ -262,7 +262,6 @@ jobs:
       DOCKER_USERNAME: ((DOCKER_USERNAME))
       DOCKER_PASSWORD: ((DOCKER_PASSWORD))
       OS_VERSION: "((os-version))"
-      TEMP: "C:\\var\\vcap\\data\\tmp"
   - task: update-image-tag
     file: ci/tasks/update-image-tag/task.yml
     params:
@@ -439,8 +438,6 @@ jobs:
       file: ci/tasks/create-fs-release-windows/task.yml
       input_mapping:
         windowsfs-release: windowsfs-release-develop
-      params:
-        TEMP: "C:\\var\\vcap\\data\\tmp"
     - task: run-ginkgo-exe
       tags: ((task-tag))
       file: ci/tasks/ginkgo-from-gopath-windows/task.yml

@@ -2,8 +2,6 @@
 $ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
-$env:DOCKER_TMPDIR = $env:GOTMPDIR = $env:TMP = $env:TEMP
-
 function Run-Docker {
   param([String[]] $cmd)
 

@@ -159,8 +159,6 @@ jobs:
     file: ci/tasks/winc-release-readme/task.yml
     params:
       WINC_TEST_ROOTFS: "docker:///cloudfoundry/windows2016fs:1709"
-      GROOT_IMAGE_STORE: "C:\\var\\vcap\\data\\tmp\\groot"
-      TEMP: "C:\\var\\vcap\\data\\tmp"
   - task: override-repo
     input_mapping: { repo: winc-release-develop, override-repo: generated-readme }
     file: ci/tasks/override-repo/task.yml
@@ -206,8 +204,6 @@ jobs:
   - task: test
     input_mapping: { groot-windows: groot-windows-develop }
     file: ci/tasks/test-groot-windows/task.yml
-    params:
-      TEMP: "C:\\var\\vcap\\data\\tmp"
 
 - name: groot-1803
   serial: true
@@ -223,8 +219,6 @@ jobs:
   - task: test
     input_mapping: { groot-windows: groot-windows-develop }
     file: ci/tasks/test-groot-windows/task.yml
-    params:
-      TEMP: "C:\\var\\vcap\\data\\tmp"
     tags: [1803]
 
 - name: merge-groot-to-master
@@ -258,8 +252,6 @@ jobs:
   - task: build-groot
     input_mapping: { groot-windows: groot-windows-master }
     file: ci/tasks/build-groot/task.yml
-    params:
-      TEMP: "C:\\var\\vcap\\data\\tmp"
   - task: test
     input_mapping: { winc: winc-develop }
     file: ci/tasks/test-winc/task.yml
@@ -267,8 +259,6 @@ jobs:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1709
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 1709
-      GROOT_IMAGE_STORE: "C:\\var\\vcap\\data\\tmp\\groot"
-      TEMP: "C:\\var\\vcap\\data\\tmp"
 
 - name: winc-1803
   serial: true
@@ -286,8 +276,6 @@ jobs:
     input_mapping: { groot-windows: groot-windows-master }
     file: ci/tasks/build-groot/task.yml
     tags: [1803]
-    params:
-      TEMP: "C:\\var\\vcap\\data\\tmp"
   - task: test
     input_mapping: { winc: winc-develop }
     file: ci/tasks/test-winc/task.yml
@@ -296,8 +284,6 @@ jobs:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 1803
-      GROOT_IMAGE_STORE: "C:\\var\\vcap\\data\\tmp\\groot"
-      TEMP: "C:\\var\\vcap\\data\\tmp"
 
 - name: merge-winc-to-master
   serial: true
@@ -331,8 +317,6 @@ jobs:
   - task: build-groot
     input_mapping: { groot-windows: groot-windows-master }
     file: ci/tasks/build-groot/task.yml
-    params:
-      TEMP: "C:\\var\\vcap\\data\\tmp"
   - task: build-winc
     file: ci/tasks/build-binary/task.yml
     input_mapping:
@@ -347,7 +331,6 @@ jobs:
     file: ci/tasks/test-diff-exporter/task.yml
     params:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1709
-      GROOT_IMAGE_STORE: "C:\\ProgramData\\groot"
       WINDOWS_VERSION: "1709"
 
 - name: diff-exporter-1803
@@ -366,8 +349,6 @@ jobs:
   - task: build-groot
     input_mapping: { groot-windows: groot-windows-master }
     file: ci/tasks/build-groot/task.yml
-    params:
-      TEMP: "C:\\var\\vcap\\data\\tmp"
   - task: build-winc
     file: ci/tasks/build-binary/task.yml
     input_mapping:
@@ -383,7 +364,6 @@ jobs:
     tags: [1803]
     params:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
-      GROOT_IMAGE_STORE: "C:\\ProgramData\\groot"
       WINDOWS_VERSION: "1803"
 
 - name: merge-diff-exporter-to-master
@@ -433,12 +413,9 @@ jobs:
       input_mapping: { winc: winc-master }
       params:
         WINDOWS_VERSION: 1709
-        TEMP: "C:\\var\\vcap\\data\\tmp"
     - task: build-groot
       input_mapping: { groot-windows: groot-windows-master }
       file: ci/tasks/build-groot/task.yml
-      params:
-        TEMP: "C:\\var\\vcap\\data\\tmp"
     - task: build-nstar
       file: ci/tasks/build-binary/task.yml
       input_mapping:
@@ -467,8 +444,6 @@ jobs:
     params:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1709
       WINDOWS_VERSION: 1709
-      GROOT_IMAGE_STORE: "C:\\var\\vcap\\data\\tmp\\groot"
-      TEMP: "C:\\var\\vcap\\data\\tmp"
 
 - name: gats-1803
   serial: true
@@ -503,13 +478,10 @@ jobs:
       input_mapping: { winc: winc-master }
       params:
         WINDOWS_VERSION: 1803
-        TEMP: "C:\\var\\vcap\\data\\tmp"
     - task: build-groot
       input_mapping: { groot-windows: groot-windows-master }
       file: ci/tasks/build-groot/task.yml
       tags: [1803]
-      params:
-        TEMP: "C:\\var\\vcap\\data\\tmp"
     - task: build-nstar
       file: ci/tasks/build-binary/task.yml
       tags: [1803]
@@ -541,8 +513,6 @@ jobs:
     params:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
       WINDOWS_VERSION: 1803
-      GROOT_IMAGE_STORE: "C:\\var\\vcap\\data\\tmp\\groot"
-      TEMP: "C:\\var\\vcap\\data\\tmp"
 
 - name: bump-winc-release
   serial: true

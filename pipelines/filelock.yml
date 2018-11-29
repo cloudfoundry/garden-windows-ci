@@ -34,4 +34,3 @@ jobs:
       file: ci/tasks/ginkgo-to-gopath-windows/task.yml
       params:
         IMPORT_PATH: "code.cloudfoundry.org/filelock"
-        TEMP: "C:\\var\\vcap\\data\\tmp"
