@@ -1,8 +1,6 @@
 ﻿$ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
-# Go uses $env:TMP as its TempDir if set
-$env:GOTMPDIR = $env:TMP = $env:TEMP
 mkdir "$env:TMP" -ea 0
 
 go.exe version

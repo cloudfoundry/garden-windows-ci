@@ -15,4 +15,4 @@ run:
   - ci/tasks/test-groot-windows/run.ps1
 
 params:
-  TEMP:
+  TMP: "C:\\var\\vcap\\data\\tmp"
