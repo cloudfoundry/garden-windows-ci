@@ -14,8 +14,13 @@ push-location windowsfs-release
     exit $LastExitCode
   }
 
-  new-item -type directory -force .\new-dir
-  ./scripts/create-release.ps1 -tarball ./new-dir/release.tgz
+  $releaseDir="$env:TEMP\new-dir"
+  If (Test-Path -Path $releaseDir) {
+    rm -recurse -force $releaseDir
+  }
+  new-item -type directory -force $releaseDir
+
+  ./scripts/create-release.ps1 -tarball "$releaseDir\release.tgz"
   if ($LastExitCode -ne 0) {
     exit $LastExitCode
   }
