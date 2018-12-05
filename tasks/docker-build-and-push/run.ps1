@@ -2,6 +2,9 @@
 $ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
+mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
+$env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
+
 function Run-Docker {
   param([String[]] $cmd)
 

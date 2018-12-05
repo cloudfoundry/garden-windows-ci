@@ -18,8 +18,5 @@ run:
 
 params:
   WINC_TEST_ROOTFS:
-  GROOT_IMAGE_STORE: "C:\\var\\vcap\\data\\tmp\\groot"
-  TMP: "C:\\var\\vcap\\data\\tmp"
-  GOTMPDIR: "C:\\var\\vcap\\data\\tmp"
-  TEMP: "C:\\var\\vcap\\data\\tmp"
   WINDOWS_VERSION:
+  EPHEMERAL_DISK_TEMP_PATH:

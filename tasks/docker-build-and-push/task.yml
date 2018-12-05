@@ -22,6 +22,4 @@ params:
   DOCKER_USERNAME: ""
   DOCKER_PASSWORD: ""
   OS_VERSION: ""
-  TMP: "C:\\var\\vcap\\data\\tmp"
-  GOTMPDIR: "C:\\var\\vcap\\data\\tmp"
-  TEMP: "C:\\var\\vcap\\data\\tmp"
+  EPHEMERAL_DISK_TEMP_PATH:

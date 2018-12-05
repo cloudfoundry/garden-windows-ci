@@ -158,6 +158,7 @@ jobs:
     input_mapping: { winc-release: winc-release-develop }
     file: ci/tasks/winc-release-readme/task.yml
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: "docker:///cloudfoundry/windows2016fs:1709"
   - task: override-repo
     input_mapping: { repo: winc-release-develop, override-repo: generated-readme }
@@ -204,6 +205,8 @@ jobs:
   - task: test
     input_mapping: { groot-windows: groot-windows-develop }
     file: ci/tasks/test-groot-windows/task.yml
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
 
 - name: groot-1803
   serial: true
@@ -220,6 +223,8 @@ jobs:
     input_mapping: { groot-windows: groot-windows-develop }
     file: ci/tasks/test-groot-windows/task.yml
     tags: [1803]
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
 
 - name: merge-groot-to-master
   serial: true
@@ -252,10 +257,13 @@ jobs:
   - task: build-groot
     input_mapping: { groot-windows: groot-windows-master }
     file: ci/tasks/build-groot/task.yml
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
   - task: test
     input_mapping: { winc: winc-develop }
     file: ci/tasks/test-winc/task.yml
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1709
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 1709
@@ -276,11 +284,14 @@ jobs:
     input_mapping: { groot-windows: groot-windows-master }
     file: ci/tasks/build-groot/task.yml
     tags: [1803]
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
   - task: test
     input_mapping: { winc: winc-develop }
     file: ci/tasks/test-winc/task.yml
     tags: [1803]
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 1803
@@ -317,6 +328,8 @@ jobs:
   - task: build-groot
     input_mapping: { groot-windows: groot-windows-master }
     file: ci/tasks/build-groot/task.yml
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
   - task: build-winc
     file: ci/tasks/build-binary/task.yml
     input_mapping:
@@ -324,12 +337,14 @@ jobs:
     output_mapping:
       binary-output: winc-binary
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       IMPORT_PATH: "code.cloudfoundry.org/winc"
       PACKAGE: "./cmd/winc"
   - task: test
     input_mapping: { diff-exporter: diff-exporter-develop }
     file: ci/tasks/test-diff-exporter/task.yml
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1709
       WINDOWS_VERSION: "1709"
 
@@ -349,6 +364,8 @@ jobs:
   - task: build-groot
     input_mapping: { groot-windows: groot-windows-master }
     file: ci/tasks/build-groot/task.yml
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
   - task: build-winc
     file: ci/tasks/build-binary/task.yml
     input_mapping:
@@ -356,6 +373,7 @@ jobs:
     output_mapping:
       binary-output: winc-binary
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       IMPORT_PATH: "code.cloudfoundry.org/winc"
       PACKAGE: "./cmd/winc"
   - task: test
@@ -363,6 +381,7 @@ jobs:
     file: ci/tasks/test-diff-exporter/task.yml
     tags: [1803]
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
       WINDOWS_VERSION: "1803"
 
@@ -406,16 +425,20 @@ jobs:
       output_mapping:
         binary-output: winc-binary
       params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         IMPORT_PATH: "code.cloudfoundry.org/winc"
         PACKAGE: "./cmd/winc"
     - task: build-winc-network
       file: ci/tasks/build-winc-network/task.yml
       input_mapping: { winc: winc-master }
       params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         WINDOWS_VERSION: 1709
     - task: build-groot
       input_mapping: { groot-windows: groot-windows-master }
       file: ci/tasks/build-groot/task.yml
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
     - task: build-nstar
       file: ci/tasks/build-binary/task.yml
       input_mapping:
@@ -423,6 +446,7 @@ jobs:
       output_mapping:
         binary-output: nstar-binary
       params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         PACKAGE: "./src/nstar"
     - task: build-garden-init
       file: ci/tasks/build-binary/task.yml
@@ -431,6 +455,7 @@ jobs:
       output_mapping:
         binary-output: garden-init-binary
       params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         PACKAGE: "src/code.cloudfoundry.org/guardian/cmd/winit"
         BINARY_NAME: "garden-init.exe"
   - task: copy-forks
@@ -442,6 +467,7 @@ jobs:
     input_mapping:
       garden-runc-release: garden-runc-release-forks
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1709
       WINDOWS_VERSION: 1709
 
@@ -470,6 +496,7 @@ jobs:
       output_mapping:
         binary-output: winc-binary
       params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         IMPORT_PATH: "code.cloudfoundry.org/winc"
         PACKAGE: "./cmd/winc"
     - task: build-winc-network
@@ -477,11 +504,14 @@ jobs:
       tags: [1803]
       input_mapping: { winc: winc-master }
       params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         WINDOWS_VERSION: 1803
     - task: build-groot
       input_mapping: { groot-windows: groot-windows-master }
       file: ci/tasks/build-groot/task.yml
       tags: [1803]
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
     - task: build-nstar
       file: ci/tasks/build-binary/task.yml
       tags: [1803]
@@ -490,6 +520,7 @@ jobs:
       output_mapping:
         binary-output: nstar-binary
       params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         PACKAGE: "./src/nstar"
     - task: build-garden-init
       file: ci/tasks/build-binary/task.yml
@@ -499,6 +530,7 @@ jobs:
       output_mapping:
         binary-output: garden-init-binary
       params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         PACKAGE: "src/code.cloudfoundry.org/guardian/cmd/winit"
         BINARY_NAME: "garden-init.exe"
   - task: copy-forks
@@ -511,6 +543,7 @@ jobs:
     input_mapping:
       garden-runc-release: garden-runc-release-forks
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
       WINDOWS_VERSION: 1803
 
@@ -579,6 +612,7 @@ jobs:
     input_mapping:
       repo: winc-release-develop
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       TEST_PATH: "src/nstar"
 
 - name: pesto-cats-1709

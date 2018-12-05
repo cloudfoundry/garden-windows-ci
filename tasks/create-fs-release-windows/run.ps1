@@ -4,6 +4,9 @@ trap { $host.SetShouldExit(1) }
 # get tar on the path
 $env:PATH="$env:PATH;C:\var\vcap\bosh\bin"
 
+mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
+$env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
+
 push-location windowsfs-release
   git config core.filemode false
   if ($LastExitCode -ne 0) {

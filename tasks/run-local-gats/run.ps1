@@ -72,13 +72,16 @@ $env:PATH = "C:/var/vcap/bosh/bin;" + $env:PATH
 
 go version
 
+mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
+$env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
+
 $env:GOPATH = "$PWD/garden-runc-release"
 $env:PATH= "$env:GOPATH/bin;" + $env:PATH
 
 $gardenInitBinary = "$PWD\garden-init-binary\garden-init.exe"
 
 $grootBinary = "$PWD\groot-binary\groot.exe"
-$grootImageStore = "$env:GROOT_IMAGE_STORE"
+$grootImageStore = "$env:EPHEMERAL_DISK_TEMP_PATH\groot"
 
 & $grootBinary --driver-store "$grootImageStore" pull "$env:WINC_TEST_ROOTFS"
 

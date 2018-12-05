@@ -5,6 +5,11 @@ go.exe version
 
 $env:GOPATH = $PWD
 $env:PATH="$env:GOPATH\bin;" + $env:PATH
+
+mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
+$env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
+$env:GROOT_IMAGE_STORE = "$env:EPHEMERAL_DISK_TEMP_PATH\groot"
+
 # Because 1709 needs tar
 if ($env:WINDOWS_VERSION -eq "1709") {
   $env:PATH="C:\var\vcap\bosh\bin;" + $env:PATH

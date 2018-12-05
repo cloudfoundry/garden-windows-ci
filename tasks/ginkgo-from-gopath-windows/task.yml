@@ -17,6 +17,4 @@ params:
   GOPATH: "repo"
   TEST_PATH: "repo"
   NODES: 4
-  TMP: "C:\\var\\vcap\\data\\tmp"
-  GOTMPDIR: "C:\\var\\vcap\\data\\tmp"
-  TEMP: "C:\\var\\vcap\\data\\tmp"
+  EPHEMERAL_DISK_TEMP_PATH:

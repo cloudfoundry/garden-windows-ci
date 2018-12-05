@@ -19,6 +19,4 @@ run:
 
 params:
   WINDOWS_VERSION:
-  TMP: "C:\\var\\vcap\\data\\tmp"
-  GOTMPDIR: "C:\\var\\vcap\\data\\tmp"
-  TEMP: "C:\\var\\vcap\\data\\tmp"
+  EPHEMERAL_DISK_TEMP_PATH:

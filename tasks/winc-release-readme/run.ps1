@@ -20,6 +20,10 @@ $env:GOPATH = $PWD
 $env:GOBIN = "$env:GOPATH\bin"
 $env:PATH="$env:GOBIN;$env:PATH"
 
+mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
+$env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
+$env:GROOT_IMAGE_STORE = "$env:EPHEMERAL_DISK_TEMP_PATH\groot"
+
 Write-Host "Build Binaries"
 Start-Process -FilePath "powershell.exe" `
     -ArgumentList "-ExecutionPolicy ByPass -File .\src\build-binaries.ps1" `
