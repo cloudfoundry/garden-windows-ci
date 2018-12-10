@@ -445,6 +445,7 @@ jobs:
       input_mapping: { repo: windowsfs-release-develop}
       params:
         TEST_PATH: src/create
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
 
 - name: test-create-release-linux
   serial: true
@@ -463,7 +464,6 @@ jobs:
       input_mapping: { repo: windowsfs-release-develop}
       params:
         TEST_PATH: src/create
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
 
 - name: tartar-offline-cats
   serial: true
