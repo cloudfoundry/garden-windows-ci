@@ -439,6 +439,8 @@ jobs:
       file: ci/tasks/create-fs-release-windows/task.yml
       input_mapping:
         windowsfs-release: windowsfs-release-develop
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
     - task: run-ginkgo-exe
       tags: ((task-tag))
       file: ci/tasks/ginkgo-from-gopath-windows/task.yml
