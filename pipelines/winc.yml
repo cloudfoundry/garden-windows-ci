@@ -15,13 +15,13 @@ resources:
   source:
     branch: develop
     uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
+    private_key: {{CLOUDFOUNDRYINCUBATOR_DIFF_EXPORTER_DEPLOY_KEY}}
 - name: diff-exporter-master
   type: git
   source:
     branch: master
     uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
+    private_key: {{CLOUDFOUNDRYINCUBATOR_DIFF_EXPORTER_DEPLOY_KEY}}
 - name: groot-windows-develop
   type: git
   source:
