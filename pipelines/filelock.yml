@@ -30,9 +30,9 @@ jobs:
       file: ci/tasks/ginkgo-to-gopath-linux/task.yml
       params:
         IMPORT_PATH: "code.cloudfoundry.org/filelock"
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
     - task: test-windows
       input_mapping: { repo: filelock }
       file: ci/tasks/ginkgo-to-gopath-windows/task.yml
       params:
         IMPORT_PATH: "code.cloudfoundry.org/filelock"
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
