@@ -5,36 +5,52 @@ resource_types:
     repository: cloudfoundry/bosh-deployment-resource
 
 resources:
+
+# Git
+
 - name: ci
   type: git
   source:
     branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
+
 - name: cf-acceptance-tests
   type: git
   source:
     branch: master
     uri: https://github.com/cloudfoundry/cf-acceptance-tests
+
 - name: cf-deployment
   type: git
   source:
     branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-deployment.git
+
 - name: winc-release-develop
   type: git
   source:
     branch: develop
     uri: https://github.com/cloudfoundry/winc-release.git
+
 - name: windows2016fs-release-develop
   type: git
   source:
     branch: develop
     uri: https://github.com/cloudfoundry/windows2016fs-online-release.git
+
 - name: garden-windows-bosh-release-develop
   type: git
   source:
     branch: develop
     uri: https://github.com/cloudfoundry-incubator/garden-windows-bosh-release.git
+
+- name: cfbench
+  type: git
+  source:
+    uri: https://github.com/teddyking/cfbench.git
+
+# S3
+
 - name: vsphere-windows2012R2-stemcell
   type: s3
   source:
@@ -42,6 +58,7 @@ resources:
    regexp: 2012R2/bosh-stemcell-(.*)-vsphere-esxi-windows2012R2-go_agent.tgz
    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+
 - name: vsphere-windows1709-stemcell
   type: s3
   source:
@@ -49,6 +66,7 @@ resources:
    regexp: 1709/bosh-stemcell-(.*)-vsphere-esxi-windows2016-go_agent.tgz
    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+
 - name: vsphere-windows1803-stemcell
   type: s3
   source:
@@ -56,6 +74,9 @@ resources:
    regexp: 1803/bosh-stemcell-(.*)-vsphere-esxi-windows1803-go_agent.tgz
    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+
+# BOSH Deployment
+
 - name: mulgore-cf-deployment
   type: bosh-deployment
   source:
@@ -72,14 +93,14 @@ resources:
         bucket: mulgore
         file_name: cf/creds.yml
         json_key: {{SPITFIRE_SERVICE_ACCOUNT_JSON}}
-- name: cfbench
-  type: git
-  source:
-    uri: https://github.com/teddyking/cfbench.git
+
+# Time
+
 - name: every-5mins
   type: time
   source:
     interval: 5m
+
 - name: every-1min
   type: time
   source:
