@@ -38,6 +38,12 @@ resources:
     branch: develop
     uri: https://github.com/cloudfoundry/windows2016fs-online-release.git
 
+- name: windows1803fs-release-develop
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry/windows1803fs-online-release.git
+
 - name: garden-windows-bosh-release-develop
   type: git
   source:
@@ -48,6 +54,12 @@ resources:
   type: git
   source:
     uri: https://github.com/teddyking/cfbench.git
+
+- name: envoy-release-develop
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry/envoy-release.git
 
 # S3
 
@@ -132,7 +144,13 @@ jobs:
     - get: windows2016fs-release-develop
       trigger: true
       tags: [vsphere]
+    - get: windows1803fs-release-develop
+      trigger: true
+      tags: [vsphere]
     - get: garden-windows-bosh-release-develop
+      trigger: true
+      tags: [vsphere]
+    - get: envoy-release-develop
       trigger: true
       tags: [vsphere]
   - aggregate:
@@ -161,6 +179,12 @@ jobs:
         release: windows2016fs-release-develop
       output_mapping:
         release-tarball: windows2016fs-tarball
+    - task: create-windows1803fs-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping:
+        release: windows1803fs-release-develop
+      output_mapping:
+        release-tarball: windows1803fs-tarball
       tags: [vsphere]
     - task: create-garden-windows-bosh-release
       file: ci/tasks/bosh-cr/task.yml
@@ -168,6 +192,13 @@ jobs:
         release: garden-windows-bosh-release-develop
       output_mapping:
         release-tarball: garden-windows-tarball
+      tags: [vsphere]
+    - task: create-envoy-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping:
+        release: envoy-release-develop
+      output_mapping:
+        release-tarball: envoy-tarball
       tags: [vsphere]
   - put: mulgore-cf-deployment
     params:
@@ -180,16 +211,21 @@ jobs:
       releases:
       - winc-tarball/*.tgz
       - windows2016fs-tarball/*.tgz
+      - windows1803fs-tarball/*.tgz
       - garden-windows-tarball/*.tgz
+      - envoy-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/windows2012R2-cell.yml
       - cf-deployment/operations/windows2016-cell.yml
-      - cf-deployment/operations/experimental/windows1803-cell.yml
+      - cf-deployment/operations/windows1803-cell.yml
       - cf-deployment/operations/use-latest-windows2012R2-stemcell.yml
       - cf-deployment/operations/use-latest-windows2016-stemcell.yml
-      - cf-deployment/operations/experimental/use-latest-windows1803-stemcell.yml
+      - cf-deployment/operations/use-latest-windows1803-stemcell.yml
+      - cf-deployment/operations/experimental/enable-routing-integrity-windows1803.yml
+      - cf-deployment/operations/experimental/enable-routing-integrity-windows2016.yml
       - ci/operations/latest-winc.yml
+      - ci/operations/latest-envoy.yml
       - ci/operations/latest-windows2016fs-release.yml
       - ci/operations/latest-windows1803fs-release.yml
       - ci/operations/latest-garden-windows.yml
