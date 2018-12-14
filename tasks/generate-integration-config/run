@@ -25,6 +25,7 @@ read -r -d '' JSON_TEMPLATE <<EOF || true
   "include_routing": false,
   "include_v3": false,
   "include_capi_no_bridge": false,
+  "include_security_groups": true,
   "use_http": true,
   "include_windows": true,
   "include_ssh": true,
