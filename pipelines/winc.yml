@@ -53,7 +53,9 @@ resources:
 - name: cf-acceptance-tests
   type: git
   source:
-    branch: master
+    # branch: master TODO: move back to master once it includes
+    # https://github.com/cloudfoundry/cf-acceptance-tests/commit/875a84b8df09fdbfd954a3e76171cdf78972a6aa
+    branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-acceptance-tests
 - name: cf-deployment-concourse-tasks
   type: git
