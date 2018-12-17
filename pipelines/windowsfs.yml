@@ -81,6 +81,24 @@ resources:
     branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-deployment.git
 
+- name: winc
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/winc.git
+
+- name: groot-windows
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/groot-windows.git
+
+- name: diff-exporter
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry-incubator/diff-exporter.git
+
 # Docker Image
 
 - name: windowsservercore
@@ -306,9 +324,42 @@ jobs:
     - get: ci
     - get: hydrator
       trigger: true
+    - get: winc
+      trigger: true
+    - get: groot-windows
+      trigger: true
+    - get: diff-exporter
+      trigger: true
+  - aggregate:
+    - task: build-winc
+      file: ci/tasks/build-binary/task.yml
+      input_mapping:
+        repo: winc
+      output_mapping:
+        binary-output: winc-binary
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+        IMPORT_PATH: "code.cloudfoundry.org/winc"
+        PACKAGE: "./cmd/winc"
+    - task: build-groot
+      file: ci/tasks/build-groot/task.yml
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+    - task: build-diff-exporter
+      file: ci/tasks/build-binary/task.yml
+      input_mapping:
+        repo: diff-exporter
+      output_mapping:
+        binary-output: diff-exporter-binary
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+        PACKAGE: "."
+        IMPORT_PATH: "code.cloudfoundry.org/diff-exporter"
+        BINARY_NAME: "diff-exporter.exe"
   - task: run-ginkgo-exe
     file: ci/tasks/test-hydrator-windows/task.yml
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       NODES: 2
 
 - name: test-hydrator-linux
