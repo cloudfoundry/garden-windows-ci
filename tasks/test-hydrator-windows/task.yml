@@ -3,6 +3,9 @@ platform: windows
 
 inputs:
 - name: ci
+- name: winc-binary
+- name: groot-binary
+- name: diff-exporter-binary
 - name: hydrator
   path: src/code.cloudfoundry.org/hydrator
 
@@ -15,4 +18,5 @@ run:
   - ci/tasks/test-hydrator-windows/run.ps1
 
 params:
+  EPHEMERAL_DISK_TEMP_PATH:
   NODES: 1
