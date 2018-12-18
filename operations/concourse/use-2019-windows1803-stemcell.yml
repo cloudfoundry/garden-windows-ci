@@ -1,7 +1,7 @@
 - path: /stemcells/alias=windows
   type: replace
   value:
-    version: "1809.17763"
+    version: '1903.18282'
     os: windows1803
     alias: windows
 
