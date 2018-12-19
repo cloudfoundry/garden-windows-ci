@@ -322,14 +322,19 @@ jobs:
   plan:
   - aggregate:
     - get: ci
+      tags: ((resource-get-tag))
     - get: hydrator
       trigger: true
+      tags: ((resource-get-tag))
     - get: winc
       trigger: true
+      tags: ((resource-get-tag))
     - get: groot-windows
       trigger: true
+      tags: ((resource-get-tag))
     - get: diff-exporter
       trigger: true
+      tags: ((resource-get-tag))
   - aggregate:
     - task: build-winc
       file: ci/tasks/build-binary/task.yml
@@ -341,10 +346,12 @@ jobs:
         EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         IMPORT_PATH: "code.cloudfoundry.org/winc"
         PACKAGE: "./cmd/winc"
+      tags: ((task-tag))
     - task: build-groot
       file: ci/tasks/build-groot/task.yml
       params:
         EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+      tags: ((task-tag))
     - task: build-diff-exporter
       file: ci/tasks/build-binary/task.yml
       input_mapping:
@@ -356,11 +363,13 @@ jobs:
         PACKAGE: "."
         IMPORT_PATH: "code.cloudfoundry.org/diff-exporter"
         BINARY_NAME: "diff-exporter.exe"
+      tags: ((task-tag))
   - task: run-ginkgo-exe
     file: ci/tasks/test-hydrator-windows/task.yml
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       NODES: 2
+    tags: ((task-tag))
 
 - name: test-hydrator-linux
   serial: true
