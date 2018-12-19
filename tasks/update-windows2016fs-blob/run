@@ -11,7 +11,7 @@ else
   pushd windowsfs-release
     export GOPATH=$PWD
     mkdir -p blobs/$FS_VERSION
-    go run src/code.cloudfoundry.org/hydrator/cmd/hydrate download -image cloudfoundry/windows2016fs -outputDir blobs/$FS_VERSION -tag $submodule_version
+    go run ./src/code.cloudfoundry.org/hydrator/cmd/hydrate download -image cloudfoundry/windows2016fs -outputDir blobs/$FS_VERSION -tag $submodule_version
 
     bosh remove-blob "$FS_VERSION/windows2016fs-$blob_version.tgz"
     bosh add-blob "blobs/$FS_VERSION/windows2016fs-$submodule_version.tgz" "$FS_VERSION/windows2016fs-$submodule_version.tgz"
