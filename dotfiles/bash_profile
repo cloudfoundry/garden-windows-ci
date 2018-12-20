@@ -94,6 +94,8 @@ alias be="bundle exec"
 alias tmux='_ssh_auth_save ; export HOSTNAME=$(hostname); export DISPLAY=":1"; tmux -2'
 alias reload="exec $(which bash) -l"
 alias vim='nvim'
+#use this if you need to run lpass from an ssh connection
+alias lpass-ssh='LPASS_DISABLE_PINENTRY=1 lpass'
 v () {
   if [[ $# -eq 0 ]] ; then
     nvim .
