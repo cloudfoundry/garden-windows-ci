@@ -1,18 +1,11 @@
 authors:
-  ag: Akshat Gokhale; agokhale
-  aj: Amin Jamali; ajamali
-  ak: Andrew Keesler; akeesler
-  md: Mark DeLillo; mdelillo
+  as: Arjun Sreedharan; asreedharan
+  gl: Genevieve LEsperance; glesperance
   mh: Matthew Horan; mhoran
   na: Natalie Arellano; narellano
-  sb: Sunjay Bhatia; sbhatia
   ss: Sam Smith; sasmith
-  sj: Simon Jones; sijones
-  my: Micah Young; myoung
-  as: Arjun Sreedharan; asreedharan
   yh: Yael Harel; yharel
   yk: Yechiel Kalmenson; ykalmenson
-  sp: Sam Peinado; sampeinado
 email:
   domain: pivotal.io
 email_addresses:
