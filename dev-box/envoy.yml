@@ -3,9 +3,9 @@ name: envoy
 
 releases:
 - name: windows-tools
-  sha1: 7b962d804ad2c09f3c49c964c93d878cc2bba1b0
-  url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=26
-  version: 26
+  sha1: 95b6dd94a0b12491afc95e62f393c4d519411239
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=32
+  version: 32
 - name: windows-utilities
   sha1: efc10ac0f4acae23637ce2c6f864d20df2e3a781
   url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.11.0
