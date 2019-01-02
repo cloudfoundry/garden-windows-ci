@@ -396,8 +396,9 @@ ls_lpass() {
 
 box_deploy() {
   local name=$1
+  local recreate=$2
   bosh_target "dev-box"
-  bosh -d $name deploy <(bosh int ~/workspace/garden-windows-ci/dev-box/$name.yml -l <(lpass show --notes dev-box-secrets.yml))
+  bosh -d $name deploy <(bosh int ~/workspace/garden-windows-ci/dev-box/$name.yml -l <(lpass show --notes dev-box-secrets.yml)) $recreate
 }
 
 box_ip() {
