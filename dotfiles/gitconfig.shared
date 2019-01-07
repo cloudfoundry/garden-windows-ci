@@ -12,9 +12,11 @@
   prb = pull --rebase
   l = log --graph --decorate=short
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset' --abbrev-commit --date=relative
+  flog = "log --pretty=fuller --decorate"
   diffsub = diff --submodule=log
   pair = duet
   co-pr = !sh -c 'git fetch origin pull/$1/head:pr/$1 && git checkout pr/$1' -
+  drb = rebase -i --exec 'git duet-commit --amend --reset-author -v'
 [apply]
   whitespace = nowarn
 [color]
