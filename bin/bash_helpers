@@ -4,8 +4,23 @@
 bosh_target() {
   local environment=$1
 
-  _unset_prefix BOSH_
+  # comma seperated list of environments that run in our pipelines
+  local pipeline_envs="pesto,tartar,alfredo,mulgore"
 
+  if [[  ",$pipeline_envs," =~ .*\,$environment,.* ]]; then
+    read -p "This director runs in a pipeline. Are you sure you want to target it? (yn) " -r
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      echo "exiting"
+      return
+    fi
+  fi
+
+  local concourse_director="spitfire"
+
+  if [[  "$concourse_director" =~ "$environment" ]]; then
+    echo "You are targeting the Concourse Director, try not to break anything :)"
+  fi
+  _unset_prefix BOSH_
   if [[ "$environment" = "dev-box" ]]; then
     export BOSH_ENVIRONMENT="dev-box"
     return
