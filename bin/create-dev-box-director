@@ -4,6 +4,7 @@ set -o pipefail
 set -o nounset
 
 create-dev-box-director() {
+  local recreate=${1-""}
   local garden_windows_ci=${GARDEN_WINDOWS_CI:-$HOME/workspace/garden-windows-ci}
   local bosh_deployment=${BOSH_DEPLOYMENT:-$HOME/workspace/bosh-deployment}
   local cidr=$(ip -o -4 -h addr list vmnet8 | awk '{ print $4}')
@@ -43,6 +44,7 @@ create-dev-box-director() {
     -v ssh_tunnel_username="$(whoami)" \
     -v ssh_tunnel_platform="linux" \
     --var-file ssh_tunnel_private_key=<(bosh int <(lpass show --notes 'dev-box-secrets.yml') --path /DEV_BOX_PRIVATE_KEY) \
+    $recreate \
     ;
 
   bosh -e "$cidr_prefix.6" alias-env dev-box \
@@ -64,4 +66,4 @@ create-dev-box-director() {
   ;
 }
 
-create-dev-box-director
+create-dev-box-director ${1-""} 
