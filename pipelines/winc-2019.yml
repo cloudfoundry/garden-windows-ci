@@ -58,7 +58,7 @@ jobs:
     input_mapping: { groot-windows: groot-windows-develop }
     file: ci/tasks/test-groot-windows/task.yml
     params:
-      TEMP: "C:\\var\\vcap\\data\\tmp"
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
     tags: [((os_version))]
 
 - name: winc
@@ -81,15 +81,17 @@ jobs:
     input_mapping: { groot-windows: groot-windows-master }
     file: ci/tasks/build-groot/task.yml
     tags: [((os_version))]
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
   - task: test
     input_mapping: { winc: winc-develop }
     file: ci/tasks/test-winc/task.yml
     tags: [((os_version))]
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: ((winc_test_rootfs))
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: ((os_version))
-      GROOT_IMAGE_STORE: "C:\\var\\vcap\\data\\tmp\\groot"
 
 - name: local-gats
   serial: true
@@ -123,6 +125,7 @@ jobs:
       output_mapping:
         binary-output: winc-binary
       params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         IMPORT_PATH: "code.cloudfoundry.org/winc"
         PACKAGE: "./cmd/winc"
     - task: build-winc-network
@@ -130,11 +133,14 @@ jobs:
       tags: [((os_version))]
       input_mapping: { winc: winc-develop }
       params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         WINDOWS_VERSION: ((os_version))
     - task: build-groot
       input_mapping: { groot-windows: groot-windows-master }
       file: ci/tasks/build-groot/task.yml
       tags: [((os_version))]
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
     - task: build-nstar
       file: ci/tasks/build-binary/task.yml
       tags: [((os_version))]
@@ -143,6 +149,7 @@ jobs:
       output_mapping:
         binary-output: nstar-binary
       params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         PACKAGE: "./src/nstar"
     - task: build-garden-init
       file: ci/tasks/build-binary/task.yml
@@ -152,6 +159,7 @@ jobs:
       output_mapping:
         binary-output: garden-init-binary
       params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         PACKAGE: "src/code.cloudfoundry.org/guardian/cmd/winit"
         BINARY_NAME: "garden-init.exe"
   - task: copy-forks
@@ -165,6 +173,6 @@ jobs:
     input_mapping:
       garden-runc-release: garden-runc-release-forks
     params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: ((winc_test_rootfs))
       WINDOWS_VERSION: ((os_version))
-      GROOT_IMAGE_STORE: "C:\\var\\vcap\\data\\tmp\\groot"
