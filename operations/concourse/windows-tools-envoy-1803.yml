@@ -3,15 +3,9 @@
   path: /releases/name=windows-tools?
   value:
     name: windows-tools
-    version: 25
-    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=25
-    sha1: 68925c2e6bfbf1decb72476f4d5f90149844d33c
-
-- type: replace
-  path: /instance_groups/name=windows-worker/jobs/-
-  value:
-    name: golang-windows
-    release: windows-tools
+    version: 33
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=33
+    sha1: 24c2606aca0d8e8cd5dbbd74414406009fc8c812
 
 - type: replace
   path: /instance_groups/name=windows-worker/jobs/-
@@ -28,37 +22,7 @@
 - type: replace
   path: /instance_groups/name=windows-worker/jobs/-
   value:
-    name: mingw64
-    release: windows-tools
-
-- type: replace
-  path: /instance_groups/name=windows-worker/jobs/-
-  value:
-    name: mingw32
-    release: windows-tools
-
-- type: replace
-  path: /instance_groups/name=windows-worker/jobs/-
-  value:
-    name: bosh-cli-windows
-    release: windows-tools
-
-- type: replace
-  path: /instance_groups/name=windows-worker/jobs/-
-  value:
-    name: docker
-    release: windows-tools
-
-- type: replace
-  path: /instance_groups/name=windows-worker/jobs/-
-  value:
     name: processhacker
-    release: windows-tools
-
-- type: replace
-  path: /instance_groups/name=windows-worker/jobs/-
-  value:
-    name: make
     release: windows-tools
 
 - type: replace

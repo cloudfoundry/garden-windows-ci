@@ -1,0 +1,4 @@
+- type: replace
+  path: /instance_groups/name=windows-worker/vm_type?
+  value: extra-large
+

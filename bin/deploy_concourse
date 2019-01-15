@@ -67,6 +67,7 @@ bosh -d concourse-worker-envoy deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-w
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-tools-envoy-1803.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-1803.1-windows2016-stemcell.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/envoy-vmtype.yml \
   -v windows_worker_tag=envoy \
   -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
   -l <(gsutil cat gs://$concourse_vars_project/concourse/vars.yml) \
