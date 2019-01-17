@@ -44,6 +44,16 @@ resources:
   source:
     branch: develop
     uri: https://github.com/cloudfoundry/winc.git
+- name: certsplitter
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/certsplitter.git
+- name: cert-injector
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/cert-injector.git
 - name: winc-master
   type: git
   source:
@@ -401,6 +411,18 @@ jobs:
   - put: diff-exporter-master
     params: { repository: merged-repo/to-repo }
 
+- name: test-cert-injector
+  plan:
+  - aggregate:
+    - get: ci
+    - get: cert-injector
+      trigger: true
+  - task: test
+    input_mapping: { repo: cert-injector }
+    file: ci/tasks/ginkgo-to-gopath-linux/task.yml
+    params:
+      IMPORT_PATH: "code.cloudfoundry.org/cert-injector"
+
 - name: gats-1709
   serial: true
   serial_groups: [1709]
@@ -565,7 +587,13 @@ jobs:
       passed:
       - merge-diff-exporter-to-master
       trigger: true
-  - task: bump-submodule
+    - get: cert-injector
+      passed:
+      - test-cert-injector
+      trigger: true
+    - get: certsplitter
+      trigger: true
+  - task: bump-winc
     file: ci/tasks/bump-submodule/task.yml
     params:
       SUBMODULE: "src/code.cloudfoundry.org/winc"
@@ -574,7 +602,7 @@ jobs:
       module-repo: winc-master
     output_mapping:
       bumped-repo: winc-bumped
-  - task: bump-submodule
+  - task: bump-groot
     file: ci/tasks/bump-submodule/task.yml
     params:
       SUBMODULE: "src/code.cloudfoundry.org/groot-windows"
@@ -583,7 +611,7 @@ jobs:
       module-repo: groot-windows-master
     output_mapping:
       bumped-repo: winc-groot-bumped
-  - task: bump-submodule
+  - task: bump-diff-exporter
     file: ci/tasks/bump-submodule/task.yml
     params:
       SUBMODULE: "src/code.cloudfoundry.org/diff-exporter"
@@ -592,10 +620,28 @@ jobs:
       module-repo: diff-exporter-master
     output_mapping:
       bumped-repo: winc-groot-diff-exporter-bumped
+  - task: bump-cert-injector
+    file: ci/tasks/bump-submodule/task.yml
+    params:
+      SUBMODULE: "src/code.cloudfoundry.org/cert-injector"
+    input_mapping:
+      source-repo: winc-groot-diff-exporter-bumped
+      module-repo: cert-injector
+    output_mapping:
+      bumped-repo: winc-groot-diff-exporter-cert-injector-bumped
+  - task: bump-certsplitter
+    file: ci/tasks/bump-submodule/task.yml
+    params:
+      SUBMODULE: "src/code.cloudfoundry.org/certsplitter"
+    input_mapping:
+      source-repo: winc-groot-diff-exporter-cert-injector-bumped
+      module-repo: certsplitter
+    output_mapping:
+      bumped-repo: all-submodules-bumped
   - task: sync-packages
     file: ci/tasks/sync-packages/task.yml
     input_mapping:
-      repo: winc-groot-diff-exporter-bumped
+      repo: all-submodules-bumped
   - put: winc-release-develop
     params:
       repository: synced-repo
