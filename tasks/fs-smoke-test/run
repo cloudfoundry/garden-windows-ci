@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -eu
+
+bosh -d "$FS_VERSION" run-errand "$FS_VERSION-smoke-test"
