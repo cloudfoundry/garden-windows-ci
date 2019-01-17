@@ -8,6 +8,12 @@ inputs:
 
 params:
   FS_VERSION:
+  BOSH_CLIENT:
+  BOSH_CLIENT_SECRET:
+  BOSH_ENVIRONMENT:
+  BOSH_CA_CERT:
+  JUMPBOX_IP:
+  JUMPBOX_SSH_KEY:
 
 run:
   path: ci/tasks/fs-smoke-test/run
