@@ -7,6 +7,7 @@ $env:PATH = "$env:GOPATH\bin;" + $env:PATH
 
 mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
 $env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
+$env:GOCACHE = "$env:EPHEMERAL_DISK_TEMP_PATH\go-build"
 
 go.exe version
 
