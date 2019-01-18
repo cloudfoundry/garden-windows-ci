@@ -233,6 +233,7 @@ jobs:
       - ci/operations/enable-rdp.yml
       - ci/operations/enable-rdp-2016.yml
       - ci/operations/enable-rdp-1803.yml
+      - ci/operations/windows2016-provides-secondary-groot.yml
       vars_files:
       - cf-vars/vars.yml
       cleanup: true
