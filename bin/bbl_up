@@ -1,0 +1,60 @@
+#!/bin/bash -e
+
+environment=$1
+
+if [[ -z $environment ]]; then
+  echo "must provide the environment name"
+  exit 1
+fi
+
+if [[ -z $BBL_GCP_SERVICE_ACCOUNT_KEY || -z $BBL_GCP_REGION ]]; then
+  echo "must provide BBL_GCP_SERVICE_ACCOUNT_KEY and BBL_GCP_REGION"
+  exit 1
+fi
+
+# TODO: Check that this environment isn't taken in aws shared-dns
+
+echo "creating a new cf dev environment called ${environment}"
+
+bbl_state_dir="${HOME}/workspace/bbl-state-dir-${environment}"
+mkdir -p ${bbl_state_dir}
+
+echo "creating load balancer certificates"
+
+lb_cert="${bbl_state_dir}/cert.pem"
+lb_key="${bbl_state_dir}/key.pem"
+lb_domain="${environment}.ci.cf-app.com"
+
+openssl req -x509 \
+  -newkey rsa:2048 \
+  -keyout "${lb_key}" \
+  -out "${lb_cert}" \
+  -subj "/C=US/ST=NY/O=pivotal, Inc./CN={$lb_domain}" \
+  -nodes -days 365
+
+echo "created load balancer certificates"
+
+echo "writing bbl plan to ${bbl_state_dir}"
+bbl \
+  --debug \
+  --state-dir ${bbl_state_dir} \
+  --iaas "gcp" \
+  plan \
+  --lb-type "cf" \
+  --lb-domain "${lb_domain}" \
+  --lb-cert "${lb_cert}" \
+  --lb-key "${lb_key}"
+
+echo "bbl'ing up $environment..."
+bbl \
+  --debug \
+  --iaas gcp \
+  up
+
+echo "exporting bosh director env vars"
+eval "$(bbl print-env)"
+
+bosh env
+
+echo "finished bbl'ing up $environment"
+echo "now you can deploy cloud foundry!"
