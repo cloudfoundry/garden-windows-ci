@@ -12,6 +12,12 @@ if [[ -z $BBL_GCP_SERVICE_ACCOUNT_KEY || -z $BBL_GCP_REGION ]]; then
   exit 1
 fi
 
+cf_deployment_dir="${HOME}/workspace/cf-deployment"
+if [[ ! -d "${cf_deployment_dir}" ]]; then
+  echo "must get ${cf_deployment_dir}"
+  exit 1
+fi
+
 # TODO: Check that this environment isn't taken in aws shared-dns
 
 echo "creating a new cf dev environment called ${environment}"
@@ -23,7 +29,7 @@ echo "creating load balancer certificates"
 
 lb_cert="${bbl_state_dir}/cert.pem"
 lb_key="${bbl_state_dir}/key.pem"
-lb_domain="${environment}.ci.cf-app.com"
+lb_domain="${environment}.cf-app.com"
 
 openssl req -x509 \
   -newkey rsa:2048 \
@@ -37,7 +43,7 @@ echo "created load balancer certificates"
 echo "writing bbl plan to ${bbl_state_dir}"
 bbl \
   --debug \
-  --state-dir ${bbl_state_dir} \
+  --state-dir "${bbl_state_dir}" \
   --iaas "gcp" \
   plan \
   --lb-type "cf" \
@@ -48,13 +54,22 @@ bbl \
 echo "bbl'ing up $environment..."
 bbl \
   --debug \
-  --iaas gcp \
+  --state-dir "${bbl_state_dir}" \
+  --iaas "gcp" \
   up
+
+# TODO: Add record set for new environment to shared-dns aws account
 
 echo "exporting bosh director env vars"
 eval "$(bbl print-env)"
 
 bosh env
+
+echo "upload stemcell to bosh director"
+stemcell_version=$(bosh interpolate ${cf_deployment}/cf-deployment.yml --path=/stemcells/alias=default/version)
+bosh upload-stemcell https://bosh.io/d/stemcells/bosh-google-kvm-ubuntu-xenial-go_agent?v=${stemcell_version}
+
+# TODO: upload bbl state directory to gcloud storage
 
 echo "finished bbl'ing up $environment"
 echo "now you can deploy cloud foundry!"
