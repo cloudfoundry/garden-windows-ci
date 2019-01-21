@@ -7,8 +7,19 @@ if [[ -z "$(gcloud config list --format='value(core.account)')" ]]; then
   exit 1
 fi
 
-CONCOURSE_DEPLOYMENT=${CONCOURSE_DEPLOYMENT:-$HOME/workspace/concourse-deployment}
+CONCOURSE_DEPLOYMENT=${CONCOURSE_DEPLOYMENT:-$HOME/workspace/concourse-bosh-deployment}
+if [[ ! -d $CONCOURSE_DEPLOYMENT ]]; then
+ pushd $HOME/workspace
+  git clone https://github.com/concourse/concourse-bosh-deployment
+ popd
+fi
+
 GARDEN_WINDOWS_CI=${GARDEN_WINDOWS_CI:-$HOME/workspace/garden-windows-ci}
+if [[ ! -d $GARDEN_WINDOWS_CI ]]; then
+ pushd $HOME/workspace
+  git clone git@github.com:cloudfoundry/garden-windows-ci
+ popd
+fi
 
 source $GARDEN_WINDOWS_CI/bin/bash_helpers
 
