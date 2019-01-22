@@ -69,6 +69,7 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/cf-acceptance-tests
+
 - name: cf-deployment-concourse-tasks
   type: git
   source:
@@ -98,6 +99,12 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry-incubator/diff-exporter.git
+
+- name: winc-release-develop
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry/winc-release.git
 
 # Docker Image
 
@@ -201,6 +208,17 @@ resources:
         file_name: cf/creds.yml
         json_key: ((TARTAR_SERVICE_ACCOUNT_JSON))
 
+- name: tartar-smoke-test-deployment
+  type: bosh-deployment
+  source:
+    deployment: ((fs-version))
+    client: ((TARTAR_BOSH_CLIENT))
+    client_secret: ((TARTAR_BOSH_CLIENT_SECRET))
+    ca_cert: ((TARTAR_BOSH_CA_CERT))
+    target: ((TARTAR_BOSH_ENVIRONMENT))
+    jumpbox_url: ((TARTAR_JUMPBOX_URL))
+    jumpbox_ssh_key: ((TARTAR_JUMPBOX_SSH_KEY))
+
 # Lock Pool
 
 - name: tartar-lock-pool
@@ -233,6 +251,7 @@ groups:
 - name: windowsfs-online-release
   jobs:
     - tartar-online-cats
+    - tartar-online-smoke-test
     - shipit-online-major
     - shipit-online-minor
     - shipit-online-patch
@@ -853,13 +872,103 @@ jobs:
     params:
       release: tartar-lock-pool
 
+- name: tartar-online-smoke-test
+  serial: true
+  plan:
+  - put: tartar-lock-pool
+    params:
+      acquire: true
+  - aggregate:
+    - get: ci
+    - get: windowsfs-online-release-develop
+      trigger: true
+    - get: winc-release-develop
+      trigger: true
+    - get: gcp-windows-stemcell
+  - aggregate:
+    - task: create-windowsfs-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping:
+        release: windowsfs-online-release-develop
+      output_mapping:
+        release-tarball: windowsfs-tarball
+    - task: create-winc-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping:
+        release: winc-release-develop
+      output_mapping:
+        release-tarball: winc-tarball
+  - task: create-windowsfs-opsfile
+    file: ci/tasks/write-windows2016fs-opsfile/task.yml
+    params:
+      FS_VERSION: ((fs-version))
+    input_mapping: { release-tarball: windowsfs-tarball }
+  - task: delete-deployment
+    file: ci/tasks/bosh-deld/task.yml
+    params:
+      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
+      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+      BOSH_DEPLOYMENT: ((fs-version))
+      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+  - task: delete-stemcells
+    file: ci/tasks/bosh-delete-stemcells/task.yml
+    params:
+      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
+      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+      BOSH_DEPLOYMENT: ((fs-version))
+      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+  - put: tartar-smoke-test-deployment
+    params:
+      manifest: windowsfs-online-release-develop/manifests/smoke-test.yml
+      stemcells:
+      - gcp-windows-stemcell/*.tgz
+      releases:
+      - windowsfs-tarball/*.tgz
+      - winc-tarball/*.tgz
+      ops_files:
+      - windowsfs-opsfile/specified-windowsfs-version.yml
+      cleanup: true
+    get_params:
+      skip_export: true
+  - task: smoke-test
+    file: ci/tasks/fs-smoke-test/task.yml
+    params:
+      FS_VERSION: ((fs-version))
+      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
+      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+    on_success:
+      task: delete-deployment
+      file: ci/tasks/bosh-deld/task.yml
+      params:
+        BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
+        BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
+        BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+        BOSH_DEPLOYMENT: ((fs-version))
+        BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
+        JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
+        JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+  ensure:
+    put: tartar-lock-pool
+    params:
+      release: tartar-lock-pool
+
 - name: shipit-online-major
   serial: true
   plan:
   - aggregate:
     - get: ci
     - get: windowsfs-online-release-develop
-      passed: [tartar-online-cats]
+      passed: [tartar-online-cats, tartar-online-smoke-test]
     - get: windowsfs-online-release-master
     - get: windowsfs-online-release-version
       params: {bump: major}
@@ -902,7 +1011,7 @@ jobs:
   - aggregate:
     - get: ci
     - get: windowsfs-online-release-develop
-      passed: [tartar-online-cats]
+      passed: [tartar-online-cats, tartar-online-smoke-test]
     - get: windowsfs-online-release-master
     - get: windowsfs-online-release-version
       params: {bump: minor}
@@ -945,7 +1054,7 @@ jobs:
   - aggregate:
     - get: ci
     - get: windowsfs-online-release-develop
-      passed: [tartar-online-cats]
+      passed: [tartar-online-cats, tartar-online-smoke-test]
     - get: windowsfs-online-release-master
     - get: windowsfs-online-release-version
       params: {bump: patch}
