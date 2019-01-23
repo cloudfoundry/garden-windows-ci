@@ -46,6 +46,7 @@ bbl \
   --state-dir "${bbl_state_dir}" \
   --iaas "gcp" \
   plan \
+  --name "${environment}" \
   --lb-type "cf" \
   --lb-domain "${lb_domain}" \
   --lb-cert "${lb_cert}" \
@@ -55,7 +56,6 @@ echo "bbl'ing up $environment..."
 bbl \
   --debug \
   --state-dir "${bbl_state_dir}" \
-  --iaas "gcp" \
   up
 
 # TODO: Add record set for new environment to shared-dns aws account
