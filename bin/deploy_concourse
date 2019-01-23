@@ -90,6 +90,7 @@ bosh -d concourse-worker-2019 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-wo
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/windows-worker.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/windows-worker-ephemeral-disk.yml \
+  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/storage-driver.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-tags.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-network.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-external.yml \
@@ -97,6 +98,7 @@ bosh -d concourse-worker-2019 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-wo
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-2019-windows1803-stemcell.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh-2019.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2019.yml \
+  -v storage_driver=overlay \
   -v windows_worker_tag=2019 \
   -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
   -l <(gsutil cat gs://$concourse_vars_project/concourse/vars.yml) \
