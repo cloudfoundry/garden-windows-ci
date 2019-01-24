@@ -11,19 +11,29 @@ box_upload_stemcell () {
 	local stemcell_version=$(echo $stemcell | grep -Po 'bosh-stemcell-\K[^-]+')
 	local stemcell_dir="/home/pivotal/workspace/vmfiles/stemcells"
 	local target_stemcell="$stemcell_dir/light-$(basename $stemcell)"
-	if [ -f $target_stemcell ]; then
-		echo "It's already there"
+	bosh_target dev-box
+
+	local existing_stemcell=$(bosh stemcells | grep -o $stemcell_version)
+	if [ "$existing_stemcell" == "$stemcell_version" ]; then
+		echo "*** Stemcell already uploaded"
 		exit 0
 	fi
 
-	bosh_target dev-box
-	cmd="bosh repack-stemcell --empty-image \
-		--cloud-properties=\"{\"name\": \"bosh-vsphere-esxi-windows${os_version}-go_agent\", \
-		\"version\": \"${stemcell_version}\"}\" $stemcell $target_stemcell"
-	eval $cmd
-	echo "hi"
-}
+	# repack-stemcell
+	if [ -f $target_stemcell ]; then
+		echo "*** Light stemcell already available"
+	else
+		echo "*** Repacking stemcell into light-stemcell"
+		stemcell_inspect=$(bosh inspect-local-stemcell --json $stemcell)
+		cloud_properties=$(echo $stemcell_inspect | jq -c '.Tables[0].Rows[0] | {name: .name, version: .version}')
+		bosh repack-stemcell --empty-image --cloud-properties="$cloud_properties" $stemcell $target_stemcell
+	fi
 
+	# upload-stemcell
+	echo "*** Uploading light-stemcell..."
+  bosh upload-stemcell $target_stemcell
+	echo "*** Done!"
+}
 
 
 
