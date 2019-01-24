@@ -7,6 +7,7 @@
     accept_hostkey: yes
   become: yes
   become_user: pivotal
+  ignore_errors: yes
 - name: Create symlink
   file:
     src: "~/workspace/garden-windows-ci/dotfiles/{{ item.src }}"

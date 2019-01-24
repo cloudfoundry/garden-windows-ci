@@ -7,6 +7,7 @@
     accept_hostkey: yes
   become: yes
   become_user: pivotal
+  ignore_errors: yes
 - name: Install vimfiles
   shell: "~/.nvim/install"
   become: yes
