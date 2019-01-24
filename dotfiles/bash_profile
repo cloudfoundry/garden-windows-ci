@@ -437,6 +437,10 @@ box_mount_smb() {
       $mount_dir
 }
 
+function box_upload_stemcell() {
+  "${HOME}/workspace/garden-windows-ci/scripts/box_upload_stemcell.sh" "$@"
+}
+
 del_line() {
   sed -i "$1d" $2
 }
