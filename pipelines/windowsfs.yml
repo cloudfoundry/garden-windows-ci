@@ -561,7 +561,6 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
     - get: gcp-windows-stemcell
-    - get: winc-release-develop
   - aggregate:
     - task: get-cf-vars
       file: ci/tasks/get-gcs-file/task.yml
@@ -579,12 +578,6 @@ jobs:
         windowsfs-release: windowsfs-release-develop
       output_mapping:
         release-tarball: windowsfs-tarball
-    - task: create-winc-release
-      file: ci/tasks/bosh-cr/task.yml
-      input_mapping:
-        release: winc-release-develop
-      output_mapping:
-        release-tarball: winc-tarball
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
@@ -618,11 +611,9 @@ jobs:
       - gcp-windows-stemcell/*.tgz
       releases:
       - windowsfs-tarball/*.tgz
-      - winc-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - ci/operations/use-3-azs-for-router.yml
-      - ci/operations/latest-winc.yml
       - ((windows-cell-ops-file))
       - ((latest-windows-stemcell-ops-file))
       - ((windows-scale-down-ops-file))
@@ -789,7 +780,6 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
     - get: gcp-windows-stemcell
-    - get: winc-release-develop
   - aggregate:
     - task: get-cf-vars
       file: ci/tasks/get-gcs-file/task.yml
@@ -807,12 +797,6 @@ jobs:
         release: windowsfs-online-release-develop
       output_mapping:
         release-tarball: windowsfs-tarball
-    - task: create-winc-release
-      file: ci/tasks/bosh-cr/task.yml
-      input_mapping:
-        release: winc-release-develop
-      output_mapping:
-        release-tarball: winc-tarball
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
@@ -846,11 +830,9 @@ jobs:
       - gcp-windows-stemcell/*.tgz
       releases:
       - windowsfs-tarball/*.tgz
-      - winc-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - ci/operations/use-3-azs-for-router.yml
-      - ci/operations/latest-winc.yml
       - ((windows-cell-ops-file))
       - ((latest-windows-stemcell-ops-file))
       - ((windows-scale-down-ops-file))
