@@ -22,8 +22,15 @@ function main() {
     echo "*** Stemcell already available in $stemcell_dir"
   else
     echo "*** Downloading stemcell from pivnet"
-    pivnet login --api-token=$(lpass show "Pivotal Network - Greenhouse" --notes | jq -r .pivnet_refresh_token)
-    pivnet --verbose download-product-files -p stemcells-windows-server-internal -r $stemcell_version -g "*.tgz" -d $stemcell_dir
+
+    pivnet login \
+      --api-token=$(lpass show "Pivotal Network - Greenhouse" --notes | jq -r .pivnet_refresh_token)
+
+    pivnet download-product-files \
+      -p stemcells-windows-server-internal \
+      -r $stemcell_version \
+      -g "*.tgz" \
+      -d $stemcell_dir
   fi
 
   local original_stemcell="$stemcell_dir/$(ls $stemcell_dir | grep $stemcell_version | grep -v "light")"
@@ -33,13 +40,19 @@ function main() {
     echo "*** Light stemcell already available in $stemcell_dir"
   else
     echo "*** Repacking stemcell into light-stemcell"
+
     local stemcell_inspect=$(bosh inspect-local-stemcell --json $original_stemcell)
     local cloud_properties=$(echo $stemcell_inspect | jq -c '.Tables[0].Rows[0] | {name: .name, version: .version}')
-    bosh repack-stemcell --empty-image --cloud-properties="$cloud_properties" $original_stemcell $target_stemcell
+
+    bosh repack-stemcell \
+      --empty-image \
+      --cloud-properties="$cloud_properties" $original_stemcell $target_stemcell
   fi
 
   echo "*** Uploading light-stemcell to dev-box bosh director"
+
   bosh upload-stemcell $target_stemcell
+
   echo "*** Done!"
 }
 
