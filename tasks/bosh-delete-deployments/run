@@ -12,6 +12,8 @@ deployments=$(bosh deployments --json | jq -r '.Tables[].Rows[].name')
 
 for deployment in "${deployments[@]}";
 do
-  echo "Deleting deployment: $deployment"
-  bosh -n -d "$deployment" delete-deployment --force
+  if [[ ! -z "$deployment" ]]; then
+    echo "Deleting deployment: $deployment"
+    bosh -n -d "$deployment" delete-deployment --force
+  fi
 done
