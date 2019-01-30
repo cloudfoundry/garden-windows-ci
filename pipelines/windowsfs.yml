@@ -245,6 +245,7 @@ groups:
     - test-create-release-windows
     - test-create-release-linux
     - tartar-offline-cats
+    - tartar-offline-smoke-test
     - shipit-offline-major
     - shipit-offline-minor
     - shipit-offline-patch
@@ -653,6 +654,97 @@ jobs:
     params:
       release: tartar-lock-pool
 
+- name: tartar-offline-smoke-test
+  serial: true
+  plan:
+  - put: tartar-lock-pool
+    params:
+      acquire: true
+  - aggregate:
+    - get: ci
+    - get: windowsfs-release-develop
+      passed: [test-create-release-windows, test-create-release-linux]
+      trigger: true
+    - get: winc-release-develop
+      trigger: true
+    - get: gcp-windows-stemcell
+  - aggregate:
+    - task: create-windowsfs-release
+      file: ci/tasks/create-fs-release-linux/task.yml
+      input_mapping:
+        windowsfs-release: windowsfs-release-develop
+      output_mapping:
+        release-tarball: windowsfs-tarball
+    - task: create-winc-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping:
+        release: winc-release-develop
+      output_mapping:
+        release-tarball: winc-tarball
+  - task: create-windowsfs-opsfile
+    file: ci/tasks/write-windows2016fs-opsfile/task.yml
+    params:
+      FS_VERSION: ((fs-version))
+    input_mapping: { release-tarball: windowsfs-tarball }
+  - task: delete-deployment
+    file: ci/tasks/bosh-deld/task.yml
+    params:
+      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
+      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+      BOSH_DEPLOYMENT: ((fs-version))
+      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+  - task: delete-stemcells
+    file: ci/tasks/bosh-delete-stemcells/task.yml
+    params:
+      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
+      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+      BOSH_DEPLOYMENT: ((fs-version))
+      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+  - put: tartar-smoke-test-deployment
+    params:
+      manifest: windowsfs-release-develop/manifests/smoke-test.yml
+      stemcells:
+      - gcp-windows-stemcell/*.tgz
+      releases:
+      - windowsfs-tarball/*.tgz
+      - winc-tarball/*.tgz
+      ops_files:
+      - windowsfs-opsfile/specified-windowsfs-version.yml
+      cleanup: true
+    get_params:
+      skip_export: true
+  - task: smoke-test
+    file: ci/tasks/fs-smoke-test/task.yml
+    params:
+      FS_VERSION: ((fs-version))
+      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
+      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+    on_success:
+      task: delete-deployment
+      file: ci/tasks/bosh-deld/task.yml
+      params:
+        BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
+        BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
+        BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+        BOSH_DEPLOYMENT: ((fs-version))
+        BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
+        JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
+        JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+  ensure:
+    put: tartar-lock-pool
+    params:
+      release: tartar-lock-pool
+
 - name: shipit-offline-major
   serial: true
   plan:
@@ -660,7 +752,7 @@ jobs:
     - get: ci
     - get: windowsfs-release-master
     - get: windowsfs-release-develop
-      passed: [tartar-offline-cats]
+      passed: [tartar-offline-cats, tartar-offline-smoke-test]
     - get: windowsfs-release-version
       params: {bump: major}
   - task: update-version-and-shas
@@ -699,7 +791,7 @@ jobs:
     - get: ci
     - get: windowsfs-release-master
     - get: windowsfs-release-develop
-      passed: [tartar-offline-cats]
+      passed: [tartar-offline-cats, tartar-offline-smoke-test]
     - get: windowsfs-release-version
       params: {bump: minor}
   - task: update-version-and-shas
@@ -736,7 +828,7 @@ jobs:
     - get: ci
     - get: windowsfs-release-master
     - get: windowsfs-release-develop
-      passed: [tartar-offline-cats]
+      passed: [tartar-offline-cats, tartar-offline-smoke-test]
     - get: windowsfs-release-version
       params: {bump: patch}
   - task: update-version-and-shas
