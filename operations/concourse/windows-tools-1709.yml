@@ -2,10 +2,10 @@
 - type: replace
   path: /releases/name=windows-tools?
   value:
-    name: windows-tools
-    version: 27
-    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=27
-    sha1: eb8d32812f1d73766c0e9ebc9d22f6939e2c2da8
+    name: "windows-tools"
+    version: "35"
+    url: "https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=35"
+    sha1: "21e6f05311f504da01970908f4dbcda96d510ac4"
 
 - type: replace
   path: /instance_groups/name=windows-worker/jobs/-
