@@ -9,10 +9,9 @@ inputs:
 - name: ci
 
 run:
-  path: ci/tasks/bosh-deld/run
+  path: ci/tasks/bosh-delete-deployments/run
 
 params:
-  BOSH_DEPLOYMENT: cf
   BOSH_CLIENT:
   BOSH_CLIENT_SECRET:
   BOSH_ENVIRONMENT:
