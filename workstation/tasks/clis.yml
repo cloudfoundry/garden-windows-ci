@@ -59,12 +59,14 @@
   get_url:
     url: "https://github.com/pivotal-cf/pivnet-cli/releases/download/v0.0.55/pivnet-linux-amd64-0.0.55"
     dest: "/usr/local/bin/pivnet"
+  tags: ["pivnet"]
 - name: "pivnet exec flag"
   when: is_ubuntu
   file:
     path: "/usr/local/bin/pivnet"
     owner: pivotal
     mode: "a+x"
+  tags: ["pivnet"]
 
 - name: bbl cli (linux)
   when: is_ubuntu
