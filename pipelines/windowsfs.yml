@@ -584,13 +584,12 @@ jobs:
     params:
       FS_VERSION: ((fs-version))
     input_mapping: { release-tarball: windowsfs-tarball }
-  - task: delete-deployment
-    file: ci/tasks/bosh-deld/task.yml
+  - task: delete-deployments
+    file: ci/tasks/bosh-delete-deployments/task.yml
     params:
       BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
       BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
-      BOSH_DEPLOYMENT: cf
       BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
       JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
@@ -686,13 +685,12 @@ jobs:
     params:
       FS_VERSION: ((fs-version))
     input_mapping: { release-tarball: windowsfs-tarball }
-  - task: delete-deployment
-    file: ci/tasks/bosh-deld/task.yml
+  - task: delete-deployments
+    file: ci/tasks/bosh-delete-deployments/task.yml
     params:
       BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
       BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
-      BOSH_DEPLOYMENT: ((fs-version))
       BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
       JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
@@ -894,13 +892,12 @@ jobs:
     params:
       FS_VERSION: ((fs-version))
     input_mapping: { release-tarball: windowsfs-tarball }
-  - task: delete-deployment
-    file: ci/tasks/bosh-deld/task.yml
+  - task: delete-deployments
+    file: ci/tasks/bosh-delete-deployments/task.yml
     params:
       BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
       BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
-      BOSH_DEPLOYMENT: cf
       BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
       JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
@@ -995,13 +992,12 @@ jobs:
     params:
       FS_VERSION: ((fs-version))
     input_mapping: { release-tarball: windowsfs-tarball }
-  - task: delete-deployment
-    file: ci/tasks/bosh-deld/task.yml
+  - task: delete-deployments
+    file: ci/tasks/bosh-delete-deployments/task.yml
     params:
       BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
       BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
-      BOSH_DEPLOYMENT: ((fs-version))
       BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
       JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
