@@ -84,6 +84,8 @@ bosh -d concourse-worker-envoy deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-w
   -l <(gsutil cat gs://$concourse_vars_project/concourse/vars.yml) \
   -l $DIR/creds.yml
 
+# mulgore is our vsphere environment.
+# we need a linux worker for concourse GETs and windows worker for running tests.
 bosh_target "mulgore"
 bosh -d concourse-worker-1903 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-worker.yml \
   -v deployment_name=concourse-worker-1903 \
@@ -96,8 +98,8 @@ bosh -d concourse-worker-1903 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-wo
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-external.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-tools-2019.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-2019-windows1803-stemcell.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh-2019.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2019.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh-1903.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-1903.yml \
   -v storage_driver=overlay \
   -v windows_worker_tag=1903 \
   -l ${CONCOURSE_DEPLOYMENT}/versions.yml \

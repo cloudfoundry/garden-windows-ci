@@ -12,7 +12,7 @@
     release: windows-utilities
     include:
       stemcell:
-      - os: windows1803
+      - os: windows1903
     jobs:
     - name: enable_ssh
       release: windows-utilities
