@@ -85,8 +85,8 @@ bosh -d concourse-worker-envoy deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-w
   -l $DIR/creds.yml
 
 bosh_target "mulgore"
-bosh -d concourse-worker-2019 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-worker.yml \
-  -v deployment_name=concourse-worker-2019 \
+bosh -d concourse-worker-1903 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-worker.yml \
+  -v deployment_name=concourse-worker-1903 \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/windows-worker.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/windows-worker-ephemeral-disk.yml \
@@ -99,7 +99,7 @@ bosh -d concourse-worker-2019 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-wo
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh-2019.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2019.yml \
   -v storage_driver=overlay \
-  -v windows_worker_tag=2019 \
+  -v windows_worker_tag=1903 \
   -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
   -l <(gsutil cat gs://$concourse_vars_project/concourse/vars.yml) \
   -l $DIR/creds.yml

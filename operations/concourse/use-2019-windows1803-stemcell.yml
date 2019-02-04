@@ -2,6 +2,6 @@
   type: replace
   value:
     version: '1903.18282'
-    os: windows1803
+    os: windows1903
     alias: windows
 
