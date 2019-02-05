@@ -39,7 +39,7 @@ $env:EPHEMERAL_DISK_TEMP_PATH=$env:TMP
 Clone `garden-windows-ci`, `winc`, `winc-release`, `groot-windows`, `garden-runc-release` and `garden-integration-tests`
 ```
 git clone https://github.com/cloudfoundry/garden-windows-ci.git
-git clone https://github.com/cloudfoundry/winc.git $env:powershell ./garden-windows-ci/tasks/run-local-gats/run.ps1GOPATH\src\code.cloudfoundry.org\winc
+git clone https://github.com/cloudfoundry/winc.git $env:GOPATH\src\code.cloudfoundry.org\winc
 git clone --recurse-submodules https://github.com/cloudfoundry/winc-release.git $env:GOPATH\src\code.cloudfoundry.org\winc-release
 git clone https://github.com/cloudfoundry/groot-windows.git $env:GOPATH\src\code.cloudfoundry.org\groot-windows
 git clone  --recurse-submodules https://github.com/cloudfoundry/garden-runc-release.git $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release
