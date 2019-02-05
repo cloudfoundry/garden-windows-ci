@@ -3,9 +3,9 @@
   path: /releases/name=windows-utilities?
   value:
     name: windows-utilities
-    version: 0.10.0
-    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.10.0
-    sha1: 2bf15743be48e696a72236c05e8e3e137474cedd
+    version: 0.11.0
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.11.0
+    sha1: efc10ac0f4acae23637ce2c6f864d20df2e3a781
 
 - type: replace
   path: /addons?/-
@@ -16,6 +16,7 @@
       stemcell:
       - os: windows2016
       - os: windows1803
+      - os: windows2019
     jobs:
     - name: enable_ssh
       release: windows-utilities

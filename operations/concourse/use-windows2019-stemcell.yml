@@ -1,0 +1,8 @@
+- path: /stemcells/alias=windows
+  type: replace
+  value:
+    # until we get our hands on a "stable" one
+    version: '2019.1.24-build.1'
+    os: windows2019
+    alias: windows
+
