@@ -64,7 +64,9 @@ bbl \
 # TODO: Add record set for new environment to shared-dns aws account
 
 echo "exporting bosh director env vars"
-eval "$(bbl print-env)"
+pushd $bbl_state_dir
+  eval "$(bbl print-env)"
+popd
 
 bosh env
 
@@ -72,7 +74,18 @@ echo "upload stemcell to bosh director"
 stemcell_version=$(bosh interpolate ${cf_deployment}/cf-deployment.yml --path=/stemcells/alias=default/version)
 bosh upload-stemcell https://bosh.io/d/stemcells/bosh-google-kvm-ubuntu-xenial-go_agent?v=${stemcell_version}
 
-# TODO: upload bbl state directory to gcloud storage
+echo "preparing bbl state directory for upload..."
+pushd $bbl_state_dir
+  # setup git
+  git init
+  git add .
+  git ci -m "Initial commit"
+  # garden-windows-ci/bin/deploy_cf expects this directory to exist
+  mkdir cf
+  touch cf/creds.yml
+popd
+echo "uploading bbl state directory to gcloud storage..."
+gsutil cp -r $bbl_state_dir/* gs://cf-garden-windows-dev/$environment
 
 echo "finished bbl'ing up $environment"
 echo "now you can deploy cloud foundry!"
