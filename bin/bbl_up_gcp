@@ -13,9 +13,12 @@ if [[ -z $BBL_GCP_SERVICE_ACCOUNT_KEY || -z $BBL_GCP_REGION ]]; then
 fi
 
 cf_deployment_dir="${HOME}/workspace/cf-deployment"
-if [[ ! -d "${cf_deployment_dir}" ]]; then
-  echo "must get ${cf_deployment_dir}"
-  exit 1
+if [ ! -d "${cf_deployment_dir}" ]; then
+  git clone https://github.com/cloudfoundry/cf-deployment "${cf_deployment_dir}"
+else
+  pushd "${cf_deployment_dir}" > /dev/null
+    git pull
+  popd > /dev/null
 fi
 
 # TODO: Check that this environment isn't taken in aws shared-dns
@@ -27,8 +30,8 @@ mkdir -p ${bbl_state_dir}
 
 echo "creating load balancer certificates"
 
-lb_cert="${bbl_state_dir}/cert.pem"
-lb_key="${bbl_state_dir}/key.pem"
+lb_cert="${bbl_state_dir}/certs/cert.pem"
+lb_key="${bbl_state_dir}/certs/key.pem"
 lb_domain="${environment}.cf-app.com"
 
 openssl req -x509 \
@@ -73,3 +76,5 @@ bosh upload-stemcell https://bosh.io/d/stemcells/bosh-google-kvm-ubuntu-xenial-g
 
 echo "finished bbl'ing up $environment"
 echo "now you can deploy cloud foundry!"
+
+echo "don't forget to update the shared-dns-account for the cf-app.com record set or add a new record set"
