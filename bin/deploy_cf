@@ -16,11 +16,14 @@ case "$1" in
   pesto | alfredo)
     project_name=cff-greenhouse-$1
     ;;
-  tartar | hummus | tzatziki | guac)
+  tartar  | guac)
     project_name=cf-greenhouse-$1
     ;;
   mulgore)
     project_name=$1
+    ;;
+  hummus | tzatziki)
+    project_name="cf-garden-windows-dev/$1"
     ;;
   *)
     echo "Cannot deploy environment: $1"
@@ -31,6 +34,21 @@ echo "deploying $environment..."
 CF_DEPLOYMENT=${CF_DEPLOYMENT:-$HOME/workspace/cf-deployment}
 GARDEN_WINDOWS_CI=${GARDEN_WINDOWS_CI:-$HOME/workspace/garden-windows-ci}
 BOSH_DEPLOYMENT=${BOSH_DEPLOYMENT:-$HOME/workspace/bosh-deployment}
+if [[ ! -d "${CF_DEPLOYMENT}" ]]; then
+  git clone https://github.com/cloudfoundry/cf-deployment ${CF_DEPLOYMENT}
+else
+  pushd ${CF_DEPLOYMENT} > /dev/null
+    git pull
+  popd > /dev/null
+fi
+
+if [[ ! -d "${BOSH_DEPLOYMENT}" ]]; then
+  git clone https://github.com/cloudfoundry/bosh-deployment ${BOSH_DEPLOYMENT}
+else
+  pushd ${BOSH_DEPLOYMENT} > /dev/null
+    git pull
+  popd > /dev/null
+fi
 
 bosh -d cf update-runtime-config ${BOSH_DEPLOYMENT}/runtime-configs/dns.yml --name dns
 
