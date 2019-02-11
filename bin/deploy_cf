@@ -83,19 +83,20 @@ else
   exit 1
 fi
 
-if [ "$3" = "--use-credhub" ]
-then
-  echo "Deploying cf on $environment with credhub"
-  eval $command
-else
-  echo "Deploying cf on $environment without credhub. To use credhub use option --use-credhub"
-  DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+echo "Deploying cf on $environment"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+
+gsutil -q stat gs://$project_name/cf/creds.yml
+if [[ "$?" -eq 0 ]]; then
   gsutil cp gs://$project_name/cf/creds.yml $DIR/creds.yml
-  command="$command -l <(gsutil cat gs://$project_name/cf/vars.yml) \
-    --vars-store $DIR/creds.yml \
-    -v system_domain=$environment.cf-app.com \
-    "
-  eval $command
-  gsutil cp $DIR/creds.yml gs://$project_name/cf/creds.yml
-  rm $DIR/creds.yml
+  command="$command -l <(gsutil cat gs://$project_name/cf/vars.yml)"
 fi
+
+command="$command \
+  --vars-store $DIR/creds.yml \
+  -v system_domain=$environment.cf-app.com \
+  "
+
+eval $command
+gsutil cp $DIR/creds.yml gs://$project_name/cf/creds.yml
+rm $DIR/creds.yml
