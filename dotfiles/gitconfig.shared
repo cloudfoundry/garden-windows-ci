@@ -17,6 +17,7 @@
   pair = duet
   co-pr = !sh -c 'git fetch origin pull/$1/head:pr/$1 && git checkout pr/$1' -
   drb = rebase -i --exec 'git duet-commit --amend --reset-author -v'
+  rclone = clone --recurse-submodules
 [apply]
   whitespace = nowarn
 [color]
