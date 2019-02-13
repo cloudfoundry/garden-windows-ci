@@ -26,7 +26,7 @@ fi
 echo "creating a new cf dev environment called ${environment}"
 
 bbl_state_dir="${HOME}/workspace/bbl-state-dir-${environment}"
-mkdir -p ${bbl_state_dir}
+mkdir -p ${bbl_state_dir}/certs
 
 echo "creating load balancer certificates"
 
@@ -71,18 +71,18 @@ popd
 bosh env
 
 echo "upload stemcell to bosh director"
-stemcell_version=$(bosh interpolate ${cf_deployment}/cf-deployment.yml --path=/stemcells/alias=default/version)
+stemcell_version=$(bosh interpolate ${cf_deployment_dir}/cf-deployment.yml --path=/stemcells/alias=default/version)
 bosh upload-stemcell https://bosh.io/d/stemcells/bosh-google-kvm-ubuntu-xenial-go_agent?v=${stemcell_version}
 
 echo "preparing bbl state directory for upload..."
 pushd $bbl_state_dir
   # setup git
   git init
-  git add .
-  git ci -m "Initial commit"
   # garden-windows-ci/bin/deploy_cf expects this directory to exist
   mkdir cf
   touch cf/creds.yml
+  git add .
+  git ci -m "Initial commit"
 popd
 echo "uploading bbl state directory to gcloud storage..."
 gsutil cp -r $bbl_state_dir/* gs://cf-garden-windows-dev/$environment
@@ -91,3 +91,5 @@ echo "finished bbl'ing up $environment"
 echo "now you can deploy cloud foundry!"
 
 echo "don't forget to update the shared-dns-account for the cf-app.com record set or add a new record set"
+
+# TODO: create a <project-name>/cf/vars.yml with system_domain and cf_admin_password in GCP storage
