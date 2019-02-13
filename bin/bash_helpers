@@ -241,7 +241,7 @@ _cf_creds() {
 
 _project_name() {
   case "$1" in
-    hummus | tzatziki)
+    hummus | tzatziki | aioli)
       echo "cf-garden-windows-dev/$1"
       ;;
     spitfire | tartar | guac)
