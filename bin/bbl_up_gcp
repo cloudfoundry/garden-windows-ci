@@ -1,9 +1,19 @@
 #!/bin/bash -e
+# usage: bbl_up_gcp <env> <cf|concourse>
 
 environment=$1
+lb_type=$2
 
 if [[ -z $environment ]]; then
   echo "must provide the environment name"
+  exit 1
+fi
+
+declare -r VALID_LB_TYPES=(cf concourse)
+lb_type_regex=\\b$lb_type\\b
+
+if ! [[ "${VALID_LB_TYPES[*]}" =~ $lb_type_regex ]]; then
+  echo "must provide valid lb_type. (valid values : ${VALID_LB_TYPES[*]})"
   exit 1
 fi
 
@@ -43,6 +53,9 @@ openssl req -x509 \
 
 echo "created load balancer certificates"
 
+lb_domain_opt="--lb-domain $lb_domain"
+[ $lb_type = concourse ] && unset lb_domain_opt
+
 echo "writing bbl plan to ${bbl_state_dir}"
 bbl \
   --debug \
@@ -50,8 +63,8 @@ bbl \
   --iaas "gcp" \
   plan \
   --name "${environment}" \
-  --lb-type "cf" \
-  --lb-domain "${lb_domain}" \
+  --lb-type "${lb_type}" \
+  "$lb_domain_opt" \
   --lb-cert "${lb_cert}" \
   --lb-key "${lb_key}"
 
