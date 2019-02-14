@@ -29,6 +29,6 @@ pushd src\code.cloudfoundry.org\winc
       exit $LastExitCode
     }
   } else {
-    go build -o "$binaryDir\winc-network.exe" -tags "1803" .\cmd\winc-network
+    go build -o "$binaryDir\winc-network.exe" -tags "hnsAcls" .\cmd\winc-network
   }
 popd
