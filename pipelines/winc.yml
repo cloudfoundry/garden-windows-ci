@@ -236,13 +236,31 @@ jobs:
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
 
+- name: groot-2019
+  serial: true
+  serial_groups: [2019]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: every-2hrs
+      trigger: true
+    - get: groot-windows-develop
+      trigger: true
+    - get: groot-windows-master
+  - task: test
+    input_mapping: { groot-windows: groot-windows-develop }
+    file: ci/tasks/test-groot-windows/task.yml
+    tags: [2019]
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+
 - name: merge-groot-to-master
   serial: true
   plan:
   - aggregate:
     - get: ci
     - get: groot-windows-develop
-      passed: [groot-1709, groot-1803]
+      passed: [groot-1709, groot-1803, groot-2019]
       trigger: true
     - get: groot-windows-master
   - task: merge-develop-to-master
@@ -306,13 +324,41 @@ jobs:
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 1803
 
+- name: winc-2019
+  serial: true
+  serial_groups: [2019]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: every-2hrs
+      trigger: true
+    - get: winc-develop
+      trigger: true
+    - get: groot-windows-master
+      trigger: true
+  - task: build-groot
+    input_mapping: { groot-windows: groot-windows-master }
+    file: ci/tasks/build-groot/task.yml
+    tags: [2019]
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+  - task: test
+    input_mapping: { winc: winc-develop }
+    file: ci/tasks/test-winc/task.yml
+    tags: [2019]
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+      WINC_TEST_ROOTFS: docker:///mcr.microsoft.com/windows/servercore:ltsc2019
+      WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
+      WINDOWS_VERSION: 2019
+
 - name: merge-winc-to-master
   serial: true
   plan:
   - aggregate:
     - get: ci
     - get: winc-develop
-      passed: [winc-1709, winc-1803]
+      passed: [winc-1709, winc-1803, winc-2019]
       trigger: true
     - get: winc-master
   - task: merge-develop-to-master
@@ -395,13 +441,50 @@ jobs:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
       WINDOWS_VERSION: "1803"
 
+- name: diff-exporter-2019
+  serial: true
+  serial_groups: [2019]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: every-2hrs
+      trigger: true
+    - get: groot-windows-master
+      trigger: true
+    - get: winc-master
+    - get: diff-exporter-develop
+      trigger: true
+  - task: build-groot
+    input_mapping: { groot-windows: groot-windows-master }
+    file: ci/tasks/build-groot/task.yml
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+  - task: build-winc
+    file: ci/tasks/build-binary/task.yml
+    input_mapping:
+      repo: winc-master
+    output_mapping:
+      binary-output: winc-binary
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+      IMPORT_PATH: "code.cloudfoundry.org/winc"
+      PACKAGE: "./cmd/winc"
+  - task: test
+    input_mapping: { diff-exporter: diff-exporter-develop }
+    file: ci/tasks/test-diff-exporter/task.yml
+    tags: [2019]
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+      WINC_TEST_ROOTFS: docker:///mcr.microsoft.com/windows/servercore:ltsc2019
+      WINDOWS_VERSION: "2019"
+
 - name: merge-diff-exporter-to-master
   serial: true
   plan:
   - aggregate:
     - get: ci
     - get: diff-exporter-develop
-      passed: [diff-exporter-1709, diff-exporter-1803]
+      passed: [diff-exporter-1709, diff-exporter-1803, diff-exporter-2019]
       trigger: true
     - get: diff-exporter-master
   - task: merge-develop-to-master
@@ -568,6 +651,82 @@ jobs:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
       WINDOWS_VERSION: 1803
+
+- name: gats-2019
+  serial: true
+  serial_groups: [2019]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: every-2hrs
+      trigger: true
+    - get: gats-fork
+    - get: garden-runc-release
+      trigger: true
+    - get: winc-master
+      passed: [merge-winc-to-master]
+      trigger: true
+    - get: winc-release-develop
+    - get: groot-windows-master
+  - aggregate:
+    - task: build-winc
+      file: ci/tasks/build-binary/task.yml
+      tags: [2019]
+      input_mapping:
+        repo: winc-master
+      output_mapping:
+        binary-output: winc-binary
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+        IMPORT_PATH: "code.cloudfoundry.org/winc"
+        PACKAGE: "./cmd/winc"
+    - task: build-winc-network
+      file: ci/tasks/build-winc-network/task.yml
+      tags: [2019]
+      input_mapping: { winc: winc-master }
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+        WINDOWS_VERSION: 2019
+    - task: build-groot
+      input_mapping: { groot-windows: groot-windows-master }
+      file: ci/tasks/build-groot/task.yml
+      tags: [2019]
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+    - task: build-nstar
+      file: ci/tasks/build-binary/task.yml
+      tags: [2019]
+      input_mapping:
+        repo: winc-release-develop
+      output_mapping:
+        binary-output: nstar-binary
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+        PACKAGE: "./src/nstar"
+    - task: build-garden-init
+      file: ci/tasks/build-binary/task.yml
+      tags: [2019]
+      input_mapping:
+        repo: garden-runc-release
+      output_mapping:
+        binary-output: garden-init-binary
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+        PACKAGE: "src/code.cloudfoundry.org/guardian/cmd/winit"
+        BINARY_NAME: "garden-init.exe"
+  - task: copy-forks
+    file: ci/tasks/copy-forks/task.yml
+    input_mapping:
+      garden-integration-tests: gats-fork
+  - task: run-gats
+    file: ci/tasks/run-local-gats/task.yml
+    tags: [2019]
+    input_mapping:
+      garden-runc-release: garden-runc-release-forks
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+      WINC_TEST_ROOTFS: docker:///mcr.microsoft.com/windows/servercore:ltsc2019
+      WINDOWS_VERSION: 2019
 
 - name: bump-winc-release
   serial: true
