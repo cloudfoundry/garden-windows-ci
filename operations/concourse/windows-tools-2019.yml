@@ -16,6 +16,12 @@
 - type: replace
   path: /instance_groups/name=windows-worker/jobs/-
   value:
+    name: docker
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
     name: git
     release: windows-tools
 
