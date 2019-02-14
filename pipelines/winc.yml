@@ -725,8 +725,7 @@ jobs:
       garden-runc-release: garden-runc-release-forks
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      # TODO: GATS require cloudfoundry rootfs
-      WINC_TEST_ROOTFS: docker:///placeholder/for2019
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:2019
       WINDOWS_VERSION: 2019
 
 - name: bump-winc-release
