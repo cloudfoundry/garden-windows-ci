@@ -389,6 +389,8 @@ jobs:
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       NODES: 2
+      IMAGE_TAG: ((os-version))
+      IMAGE_NAME: "microsoft/nanoserver"
     tags: ((task-tag))
 
 - name: test-hydrator-linux
