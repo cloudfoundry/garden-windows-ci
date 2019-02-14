@@ -18,6 +18,7 @@ function main() {
 
   # TODO: need to make sure the pivnet cli is installed (can be installed from https://github.com/pivotal-cf/pivnet-cli/releases and moved to /usr/local/bin)
   local downloaded=$(ls $stemcell_dir | grep $stemcell_version)
+  # TODO: fix this comparison - $stemcell_version is a number, $downloaded is the full file name so they will never be equal
   if [ "$downloaded" == $stemcell_version ]; then
     echo "*** Stemcell already available in $stemcell_dir"
   else
