@@ -457,7 +457,6 @@ jobs:
       - ci/operations/use-3-azs-for-router.yml
       - ((windows-cell-ops-file))
       - ((latest-windows-stemcell-ops-file))
-      - ((windows-scale-down-ops-file))
       - ((windows-rdp-ops-file))
       - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
