@@ -10,8 +10,10 @@ resource-get-tag:
 task-tag: [2019]
 finalized-release-glob: finalized-release/windowsfs-*.tgz
 windowsfs-uses-tar: false
-windows-cell-ops-file: cf-deployment/operations/windows2019fs-cell.yml
-latest-windows-stemcell-ops-file: cf-deployment/operations/use-latest-windows2019-stemcell.yml
 windows-scale-down-ops-file: ci/operations/scale-down-windows2019.yml
 windows-rdp-ops-file: ci/operations/enable-rdp-2019.yml
 stemcell-regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
+
+# TODO: Reference cf-deployment instead of ci after PR is submited
+windows-cell-ops-file: ci/operations/windows2019fs-cell.yml
+latest-windows-stemcell-ops-file: ci/operations/use-latest-windows2019-stemcell.yml
