@@ -15,7 +15,7 @@
           - 172.30.0.1
       release: winc
     - name: windows2019fs
-      release: windowsfs
+      release: windows2019fs
     - name: groot
       properties:
         groot:
