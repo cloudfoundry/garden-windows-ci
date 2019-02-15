@@ -1,0 +1,12 @@
+---
+- type: replace
+  path: /addons?/-
+  value:
+    name: enable_rdp
+    release: windows-utilities
+    include:
+      stemcell:
+      - os: ((stemcell-os))
+    jobs:
+    - name: enable_rdp
+      release: windows-utilities
