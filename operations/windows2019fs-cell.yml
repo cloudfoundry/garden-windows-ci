@@ -15,7 +15,7 @@
           - 172.30.0.1
       release: winc
     - name: windows2019fs
-      release: windows2019fs
+      release: windowsfs
     - name: groot
       properties:
         groot:
@@ -168,9 +168,9 @@
     version: 1.8.0
 # TODO: Replace with url/version/sha
 - type: replace
-  path: /releases/name=windows2019fs?
+  path: /releases/name=windowsfs?
   value:
-    name: windows2019fs
+    name: windowsfs
     version: latest
 - type: replace
   path: /releases/name=windows-utilities?

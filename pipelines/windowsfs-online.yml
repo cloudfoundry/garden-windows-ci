@@ -413,7 +413,8 @@ jobs:
         SERVICE_ACCOUNT_KEY: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
-      output_mapping: { stemcell: gcp-linux-stemcell }
+      output_mapping:
+        stemcell: gcp-linux-stemcell
     - task: create-windowsfs-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
@@ -424,7 +425,8 @@ jobs:
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
       FS_VERSION: ((fs-version))
-    input_mapping: { release-tarball: windowsfs-tarball }
+    input_mapping:
+      release-tarball: windowsfs-tarball
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml
     params:
