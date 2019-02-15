@@ -6,7 +6,7 @@
     release: windows-utilities
     include:
       stemcell:
-      - os: ((stemcell-os))
+      - os: windows2019
     jobs:
     - name: enable_rdp
       release: windows-utilities
