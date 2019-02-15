@@ -233,7 +233,7 @@ jobs:
         - cf-deployment/operations/use-latest-windows2012R2-stemcell.yml
         - ci/operations/latest-garden-windows.yml
         - ci/operations/scale-down-credhub.yml
-        - ci/operations/enable-rdp.yml
+        - ci/operations/enable-rdp-2012R2.yml
         vars_files:
         - cf-vars/vars.yml
         cleanup: true

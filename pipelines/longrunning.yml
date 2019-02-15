@@ -232,7 +232,7 @@ jobs:
       - ci/operations/latest-windows1803fs-release.yml
       - ci/operations/latest-garden-windows.yml
       - ci/operations/with-iso-seg.yml
-      - ci/operations/enable-rdp.yml
+      - ci/operations/enable-rdp-2012R2.yml
       - ci/operations/enable-rdp-2016.yml
       - ci/operations/enable-rdp-1803.yml
       - ci/operations/windows2016-provides-tertiary-groot.yml

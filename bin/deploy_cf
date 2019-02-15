@@ -60,7 +60,7 @@ command="bosh -d cf deploy ${CF_DEPLOYMENT}/cf-deployment.yml \
     -o ${CF_DEPLOYMENT}/operations/stop-skipping-tls-validation.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/latest-garden-runc.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/latest-winc.yml \
-    -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2012R2.yml \
     -v system_domain=$environment.cf-app.com \
     --skip-drain \
   "
