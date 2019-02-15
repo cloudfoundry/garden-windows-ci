@@ -168,9 +168,9 @@
     version: 1.8.0
 # TODO: Replace with url/version/sha
 - type: replace
-  path: /releases/name=windowsfs?
+  path: /releases/name=windows2019fs?
   value:
-    name: windowsfs
+    name: windows2019fs
     version: latest
 - type: replace
   path: /releases/name=windows-utilities?
