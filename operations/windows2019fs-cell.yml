@@ -14,7 +14,7 @@
           dns_servers:
           - 172.30.0.1
       release: winc
-    - name: windowsfs
+    - name: windows2019fs
       release: windowsfs
     - name: groot
       properties:
