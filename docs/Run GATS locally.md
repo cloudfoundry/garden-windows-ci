@@ -29,8 +29,8 @@ Set env variables `GOPATH`, `WINDOWS_VERSION`, `INC_TEST_ROOTFS`, `GROOT_IMAGE_S
 $env:GOPATH=$PWD
 $env:WINDOWS_VERSION="1803"
 $env:WINC_TEST_ROOTFS="docker:///cloudfoundry/windows2016fs:1803"
-$env:GROOT_IMAGE_STORE="C:\ProgramData\groot"
 $env:EPHEMERAL_DISK_TEMP_PATH=$env:TMP
+$env:GROOT_IMAGE_STORE="$env:EPHEMERAL_DISK_TEMP_PATH\groot"
 ```
 <br/>
 
@@ -89,7 +89,13 @@ cp -r $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release .
 ```
 <br/>
 
-#### 10. Run local-gats
+#### 10. Pull rootfs layers into the image-store
+```
+& ".\groot-binary\groot.exe" --driver-store $env:GROOT_IMAGE_STORE pull $env:WINC_TEST_ROOTFS
+```
+<br/>
+
+#### 11. Run local-gats
 ```
 powershell ./garden-windows-ci/tasks/run-local-gats/run.ps1
 ```
