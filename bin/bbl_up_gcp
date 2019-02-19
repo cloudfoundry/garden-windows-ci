@@ -28,7 +28,12 @@ else
   popd > /dev/null
 fi
 
-# TODO: Check that this environment isn't taken in aws shared-dns
+lb_domain="${environment}.cf-app.com"
+if [ -n "$(dig +short $lb_domain ns)" ]; then
+  echo "NS records already exist for $lb_domain. See AWS Route53 DNS service."
+  read -p "Press Y to continue bbling up this environment: "
+  [[ ! $REPLY =~ ^[Yy]$ ]] && exit 1
+fi
 
 echo "creating a new cf dev environment called ${environment}"
 
@@ -39,7 +44,6 @@ echo "creating load balancer certificates"
 
 lb_cert="${bbl_state_dir}/certs/cert.pem"
 lb_key="${bbl_state_dir}/certs/key.pem"
-lb_domain="${environment}.cf-app.com"
 
 openssl req -x509 \
   -newkey rsa:2048 \
