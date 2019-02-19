@@ -20,7 +20,7 @@
       properties:
         groot:
           cached_image_uris:
-          - oci:///C:/var/vcap/packages/windowsfs
+          - oci:///C:/var/vcap/packages/windows2019fs
           driver_store: /var/vcap/data/groot
       release: winc
     - name: garden-windows
@@ -54,8 +54,8 @@
           rep:
             open_bindmounts_acl: true
             preloaded_rootfses:
-            - windows2016:oci:///C:/var/vcap/packages/windowsfs
-            - windows:oci:///C:/var/vcap/packages/windowsfs
+            - windows2016:oci:///C:/var/vcap/packages/windows2019fs
+            - windows:oci:///C:/var/vcap/packages/windows2019fs
         enable_consul_service_registration: false
         enable_declarative_healthcheck: true
         logging:

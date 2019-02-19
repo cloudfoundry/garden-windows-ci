@@ -424,7 +424,7 @@ jobs:
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windowsfs
     input_mapping:
       release-tarball: windowsfs-tarball
   - task: delete-deployments
