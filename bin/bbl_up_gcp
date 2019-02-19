@@ -109,8 +109,18 @@ popd
 echo "uploading bbl state directory to gcloud storage..."
 gsutil cp -r $bbl_state_dir/* $env_bucket
 
-# TODO: concourse lb-type requires the cloud config be modified by adding a vip network, like this e.g.
-# https://github.com/cloudfoundry/bosh-bootloader/blob/523320ac777b9114fc7c7cadc05773f310ac6f06/storage/fixtures/upped/bosh-deployment/gcp/cloud-config.yml#L43-L44
+if [ $lb_type = concourse ]; then
+  echo "Adding vip network to cloud config (required for concourse)"
+  bosh update-cloud-config <(bosh interpolate <(bosh cc) -o <(cat << EOF
+- type: replace
+  path: /networks/name=vip?
+  value:
+    name: vip
+    type: vip
+EOF
+  )
+  )
+fi
 
 echo "finished bbl'ing up $environment"
 echo "now you can deploy ${lb_type}!"
