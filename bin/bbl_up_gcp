@@ -79,8 +79,6 @@ bbl \
   --state-dir "${bbl_state_dir}" \
   up
 
-# TODO: Add record set for new environment to shared-dns aws account
-
 echo "exporting bosh director env vars"
 pushd $bbl_state_dir
   eval "$(bbl print-env)"
@@ -94,16 +92,19 @@ bosh upload-stemcell https://bosh.io/d/stemcells/bosh-google-kvm-ubuntu-xenial-g
 
 echo "preparing bbl state directory for upload..."
 pushd $bbl_state_dir
-  # TODO: Shouldn't git init be done only if there's no .git already in the bucket?
   # setup git
-  git init
+  if [ -z "$(gsutil stat $env_bucket/.git/* 2> /dev/null)" ]; then
+    git init
+  else
+    gsutil -m cp -r "$env_bucket/.git" .
+  fi
   if [ $lb_type = cf ]; then
     # garden-windows-ci/bin/deploy_cf expects this directory to exist
     mkdir cf
     touch cf/creds.yml
   fi
   git add .
-  git ci -m "Initial commit"
+  git ci -m "Commit made using bbl_up_gcp script"
 popd
 echo "uploading bbl state directory to gcloud storage..."
 gsutil cp -r $bbl_state_dir/* $env_bucket
