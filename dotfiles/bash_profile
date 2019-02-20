@@ -270,10 +270,10 @@ fly-windows1803fs () {
 }
 
 fly-windowsfs-online () {
-  fly -t garden-windows sp -p windowsfs-online -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-online.yml \
+  fly -t garden-windows set-pipeline -p windowsfs-online -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-online.yml \
     -l <(_env_creds_yml aioli) \
-  -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
-  -l $HOME/workspace/garden-windows-ci/vars/windowsfs-online.yml
+    -l <(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
+    -l $HOME/workspace/garden-windows-ci/vars/windowsfs-online.yml
 }
 
 fly-docker () {
