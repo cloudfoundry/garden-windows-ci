@@ -111,6 +111,14 @@
     - 100GB_ephemeral_disk
     vm_type: small-highmem
 - type: replace
+  path: /bosh-dns-aliases/name=bosh-dns-aliases/properties/aliases/0/targets/-
+  value:
+    query: '_'
+    instance_group: windows2019fs-cell
+    deployment: cf
+    network: default
+    domain: bosh
+- type: replace
   path: /stemcells/-
   value:
     alias: windows2019
