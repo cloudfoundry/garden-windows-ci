@@ -10,7 +10,7 @@ eval "$cmd"
 
 deployments=$(bosh deployments --json | jq -r '.Tables[].Rows[].name')
 
-for deployment in "${deployments[@]}";
+for deployment in $deployments;
 do
   if [[ ! -z "$deployment" ]]; then
     echo "Deleting deployment: $deployment"
