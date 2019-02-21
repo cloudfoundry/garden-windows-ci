@@ -5,7 +5,7 @@ server-core-tag: "ltsc2019"
 windowsfs-online-release-repo: windowsfs-online-release
 fs-version: windows2019fs
 initial-image-version: 2019.0.1
-initial-online-release-version: 1.0.0
+initial-online-release-version: 0.0.0
 resource-get-tag:
 task-tag: [2019]
 finalized-release-glob: finalized-release/windowsfs-*.tgz

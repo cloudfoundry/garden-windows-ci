@@ -144,7 +144,7 @@ resources:
   source:
     access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-    bucket: ((fs-version))
+    bucket: windowsfs
     initial_version: ((initial-online-release-version))
     key: windowsfs-online-release-version
     region_name: us-east-1
@@ -592,7 +592,7 @@ jobs:
       release: windowsfs-online-release-develop
       version: windowsfs-online-release-version
     params:
-      RELEASE_NAME: ((fs-version))
+      RELEASE_NAME: windowsfs
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
       CI_SKIP: true
@@ -635,7 +635,7 @@ jobs:
       release: windowsfs-online-release-develop
       version: windowsfs-online-release-version
     params:
-      RELEASE_NAME: ((fs-version))
+      RELEASE_NAME: windowsfs
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
       CI_SKIP: true
@@ -678,7 +678,7 @@ jobs:
       release: windowsfs-online-release-develop
       version: windowsfs-online-release-version
     params:
-      RELEASE_NAME: ((fs-version))
+      RELEASE_NAME: windowsfs
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
       CI_SKIP: true
