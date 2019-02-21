@@ -68,7 +68,7 @@ instance_groups:
   - name: winc-setup
     properties:
       winc_setup:
-        container_image_uri: docker:///microsoft/nanoserver:1809
+        container_image_uri: docker:///cloudfoundry/windows2016fs:2019
     release: windows-tools
   instances: 1
   lifecycle: service
