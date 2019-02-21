@@ -78,8 +78,14 @@ elif [ "$2" = "1803" ]; then
     -o ${GARDEN_WINDOWS_CI}/operations/windows1803-debug.yml \
     -o ${CF_DEPLOYMENT}/operations/use-latest-windows1803-stemcell.yml \
     "
+elif [ "$2" = "2019" ]; then
+  command="$command -o ${CF_DEPLOYMENT}/operations/windows2019-cell.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2019.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/windows2019-debug.yml \
+    -o ${CF_DEPLOYMENT}/operations/use-latest-windows2019-stemcell.yml \
+    "
 else
-  echo "Invalid version, please select 1709 or 1803"
+  echo "Invalid version, please select 1709, 1803, or 2019"
   exit 1
 fi
 
