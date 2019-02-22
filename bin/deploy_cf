@@ -92,8 +92,7 @@ fi
 echo "Deploying cf on $environment"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
-gsutil -q stat gs://$project_name/cf/creds.yml
-if [[ "$?" -eq 0 ]]; then
+if gsutil -q stat gs://$project_name/cf/creds.yml ; then
   gsutil cp gs://$project_name/cf/creds.yml $DIR/creds.yml
   command="$command -l <(gsutil cat gs://$project_name/cf/vars.yml)"
 fi
