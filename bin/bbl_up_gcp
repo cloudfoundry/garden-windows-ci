@@ -28,36 +28,42 @@ else
   popd > /dev/null
 fi
 
-lb_domain="${environment}.cf-app.com"
-if [ -n "$(dig +short $lb_domain ns)" ]; then
-  echo "NS records already exist for $lb_domain. See AWS Route53 DNS service."
-  read -p "Press Y to continue bbling up this environment: "
-  [[ ! $REPLY =~ ^[Yy]$ ]] && exit 1
-fi
-
-echo "creating a new cf dev environment called ${environment}"
 
 bbl_state_dir="${HOME}/workspace/bbl-state-dir-${environment}"
-mkdir -p ${bbl_state_dir}/certs
 
-echo "creating load balancer certificates"
+lb_domain=""
+lb_cert=""
+lb_key=""
+if [ $lb_type = "cf" ]; then
+  lb_domain="${environment}.cf-app.com"
 
-lb_cert="${bbl_state_dir}/certs/cert.pem"
-lb_key="${bbl_state_dir}/certs/key.pem"
+  if [ -n "$(dig +short $lb_domain ns)" ]; then
+    echo "NS records already exist for $lb_domain. See AWS Route53 DNS service."
+    read -p "Press Y to continue bbling up this environment: "
+    [[ ! $REPLY =~ ^[Yy]$ ]] && exit 1
+  fi
 
-openssl req -x509 \
-  -newkey rsa:2048 \
-  -keyout "${lb_key}" \
-  -out "${lb_cert}" \
-  -subj "/C=US/ST=NY/O=pivotal, Inc./CN={$lb_domain}" \
-  -nodes -days 365
+  echo "creating a new cf dev environment called ${environment}"
 
-echo "created load balancer certificates"
+  mkdir -p ${bbl_state_dir}/certs
+
+  echo "creating load balancer certificates"
+
+  lb_cert="${bbl_state_dir}/certs/cert.pem"
+  lb_key="${bbl_state_dir}/certs/key.pem"
+
+  openssl req -x509 \
+    -newkey rsa:2048 \
+    -keyout "${lb_key}" \
+    -out "${lb_cert}" \
+    -subj "/C=US/ST=NY/O=pivotal, Inc./CN={$lb_domain}" \
+    -nodes -days 365
+
+  echo "created load balancer certificates"
+fi
 
 env_bucket="gs://cf-garden-windows-dev/$environment"
-lb_domain_opt="--lb-domain $lb_domain"
 if [ $lb_type = concourse ]; then
-  unset lb_domain_opt
   env_bucket="gs://cf-greenhouse-${environment}"
 fi
 
@@ -69,7 +75,7 @@ bbl \
   plan \
   --name "${environment}" \
   --lb-type "${lb_type}" \
-  "$lb_domain_opt" \
+  --lb-domain "${lb_domain}" \
   --lb-cert "${lb_cert}" \
   --lb-key "${lb_key}"
 
@@ -106,6 +112,7 @@ pushd $bbl_state_dir
   git add .
   git ci -m "Commit made using bbl_up_gcp script"
 popd
+
 echo "uploading bbl state directory to gcloud storage..."
 gsutil cp -r $bbl_state_dir/* $env_bucket
 
