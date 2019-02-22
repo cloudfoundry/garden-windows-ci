@@ -15,5 +15,5 @@ windows-rdp-ops-file: ci/operations/enable-rdp-2019.yml
 stemcell-regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
 
 # TODO: Reference cf-deployment instead of ci after PR is submited
-windows-cell-ops-file: ci/operations/windows2019fs-cell.yml
-latest-windows-stemcell-ops-file: ci/operations/use-latest-windows2019-stemcell.yml
+windows-cell-ops-file: cf-deployment-with-2019-cell/operations/windows2019-cell.yml
+latest-windows-stemcell-ops-file: cf-deployment-with-2019-cell/operations/use-latest-windows2019-stemcell.yml

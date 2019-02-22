@@ -68,6 +68,12 @@ resources:
     branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-deployment.git
 
+- name: cf-deployment-with-2019-cell
+  type: git
+  source:
+    branch: add-windows-2019
+    uri: https://github.com/greenhouse-org/cf-deployment.git
+
 - name: winc
   type: git
   source:
@@ -402,6 +408,7 @@ jobs:
     - get: cf-acceptance-tests
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
+    - get: cf-deployment-with-2019-cell
     - get: gcp-windows-stemcell
   - aggregate:
     - task: get-cf-vars
@@ -448,7 +455,7 @@ jobs:
       JUMPBOX_SSH_KEY: ((AIOLI_JUMPBOX_SSH_KEY))
   - put: aioli-cf-deployment
     params:
-      manifest: cf-deployment/cf-deployment.yml
+      manifest: cf-deployment-with-2019-cell/cf-deployment.yml
       stemcells:
       - gcp-linux-stemcell/*.tgz
       - gcp-windows-stemcell/*.tgz
