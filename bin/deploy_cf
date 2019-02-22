@@ -13,7 +13,7 @@ fi
 
 environment=$1
 case "$1" in
-  pesto | alfredo)
+  pesto)
     project_name=cff-greenhouse-$1
     ;;
   tartar  | guac)
@@ -22,7 +22,7 @@ case "$1" in
   mulgore)
     project_name=$1
     ;;
-  hummus | tzatziki)
+  hummus | tzatziki | alfredo | aioli)
     project_name="cf-garden-windows-dev/$1"
     ;;
   *)

@@ -241,13 +241,13 @@ _cf_creds() {
 
 _project_name() {
   case "$1" in
-    hummus | tzatziki | aioli)
+    hummus | tzatziki | aioli | alfredo)
       echo "cf-garden-windows-dev/$1"
       ;;
     spitfire | tartar | guac)
       echo "cf-greenhouse-$1"
       ;;
-    pesto | alfredo)
+    pesto)
       echo "cff-greenhouse-$1"
       ;;
     mulgore)
