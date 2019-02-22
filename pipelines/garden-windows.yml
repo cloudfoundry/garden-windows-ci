@@ -66,7 +66,7 @@ resources:
       config:
         bucket: cff-greenhouse-alfredo
         file_name: cf/creds.yml
-        json_key: {{ALFREDO_SERVICE_ACCOUNT_JSON}}
+        json_key: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
 - name: alfredo-lock-pool
   type: pool
   source:
@@ -198,7 +198,7 @@ jobs:
       params:
         BUCKET: cff-greenhouse-alfredo
         FILE_NAME: cf/vars.yml
-        SERVICE_ACCOUNT_KEY: {{ALFREDO_SERVICE_ACCOUNT_JSON}}
+        SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
     - task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
       params:
