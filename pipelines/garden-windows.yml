@@ -64,8 +64,8 @@ resources:
     vars_store:
       provider: gcs
       config:
-        bucket: cff-greenhouse-alfredo
-        file_name: cf/creds.yml
+        bucket: cf-garden-windows-dev
+        file_name: alfredo/cf/creds.yml
         json_key: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
 - name: alfredo-lock-pool
   type: pool
@@ -196,8 +196,8 @@ jobs:
       file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
       params:
-        BUCKET: cff-greenhouse-alfredo
-        FILE_NAME: cf/vars.yml
+        BUCKET: cf-garden-windows-dev
+        FILE_NAME: alfredo/cf/vars.yml
         SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
     - task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
