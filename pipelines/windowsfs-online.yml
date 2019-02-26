@@ -420,6 +420,8 @@ jobs:
         SERVICE_ACCOUNT_KEY: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
+      input_mapping:
+        cf-deployment: cf-deployment-with-2019-cell
       output_mapping:
         stemcell: gcp-linux-stemcell
     - task: create-windowsfs-release
