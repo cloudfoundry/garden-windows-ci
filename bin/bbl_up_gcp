@@ -134,4 +134,3 @@ echo "now you can deploy ${lb_type}!"
 
 echo "don't forget to update the shared-dns-account for the cf-app.com record set or add a new record set"
 
-# TODO: For cf, create a <project-name>/cf/vars.yml with system_domain and cf_admin_password in GCP storage
