@@ -106,7 +106,7 @@ pushd $bbl_state_dir
   fi
   if [ $lb_type = cf ]; then
     # garden-windows-ci/bin/deploy_cf expects this directory to exist
-    mkdir cf
+    mkdir -p cf
     touch cf/creds.yml
   fi
   git add .
