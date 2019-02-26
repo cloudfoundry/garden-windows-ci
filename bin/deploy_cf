@@ -92,13 +92,19 @@ fi
 echo "Deploying cf on $environment"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
-# TODO: if <bucket>/cf/vars.yml does not exist, create a vars.yml like:
-# cf_admin_password: XXXX
-# system_domain: $environment.cf-app.com
+# When freshly bbl-ed up, create a one-time vars.yml with a randomly generated
+# password. To generate a *new* password, delete <bucket>/cf/vars.yml and redeploy
+if gsutil -q stat gs://$project_name/cf/vars.yml ; then
+  cat <<-EOF> $DIR/vars.yml
+	cf_admin_password: `openssl rand -base64 12`
+	system_domain: $environment.cf-app.com
+	EOF
+  gsutil cp $DIR/vars.yml gs://$project_name/cf/vars.yml
+fi
 
 if gsutil -q stat gs://$project_name/cf/creds.yml ; then
   gsutil cp gs://$project_name/cf/creds.yml $DIR/creds.yml
-  command="$command -l <(gsutil cat gs://$project_name/cf/vars.yml)"
+  command="$command -l <(cat $DIR/vars.yml || gsutil cat gs://$project_name/cf/vars.yml)"
 fi
 
 command="$command \
