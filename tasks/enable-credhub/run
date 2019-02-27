@@ -2,24 +2,33 @@
 
 set -e
 
+. ci/bin/ci_helpers
+
+trap _close_ssh_connection EXIT
+cmd=$(_bosh_socks5_env "$JUMPBOX_IP" "$JUMPBOX_SSH_KEY")
+eval "$cmd"
+
+credhubIPs=$(bosh -d $DEPLOYMENT_NAME instances | grep credhub | awk '{print $4}')
+
+asgJson=$(mktemp)
+
+echo "$credhubIPs" | jq -R '{"protocol": "tcp", "destination": ., "ports": "8844"}' | jq -s . > "$asgJson"
+
 cf api "$CF_API" --skip-ssl-validation
 cf login -u "$CF_USERNAME" -p "$CF_PASSWORD"  -o "system" --skip-ssl-validation
 
-cf create-security-group credhub-internal <(echo '[{
-  "destination": "10.0.16.0/24",
-  "ports": "8844",
-  "protocol": "tcp"
-}]')
-
-cf bind-staging-security-group credhub-internal
-cf bind-running-security-group credhub-internal
-
 cf set-running-environment-variable-group '{"CREDHUB_API": "https://credhub.service.cf.internal:8844"}'
 
-cf create-security-group uaa-internal <(echo '[{
-  "destination": "10.0.16.0/24",
-  "ports": "8443",
-  "protocol": "tcp"
-}]')
+# Create credhub-internal security group
+cf delete-security-group -f credhub-internal
+cf create-security-group credhub-internal "$asgJson"
+
+cf bind-running-security-group credhub-internal
+cf bind-staging-security-group  credhub-internal
+
+# Create uaa-internal security group
+cf delete-security-group -f uaa-internal
+cf create-security-group uaa-internal "$asgJson"
 
 cf bind-running-security-group uaa-internal
+cf bind-staging-security-group uaa-internal
