@@ -61,6 +61,12 @@ resources:
     branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-deployment.git
 
+- name: cf-deployment-with-2019-cell
+  type: git
+  source:
+    branch: add-windows-2019-rc
+    uri: https://github.com/greenhouse-org/cf-deployment.git
+
 - name: winc-release-develop
   type: git
   source:
@@ -267,6 +273,7 @@ jobs:
     - get: cf-acceptance-tests
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
+    - get: cf-deployment-with-2019-cell
     - get: gcp-windows-stemcell
   - aggregate:
     - task: get-cf-vars
@@ -278,6 +285,8 @@ jobs:
         SERVICE_ACCOUNT_KEY: ((TARTAR_SERVICE_ACCOUNT_JSON))
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
+      input_mapping:
+        cf-deployment: cf-deployment-with-2019-cell
       output_mapping: { stemcell: gcp-linux-stemcell }
     - task: create-windowsfs-release
       file: ci/tasks/create-fs-release-linux/task.yml
@@ -311,7 +320,7 @@ jobs:
       JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
   - put: tartar-cf-deployment
     params:
-      manifest: cf-deployment/cf-deployment.yml
+      manifest: cf-deployment-with-2019-cell/cf-deployment.yml
       stemcells:
       - gcp-linux-stemcell/*.tgz
       - gcp-windows-stemcell/*.tgz

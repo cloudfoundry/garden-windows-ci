@@ -9,8 +9,8 @@ resource-get-tag:
 task-tag: [2019]
 finalized-release-glob: finalized-release/windows2019fs-*.tgz
 windowsfs-uses-tar: false
-windows-cell-ops-file: cf-deployment/operations/windows2019-cell.yml
-latest-windows-stemcell-ops-file: cf-deployment/operations/use-latest-windows2019-stemcell.yml
+windows-cell-ops-file: cf-deployment-with-2019-cell/operations/windows2019-cell.yml
+latest-windows-stemcell-ops-file: cf-deployment-with-2019-cell/operations/use-latest-windows2019-stemcell.yml
 windows-scale-down-ops-file: ci/operations/scale-down-windows2019.yml
 windows-rdp-ops-file: ci/operations/enable-rdp-2019.yml
 stemcell-regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
