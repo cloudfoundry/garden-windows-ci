@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# There is a cf-deployment-concourse-task that achieves something similiar
+# to this script but opens up all the ports and needs to be executed for each security group.
+# github.com/cloudfoundry/cf-deployment-concourse-tasks/blob/master/open-asgs-for-bosh-instance-group/task.yml
+
 set -e
 
 . ci/bin/ci_helpers
