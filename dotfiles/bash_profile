@@ -226,6 +226,7 @@ fly-cleanup() {
     -l <(_bosh_creds_yml aioli) \
     -l <(_bosh_creds_yml guac) \
     -l <(_bosh_creds_yml mulgore) \
+    -l <(_bosh_creds_yml sriracha) \
     -l <(lpass show --notes 'github-deploy-keys' )
 }
 
