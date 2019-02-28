@@ -1,0 +1,6 @@
+---
+- type: replace
+  path: /releases/name=windows2019fs?
+  value:
+    name: windows2019fs
+    version: latest
