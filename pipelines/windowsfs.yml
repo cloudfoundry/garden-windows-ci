@@ -82,24 +82,6 @@ resources:
     branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-deployment.git
 
-- name: winc
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry/winc.git
-
-- name: groot-windows
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry/groot-windows.git
-
-- name: diff-exporter
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry-incubator/diff-exporter.git
-
 - name: winc-release-develop
   type: git
   source:
@@ -232,8 +214,6 @@ resources:
 groups:
 - name: ((fs-version))
   jobs:
-    - test-hydrator-windows
-    - test-hydrator-linux
     - bump-windowsfs-release-windows2016fs
     - bump-windowsfs-online-release-windows2016fs
     - bump-windowsfs-release-hydrator
@@ -337,74 +317,6 @@ jobs:
       TRACKER_PROJECT_ID: "((GARDEN_WINDOWS_PROJECT_ID))"
       FS_VERSION: ((fs-version))
 
-- name: test-hydrator-windows
-  serial: true
-  plan:
-  - aggregate:
-    - get: ci
-      tags: ((resource-get-tag))
-    - get: hydrator
-      trigger: true
-      tags: ((resource-get-tag))
-    - get: winc
-      trigger: true
-      tags: ((resource-get-tag))
-    - get: groot-windows
-      trigger: true
-      tags: ((resource-get-tag))
-    - get: diff-exporter
-      trigger: true
-      tags: ((resource-get-tag))
-  - aggregate:
-    - task: build-winc
-      file: ci/tasks/build-binary/task.yml
-      input_mapping:
-        repo: winc
-      output_mapping:
-        binary-output: winc-binary
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        IMPORT_PATH: "code.cloudfoundry.org/winc"
-        PACKAGE: "./cmd/winc"
-      tags: ((task-tag))
-    - task: build-groot
-      file: ci/tasks/build-groot/task.yml
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      tags: ((task-tag))
-    - task: build-diff-exporter
-      file: ci/tasks/build-binary/task.yml
-      input_mapping:
-        repo: diff-exporter
-      output_mapping:
-        binary-output: diff-exporter-binary
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        PACKAGE: "."
-        IMPORT_PATH: "code.cloudfoundry.org/diff-exporter"
-        BINARY_NAME: "diff-exporter.exe"
-      tags: ((task-tag))
-  - task: run-ginkgo-exe
-    file: ci/tasks/test-hydrator-windows/task.yml
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      NODES: 2
-      IMAGE_TAG: ((os-version))
-      IMAGE_NAME: "microsoft/nanoserver"
-    tags: ((task-tag))
-
-- name: test-hydrator-linux
-  serial: true
-  plan:
-  - aggregate:
-    - get: ci
-    - get: hydrator
-      trigger: true
-  - task: run-ginkgo
-    file: ci/tasks/test-hydrator-linux/task.yml
-    params:
-      IGNORE_PACKAGES: ""
-
 - name: bump-windowsfs-release-windows2016fs
   serial: true
   plan:
@@ -447,9 +359,6 @@ jobs:
     - get: ci
     - get: windowsfs-release-develop
     - get: hydrator
-      passed:
-      - test-hydrator-windows
-      - test-hydrator-linux
       trigger: true
   - task: bump-windowsfs-release
     file: ci/tasks/bump-submodule/task.yml
@@ -490,9 +399,6 @@ jobs:
     - get: ci
     - get: windowsfs-online-release-develop
     - get: hydrator
-      passed:
-      - test-hydrator-windows
-      - test-hydrator-linux
       trigger: true
   - task: bump-windowsfs-online-release
     file: ci/tasks/bump-submodule/task.yml
