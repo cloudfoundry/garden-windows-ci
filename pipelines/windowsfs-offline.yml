@@ -107,41 +107,41 @@ resources:
 
 # BOSH Deployment
 
-- name: tartar-cf-deployment
+- name: sriracha-cf-deployment
   type: bosh-deployment
   source:
     deployment: cf
-    client: ((TARTAR_BOSH_CLIENT))
-    client_secret: ((TARTAR_BOSH_CLIENT_SECRET))
-    ca_cert: ((TARTAR_BOSH_CA_CERT))
-    target: ((TARTAR_BOSH_ENVIRONMENT))
-    jumpbox_url: ((TARTAR_JUMPBOX_URL))
-    jumpbox_ssh_key: ((TARTAR_JUMPBOX_SSH_KEY))
+    client: ((SRIRACHA_BOSH_CLIENT))
+    client_secret: ((SRIRACHA_BOSH_CLIENT_SECRET))
+    ca_cert: ((SRIRACHA_BOSH_CA_CERT))
+    target: ((SRIRACHA_BOSH_ENVIRONMENT))
+    jumpbox_url: ((SRIRACHA_JUMPBOX_URL))
+    jumpbox_ssh_key: ((SRIRACHA_JUMPBOX_SSH_KEY))
     vars_store:
       provider: gcs
       config:
-        bucket: cf-greenhouse-tartar
-        file_name: cf/creds.yml
-        json_key: ((TARTAR_SERVICE_ACCOUNT_JSON))
+        bucket: cf-garden-windows-dev
+        file_name: sriracha/cf/creds.yml
+        json_key: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
 
-- name: tartar-smoke-test-deployment
+- name: sriracha-smoke-test-deployment
   type: bosh-deployment
   source:
     deployment: ((fs-version))
-    client: ((TARTAR_BOSH_CLIENT))
-    client_secret: ((TARTAR_BOSH_CLIENT_SECRET))
-    ca_cert: ((TARTAR_BOSH_CA_CERT))
-    target: ((TARTAR_BOSH_ENVIRONMENT))
-    jumpbox_url: ((TARTAR_JUMPBOX_URL))
-    jumpbox_ssh_key: ((TARTAR_JUMPBOX_SSH_KEY))
+    client: ((SRIRACHA_BOSH_CLIENT))
+    client_secret: ((SRIRACHA_BOSH_CLIENT_SECRET))
+    ca_cert: ((SRIRACHA_BOSH_CA_CERT))
+    target: ((SRIRACHA_BOSH_ENVIRONMENT))
+    jumpbox_url: ((SRIRACHA_JUMPBOX_URL))
+    jumpbox_ssh_key: ((SRIRACHA_JUMPBOX_SSH_KEY))
 
 # Lock Pool
 
-- name: tartar-lock-pool
+- name: sriracha-lock-pool
   type: pool
   source:
     branch: master
-    pool: tartar
+    pool: sriracha
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
@@ -154,8 +154,8 @@ groups:
   jobs:
     - test-create-release-windows
     - test-create-release-linux
-    - tartar-offline-cats
-    - tartar-offline-smoke-test
+    - sriracha-offline-cats
+    - sriracha-offline-smoke-test
     - shipit-offline-major
     - shipit-offline-minor
     - shipit-offline-patch
@@ -259,10 +259,10 @@ jobs:
       params:
         TEST_PATH: src/create
 
-- name: tartar-offline-cats
+- name: sriracha-offline-cats
   serial: true
   plan:
-  - put: tartar-lock-pool
+  - put: sriracha-lock-pool
     params:
       acquire: true
   - aggregate:
@@ -280,9 +280,9 @@ jobs:
       file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
       params:
-        BUCKET: cf-greenhouse-tartar
-        FILE_NAME: cf/vars.yml
-        SERVICE_ACCOUNT_KEY: ((TARTAR_SERVICE_ACCOUNT_JSON))
+        BUCKET: cf-garden-windows-dev
+        FILE_NAME: sriracha/cf/vars.yml
+        SERVICE_ACCOUNT_KEY: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       input_mapping:
@@ -302,23 +302,23 @@ jobs:
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml
     params:
-      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
-      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
-      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
-      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
-      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
-      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+      BOSH_CA_CERT: ((SRIRACHA_BOSH_CA_CERT))
+      BOSH_CLIENT: ((SRIRACHA_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((SRIRACHA_BOSH_CLIENT_SECRET))
+      BOSH_ENVIRONMENT: ((SRIRACHA_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
   - task: delete-stemcells
     file: ci/tasks/bosh-delete-stemcells/task.yml
     params:
-      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
-      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
-      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+      BOSH_CA_CERT: ((SRIRACHA_BOSH_CA_CERT))
+      BOSH_CLIENT: ((SRIRACHA_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((SRIRACHA_BOSH_CLIENT_SECRET))
       BOSH_DEPLOYMENT: cf
-      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
-      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
-      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
-  - put: tartar-cf-deployment
+      BOSH_ENVIRONMENT: ((SRIRACHA_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
+  - put: sriracha-cf-deployment
     params:
       manifest: cf-deployment-with-2019-cell/cf-deployment.yml
       stemcells:
@@ -342,10 +342,10 @@ jobs:
   - task: generate-integration-config
     file: ci/tasks/generate-integration-config/task.yml
     params:
-      ADMIN_PASSWORD: ((TARTAR_ADMIN_PASSWORD))
+      ADMIN_PASSWORD: ((SRIRACHA_ADMIN_PASSWORD))
       ADMIN_USER: admin
-      API: api.tartar.cf-app.com
-      APPS_DOMAIN: tartar.cf-app.com
+      API: api.sriracha.cf-app.com
+      APPS_DOMAIN: sriracha.cf-app.com
       UNALLOCATED_IP: 10.0.0.5
       WINDOWS_STACK: windows2016
   - task: cats
@@ -356,22 +356,22 @@ jobs:
       task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
       params:
-        BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
-        BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
-        BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+        BOSH_CA_CERT: ((SRIRACHA_BOSH_CA_CERT))
+        BOSH_CLIENT: ((SRIRACHA_BOSH_CLIENT))
+        BOSH_CLIENT_SECRET: ((SRIRACHA_BOSH_CLIENT_SECRET))
         BOSH_DEPLOYMENT: cf
-        BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
-        JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
-        JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+        BOSH_ENVIRONMENT: ((SRIRACHA_BOSH_ENVIRONMENT))
+        JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
+        JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
   ensure:
-    put: tartar-lock-pool
+    put: sriracha-lock-pool
     params:
-      release: tartar-lock-pool
+      release: sriracha-lock-pool
 
-- name: tartar-offline-smoke-test
+- name: sriracha-offline-smoke-test
   serial: true
   plan:
-  - put: tartar-lock-pool
+  - put: sriracha-lock-pool
     params:
       acquire: true
   - aggregate:
@@ -403,23 +403,23 @@ jobs:
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml
     params:
-      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
-      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
-      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
-      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
-      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
-      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+      BOSH_CA_CERT: ((SRIRACHA_BOSH_CA_CERT))
+      BOSH_CLIENT: ((SRIRACHA_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((SRIRACHA_BOSH_CLIENT_SECRET))
+      BOSH_ENVIRONMENT: ((SRIRACHA_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
   - task: delete-stemcells
     file: ci/tasks/bosh-delete-stemcells/task.yml
     params:
-      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
-      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
-      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+      BOSH_CA_CERT: ((SRIRACHA_BOSH_CA_CERT))
+      BOSH_CLIENT: ((SRIRACHA_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((SRIRACHA_BOSH_CLIENT_SECRET))
       BOSH_DEPLOYMENT: ((fs-version))
-      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
-      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
-      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
-  - put: tartar-smoke-test-deployment
+      BOSH_ENVIRONMENT: ((SRIRACHA_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
+  - put: sriracha-smoke-test-deployment
     params:
       manifest: windowsfs-release-develop/manifests/smoke-test.yml
       stemcells:
@@ -436,27 +436,27 @@ jobs:
     file: ci/tasks/fs-smoke-test/task.yml
     params:
       FS_VERSION: ((fs-version))
-      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
-      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
-      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
-      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
-      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
-      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+      BOSH_CA_CERT: ((SRIRACHA_BOSH_CA_CERT))
+      BOSH_CLIENT: ((SRIRACHA_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((SRIRACHA_BOSH_CLIENT_SECRET))
+      BOSH_ENVIRONMENT: ((SRIRACHA_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
     on_success:
       task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
       params:
-        BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
-        BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
-        BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+        BOSH_CA_CERT: ((SRIRACHA_BOSH_CA_CERT))
+        BOSH_CLIENT: ((SRIRACHA_BOSH_CLIENT))
+        BOSH_CLIENT_SECRET: ((SRIRACHA_BOSH_CLIENT_SECRET))
         BOSH_DEPLOYMENT: ((fs-version))
-        BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
-        JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
-        JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+        BOSH_ENVIRONMENT: ((SRIRACHA_BOSH_ENVIRONMENT))
+        JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
+        JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
   ensure:
-    put: tartar-lock-pool
+    put: sriracha-lock-pool
     params:
-      release: tartar-lock-pool
+      release: sriracha-lock-pool
 
 - name: shipit-offline-major
   serial: true
@@ -465,7 +465,7 @@ jobs:
     - get: ci
     - get: windowsfs-release-master
     - get: windowsfs-release-develop
-      passed: [tartar-offline-cats, tartar-offline-smoke-test]
+      passed: [sriracha-offline-cats, sriracha-offline-smoke-test]
     - get: windowsfs-release-version
       params: {bump: major}
   - task: update-version-and-shas
@@ -504,7 +504,7 @@ jobs:
     - get: ci
     - get: windowsfs-release-master
     - get: windowsfs-release-develop
-      passed: [tartar-offline-cats, tartar-offline-smoke-test]
+      passed: [sriracha-offline-cats, sriracha-offline-smoke-test]
     - get: windowsfs-release-version
       params: {bump: minor}
   - task: update-version-and-shas
@@ -541,7 +541,7 @@ jobs:
     - get: ci
     - get: windowsfs-release-master
     - get: windowsfs-release-develop
-      passed: [tartar-offline-cats, tartar-offline-smoke-test]
+      passed: [sriracha-offline-cats, sriracha-offline-smoke-test]
     - get: windowsfs-release-version
       params: {bump: patch}
   - task: update-version-and-shas

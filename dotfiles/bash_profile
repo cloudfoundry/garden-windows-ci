@@ -272,8 +272,8 @@ fly-windows1803fs () {
 
 fly-windows2019fs () {
   fly -t garden-windows sp -p windows2019fs -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-offline.yml \
-    -l <(_env_creds_yml tartar) \
-  -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tartar-service-account.json tracker-api-token) \
+    -l <(_env_creds_yml sriracha) \
+  -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
   -l $HOME/workspace/garden-windows-ci/vars/windows2019fs.yml
 }
 
