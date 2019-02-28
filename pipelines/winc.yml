@@ -904,6 +904,12 @@ jobs:
     file: ci/tasks/enable-credhub/task.yml
     attempts: 3
     params:
+      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
       CF_API: api.pesto.cf-app.com
       CF_USERNAME: admin
       CF_PASSWORD: {{PESTO_ADMIN_PASSWORD}}
@@ -1019,6 +1025,12 @@ jobs:
     file: ci/tasks/enable-credhub/task.yml
     attempts: 3
     params:
+      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
       CF_API: api.pesto.cf-app.com
       CF_USERNAME: admin
       CF_PASSWORD: {{PESTO_ADMIN_PASSWORD}}
