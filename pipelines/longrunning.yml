@@ -272,7 +272,7 @@ jobs:
       - ci/operations/windows1803-uses-trusted-certs.yml
       - ci/operations/windows1803-provides-secondary-groot.yml
       - ci/operations/windows2019-uses-trusted-certs.yml
-      - ci/operations/windows2019-provides-quaternary.yml
+      - ci/operations/windows2019-provides-quaternary-groot.yml
       vars_files:
       - cf-vars/vars.yml
       cleanup: true
