@@ -94,7 +94,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 # When freshly bbl-ed up, create a one-time vars.yml with a randomly generated
 # password. To generate a *new* password, delete <bucket>/cf/vars.yml and redeploy
-if gsutil -q stat gs://$project_name/cf/vars.yml ; then
+if ! gsutil -q stat gs://$project_name/cf/vars.yml ; then
+  echo "Creating vars.yml and uploading it to the bucket"
   cat <<-EOF> $DIR/vars.yml
 	cf_admin_password: `openssl rand -base64 12`
 	system_domain: $environment.cf-app.com
