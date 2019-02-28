@@ -422,6 +422,7 @@ jobs:
     file: ci/tasks/build-groot/task.yml
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+    tags: [1803]
   - task: build-winc
     file: ci/tasks/build-binary/task.yml
     input_mapping:
@@ -432,6 +433,7 @@ jobs:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       IMPORT_PATH: "code.cloudfoundry.org/winc"
       PACKAGE: "./cmd/winc"
+    tags: [1803]
   - task: test
     input_mapping: { diff-exporter: diff-exporter-develop }
     file: ci/tasks/test-diff-exporter/task.yml
@@ -459,6 +461,7 @@ jobs:
     file: ci/tasks/build-groot/task.yml
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+    tags: [2019]
   - task: build-winc
     file: ci/tasks/build-binary/task.yml
     input_mapping:
@@ -469,6 +472,7 @@ jobs:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       IMPORT_PATH: "code.cloudfoundry.org/winc"
       PACKAGE: "./cmd/winc"
+    tags: [2019]
   - task: test
     input_mapping: { diff-exporter: diff-exporter-develop }
     file: ci/tasks/test-diff-exporter/task.yml
