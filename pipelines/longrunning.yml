@@ -44,11 +44,11 @@ resources:
     branch: develop
     uri: https://github.com/cloudfoundry/windows1803fs-online-release.git
 
-- name: windows2019fs-release-develop
+- name: windowsfs-release-develop
   type: git
   source:
     branch: develop
-    uri: https://github.com/cloudfoundry/windows2019fs-online-release.git
+    uri: https://github.com/cloudfoundry/windowsfs-online-release.git
 
 - name: garden-windows-bosh-release-develop
   type: git
@@ -163,7 +163,7 @@ jobs:
     - get: windows1803fs-release-develop
       trigger: true
       tags: [vsphere]
-    - get: windows2019fs-release-develop
+    - get: windowsfs-release-develop
       trigger: true
       tags: [vsphere]
     - get: garden-windows-bosh-release-develop
@@ -205,12 +205,12 @@ jobs:
       output_mapping:
         release-tarball: windows1803fs-tarball
       tags: [vsphere]
-    - task: create-windows2019fs-release
+    - task: create-windowsfs-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
-        release: windows2019fs-release-develop
+        release: windowsfs-release-develop
       output_mapping:
-        release-tarball: windows2019fs-tarball
+        release-tarball: windowsfs-tarball
       tags: [vsphere]
     - task: create-garden-windows-bosh-release
       file: ci/tasks/bosh-cr/task.yml
@@ -239,7 +239,7 @@ jobs:
       - winc-tarball/*.tgz
       - windows2016fs-tarball/*.tgz
       - windows1803fs-tarball/*.tgz
-      - windows2019fs-tarball/*.tgz
+      - windowsfs-tarball/*.tgz
       - garden-windows-tarball/*.tgz
       - envoy-tarball/*.tgz
       ops_files:
@@ -272,6 +272,7 @@ jobs:
       - ci/operations/windows1803-uses-trusted-certs.yml
       - ci/operations/windows1803-provides-secondary-groot.yml
       - ci/operations/windows2019-uses-trusted-certs.yml
+      - ci/operations/windows2019-provides-quaternary.yml
       vars_files:
       - cf-vars/vars.yml
       cleanup: true
