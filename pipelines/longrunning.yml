@@ -260,7 +260,7 @@ jobs:
       - ci/operations/latest-envoy.yml
       - ci/operations/latest-windows2016fs-release.yml
       - ci/operations/latest-windows1803fs-release.yml
-      - ci/operations/latest-windows2019fs-release.yml
+      - ci/operations/latest-windowsfs-release.yml
       - ci/operations/latest-garden-windows.yml
       - ci/operations/with-iso-seg.yml
       - ci/operations/enable-rdp-2012R2.yml
