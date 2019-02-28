@@ -23,7 +23,7 @@ resources:
 - name: cf-deployment
   type: git
   source:
-    branch: add-windows-2019
+    branch: add-windows-2019-rc
     uri: https://github.com/greenhouse-org/cf-deployment.git
 
 - name: winc-release-develop
