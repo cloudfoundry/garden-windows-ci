@@ -155,7 +155,7 @@ alias vkl='load-key'
 bl() {
   dir=$(mktemp -d)
   pushd $dir
-    bosh -d $1 logs $2/0
+    bosh -d $1 logs $2/${3:-0}
     tar -xzvf *.tgz
     nvim .
   popd
