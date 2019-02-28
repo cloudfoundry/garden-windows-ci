@@ -1,0 +1,214 @@
+resources:
+- name: ci
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
+- name: hydrator-develop
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/hydrator.git
+    private_key: ((CLOUDFOUNDRY_HYDRATOR_DEPLOY_KEY))
+- name: hydrator-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/hydrator.git
+    private_key: ((CLOUDFOUNDRY_HYDRATOR_DEPLOY_KEY))
+- name: winc
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/winc.git
+    private_key: {{CLOUDFOUNDRYINCUBATOR_WINC_DEPLOY_KEY}}
+- name: groot-windows
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/groot-windows.git
+    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
+- name: diff-exporter
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
+    private_key: {{CLOUDFOUNDRYINCUBATOR_DIFF_EXPORTER_DEPLOY_KEY}}
+
+jobs:
+- name: test-hydrator-windows1709
+  serial: true
+  plan:
+  - aggregate:
+    - get: ci
+    - get: hydrator
+      resource: hydrator-develop
+      trigger: true
+    - get: winc
+      trigger: true
+    - get: groot-windows
+      trigger: true
+    - get: diff-exporter
+      trigger: true
+  - aggregate:
+    - task: build-winc
+      file: ci/tasks/build-binary/task.yml
+      input_mapping:
+        repo: winc
+      output_mapping:
+        binary-output: winc-binary
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+        IMPORT_PATH: "code.cloudfoundry.org/winc"
+        PACKAGE: "./cmd/winc"
+    - task: build-groot
+      file: ci/tasks/build-groot/task.yml
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+    - task: build-diff-exporter
+      file: ci/tasks/build-binary/task.yml
+      input_mapping:
+        repo: diff-exporter
+      output_mapping:
+        binary-output: diff-exporter-binary
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+        PACKAGE: "."
+        IMPORT_PATH: "code.cloudfoundry.org/diff-exporter"
+        BINARY_NAME: "diff-exporter.exe"
+  - task: run-ginkgo-exe
+    file: ci/tasks/test-hydrator-windows/task.yml
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+      NODES: 2
+      IMAGE_TAG: "1709"
+      IMAGE_NAME: "cloudfoundry/windows2016fs"
+- name: test-hydrator-windows1803
+  serial: true
+  plan:
+  - aggregate:
+    - get: ci
+    - get: hydrator
+      resource: hydrator-develop
+      trigger: true
+    - get: winc
+      trigger: true
+    - get: groot-windows
+      trigger: true
+    - get: diff-exporter
+      trigger: true
+  - aggregate:
+    - task: build-winc
+      file: ci/tasks/build-binary/task.yml
+      input_mapping:
+        repo: winc
+      output_mapping:
+        binary-output: winc-binary
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+        IMPORT_PATH: "code.cloudfoundry.org/winc"
+        PACKAGE: "./cmd/winc"
+      tags: [1803]
+    - task: build-groot
+      file: ci/tasks/build-groot/task.yml
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+      tags: [1803]
+    - task: build-diff-exporter
+      file: ci/tasks/build-binary/task.yml
+      input_mapping:
+        repo: diff-exporter
+      output_mapping:
+        binary-output: diff-exporter-binary
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+        PACKAGE: "."
+        IMPORT_PATH: "code.cloudfoundry.org/diff-exporter"
+        BINARY_NAME: "diff-exporter.exe"
+      tags: [1803]
+  - task: run-ginkgo-exe
+    file: ci/tasks/test-hydrator-windows/task.yml
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+      NODES: 2
+      IMAGE_TAG: "1803"
+      IMAGE_NAME: "cloudfoundry/windows2016fs"
+    tags: [1803]
+- name: test-hydrator-windows2019
+  serial: true
+  plan:
+  - aggregate:
+    - get: ci
+    - get: hydrator
+      resource: hydrator-develop
+      trigger: true
+    - get: winc
+      trigger: true
+    - get: groot-windows
+      trigger: true
+    - get: diff-exporter
+      trigger: true
+  - aggregate:
+    - task: build-winc
+      file: ci/tasks/build-binary/task.yml
+      input_mapping:
+        repo: winc
+      output_mapping:
+        binary-output: winc-binary
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+        IMPORT_PATH: "code.cloudfoundry.org/winc"
+        PACKAGE: "./cmd/winc"
+      tags: [2019]
+    - task: build-groot
+      file: ci/tasks/build-groot/task.yml
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+      tags: [2019]
+    - task: build-diff-exporter
+      file: ci/tasks/build-binary/task.yml
+      input_mapping:
+        repo: diff-exporter
+      output_mapping:
+        binary-output: diff-exporter-binary
+      params:
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+        PACKAGE: "."
+        IMPORT_PATH: "code.cloudfoundry.org/diff-exporter"
+        BINARY_NAME: "diff-exporter.exe"
+      tags: [2019]
+  - task: run-ginkgo-exe
+    file: ci/tasks/test-hydrator-windows/task.yml
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+      NODES: 2
+      IMAGE_TAG: "2019"
+      IMAGE_NAME: "cloudfoundry/windows2016fs"
+    tags: [2019]
+- name: test-hydrator-linux
+  serial: true
+  plan:
+  - aggregate:
+    - get: ci
+    - get: hydrator
+      resource: hydrator-develop
+      trigger: true
+  - task: run-ginkgo
+    file: ci/tasks/test-hydrator-linux/task.yml
+    params:
+      IGNORE_PACKAGES: ""
+- name: merge-develop-to-master
+  serial: true
+  plan:
+  - aggregate:
+    - get: hydrator-develop
+      passed: [test-hydrator-windows1709, test-hydrator-windows1803, test-hydrator-windows2019, test-hydrator-linux]
+      trigger: true
+    - get: hydrator-master
+    - get: ci
+  - task: merge-develop-to-master
+    input_mapping: { from-repo: hydrator-develop, to-repo: hydrator-master}
+    file: ci/tasks/merge-repo/task.yml
+    params: { FROM_BRANCH: develop }
+  - put: hydrator-master
+    params: { repository: merged-repo/to-repo }
