@@ -15,4 +15,4 @@ params:
   CELL_NAME:
 
 run:
-  path: ci/tasks/write-versioned-windows2016fs-opsfile/run
+  path: ci/tasks/write-versioned-windowsfs-opsfile/run
