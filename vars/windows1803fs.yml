@@ -6,6 +6,7 @@ os-version: "1803"
 windowsfs-release-repo: windows1803fs-release
 windowsfs-online-release-repo: windows1803fs-online-release
 fs-version: windows1803fs
+cell-name: windows1803-cell
 initial-image-version: 1803.0.1
 initial-release-version: 1.0.0
 initial-online-release-version: 1.0.0

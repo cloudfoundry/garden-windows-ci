@@ -6,6 +6,7 @@ os-version: "1709"
 windowsfs-release-repo: windows2016fs-release
 windowsfs-online-release-repo: windows2016fs-online-release
 fs-version: windows2016fs
+cell-name: windows2016-cell
 initial-image-version: 0.0.19
 initial-release-version: 0.0.6
 initial-online-release-version: 0.0.0
