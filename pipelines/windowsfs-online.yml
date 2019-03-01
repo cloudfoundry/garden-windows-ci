@@ -74,24 +74,6 @@ resources:
     branch: add-windows-2019-rc
     uri: https://github.com/greenhouse-org/cf-deployment.git
 
-- name: winc
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry/winc.git
-
-- name: groot-windows
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry/groot-windows.git
-
-- name: diff-exporter
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry-incubator/diff-exporter.git
-
 - name: winc-release-develop
   type: git
   source:
@@ -359,9 +341,7 @@ jobs:
       output_mapping:
         release-tarball: windowsfs-tarball
   - task: create-windowsfs-opsfile
-    file: ci/tasks/write-windows2016fs-opsfile/task.yml
-    params:
-      FS_VERSION: windowsfs
+    file: ci/tasks/write-generic-windowsfs-opsfile/task.yml
     input_mapping:
       release-tarball: windowsfs-tarball
   - task: delete-deployments
