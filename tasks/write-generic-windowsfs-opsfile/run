@@ -11,9 +11,9 @@ echo "Found version: $release_version"
 cat << EOF > windowsfs-opsfile/specified-windowsfs-version.yml
 ---
 - type: replace
-  path: /releases/name=$FS_VERSION?
+  path: /releases/name=windowsfs?
   value:
-    name: $FS_VERSION
+    name: windowsfs
     version: $release_version
 EOF
 
