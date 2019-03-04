@@ -13,6 +13,7 @@ windowsfs-uses-tar: false
 windows-scale-down-ops-file: ci/operations/scale-down-windows2019.yml
 windows-rdp-ops-file: ci/operations/enable-rdp-2019.yml
 stemcell-regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
+use-online-fs-opsfile: cf-deployment-with-2019-cell/operations/use-windows2019fs-online.yml
 
 # TODO: Reference cf-deployment instead of ci after PR is submited
 windows-cell-ops-file: cf-deployment-with-2019-cell/operations/windows2019-cell.yml

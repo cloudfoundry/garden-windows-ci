@@ -334,6 +334,7 @@ jobs:
       - ((windows-scale-down-ops-file))
       - ((windows-rdp-ops-file))
       - windowsfs-opsfile/specified-windowsfs-version.yml
+      - ((use-offline-fs-opsfile))
       vars_files:
       - cf-vars/vars.yml
       cleanup: true
