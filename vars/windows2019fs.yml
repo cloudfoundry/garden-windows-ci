@@ -14,3 +14,4 @@ latest-windows-stemcell-ops-file: cf-deployment-with-2019-cell/operations/use-la
 windows-scale-down-ops-file: ci/operations/scale-down-windows2019.yml
 windows-rdp-ops-file: ci/operations/enable-rdp-2019.yml
 stemcell-regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
+use-offline-fs-opsfile: ci/operations/use-windows2019fs-offline.yml

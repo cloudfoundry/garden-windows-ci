@@ -380,6 +380,7 @@ jobs:
       - ((latest-windows-stemcell-ops-file))
       - ((windows-rdp-ops-file))
       - windowsfs-opsfile/specified-windowsfs-version.yml
+      - ((use-online-fs-opsfile))
       vars_files:
       - cf-vars/vars.yml
       cleanup: true
