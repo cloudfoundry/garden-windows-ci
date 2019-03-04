@@ -488,10 +488,9 @@ jobs:
       output_mapping:
         release-tarball: windowsfs-tarball
   - task: create-windowsfs-opsfile
-    file: ci/tasks/write-versioned-windowsfs-opsfile/task.yml
+    file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
       FS_VERSION: ((fs-version))
-      CELL_NAME: ((cell-name))
     input_mapping: { release-tarball: windowsfs-tarball }
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml
@@ -590,10 +589,9 @@ jobs:
       output_mapping:
         release-tarball: winc-tarball
   - task: create-windowsfs-opsfile
-    file: ci/tasks/write-versioned-windowsfs-opsfile/task.yml
+    file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
       FS_VERSION: ((fs-version))
-      CELL_NAME: smoke-test
     input_mapping: { release-tarball: windowsfs-tarball }
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml
@@ -798,10 +796,9 @@ jobs:
       output_mapping:
         release-tarball: windowsfs-tarball
   - task: create-windowsfs-opsfile
-    file: ci/tasks/write-versioned-windowsfs-opsfile/task.yml
+    file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
       FS_VERSION: ((fs-version))
-      CELL_NAME: ((cell-name))
     input_mapping: { release-tarball: windowsfs-tarball }
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml
@@ -899,10 +896,9 @@ jobs:
       output_mapping:
         release-tarball: winc-tarball
   - task: create-windowsfs-opsfile
-    file: ci/tasks/write-versioned-windowsfs-opsfile/task.yml
+    file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
       FS_VERSION: ((fs-version))
-      CELL_NAME: ((cell-name))
     input_mapping: { release-tarball: windowsfs-tarball }
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml

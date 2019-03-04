@@ -11,8 +11,7 @@ outputs:
 - name: windowsfs-opsfile
 
 params:
-  FS_VERSION:
-  CELL_NAME:
+  FS_VERSION: ""
 
 run:
-  path: ci/tasks/write-versioned-windowsfs-opsfile/run
+  path: ci/tasks/write-windows2016fs-opsfile/run
