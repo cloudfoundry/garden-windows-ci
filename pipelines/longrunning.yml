@@ -248,6 +248,7 @@ jobs:
       - cf-deployment/operations/windows2016-cell.yml
       - cf-deployment/operations/windows1803-cell.yml
       - cf-deployment/operations/windows2019-cell.yml
+      - cf-deployment/operations/use-windows2019fs-online.yml
       - cf-deployment/operations/use-latest-windows2012R2-stemcell.yml
       - cf-deployment/operations/use-latest-windows2016-stemcell.yml
       - cf-deployment/operations/use-latest-windows1803-stemcell.yml
