@@ -75,6 +75,11 @@ resources:
   source:
     branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-deployment.git
+- name: cf-deployment-with-2019-cell
+  type: git
+  source:
+    branch: add-windows-2019-rc
+    uri: https://github.com/greenhouse-org/cf-deployment.git
 - name: winc-release-develop
   type: git
   source:
@@ -109,6 +114,13 @@ resources:
   source:
     bucket: all-bosh-windows
     regexp: 1803/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows1803-go_agent.tgz
+    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+- name: gcp-2019-stemcell
+  type: s3
+  source:
+    bucket: all-bosh-windows
+    regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
     access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 
@@ -1065,13 +1077,135 @@ jobs:
     params:
       release: pesto-lock-pool
 
+- name: pesto-cats-2019
+  serial: true
+  plan:
+  - put: pesto-lock-pool
+    params:
+      acquire: true
+  - aggregate:
+    - get: ci
+    - get: every-2hrs
+      trigger: true
+    - get: winc-release-develop
+      passed: [test-nstar]
+      trigger: true
+    - get: cf-acceptance-tests
+    - get: cf-deployment-concourse-tasks
+    - resource: cf-deployment-with-2019-cell
+      trigger: true
+      get: cf-deployment
+    - get: gcp-2019-stemcell
+  - aggregate:
+    - task: get-cf-vars
+      file: ci/tasks/get-gcs-file/task.yml
+      output_mapping: { output: cf-vars }
+      params:
+        BUCKET: cff-greenhouse-pesto
+        FILE_NAME: cf/vars.yml
+        SERVICE_ACCOUNT_KEY: {{PESTO_SERVICE_ACCOUNT_JSON}}
+    - task: get-linux-stemcell
+      file: ci/tasks/get-gcp-linux-stemcell/task.yml
+      output_mapping: { stemcell: gcp-linux-stemcell }
+    - task: create-winc-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping:
+        release: winc-release-develop
+      output_mapping:
+        release-tarball: winc-tarball
+  - task: delete-deployment
+    file: ci/tasks/bosh-deld/task.yml
+    params:
+      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+      BOSH_DEPLOYMENT: cf
+      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+  - task: delete-stemcells
+    file: ci/tasks/bosh-delete-stemcells/task.yml
+    params:
+      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+      BOSH_DEPLOYMENT: cf
+      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+  - put: pesto-cf-deployment
+    params:
+      manifest: cf-deployment/cf-deployment.yml
+      stemcells:
+      - gcp-linux-stemcell/*.tgz
+      - gcp-2019-stemcell/*.tgz
+      releases:
+      - winc-tarball/*.tgz
+      ops_files:
+      - cf-deployment/operations/scale-to-one-az.yml
+      - ci/operations/use-3-azs-for-router.yml
+      - cf-deployment/operations/windows2019-cell.yml
+      - cf-deployment/operations/use-windows2019fs-online.yml
+      - cf-deployment/operations/use-latest-windows2019-stemcell.yml
+      - ci/operations/latest-winc.yml
+      - ci/operations/scale-down-windows2019.yml
+      - ci/operations/enable-rdp-2019.yml
+      vars_files:
+      - cf-vars/vars.yml
+      cleanup: true
+    get_params:
+      skip_export: true
+  - task: enable-credhub
+    file: ci/tasks/enable-credhub/task.yml
+    attempts: 3
+    params:
+      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+      CF_API: api.pesto.cf-app.com
+      CF_USERNAME: admin
+      CF_PASSWORD: {{PESTO_ADMIN_PASSWORD}}
+  - task: generate-integration-config
+    file: ci/tasks/generate-integration-config/task.yml
+    params:
+      ADMIN_PASSWORD: {{PESTO_ADMIN_PASSWORD}}
+      ADMIN_USER: admin
+      API: api.pesto.cf-app.com
+      APPS_DOMAIN: pesto.cf-app.com
+      UNALLOCATED_IP: 10.0.0.5
+      WINDOWS_STACK: windows
+      CREDHUB_MODE: assisted
+      CREDHUB_SECRET: {{PESTO_CREDHUB_SECRET}}
+  - task: cats
+    file: cf-deployment-concourse-tasks/run-cats/task.yml
+    params:
+      NODES: 4
+    on_success:
+      task: delete-deployment
+      file: ci/tasks/bosh-deld/task.yml
+      params:
+        BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
+        BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
+        BOSH_DEPLOYMENT: cf
+        BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
+        JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+  ensure:
+    put: pesto-lock-pool
+    params:
+      release: pesto-lock-pool
+
 - name: shipit-major
   serial: true
   plan:
   - aggregate:
     - get: ci
     - get: winc-release-develop
-      passed: [pesto-cats-1709, pesto-cats-1803]
+      passed: [pesto-cats-1709, pesto-cats-1803, pesto-cats-2019]
     - get: version
       params: {bump: major}
   - task: finalize-release
@@ -1108,7 +1242,7 @@ jobs:
   - aggregate:
     - get: ci
     - get: winc-release-develop
-      passed: [pesto-cats-1709, pesto-cats-1803]
+      passed: [pesto-cats-1709, pesto-cats-1803, pesto-cats-2019]
     - get: version
       params: {bump: minor}
   - task: finalize-release
@@ -1145,7 +1279,7 @@ jobs:
   - aggregate:
     - get: ci
     - get: winc-release-develop
-      passed: [pesto-cats-1709, pesto-cats-1803]
+      passed: [pesto-cats-1709, pesto-cats-1803, pesto-cats-2019]
     - get: version
       params: {bump: patch}
   - task: finalize-release
