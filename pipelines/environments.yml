@@ -1,0 +1,50 @@
+# Task1:
+# Trigger every week during the weekend Friday 8PM
+# Task 2:
+# Resource: bbl
+# git clone bbl and do latest_version=`git describe --tags $(git rev-list --tags --max-count=1)`
+# Download bbl from github.com/cloudfoundry/bosh-bootloader/releases/download/$latest_version/bbl-${latest_version}_linux_x86-64
+# Spit out the executable's path as output_mapping: bbl_executable
+# Task 3: (Run the generic bbldestory+bblup task)
+# Task args: env-name, $BBL_GCP_SERVICE_ACCOUNT_KEY (passed as GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON and -l on the fly alias), $BBL_GCP_REGION
+# If claimed, skip the task and go to the next environment
+# If unclaimed, claim it (claimer stuff)
+# Pull down the relevant gcs bucket
+# use bbl received from input_mapping: bbl_executable
+# bbl destroy
+# (Change bbl_up_gcp to handle all iaas) call the bbl_up
+# If failure at any stage, Exit the pipeline and be RED
+# Repeat for all unclaimed environments
+# First get the pipeline running for all gcp based environments, then think about guac later.
+
+resources:
+- name: ci
+  type: git
+  source:
+    # TODO use master when everything's done
+    branch: env-pipeline
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
+# Assuming this gives the latest version
+- name: bbl
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/bosh-bootloader.git
+    tag_filter: v*
+
+jobs:
+- name: bbl-update-hummus
+  serial: true
+  serial_groups: [bbl-update-envs]
+  plan:
+  - aggregate:
+    - get: ci
+    - get: bbl
+  - task: get-bbl-executable
+    file: ci/tasks/get-bbl-executable/task.yml
+    output_mapping:
+      # This line is just for readability
+      bbl-dir: bbl-dir
+  - task: print-bbl-version
+    file: ci/tasks/print-bbl-executable/task.yml
+    input_mapping: {bbl-dir: bbl-dir}
