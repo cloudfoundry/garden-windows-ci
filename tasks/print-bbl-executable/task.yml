@@ -7,5 +7,4 @@ inputs:
 - name: bbl-dir
 
 run:
-  path: bbl-dir/*
-  args: [--version]
+  path: ci/tasks/print-bbl-executable/run
