@@ -35,7 +35,8 @@ resources:
   type: git
   source:
     branch: master
-    uri: https://github.com/greenhouse-ci/locks.git
+    uri: git@github.com:greenhouse-ci/locks.git
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
 
 jobs:
 - name: bbl-update-hummus
@@ -56,7 +57,6 @@ jobs:
     file: ci/tasks/refresh-director/task.yml
     params:
       env: hummus
-      GREENHOUSE-CI_SSH_KEY: ((GREENHOUSE-CI_SSH_KEY))
       iaas: gcp
 #      iaas-service-account-key: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
       iaas-region: us-east1

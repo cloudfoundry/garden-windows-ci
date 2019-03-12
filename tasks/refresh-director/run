@@ -16,7 +16,7 @@ release_lock() {
 
   pushd ci-lock
     git mv $env/claimed/$env $env/unclaimed/$env
-    GIT_SSH_COMMAND='ssh -i <($GREENHOUSE-CI_SSH_KEY)' git -c user.name="Garden Windows CI" -c user.email="<>" commit --author "environments-pipeline <>" -m "environments/bbl-update-$env unclaiming: $env"
+    git -c user.name="Garden Windows CI" -c user.email="<>" commit --author "environments-pipeline <>" -m "environments/bbl-update-$env unclaiming: $env"
     git push origin master
   popd
   echo Released $env
@@ -30,7 +30,7 @@ get_lock_or_die() {
   fi
   pushd ci-lock
     git mv $env/unclaimed/$env $env/claimed/$env
-    GIT_SSH_COMMAND='ssh -i <($GREENHOUSE-CI_SSH_KEY)' git -c user.name="Garden Windows CI" -c user.email="<>" commit --author "environments-pipeline <>" -m "environments/bbl-update-$env claiming: $env"
+    git -c user.name="Garden Windows CI" -c user.email="<>" commit --author "environments-pipeline <>" -m "environments/bbl-update-$env claiming: $env"
     git push origin master
   popd
   echo Claimed $env
