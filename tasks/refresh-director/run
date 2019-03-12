@@ -13,7 +13,7 @@ release_lock() {
 }
 
 get_lock_or_die() {
-  if [ -f ci-lock/$env/claimed/$env]; then
+  if [ -f ci-lock/$env/claimed/$env ]; then
     echo "$env is claimed. Exiting"
     exit 0
   fi

@@ -41,13 +41,12 @@ jobs:
 - name: bbl-update-hummus
   serial: true
   serial_groups: [bbl-update-envs]
-  passed: []
   plan:
   - aggregate:
     - get: ci
     - get: bbl-repo
     - get: ci-lock
-  # TODO: Try to move this to a job whose output can be
+  # TODO: Try to move this to a job whose output can be
   # consumed by all jobs bbl-update-*
   - task: get-bbl-executable
     file: ci/tasks/get-bbl-executable/task.yml
