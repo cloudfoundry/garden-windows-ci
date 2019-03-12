@@ -14,22 +14,28 @@ release_lock() {
     return 0
   fi
 
-  git mv ci-lock/$env/claimed/$env ci-lock/$env/unclaimed/$env
-  git commit -c user.name="Garden Windows CI" -c user.email=<> commit --author "environments-pipeline <>" -m "environments/bbl-update-$env unclaiming: $env"
-  git push origin master
+  pushd ci-lock
+    git mv $env/claimed/$env $env/unclaimed/$env
+    git commit -c user.name="Garden Windows CI" -c user.email=<> commit --author "environments-pipeline <>" -m "environments/bbl-update-$env unclaiming: $env"
+    git push origin master
+  popd
   echo Released $env
 }
 
 get_lock_or_die() {
+
   if [ -f ci-lock/$env/claimed/$env ]; then
     echo "$env is claimed. Exiting"
     exit 0
   fi
-  git mv ci-lock/$env/unclaimed/$env ci-lock/$env/claimed/$env
-  git commit -c user.name="Garden Windows CI" -c user.email=<> commit --author "environments-pipeline <>" -m "environments/bbl-update-$env claiming: $env"
-  git push origin master
+  pushd ci-lock
+    git mv $env/unclaimed/$env $env/claimed/$env
+    git commit -c user.name="Garden Windows CI" -c user.email=<> commit --author "environments-pipeline <>" -m "environments/bbl-update-$env claiming: $env"
+    git push origin master
+  popd
   echo Claimed $env
 }
+
 
 get_lock_or_die
 release_lock
