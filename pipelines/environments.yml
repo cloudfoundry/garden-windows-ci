@@ -56,7 +56,8 @@ jobs:
     file: ci/tasks/refresh-director/task.yml
     params:
       env: hummus
+      GREENHOUSE-CI_SSH_KEY: ((GREENHOUSE-CI_SSH_KEY))
       iaas: gcp
-      iaas-service-account-key: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
+#      iaas-service-account-key: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
       iaas-region: us-east1
 
