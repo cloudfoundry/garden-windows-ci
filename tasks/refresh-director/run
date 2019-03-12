@@ -36,6 +36,7 @@ get_lock_or_die() {
   echo Claimed $env
 }
 
+ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 get_lock_or_die
 release_lock
