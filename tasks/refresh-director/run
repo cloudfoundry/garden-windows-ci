@@ -9,7 +9,15 @@
 set -eux
 
 release_lock() {
-  echo hi
+  if [ -f ci-lock/$env/unclaimed/$env ]; then
+    echo "$env is already unclaimed. Exiting"
+    exit 0
+  fi
+
+  git mv ci-lock/$env/claimed/$env ci-lock/$env/unclaimed/$env
+  git commit -c user.name="Garden Windows CI" -c user.email=<> commit --author "environments-pipeline <>" -m "environments/bbl-update-$env unclaiming: $env"
+  git push origin master
+  echo Released $env
 }
 
 get_lock_or_die() {
@@ -17,10 +25,14 @@ get_lock_or_die() {
     echo "$env is claimed. Exiting"
     exit 0
   fi
+  git mv ci-lock/$env/unclaimed/$env ci-lock/$env/claimed/$env
+  git commit -c user.name="Garden Windows CI" -c user.email=<> commit --author "environments-pipeline <>" -m "environments/bbl-update-$env claiming: $env"
+  git push origin master
+  echo claimed $env
 }
 
 get_lock_or_die
-echo this shouldnt print
+release_lock
 bbl=binary-dir/bbl_executable
 
 
