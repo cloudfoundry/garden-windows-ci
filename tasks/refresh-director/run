@@ -16,7 +16,7 @@ release_lock() {
 
   pushd ci-lock
     git mv $env/claimed/$env $env/unclaimed/$env
-    git commit -c user.name="Garden Windows CI" -c user.email=<> commit --author "environments-pipeline <>" -m "environments/bbl-update-$env unclaiming: $env"
+    git commit -c user.name="Garden Windows CI" -c user.email="<>" commit --author "environments-pipeline <>" -m "environments/bbl-update-$env unclaiming: $env"
     git push origin master
   popd
   echo Released $env
