@@ -8,6 +8,7 @@
 # Task 3: (Run the generic bbldestory+bblup task)
 # Task args: env-name, $BBL_GCP_SERVICE_ACCOUNT_KEY (passed as GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON and -l on the fly alias), $BBL_GCP_REGION
 # If claimed, skip the task and go to the next environment
+# i.e. if claimed, set task to exit 0 and set job to success, then move to the next job.
 # If unclaimed, claim it (claimer stuff)
 # Pull down the relevant gcs bucket
 # use bbl received from input_mapping: bbl_executable
@@ -24,13 +25,18 @@ resources:
     # TODO use master when everything's done
     branch: env-pipeline
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
-# Assuming this gives the latest version
-- name: bbl
+- name: bbl-repo
   type: git
   source:
     branch: master
     uri: https://github.com/cloudfoundry/bosh-bootloader.git
     tag_filter: v*
+- name: ci-lock
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:greenhouse-ci/locks.git
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
 
 jobs:
 - name: bbl-update-hummus
@@ -39,12 +45,17 @@ jobs:
   plan:
   - aggregate:
     - get: ci
-    - get: bbl
+    - get: bbl-repo
+    - get: ci-lock
+  # TODO: Try to move this to a job whose output can be
+  # consumed by all jobs bbl-update-*
   - task: get-bbl-executable
     file: ci/tasks/get-bbl-executable/task.yml
-    output_mapping:
-      # This line is just for readability
-      bbl-dir: bbl-dir
-  - task: print-bbl-version
-    file: ci/tasks/print-bbl-executable/task.yml
-    input_mapping: {bbl-dir: bbl-dir}
+  - task: refresh-director
+    file: ci/tasks/refresh-director/task.yml
+    params:
+      env: hummus
+      iaas: gcp
+#      iaas-service-account-key: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
+      iaas-region: us-east1
+      private_key: ((GREENHOUSE-CI_SSH_KEY))

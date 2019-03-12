@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
-# git clone bbl and do latest_version=`git describe --tags $(git rev-list --tags --max-count=1)`
-# Download bbl from github.com/cloudfoundry/bosh-bootloader/releases/download/$latest_version/bbl-${latest_version}_linux_x86-64
-# Spit out the executable's path as output_mapping: bbl_executable
-
-ls bbl-dir
-cd bbl-dir
-./* --version
-ls -al *
+cd binary-dir
+#chmod +x bbl_executable
+echo the contents of bbl-repo-with-exec is: `ls -al`
+vers=`./bbl_executable --version`
+echo bbl version is $vers
