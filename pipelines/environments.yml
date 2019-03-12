@@ -60,4 +60,4 @@ jobs:
       iaas: gcp
 #      iaas-service-account-key: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
       iaas-region: us-east1
-
+      private_key: ((GREENHOUSE-CI_SSH_KEY))

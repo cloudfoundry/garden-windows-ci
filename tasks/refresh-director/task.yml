@@ -12,7 +12,7 @@ params:
   iaas:
   iaas-service-account-key:
   iaas-region:
-  GREENHOUSE-CI_SSH_KEY:
+  private_key:
 
 run:
   path: ci/tasks/refresh-director/run
