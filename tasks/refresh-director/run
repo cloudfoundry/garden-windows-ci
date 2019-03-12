@@ -11,7 +11,7 @@ set -eux
 release_lock() {
   if [ -f ci-lock/$env/unclaimed/$env ]; then
     echo "$env is already unclaimed. Exiting"
-    exit 0
+    return 0
   fi
 
   git mv ci-lock/$env/claimed/$env ci-lock/$env/unclaimed/$env
@@ -28,7 +28,7 @@ get_lock_or_die() {
   git mv ci-lock/$env/unclaimed/$env ci-lock/$env/claimed/$env
   git commit -c user.name="Garden Windows CI" -c user.email=<> commit --author "environments-pipeline <>" -m "environments/bbl-update-$env claiming: $env"
   git push origin master
-  echo claimed $env
+  echo Claimed $env
 }
 
 get_lock_or_die
