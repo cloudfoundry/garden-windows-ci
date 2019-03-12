@@ -4,7 +4,7 @@ image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-wi
 
 inputs:
 - name: ci
-- name: bbl-dir
+- name: binary-dir
 
 run:
   path: ci/tasks/print-bbl-executable/run

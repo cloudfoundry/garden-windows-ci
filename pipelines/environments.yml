@@ -25,7 +25,7 @@ resources:
     branch: env-pipeline
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 # Assuming this gives the latest version
-- name: bbl
+- name: bbl-repo
   type: git
   source:
     branch: master
@@ -39,12 +39,16 @@ jobs:
   plan:
   - aggregate:
     - get: ci
-    - get: bbl
+    - get: bbl-repo
+  # TODO: Try to move this to a job whose output can be
+  # consumed by jobs bbl-update-*
   - task: get-bbl-executable
     file: ci/tasks/get-bbl-executable/task.yml
+    # Redundant - only for readablility
     output_mapping:
-      # This line is just for readability
-      bbl-dir: bbl-dir
+      binary-dir: binary-dir
   - task: print-bbl-version
     file: ci/tasks/print-bbl-executable/task.yml
-    input_mapping: {bbl-dir: bbl-dir}
+    # Redundant - only for readablility
+    input_mapping:
+      binary-dir: binary-dir
