@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# 1. Check lock
+# 2. If already locked exit
+# 3. else acquire lock
+# 4. bbl destroy
+# 5. run bbl up script
+# 6. release lock
+set -eux
+
+release_lock() {
+  echo hi
+}
+
+get_lock_or_die() {
+  if [ -f ci-lock/$env/claimed/$env]; then
+    echo "$env is claimed. Exiting"
+    exit 0
+  fi
+}
+
+get_lock_or_die
+echo this shouldnt print
+bbl=binary-dir/bbl_executable
+
+
