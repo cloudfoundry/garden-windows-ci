@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 cd binary-dir
-chmod +x bbl_executable
+#chmod +x bbl_executable
 echo the contents of bbl-repo-with-exec is: `ls -al`
 vers=`./bbl_executable --version`
 echo bbl version is $vers
