@@ -51,8 +51,6 @@ jobs:
   # consumed by all jobs bbl-update-*
   - task: get-bbl-executable
     file: ci/tasks/get-bbl-executable/task.yml
-  - task: print-bbl-version
-    file: ci/tasks/print-bbl-executable/task.yml
   - task: refresh-director
     file: ci/tasks/refresh-director/task.yml
     params:

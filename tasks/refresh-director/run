@@ -17,8 +17,8 @@ release_lock() {
   pushd ci-lock
     git mv $env/claimed/$env $env/unclaimed/$env
     git -c user.name="Garden Windows CI" -c user.email="<>" commit --author "environments-pipeline <>" -m "environments/bbl-update-$env unclaiming: $env"
-    export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa"
-    yes "" | git push origin master
+   # export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa"
+    git push origin master
   popd
   echo Released $env
 }
@@ -33,8 +33,8 @@ get_lock_or_die() {
     git remote -v
     git mv $env/unclaimed/$env $env/claimed/$env
     git -c user.name="Garden Windows CI" -c user.email="<>" commit --author "environments-pipeline <>" -m "environments/bbl-update-$env claiming: $env"
-    export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa"
-    yes "" | git push origin master
+    #export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa"
+    git push origin master
   popd
   echo Claimed $env
 }
@@ -45,6 +45,13 @@ get_lock_or_die() {
 mkdir -p ~/.ssh
 echo $private_key > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
+eval $(ssh-agent) >/dev/null 2>&1
+DISPLAY= ssh-add ~/.ssh/id_rsa >/dev/null
+cat > ~/.ssh/config <<EOF
+StrictHostKeyChecking no
+LogLevel quiet
+EOF
+chmod 0600 ~/.ssh/config
 ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 get_lock_or_die
