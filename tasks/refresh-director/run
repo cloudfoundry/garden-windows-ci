@@ -43,8 +43,8 @@ get_lock_or_die() {
 # The authenticity of host 'github.com' can't be established.
 # Are you sure you want to continue connecting (yes/no)?
 mkdir -p ~/.ssh
-$private_key=${private_key// //\n}
-$private_key=${private_key//\/nRSA\/nPRIVATE\/n// RSA PRIVATE }
+private_key=${private_key// //\n}
+private_key=${private_key//\/nRSA\/nPRIVATE\/n// RSA PRIVATE }
 echo $private_key > ~/.ssh/rep_private_key
 chmod 600 ~/.ssh/rep_private_key
 eval $(ssh-agent) >/dev/null 2>&1
