@@ -7,7 +7,6 @@ pushd bbl-repo
 popd
 
 bbl_exe_url=https://github.com/cloudfoundry/bosh-bootloader/releases/download/${latest_version}/bbl-${latest_version}_linux_x86-64
-#mkdir -p binary-dir
 curl -L $bbl_exe_url -o binary-dir/bbl_executable
 chmod +x binary-dir/bbl_executable
 echo bbl binary downloaded with version `binary-dir/bbl_executable --version`

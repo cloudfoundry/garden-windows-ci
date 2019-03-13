@@ -44,6 +44,7 @@ get_lock_or_die() {
 # Are you sure you want to continue connecting (yes/no)?
 mkdir -p ~/.ssh
 echo $private_key > ~/.ssh/rep_private_key
+cat ~/.ssh/rep_private_key
 chmod 600 ~/.ssh/rep_private_key
 eval $(ssh-agent) >/dev/null 2>&1
 DISPLAY= ssh-add ~/.ssh/rep_private_key >/dev/null
