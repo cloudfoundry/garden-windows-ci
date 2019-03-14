@@ -53,13 +53,13 @@ get_lock() {
 env_available() {
   if [ -f ci-lock/$env/claimed/$env ]; then
     echo "$env is claimed."
-    return false
+    false
   fi
   echo "$env is unclaimed."
-  return true
+  true
 }
 
-if [ ! env_available ]; then
+if ! env_available ; then
   Exit 0
 fi
 
