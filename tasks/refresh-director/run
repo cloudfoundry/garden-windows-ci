@@ -39,12 +39,8 @@ release_lock() {
   echo Released $env
 }
 
-get_lock_or_die() {
+get_lock() {
 
-  if [ -f ci-lock/$env/claimed/$env ]; then
-    echo "$env is claimed. Exiting"
-    exit 0
-  fi
   pushd ci-lock
     git checkout master
     git mv $env/unclaimed/$env $env/claimed/$env
@@ -54,8 +50,21 @@ get_lock_or_die() {
   echo Claimed $env
 }
 
+env_available() {
+  if [ -f ci-lock/$env/claimed/$env ]; then
+    echo "$env is claimed."
+    return false
+  fi
+  echo "$env is unclaimed."
+  return true
+}
+
+if [ ! env_available ]; then
+  Exit 0
+fi
+
 setup_github_ssh
-get_lock_or_die
+get_lock
 release_lock
 bbl_exe=binary-dir/bbl_executable
 
