@@ -52,21 +52,27 @@ get_lock() {
 
 env_available() {
   if [ -f ci-lock/$env/claimed/$env ]; then
-    echo "$env is claimed."
     false
   else
-    echo "$env is unclaimed."
     true
   fi
 }
 
 if ! env_available ; then
+  echo "$env is already claimed - exiting."
   exit 0
 fi
 
 setup_github_ssh
 get_lock
-release_lock
+
 bbl_exe=binary-dir/bbl_executable
+
+$bbl_exe --version
+# 4. bbl plan // necessary if there's a new version of bbl
+# 5. run bbl up script
+
+
+release_lock
 
 
