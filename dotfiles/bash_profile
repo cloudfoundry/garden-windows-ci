@@ -238,6 +238,11 @@ fly-garden-windows() {
     -l <(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' 'aws-iam-access-keys' 'github-access-tokens' 'garden-windows-dev-service-account.json' )
 }
 
+fly-environments () {
+  fly -t garden-windows sp -p environments -c $HOME/workspace/garden-windows-ci/pipelines/environments.yml \
+    -l<(lpass show --notes github-deploy-keys)
+}
+
 fly-hydrator () {
   fly -t garden-windows sp -p hydrator -c $HOME/workspace/garden-windows-ci/pipelines/hydrator.yml \
     -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 aws-iam-access-keys github-access-tokens)
