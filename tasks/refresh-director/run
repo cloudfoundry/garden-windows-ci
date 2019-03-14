@@ -6,7 +6,7 @@
 # 4. bbl destroy
 # 5. run bbl up script
 # 6. release lock
-set -eux
+set -eu
 
 setup_github_ssh() {
   mkdir -p ~/.ssh
@@ -57,6 +57,6 @@ get_lock_or_die() {
 setup_github_ssh
 get_lock_or_die
 release_lock
-bbl=binary-dir/bbl_executable
+bbl_exe=binary-dir/bbl_executable
 
 
