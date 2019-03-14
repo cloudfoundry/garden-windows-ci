@@ -13,18 +13,13 @@ setup_github_ssh() {
 
   private_key=${private_key// //\n}
   private_key=${private_key//\/nRSA\/nPRIVATE\/n/ RSA PRIVATE }
+  private_key_path=~/.ssh/id_rsa
 
-  echo "$private_key" > ~/.ssh/rep_private_key
-  chmod 600 ~/.ssh/rep_private_key
+  echo "$private_key" > $private_key_path
+  chmod 600 $private_key_path
 
-  eval $(ssh-agent) >/dev/null 2>&1 DISPLAY=
-  ssh-add ~/.ssh/rep_private_key >/dev/null
-
-#  cat > ~/.ssh/config <<EOF
-#  StrictHostKeyChecking no
-#  LogLevel quiet
-#EOF
-#  chmod 0600 ~/.ssh/config
+  eval $(ssh-agent) >/dev/null
+  ssh-add $private_key_path >/dev/null
   ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 }
