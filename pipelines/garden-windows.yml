@@ -155,6 +155,9 @@ jobs:
     file: ci/tasks/sync-submodules/task.yml
     params:
       SUBMODULES: "src/code.cloudfoundry.org/garden,src/github.com/bmizerany/pat,src/github.com/cloudfoundry/dropsonde,src/github.com/cloudfoundry/gosteno,src/github.com/cloudfoundry/sonde-go,src/github.com/gogo/protobuf,src/github.com/golang/protobuf,src/github.com/gorilla/context,src/github.com/gorilla/mux,src/github.com/nu7hatch/gouuid,src/github.com/onsi/ginkgo,src/github.com/onsi/gomega,src/github.com/pivotal-golang/localip,src/github.com/tedsuo/ifrit,src/golang.org/x/net,src/gopkg.in/yaml.v2"
+      # This is done because one fine day garden-runc-release changed their
+      # submodule path from src/... to src/gopath/src/...
+      UPSTREAM_SUBMODULES_PREFIX: "src/gopath/"
   - put: garden-windows-release
     params:
       repository: bumped-downstream-release
