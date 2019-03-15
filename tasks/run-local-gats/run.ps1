@@ -105,7 +105,7 @@ push-location garden-runc-release
       throw "Ginkgo installation process returned error code: $LastExitCode"
   }
 
-  go build -o gdn.exe ./src/code.cloudfoundry.org/guardian/cmd/gdn
+  go build -o gdn.exe ./src/gopath/src/code.cloudfoundry.org/guardian/cmd/gdn
   if ($LastExitCode -ne 0) {
       throw "Building gdn.exe process returned error code: $LastExitCode"
   }
@@ -156,7 +156,7 @@ push-location garden-runc-release
 
   $env:GARDEN_TEST_ROOTFS="$env:WINC_TEST_ROOTFS"
   $env:WINC_BINARY="$wincPath"
-  Push-Location src/code.cloudfoundry.org/garden-integration-tests
+  Push-Location src/gopath/src/code.cloudfoundry.org/garden-integration-tests
     ginkgo -p -randomizeSuites -noisyPendings=false
   Pop-Location
 Pop-Location
