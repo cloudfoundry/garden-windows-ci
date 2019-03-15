@@ -17,3 +17,9 @@ Set of concourse tasks, dockerfiles, and pipelines for the CF Garden Windows tea
 |Hummus|GCP|Dev environment|
 |Guac|AWS|Dev environment|
 |Chimi|GCP|Acceptance environment - WIP|
+
+### Databases
+
+|Database|Type|Project|Purpose|
+|:---:|:---:|:---:|---|
+|concourse-db|PostgreSQL 9.6|Spitfire|Store concourse build info|
