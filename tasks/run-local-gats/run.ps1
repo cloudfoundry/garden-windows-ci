@@ -100,7 +100,7 @@ set-content -path "$env:TEMP/interface.json" -value $config
 $nstarPath = "$PWD/nstar-binary/nstar.exe"
 
 push-location garden-runc-release
-  go install ./src/github.com/onsi/ginkgo/ginkgo
+  go install ./src/gopath/src/github.com/onsi/ginkgo/ginkgo
   if ($LastExitCode -ne 0) {
       throw "Ginkgo installation process returned error code: $LastExitCode"
   }
