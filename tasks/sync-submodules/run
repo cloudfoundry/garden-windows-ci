@@ -30,9 +30,10 @@ def bump_downstream(submodule, sha)
 end
 
 SUBMODULES = ENV.fetch("SUBMODULES").split(",")
+UPSTREAM_SUBMODULES_PREFIX = ENV.fetch("UPSTREAM_SUBMODULES_PREFIX")
 SUBMODULES.each do |submodule|
   downstream_sha = find_sha("downstream-release", submodule)
-  upstream_sha = find_sha("upstream-release", submodule)
+  upstream_sha = find_sha("upstream-release", UPSTREAM_SUBMODULES_PREFIX + submodule)
   if upstream_sha !=  downstream_sha
     bump_downstream(submodule, upstream_sha)
   end
