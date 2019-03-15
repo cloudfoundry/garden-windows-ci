@@ -76,7 +76,7 @@ mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
 $env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
 $env:GOCACHE = "$env:EPHEMERAL_DISK_TEMP_PATH\go-build"
 
-$env:GOPATH = "$PWD/garden-runc-release"
+$env:GOPATH = "$PWD/garden-runc-release/src/gopath"
 $env:PATH= "$env:GOPATH/bin;" + $env:PATH
 
 $gardenInitBinary = "$PWD\garden-init-binary\garden-init.exe"
