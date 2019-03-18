@@ -105,10 +105,13 @@ push-location garden-runc-release
       throw "Ginkgo installation process returned error code: $LastExitCode"
   }
 
-  go build -o gdn.exe ./src/guardian/cmd/gdn
+  $tmpGOPATH = $env:GOPATH
+  Remove-Item Env:\GOPATH
+  go build -mod vendor -o gdn.exe ./src/guardian/cmd/gdn
   if ($LastExitCode -ne 0) {
       throw "Building gdn.exe process returned error code: $LastExitCode"
   }
+  $env:GOPATH = $tmpGOPATH
 
   # Kill any existing garden servers
   Kill-Garden
