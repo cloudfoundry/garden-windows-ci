@@ -160,7 +160,7 @@ jobs:
         binary-output: garden-init-binary
       params:
         EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        PACKAGE: "src/gopath/src/code.cloudfoundry.org/guardian/cmd/winit"
+        PACKAGE: "src/guardian/cmd/winit"
         BINARY_NAME: "garden-init.exe"
   - task: copy-forks
     file: ci/tasks/copy-forks/task.yml

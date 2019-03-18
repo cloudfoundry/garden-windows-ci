@@ -105,7 +105,7 @@ push-location garden-runc-release
       throw "Ginkgo installation process returned error code: $LastExitCode"
   }
 
-  go build -o gdn.exe ./src/gopath/src/code.cloudfoundry.org/guardian/cmd/gdn
+  go build -o gdn.exe ./src/guardian/cmd/gdn
   if ($LastExitCode -ne 0) {
       throw "Building gdn.exe process returned error code: $LastExitCode"
   }

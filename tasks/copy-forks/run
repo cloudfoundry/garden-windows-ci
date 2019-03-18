@@ -7,7 +7,7 @@ echo "Copying GATS fork...."
 cp -r garden-integration-tests garden-runc-release/src/gopath/src/code.cloudfoundry.org/garden-integration-tests
 
 echo "Removing groot..."
-rm -rf garden-runc-release/src/gopath/src/code.cloudfoundry.org/grootfs
+rm -rf garden-runc-release/src/grootfs
 
 echo "Copying into garden-runc-release-forks"
 cp -r ./garden-runc-release/* ./garden-runc-release-forks
