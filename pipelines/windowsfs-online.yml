@@ -97,6 +97,14 @@ resources:
     drafts: true
     access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
+# Docker Image
+
+- name: windowsservercore
+  type: docker-image
+  source:
+    repository: mcr.microsoft.com/windows/servercore
+    tag: ((server-core-tag))
+
 # S3
 
 - name: tar
@@ -202,6 +210,13 @@ jobs:
       tags: ((resource-get-tag))
     - get: windows2016fs
       tags: ((resource-get-tag))
+    - get: windowsservercore
+      tags: ((resource-get-tag))
+      trigger: true
+      params:
+        save: false
+        rootfs: false
+        skip_download: true
     - get: windowsfs-dockerfile
       tags: ((resource-get-tag))
       trigger: true
