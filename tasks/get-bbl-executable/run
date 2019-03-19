@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -eux
+
+pushd bbl-repo
+  latest_version=`git describe --tags $(git rev-list --tags --max-count=1)`
+popd
+
+bbl_exe_url=https://github.com/cloudfoundry/bosh-bootloader/releases/download/${latest_version}/bbl-${latest_version}_linux_x86-64
+curl -L $bbl_exe_url -o binary-dir/bbl_executable
+chmod +x binary-dir/bbl_executable
+echo bbl binary downloaded with version `binary-dir/bbl_executable --version`

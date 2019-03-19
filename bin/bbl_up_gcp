@@ -14,8 +14,13 @@ if ! [[ $lb_type =~ ^(cf|concourse)$ ]]; then
   exit 1
 fi
 
-if [[ -z $BBL_GCP_SERVICE_ACCOUNT_KEY || -z $BBL_GCP_REGION ]]; then
-  echo "must provide BBL_GCP_SERVICE_ACCOUNT_KEY and BBL_GCP_REGION"
+if [[ -z $BBL_GCP_SERVICE_ACCOUNT_KEY ]]; then
+  echo "must provide BBL_GCP_SERVICE_ACCOUNT_KEY"
+  exit 1
+fi
+
+if [[ -z $BBL_GCP_REGION ]]; then
+  echo "must provide BBL_GCP_REGION"
   exit 1
 fi
 
