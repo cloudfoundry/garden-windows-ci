@@ -253,10 +253,8 @@ jobs:
       - cf-deployment/operations/use-latest-windows2016-stemcell.yml
       - cf-deployment/operations/use-latest-windows1803-stemcell.yml
       - cf-deployment/operations/use-latest-windows2019-stemcell.yml
-      # TODO: reenable these opsfiles once https://github.com/cloudfoundry/executor/issues/43
-      # is in a released version of diego-release
-      #- cf-deployment/operations/experimental/enable-routing-integrity-windows1803.yml
-      #- cf-deployment/operations/experimental/enable-routing-integrity-windows2016.yml
+      - cf-deployment/operations/experimental/enable-routing-integrity-windows1803.yml
+      - cf-deployment/operations/experimental/enable-routing-integrity-windows2016.yml
       - ci/operations/latest-winc.yml
       - ci/operations/latest-envoy.yml
       - ci/operations/latest-windows2016fs-release.yml
