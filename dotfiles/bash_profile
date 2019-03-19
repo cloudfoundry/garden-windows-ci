@@ -240,7 +240,7 @@ fly-garden-windows() {
 
 fly-environments () {
   fly -t garden-windows sp -p environments -c $HOME/workspace/garden-windows-ci/pipelines/environments.yml \
-    -l<(lpass show --notes github-deploy-keys)
+    -l<(lpass show --notes -G 'github-deploy-keys' 'garden-windows-dev-service-account.json')
 }
 
 fly-hydrator () {

@@ -19,43 +19,64 @@
 # First get the pipeline running for all gcp based environments, then think about guac later.
 
 resources:
-- name: ci
-  type: git
-  source:
-    # TODO use master when everything's done
-    branch: env-pipeline
-    uri: https://github.com/cloudfoundry/garden-windows-ci.git
-- name: bbl-repo
+- name: cf-deployment-concourse-tasks
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry/bosh-bootloader.git
-    tag_filter: v*
-- name: ci-lock
+    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
+
+- name: hummus-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: hummus
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
+- name: garden-windows-environments
   type: git
   source:
     branch: master
-    uri: git@github.com:greenhouse-ci/locks.git
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:pivotal/garden-windows-environments
 
 jobs:
+# TODO: what to trigger on
+# TODO: handle a lock already taken
+# TODO: other environmnets
 - name: bbl-update-hummus
   serial: true
-  serial_groups: [bbl-update-envs]
+  serial_groups: [update]
   plan:
   - aggregate:
-    - get: ci
-    - get: bbl-repo
-    - get: ci-lock
-  # TODO: Try to move this to a job whose output can be
-  # consumed by all jobs bbl-update-*
-  - task: get-bbl-executable
-    file: ci/tasks/get-bbl-executable/task.yml
-  - task: refresh-director
-    file: ci/tasks/refresh-director/task.yml
+    - get: cf-deployment-concourse-tasks
+    - get: hummus-lock-pool
+    - get: garden-windows-environments
+  - put: hummus-lock-pool
     params:
-      env: hummus
-      iaas: gcp
-#      iaas-service-account-key: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
-      iaas-region: us-east1
-      private_key: ((GREENHOUSE-CI_SSH_KEY))
+      acquire: true
+  - task: bbl-up
+    file: cf-deployment-concourse-tasks/bbl-up/task.yml
+    params:
+      BBL_IAAS: gcp
+      BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
+      BBL_GCP_REGION: us-east1
+      BBL_STATE_DIR: hummus
+      BBL_LB_CERT: cert.pem
+      BBL_LB_KEY: key.pem
+      LB_DOMAIN: hummus.cf-app.com
+      BBL_ENV_NAME: hummus
+    input_mapping:
+      bbl-state: garden-windows-environments
+      bbl-config: garden-windows-environments
+    ensure:
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: hummus-lock-pool
+        params:
+          release: hummus-lock-pool
+
+
