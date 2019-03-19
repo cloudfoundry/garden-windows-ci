@@ -75,6 +75,11 @@ resources:
   source:
     branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-deployment.git
+- name: cf-deployment-with-hns-acls
+  type: git
+  source:
+    branch: winc-network-hns-acls
+    uri: https://github.com/greenhouse-org/cf-deployment.git
 - name: cf-deployment-with-2019-cell
   type: git
   source:
@@ -974,6 +979,7 @@ jobs:
     - resource: cf-deployment
       trigger: true
       get: cf-deployment
+    - get: cf-deployment-with-hns-acls
     - get: gcp-1803-stemcell
   - aggregate:
     - task: get-cf-vars
@@ -1023,7 +1029,7 @@ jobs:
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - ci/operations/use-3-azs-for-router.yml
-      - cf-deployment/operations/windows1803-cell.yml
+      - cf-deployment-with-hns-acls/operations/windows1803-cell.yml
       - cf-deployment/operations/use-latest-windows1803-stemcell.yml
       - ci/operations/latest-winc.yml
       - ci/operations/scale-down-windows1803.yml
