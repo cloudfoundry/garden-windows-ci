@@ -4,4 +4,4 @@ set -eux
 
 version=$(bosh int --path '/stemcells/os=ubuntu-xenial/version' $bosh_manifest_path)
 cd stemcell
-curl -LO "https://s3.amazonaws.com/bosh-core-stemcells/vsphere/bosh-stemcell-${version}-vsphere-esxi-ubuntu-xenial-go_agent.tgz"
+curl -L "https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-xenial-go_agent?v=${version}" -o "bosh-stemcell-${version}-vsphere-esxi-ubuntu-xenial-go_agent.tgz"
