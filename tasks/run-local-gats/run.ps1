@@ -105,13 +105,14 @@ push-location garden-runc-release
       throw "Ginkgo installation process returned error code: $LastExitCode"
   }
 
-  $tmpGOPATH = $env:GOPATH
-  Remove-Item Env:\GOPATH
-  go build -mod vendor -o gdn.exe ./src/guardian/cmd/gdn
+  # Upstream garden-runc-release switched to go-modules
+  # We still use GOPATH, so move guardian accordingly
+  mkdir ./src/gopath/src/code.cloudfoundry.org -ea 0
+  mv ./src/guardian ./src/gopath/src/code.cloudfoundry.org/
+  go build -o gdn.exe ./src/gopath/src/code.cloudfoundry.org/guardian/cmd/gdn
   if ($LastExitCode -ne 0) {
       throw "Building gdn.exe process returned error code: $LastExitCode"
   }
-  $env:GOPATH = $tmpGOPATH
 
   # Kill any existing garden servers
   Kill-Garden
