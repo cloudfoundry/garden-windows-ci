@@ -668,14 +668,18 @@ jobs:
     input_mapping:
       windowsfs-release: windowsfs-release-develop
       version: windowsfs-release-version
-  - put: windowsfs-release-develop
+  - put: windowsfs-release-master
     params:
       repository: windowsfs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
-  - put: windowsfs-release-master
+  # This is under the assumption that the changes made by this put
+  # to the repository do not persist from the perspective of the
+  # subsequent tasks
+  - put: windowsfs-release-develop
     params:
       repository: windowsfs-release-updated-version
+      rebase: true
   - task: generate-github-release
     input_mapping:
       release: windowsfs-release-updated-version
@@ -705,14 +709,18 @@ jobs:
     input_mapping:
       windowsfs-release: windowsfs-release-develop
       version: windowsfs-release-version
-  - put: windowsfs-release-develop
+  - put: windowsfs-release-master
     params:
       repository: windowsfs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
-  - put: windowsfs-release-master
+  # This is under the assumption that the changes made by this put
+  # to the repository do not persist from the perspective of the
+  # subsequent tasks
+  - put: windowsfs-release-develop
     params:
       repository: windowsfs-release-updated-version
+      rebase: true
   - task: generate-github-release
     input_mapping:
       release: windowsfs-release-updated-version
@@ -742,14 +750,18 @@ jobs:
     input_mapping:
       windowsfs-release: windowsfs-release-develop
       version: windowsfs-release-version
-  - put: windowsfs-release-develop
+  - put: windowsfs-release-master
     params:
       repository: windowsfs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
-  - put: windowsfs-release-master
+  # This is under the assumption that the changes made by this put
+  # to the repository do not persist from the perspective of the
+  # subsequent tasks
+  - put: windowsfs-release-develop
     params:
       repository: windowsfs-release-updated-version
+      rebase: true
   - task: generate-github-release
     input_mapping:
       release: windowsfs-release-updated-version
