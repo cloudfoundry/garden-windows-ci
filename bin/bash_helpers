@@ -36,7 +36,11 @@ bosh_target() {
     return
   fi
 
-  eval "$(_bosh_creds $environment true)"
+  if [[ "$environment" = "hummus" ]]; then
+    eval "$(_bosh_creds_github $environment true)"
+  else
+    eval "$(_bosh_creds_gcp $environment true)"
+  fi
 }
 
 cf_target() {
@@ -56,7 +60,7 @@ cf_target() {
   _is_using_credhub "$environment"
 
   if [[ $is_using_credhub = true ]]; then
-    eval "$(_bosh_creds $environment true)"
+    eval "$(_bosh_creds_gcp $environment true)"
   fi
   eval "$(_cf_creds $environment)"
 
@@ -114,7 +118,7 @@ _bosh_creds_yml() {
 
   local uppercase_environment=$(echo "$environment" | awk '{print toupper($0)}')
 
-  eval "$(_bosh_creds $environment)"
+  eval "$(_bosh_creds_gcp $environment)"
 
   echo "${uppercase_environment}_BOSH_CLIENT: $BOSH_CLIENT"
   echo "${uppercase_environment}_BOSH_CLIENT_SECRET: $BOSH_CLIENT_SECRET"
@@ -162,7 +166,47 @@ _cf_creds_yml() {
   echo "${uppercase_environment}_CREDHUB_SECRET: $CREDHUB_SECRET"
 }
 
-_bosh_creds() {
+_bosh_creds_github() {
+  local environment=$1
+  local project_name=$(_project_name $environment)
+  if [[ -z "$project_name" ]]; then
+    echo "Unknown environment: $environment"
+    return
+  fi
+  local bbl_state_dir=$(mktemp -d)
+  pushd $bbl_state_dir > /dev/null 2>&1
+    # TODO - think about checking that bbl-state.json exist before cloning the repo
+    # TODO - run git clone once for all of the environments
+    git clone git@github.com:pivotal/garden-windows-environments.git
+    env_path="$bbl_state_dir/garden-windows-environments/$environment"
+
+    if [[ -f "$env_path/bbl-state.json" ]]; then
+      local bbl_env
+      bbl_env="$(bbl --state-dir=$env_path print-env 2>&1)"
+      local bbl_exit_status=$?
+
+      local bosh_environment="$(bbl --state-dir=$env_path env-id)"
+      local bosh_exit_status=$?
+
+      if [[ $bbl_exit_status -ne 0 || $bosh_exit_status -ne 0 ]]; then
+        echo "echo \"Failed to print bbl env: $bbl_env, env-id: $bosh_environment\""
+        return
+      fi
+      echo "export BOSH_TARGET_NAME=$bosh_environment"
+      echo "$bbl_env >/dev/null 2>&1"
+    else
+      echo "echo \"bbl-state.json missing for $env_path\""
+    fi
+
+    if [[ -n "$BOSH_ALL_PROXY" ]]; then
+      pkill -f "\-D ${BOSH_ALL_PROXY##*:} jumpbox"
+      unset BOSH_ALL_PROXY
+    fi
+  popd > /dev/null 2>&1
+  rm -rf $bbl_state_dir
+}
+
+_bosh_creds_gcp() {
   local environment=$1
   local project_name=$(_project_name $environment)
   if [[ -z "$project_name" ]]; then
