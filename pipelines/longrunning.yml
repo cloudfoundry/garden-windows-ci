@@ -274,6 +274,7 @@ jobs:
       - ci/operations/enable-rdp-2016.yml
       - ci/operations/enable-rdp-1803.yml
       - ci/operations/enable-rdp-2019.yml
+      - ci/operations/set-password-2019.yml
       - ci/operations/windows2016-provides-tertiary-groot.yml
       - ci/operations/windows1803-provides-secondary-groot.yml
       - ci/operations/windows1803-uses-trusted-certs.yml
@@ -282,6 +283,8 @@ jobs:
       - ci/operations/windows2019-provides-quaternary-groot.yml
       vars_files:
       - cf-vars/vars.yml
+      vars:
+        ADMIN_PASSWORD: {{ADMIN_PASSWORD}}
       cleanup: true
     get_params:
       skip_export: true
