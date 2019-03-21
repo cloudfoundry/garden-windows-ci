@@ -679,7 +679,7 @@ jobs:
   - put: windowsfs-release-develop
     params:
       repository: windowsfs-release-updated-version
-      rebase: true
+      merge: true
   - task: generate-github-release
     input_mapping:
       release: windowsfs-release-updated-version
@@ -720,7 +720,7 @@ jobs:
   - put: windowsfs-release-develop
     params:
       repository: windowsfs-release-updated-version
-      rebase: true
+      merge: true
   - task: generate-github-release
     input_mapping:
       release: windowsfs-release-updated-version
@@ -761,7 +761,7 @@ jobs:
   - put: windowsfs-release-develop
     params:
       repository: windowsfs-release-updated-version
-      rebase: true
+      merge: true
   - task: generate-github-release
     input_mapping:
       release: windowsfs-release-updated-version
