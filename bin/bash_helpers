@@ -179,6 +179,8 @@ _bosh_creds_github() {
   popd
 
   rm -rf "${envs}"
+
+  export BOSH_TARGET_NAME="${environment}"
 }
 
 _bosh_creds_gcp() {
