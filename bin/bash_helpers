@@ -36,8 +36,8 @@ bosh_target() {
     return
   fi
 
-  if [[ "$environment" = "hummus" ]]; then
-    eval "$(_bosh_creds_github $environment true)"
+  if [[ "${environment}" == "hummus" ]]; then
+    _bosh_creds_github $environment
   else
     eval "$(_bosh_creds_gcp $environment true)"
   fi
@@ -168,42 +168,17 @@ _cf_creds_yml() {
 
 _bosh_creds_github() {
   local environment=$1
-  local project_name=$(_project_name $environment)
-  if [[ -z "$project_name" ]]; then
-    echo "Unknown environment: $environment"
-    return
-  fi
-  local bbl_state_dir=$(mktemp -d)
-  pushd $bbl_state_dir > /dev/null 2>&1
-    # TODO - think about checking that bbl-state.json exist before cloning the repo
-    # TODO - run git clone once for all of the environments
-    git clone git@github.com:pivotal/garden-windows-environments.git
-    env_path="$bbl_state_dir/garden-windows-environments/$environment"
 
-    if [[ -f "$env_path/bbl-state.json" ]]; then
-      local bbl_env
-      bbl_env="$(bbl --state-dir=$env_path print-env 2>&1)"
-      local bbl_exit_status=$?
+  local envs="/tmp/garden-windows-environments"
+  mkdir -p "${envs}"
 
-      local bosh_environment="$(bbl --state-dir=$env_path env-id)"
-      local bosh_exit_status=$?
+  git clone git@github.com:pivotal/garden-windows-environments.git ${envs}
 
-      if [[ $bbl_exit_status -ne 0 || $bosh_exit_status -ne 0 ]]; then
-        echo "echo \"Failed to print bbl env: $bbl_env, env-id: $bosh_environment\""
-        return
-      fi
-      echo "export BOSH_TARGET_NAME=$bosh_environment"
-      echo "$bbl_env >/dev/null 2>&1"
-    else
-      echo "echo \"bbl-state.json missing for $env_path\""
-    fi
+  pushd "${envs}/${environment}"
+    eval "$(bbl print-env)"
+  popd
 
-    if [[ -n "$BOSH_ALL_PROXY" ]]; then
-      pkill -f "\-D ${BOSH_ALL_PROXY##*:} jumpbox"
-      unset BOSH_ALL_PROXY
-    fi
-  popd > /dev/null 2>&1
-  rm -rf $bbl_state_dir
+  rm -rf "${envs}"
 }
 
 _bosh_creds_gcp() {
