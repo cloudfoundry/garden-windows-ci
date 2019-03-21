@@ -67,7 +67,7 @@ jobs:
     # - get: sunday-morning
     #   trigger: true
   - put: hummus-lock-pool
-    timeout: 3h
+    timeout: 1m
     params:
       acquire: true
   - task: bbl-up
@@ -105,7 +105,7 @@ jobs:
     # - get: sunday-morning
     #   trigger: true
   - put: tzatziki-lock-pool
-    timeout: 3h
+    timeout: 1m
     params:
       acquire: true
   - task: bbl-up
