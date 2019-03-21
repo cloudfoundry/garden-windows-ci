@@ -60,9 +60,18 @@ cf_target() {
   _is_using_credhub "$environment"
 
   if [[ $is_using_credhub = true ]]; then
-    eval "$(_bosh_creds_gcp $environment true)"
+    if [[ "${environment}" == "hummus" ]]; then
+      _bosh_creds_github $environment
+    else
+      eval "$(_bosh_creds_gcp $environment true)"
+    fi
   fi
-  eval "$(_cf_creds $environment)"
+
+  if [[ "${environment}" == "hummus" ]]; then
+    _cf_creds_github $environment
+  else
+    eval "$(_cf_creds $environment)"
+  fi
 
   cf login --skip-ssl-validation \
     -a https://api.$environment.cf-app.com \
@@ -258,6 +267,25 @@ _cf_creds() {
     local admin_password=$(bosh int --path /cf_admin_password <(gsutil cat gs://$project_name/cf/vars.yml))
     echo "export ADMIN_PASSWORD=$admin_password"
   fi
+}
+
+_cf_creds_github() {
+  local environment=$1
+
+  local envs="/tmp/garden-windows-environments"
+  mkdir -p "${envs}"
+
+  git clone git@github.com:pivotal/garden-windows-environments.git ${envs}
+
+  pushd "${envs}/${environment}"
+    export CREDHUB_SECRET=$(bosh int --path /credhub_admin_client_secret cf/creds.yml)
+
+    export ADMIN_PASSWORD=$(bosh int --path /cf_admin_password cf/vars.yml)
+  popd
+
+  rm -rf "${envs}"
+
+  export CF_TARGET_NAME="${environment}"
 }
 
 _project_name() {
