@@ -282,8 +282,6 @@ jobs:
       - ci/operations/windows2019-provides-quaternary-groot.yml
       vars_files:
       - cf-vars/vars.yml
-      vars:
-        ADMIN_PASSWORD: {{ADMIN_PASSWORD}}
       cleanup: true
     get_params:
       skip_export: true
