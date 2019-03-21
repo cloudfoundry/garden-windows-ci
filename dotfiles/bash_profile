@@ -263,7 +263,7 @@ fly-winc-1903 () {
 fly-longrunning () {
   fly -t garden-windows sp -p longrunning -c $HOME/workspace/garden-windows-ci/pipelines/longrunning.yml \
     -l <(_env_creds_yml mulgore) \
-  -l<(lpass show --notes github-deploy-keys aws-iam-access-keys github-access-tokens spitfire-service-account.json datadog-secrets)
+  -l<(lpass show --notes github-deploy-keys aws-iam-access-keys github-access-tokens spitfire-service-account.json datadog-secrets ci-cell-admin-password) 
 }
 
 fly-windows1709fs () {

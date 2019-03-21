@@ -10,3 +10,5 @@
     jobs:
     - name: enable_rdp
       release: windows-utilities
+    - name: set_password
+      password: {{ADMIN_PASSWORD}}
