@@ -47,6 +47,14 @@ resources:
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:greenhouse-ci/locks
 
+- name: pesto-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: pesto
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
 - name: garden-windows-environments
   type: git
   source:
@@ -177,3 +185,41 @@ jobs:
       put: aioli-lock-pool
       params:
         release: aioli-lock-pool
+
+- name: bbl-update-pesto
+  serial: true
+  serial_groups: [update]
+  plan:
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+    - get: pesto-lock-pool
+    - get: garden-windows-environments
+    # - get: sunday-morning
+    #   trigger: true
+  - put: pesto-lock-pool
+    timeout: 1m
+    params:
+      acquire: true
+  - task: bbl-up
+    file: cf-deployment-concourse-tasks/bbl-up/task.yml
+    params:
+      BBL_IAAS: azure
+      # BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
+      # BBL_GCP_REGION: us-east1
+      BBL_STATE_DIR: pesto
+      BBL_LB_CERT: cert.pem
+      BBL_LB_KEY: key.pem
+      LB_DOMAIN: pesto.cf-app.com
+      BBL_ENV_NAME: pesto
+    input_mapping:
+      bbl-state: garden-windows-environments
+      bbl-config: garden-windows-environments
+    ensure:
+      put: garden-windows-environments
+      params:
+        repository: updated-bbl-state
+        rebase: true
+    on_success:
+      put: pesto-lock-pool
+      params:
+        release: pesto-lock-pool
