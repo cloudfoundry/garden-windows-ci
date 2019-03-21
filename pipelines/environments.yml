@@ -1,5 +1,3 @@
-# Task1:
-# Trigger every week during the weekend Friday 8PM
 # Task 2:
 # Resource: bbl
 # git clone bbl and do latest_version=`git describe --tags $(git rev-list --tags --max-count=1)`
@@ -33,6 +31,14 @@ resources:
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:greenhouse-ci/locks
 
+- name: tzatziki-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: tzatziki
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
 - name: garden-windows-environments
   type: git
   source:
@@ -40,8 +46,14 @@ resources:
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:pivotal/garden-windows-environments
 
+# - name: sunday-morning
+#   type: time
+#   source:
+#     days: [Sunday]
+#     start: 12:00 AM
+#     stop: 1:00 AM
+
 jobs:
-# TODO: what to trigger on
 # TODO: handle a lock already taken
 # TODO: other environmnets
 - name: bbl-update-hummus
@@ -52,7 +64,10 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: hummus-lock-pool
     - get: garden-windows-environments
+    # - get: sunday-morning
+    #   trigger: true
   - put: hummus-lock-pool
+    timeout: 3h
     params:
       acquire: true
   - task: bbl-up
@@ -70,13 +85,49 @@ jobs:
       bbl-state: garden-windows-environments
       bbl-config: garden-windows-environments
     ensure:
-      do:
-      - put: garden-windows-environments
-        params:
-          repository: updated-bbl-state
-          rebase: true
-      - put: hummus-lock-pool
-        params:
-          release: hummus-lock-pool
+      put: garden-windows-environments
+      params:
+        repository: updated-bbl-state
+        rebase: true
+    on_success:
+      put: hummus-lock-pool
+      params:
+        release: hummus-lock-pool
 
-
+- name: bbl-update-tzatziki
+  serial: true
+  serial_groups: [update]
+  plan:
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+    - get: tzatziki-lock-pool
+    - get: garden-windows-environments
+    # - get: sunday-morning
+    #   trigger: true
+  - put: tzatziki-lock-pool
+    timeout: 3h
+    params:
+      acquire: true
+  - task: bbl-up
+    file: cf-deployment-concourse-tasks/bbl-up/task.yml
+    params:
+      BBL_IAAS: gcp
+      BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
+      BBL_GCP_REGION: us-east1
+      BBL_STATE_DIR: tzatziki
+      BBL_LB_CERT: cert.pem
+      BBL_LB_KEY: key.pem
+      LB_DOMAIN: tzatziki.cf-app.com
+      BBL_ENV_NAME: tzatziki
+    input_mapping:
+      bbl-state: garden-windows-environments
+      bbl-config: garden-windows-environments
+    ensure:
+      put: garden-windows-environments
+      params:
+        repository: updated-bbl-state
+        rebase: true
+    on_success:
+      put: tzatziki-lock-pool
+      params:
+        release: tzatziki-lock-pool
