@@ -20,6 +20,11 @@ resources:
     branch: develop
     uri: ((windowsfs-release-develop-uri))
     private_key: ((GREENHOUSE-CI_SSH_KEY))
+    git_config:
+    - name: user.email
+      value: "pivotal-netgarden-eng@pivotal.io"
+    - name: user.name
+      value: "Greenhouse CI"
 
 - name: windowsfs-release-master
   type: git
@@ -34,6 +39,11 @@ resources:
     branch: develop
     uri: ((windowsfs-online-release-develop-uri))
     private_key: ((GREENHOUSE-CI_SSH_KEY))
+    git_config:
+    - name: user.email
+      value: "pivotal-netgarden-eng@pivotal.io"
+    - name: user.name
+      value: "Greenhouse CI"
 
 - name: windowsfs-online-release-master
   type: git
@@ -673,9 +683,6 @@ jobs:
       repository: windowsfs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
-  # This is under the assumption that the changes made by this put
-  # to the repository do not persist from the perspective of the
-  # subsequent tasks
   - put: windowsfs-release-develop
     params:
       repository: windowsfs-release-updated-version
@@ -714,9 +721,6 @@ jobs:
       repository: windowsfs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
-  # This is under the assumption that the changes made by this put
-  # to the repository do not persist from the perspective of the
-  # subsequent tasks
   - put: windowsfs-release-develop
     params:
       repository: windowsfs-release-updated-version
@@ -755,9 +759,6 @@ jobs:
       repository: windowsfs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
-  # This is under the assumption that the changes made by this put
-  # to the repository do not persist from the perspective of the
-  # subsequent tasks
   - put: windowsfs-release-develop
     params:
       repository: windowsfs-release-updated-version
@@ -990,14 +991,15 @@ jobs:
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
       CI_SKIP: true
-  - put: windowsfs-online-release-develop
+  - put: windowsfs-online-release-master
     params:
       repository: finalized-release/release
       tag: windowsfs-online-release-version/number
       tag_prefix: v
-  - put: windowsfs-online-release-master
+  - put: windowsfs-online-release-develop
     params:
       repository: finalized-release/release
+      merge: true
   - put: windowsfs-online-release-version
     params: {file: windowsfs-online-release-version/number}
   - task: generate-github-release
@@ -1033,14 +1035,15 @@ jobs:
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
       CI_SKIP: true
-  - put: windowsfs-online-release-develop
+  - put: windowsfs-online-release-master
     params:
       repository: finalized-release/release
       tag: windowsfs-online-release-version/number
       tag_prefix: v
-  - put: windowsfs-online-release-master
+  - put: windowsfs-online-release-develop
     params:
       repository: finalized-release/release
+      merge: true
   - put: windowsfs-online-release-version
     params: {file: windowsfs-online-release-version/number}
   - task: generate-github-release
@@ -1076,14 +1079,15 @@ jobs:
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
       CI_SKIP: true
-  - put: windowsfs-online-release-develop
+  - put: windowsfs-online-release-master
     params:
       repository: finalized-release/release
       tag: windowsfs-online-release-version/number
       tag_prefix: v
-  - put: windowsfs-online-release-master
+  - put: windowsfs-online-release-develop
     params:
       repository: finalized-release/release
+      merge: true
   - put: windowsfs-online-release-version
     params: {file: windowsfs-online-release-version/number}
   - task: generate-github-release
