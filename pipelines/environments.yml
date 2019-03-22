@@ -154,8 +154,8 @@ jobs:
       BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
       BBL_GCP_REGION: us-east1
       BBL_STATE_DIR: tzatziki
-      BBL_LB_CERT: cert.pem
-      BBL_LB_KEY: key.pem
+      BBL_LB_CERT: certs/cert.pem
+      BBL_LB_KEY: certs/key.pem
       LB_DOMAIN: tzatziki.cf-app.com
       BBL_ENV_NAME: tzatziki
     input_mapping:
