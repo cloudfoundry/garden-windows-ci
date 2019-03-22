@@ -204,8 +204,11 @@ jobs:
     file: cf-deployment-concourse-tasks/bbl-up/task.yml
     params:
       BBL_IAAS: azure
-      # BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
-      # BBL_GCP_REGION: us-east1
+      BBL_AZURE_CLIENT_ID:
+      BBL_AZURE_CLIENT_SECRET:
+      BBL_AZURE_TENANT_ID:
+      BBL_AZURE_SUBSCRIPTION_ID:
+      BBL_AZURE_REGION:
       BBL_STATE_DIR: pesto
       BBL_LB_CERT: cert.pem
       BBL_LB_KEY: key.pem
