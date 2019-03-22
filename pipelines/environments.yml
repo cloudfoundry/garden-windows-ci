@@ -244,7 +244,7 @@ jobs:
 
 - name: bbl-down-hummus
   serial: true
-  serial_groups: [update]
+  serial_groups: [down]
   plan:
   - aggregate:
     - get: cf-deployment-concourse-tasks
@@ -274,7 +274,7 @@ jobs:
 
 - name: bbl-down-tzatziki
   serial: true
-  serial_groups: [update]
+  serial_groups: [down]
   plan:
   - aggregate:
     - get: cf-deployment-concourse-tasks
@@ -304,7 +304,7 @@ jobs:
 
 - name: bbl-down-aioli
   serial: true
-  serial_groups: [update]
+  serial_groups: [down]
   plan:
   - aggregate:
     - get: cf-deployment-concourse-tasks
@@ -336,7 +336,7 @@ jobs:
 
 - name: bbl-down-pesto
   serial: true
-  serial_groups: [update]
+  serial_groups: [down]
   plan:
   - aggregate:
     - get: cf-deployment-concourse-tasks
