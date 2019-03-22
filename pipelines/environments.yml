@@ -23,6 +23,12 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
 
+- name: sophiewigmore-cdct
+  type: git
+  source:
+    branch: delete-deployments
+    uri: https://github.com/sophiewigmore/cf-deployment-concourse-tasks.git
+
 - name: hummus-lock-pool
   type: pool
   source:
@@ -250,12 +256,23 @@ jobs:
   plan:
   - aggregate:
     - get: cf-deployment-concourse-tasks
+      resource: sophiewigmore-cdct
     - get: hummus-lock-pool
     - get: garden-windows-environments
   - put: hummus-lock-pool
     timeout: 1m
     params:
       acquire: true
+  - task: bosh-delete-all-deployments
+    file: cf-deployment-concourse-tasks/bosh-delete-all-deployments/task.yml
+    params:
+      BBL_STATE_DIR: hummus
+    input_mapping:
+      bbl-state: garden-windows-environments
+    on_failure:
+      put: hummus-lock-pool
+      params:
+        release: hummus-lock-pool
   - task: bbl-down
     file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
     params:
@@ -279,12 +296,23 @@ jobs:
   plan:
   - aggregate:
     - get: cf-deployment-concourse-tasks
+      resource: sophiewigmore-cdct
     - get: tzatziki-lock-pool
     - get: garden-windows-environments
   - put: tzatziki-lock-pool
     timeout: 1m
     params:
       acquire: true
+  - task: bosh-delete-all-deployments
+    file: cf-deployment-concourse-tasks/bosh-delete-all-deployments/task.yml
+    params:
+      BBL_STATE_DIR: tzatziki
+    input_mapping:
+      bbl-state: garden-windows-environments
+    on_failure:
+      put: tzatziki-lock-pool
+      params:
+        release: tzatziki-lock-pool
   - task: bbl-down
     file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
     params:
@@ -308,12 +336,23 @@ jobs:
   plan:
   - aggregate:
     - get: cf-deployment-concourse-tasks
+      resource: sophiewigmore-cdct
     - get: aioli-lock-pool
     - get: garden-windows-environments
   - put: aioli-lock-pool
     timeout: 1m
     params:
       acquire: true
+  - task: bosh-delete-all-deployments
+    file: cf-deployment-concourse-tasks/bosh-delete-all-deployments/task.yml
+    params:
+      BBL_STATE_DIR: aioli
+    input_mapping:
+      bbl-state: garden-windows-environments
+    on_failure:
+      put: aioli-lock-pool
+      params:
+        release: aioli-lock-pool
   - task: bbl-down
     file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
     params:
@@ -338,12 +377,23 @@ jobs:
   plan:
   - aggregate:
     - get: cf-deployment-concourse-tasks
+      resource: sophiewigmore-cdct
     - get: pesto-lock-pool
     - get: garden-windows-environments
   - put: pesto-lock-pool
     timeout: 1m
     params:
       acquire: true
+  - task: bosh-delete-all-deployments
+    file: cf-deployment-concourse-tasks/bosh-delete-all-deployments/task.yml
+    params:
+      BBL_STATE_DIR: pesto
+    input_mapping:
+      bbl-state: garden-windows-environments
+    on_failure:
+      put: pesto-lock-pool
+      params:
+        release: pesto-lock-pool
   - task: bbl-down
     file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
     params:
