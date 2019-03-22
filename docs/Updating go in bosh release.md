@@ -9,7 +9,7 @@ The following details how you would update winc-release from go-1.11 to go-1.12:
 3. checkout develop
 
 4. `bosh vendor-package golang-1.12-windows ~/workspace/golang-release`
-This will upload the new golang blob to the blob store, create a new package named `golang-1.12-windows` in `packages`, and `.final_builds`
+This will upload the new golang blob to the blob store, create a new package named `golang-1.12-windows` in `packages`, and `.final_builds`. (You might need to set creds to get write access to blobstore. e.g. `set_bosh_windows_s3_blobstore`)
 
 5. `rm -rf packages/golang-1.1-windows` && `rm -rf .final_builds/packages/golang-1.11-windows`
 
