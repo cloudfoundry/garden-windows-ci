@@ -69,6 +69,21 @@ resources:
 #     start: 12:00 AM
 #     stop: 1:00 AM
 
+groups:
+- name: bbl-up 
+  jobs:
+    - bbl-update-hummus 
+    - bbl-update-tzatziki
+    - bbl-update-aioli
+    - bbl-update-pesto
+- name: bbl-down 
+  jobs:
+    - bbl-down-hummus 
+    - bbl-down-tzatziki
+    - bbl-down-aioli
+    - bbl-down-pesto
+
+
 jobs:
 # TODO: handle a lock already taken
 # TODO: other environmnets
@@ -214,6 +229,133 @@ jobs:
       BBL_LB_KEY: key.pem
       LB_DOMAIN: pesto.cf-app.com
       BBL_ENV_NAME: pesto
+    input_mapping:
+      bbl-state: garden-windows-environments
+      bbl-config: garden-windows-environments
+    ensure:
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: pesto-lock-pool
+        params:
+          release: pesto-lock-pool
+
+- name: bbl-down-hummus
+  serial: true
+  serial_groups: [update]
+  plan:
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+    - get: hummus-lock-pool
+    - get: garden-windows-environments
+  - put: hummus-lock-pool
+    timeout: 1m
+    params:
+      acquire: true
+  - task: bbl-down
+    file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
+    params:
+      BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
+      BBL_STATE_DIR: hummus
+    input_mapping:
+      bbl-state: garden-windows-environments
+      bbl-config: garden-windows-environments
+    ensure:
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: hummus-lock-pool
+        params:
+          release: hummus-lock-pool
+
+- name: bbl-down-tzatziki
+  serial: true
+  serial_groups: [update]
+  plan:
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+    - get: tzatziki-lock-pool
+    - get: garden-windows-environments
+  - put: tzatziki-lock-pool
+    timeout: 1m
+    params:
+      acquire: true
+  - task: bbl-down
+    file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
+    params:
+      BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
+      BBL_STATE_DIR: tzatziki
+    input_mapping:
+      bbl-state: garden-windows-environments
+      bbl-config: garden-windows-environments
+    ensure:
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: tzatziki-lock-pool
+        params:
+          release: tzatziki-lock-pool
+
+- name: bbl-down-aioli
+  serial: true
+  serial_groups: [update]
+  plan:
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+    - get: aioli-lock-pool
+    - get: garden-windows-environments
+    # - get: sunday-morning
+    #   trigger: true
+  - put: aioli-lock-pool
+    timeout: 1m
+    params:
+      acquire: true
+  - task: bbl-down
+    file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
+    params:
+      BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
+      BBL_STATE_DIR: aioli
+    input_mapping:
+      bbl-state: garden-windows-environments
+    ensure:
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: aioli-lock-pool
+        params:
+          release: aioli-lock-pool
+
+
+- name: bbl-down-pesto
+  serial: true
+  serial_groups: [update]
+  plan:
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+    - get: pesto-lock-pool
+    - get: garden-windows-environments
+    # - get: sunday-morning
+    #   trigger: true
+  - put: pesto-lock-pool
+    timeout: 1m
+    params:
+      acquire: true
+  - task: bbl-down
+    file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
+    params:
+      BBL_AZURE_CLIENT_ID:
+      BBL_AZURE_CLIENT_SECRET:
+      BBL_AZURE_TENANT_ID:
+      BBL_AZURE_SUBSCRIPTION_ID:
+      BBL_STATE_DIR: pesto
     input_mapping:
       bbl-state: garden-windows-environments
       bbl-config: garden-windows-environments
