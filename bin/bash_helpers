@@ -181,7 +181,7 @@ _bosh_creds_github() {
   local envs="/tmp/garden-windows-environments"
   mkdir -p "${envs}"
 
-  git clone git@github.com:pivotal/garden-windows-environments.git ${envs}
+  git clone git@github.com:pivotal/garden-windows-environments.git ${envs} || return
 
   pushd "${envs}/${environment}"
     eval "$(bbl print-env)"
