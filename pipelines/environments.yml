@@ -62,6 +62,8 @@ resources:
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:pivotal/garden-windows-environments
 
+# We can uncomment this when we are more confident
+# in this pipeline to go green regularly.
 # - name: sunday-morning
 #   type: time
 #   source:
@@ -70,15 +72,15 @@ resources:
 #     stop: 1:00 AM
 
 groups:
-- name: bbl-up 
+- name: bbl-up
   jobs:
-    - bbl-update-hummus 
+    - bbl-update-hummus
     - bbl-update-tzatziki
     - bbl-update-aioli
     - bbl-update-pesto
-- name: bbl-down 
+- name: bbl-down
   jobs:
-    - bbl-down-hummus 
+    - bbl-down-hummus
     - bbl-down-tzatziki
     - bbl-down-aioli
     - bbl-down-pesto
@@ -261,7 +263,6 @@ jobs:
       BBL_STATE_DIR: hummus
     input_mapping:
       bbl-state: garden-windows-environments
-      bbl-config: garden-windows-environments
     ensure:
       do:
       - put: garden-windows-environments
@@ -291,7 +292,6 @@ jobs:
       BBL_STATE_DIR: tzatziki
     input_mapping:
       bbl-state: garden-windows-environments
-      bbl-config: garden-windows-environments
     ensure:
       do:
       - put: garden-windows-environments
@@ -310,8 +310,6 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: aioli-lock-pool
     - get: garden-windows-environments
-    # - get: sunday-morning
-    #   trigger: true
   - put: aioli-lock-pool
     timeout: 1m
     params:
@@ -342,8 +340,6 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: pesto-lock-pool
     - get: garden-windows-environments
-    # - get: sunday-morning
-    #   trigger: true
   - put: pesto-lock-pool
     timeout: 1m
     params:
@@ -358,7 +354,6 @@ jobs:
       BBL_STATE_DIR: pesto
     input_mapping:
       bbl-state: garden-windows-environments
-      bbl-config: garden-windows-environments
     ensure:
       do:
       - put: garden-windows-environments
