@@ -101,14 +101,14 @@ jobs:
       bbl-state: garden-windows-environments
       bbl-config: garden-windows-environments
     ensure:
-      put: garden-windows-environments
-      params:
-        repository: updated-bbl-state
-        rebase: true
-    on_success:
-      put: hummus-lock-pool
-      params:
-        release: hummus-lock-pool
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: hummus-lock-pool
+        params:
+          release: hummus-lock-pool
 
 - name: bbl-update-tzatziki
   serial: true
@@ -139,14 +139,14 @@ jobs:
       bbl-state: garden-windows-environments
       bbl-config: garden-windows-environments
     ensure:
-      put: garden-windows-environments
-      params:
-        repository: updated-bbl-state
-        rebase: true
-    on_success:
-      put: tzatziki-lock-pool
-      params:
-        release: tzatziki-lock-pool
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: tzatziki-lock-pool
+        params:
+          release: tzatziki-lock-pool
 
 - name: bbl-update-aioli
   serial: true
@@ -177,14 +177,14 @@ jobs:
       bbl-state: garden-windows-environments
       bbl-config: garden-windows-environments
     ensure:
-      put: garden-windows-environments
-      params:
-        repository: updated-bbl-state
-        rebase: true
-    on_success:
-      put: aioli-lock-pool
-      params:
-        release: aioli-lock-pool
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: aioli-lock-pool
+        params:
+          release: aioli-lock-pool
 
 - name: bbl-update-pesto
   serial: true
@@ -218,11 +218,11 @@ jobs:
       bbl-state: garden-windows-environments
       bbl-config: garden-windows-environments
     ensure:
-      put: garden-windows-environments
-      params:
-        repository: updated-bbl-state
-        rebase: true
-    on_success:
-      put: pesto-lock-pool
-      params:
-        release: pesto-lock-pool
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: pesto-lock-pool
+        params:
+          release: pesto-lock-pool
