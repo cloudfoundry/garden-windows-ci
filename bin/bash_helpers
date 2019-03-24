@@ -6,7 +6,6 @@ bosh_target() {
 
   # comma seperated list of environments that run in our pipelines
   local pipeline_envs="pesto,tartar,alfredo,mulgore,aioli,sriracha"
-
   if [[  ",$pipeline_envs," =~ .*\,$environment,.* ]]; then
     read -p "This director runs in a pipeline. Are you sure you want to target it? (yn) " -r
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -16,12 +15,12 @@ bosh_target() {
   fi
 
   local concourse_director="spitfire"
-
-  if [[  "$concourse_director" =~ "$environment" ]]; then
+  if [ "${concourse_director}" = "${environment}" ]; then
     echo "You are targeting the Concourse Director, try not to break anything :)"
   fi
+
   _unset_prefix BOSH_
-  if [[ "$environment" = "dev-box" ]]; then
+  if [ "$environment" = "dev-box" ]; then
     export BOSH_ENVIRONMENT="dev-box"
     return
   fi
@@ -36,7 +35,8 @@ bosh_target() {
     return
   fi
 
-  if [[ "${environment}" == "hummus" ]]; then
+  local github_envs="aioli,sriracha,hummus,tzatziki"
+  if [[  ",$github_envs," =~ .*\,$environment,.* ]]; then
     _bosh_creds_github $environment
   else
     eval "$(_bosh_creds_gcp $environment true)"
@@ -57,19 +57,15 @@ cf_target() {
     return
   fi
 
-  _is_using_credhub "$environment"
-
-  if [[ $is_using_credhub = true ]]; then
-    if [[ "${environment}" == "hummus" ]]; then
-      _bosh_creds_github $environment
-    else
-      eval "$(_bosh_creds_gcp $environment true)"
-    fi
-  fi
-
-  if [[ "${environment}" == "hummus" ]]; then
+  local github_envs="aioli,sriracha,hummus,tzatziki"
+  if [[  ",$github_envs," =~ .*\,$environment,.* ]]; then
+    _bosh_creds_github $environment
     _cf_creds_github $environment
   else
+    _is_using_credhub "$environment"
+    if [[ $is_using_credhub = true ]]; then
+      eval "$(_bosh_creds_gcp $environment true)"
+    fi
     eval "$(_cf_creds $environment)"
   fi
 
@@ -80,8 +76,8 @@ cf_target() {
 }
 
 buildpacks_cf_target() {
-  environment=$1
-  envs_dir=$(mktemp -d)
+  local environment=$1
+  local envs_dir=$(mktemp -d)
 
   ## shallow clone to tempdir
   git clone --depth=1 git@github.com:cloudfoundry/buildpacks-envs.git $envs_dir
@@ -127,7 +123,12 @@ _bosh_creds_yml() {
 
   local uppercase_environment=$(echo "$environment" | awk '{print toupper($0)}')
 
-  eval "$(_bosh_creds_gcp $environment)"
+  local github_envs="aioli,sriracha,hummus,tzatziki"
+  if [[  ",$github_envs," =~ .*\,$environment,.* ]]; then
+    _bosh_creds_github $environment
+  else
+    eval "$(_bosh_creds_gcp $environment true)"
+  fi
 
   echo "${uppercase_environment}_BOSH_CLIENT: $BOSH_CLIENT"
   echo "${uppercase_environment}_BOSH_CLIENT_SECRET: $BOSH_CLIENT_SECRET"
@@ -169,7 +170,12 @@ _cf_creds_yml() {
   local environment=$1
   local uppercase_environment=$(echo "$environment" | awk '{print toupper($0)}')
 
-  eval "$(_cf_creds $environment)"
+  local github_envs="aioli,sriracha,hummus,tzatziki"
+  if [[  ",$github_envs," =~ .*\,$environment,.* ]]; then
+    _cf_creds_github $environment
+  else
+    eval "$(_cf_creds $environment)"
+  fi
 
   echo "${uppercase_environment}_ADMIN_PASSWORD: $ADMIN_PASSWORD"
   echo "${uppercase_environment}_CREDHUB_SECRET: $CREDHUB_SECRET"
@@ -290,7 +296,7 @@ _cf_creds_github() {
 
 _project_name() {
   case "$1" in
-    hummus | tzatziki | aioli | alfredo | sriracha)
+    alfredo)
       echo "cf-garden-windows-dev/$1"
       ;;
     spitfire | tartar | guac)
@@ -299,7 +305,7 @@ _project_name() {
     pesto)
       echo "cff-greenhouse-$1"
       ;;
-    mulgore)
+    mulgore | aioli | sriracha | hummus | tzatziki)
       echo "$1"
       ;;
     edge.buildpacks-gcp.ci)
