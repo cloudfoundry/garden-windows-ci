@@ -74,14 +74,12 @@ resources:
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:pivotal/garden-windows-environments
 
-# We can uncomment this when we are more confident
-# in this pipeline to go green regularly.
-# - name: sunday-morning
-#   type: time
-#   source:
-#     days: [Sunday]
-#     start: 12:00 AM
-#     stop: 1:00 AM
+- name: sunday-morning
+  type: time
+  source:
+    days: [Sunday]
+    start: 12:00 AM
+    stop: 1:00 AM
 
 
 
@@ -96,8 +94,8 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: hummus-lock-pool
     - get: garden-windows-environments
-    # - get: sunday-morning
-    #   trigger: true
+    - get: sunday-morning
+      trigger: true
   - put: hummus-lock-pool
     timeout: 1m
     params:
@@ -172,8 +170,8 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: aioli-lock-pool
     - get: garden-windows-environments
-    # - get: sunday-morning
-    #   trigger: true
+    - get: sunday-morning
+      trigger: true
   - put: aioli-lock-pool
     timeout: 1m
     params:
@@ -262,10 +260,10 @@ jobs:
     params:
       BBL_IAAS: gcp
       BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
-      BBL_GCP_REGION: us-east1
+      BBL_GCP_REGION: us-central1
       BBL_STATE_DIR: sriracha
-      BBL_LB_CERT: cert.pem
-      BBL_LB_KEY: key.pem
+      BBL_LB_CERT: certs/cert.pem
+      BBL_LB_KEY: certs/key.pem
       LB_DOMAIN: sriracha.cf-app.com
       BBL_ENV_NAME: sriracha
     input_mapping:
