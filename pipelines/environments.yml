@@ -81,11 +81,7 @@ resources:
     start: 12:00 AM
     stop: 1:00 AM
 
-
-
 jobs:
-# TODO: handle a lock already taken
-# TODO: other environmnets
 - name: bbl-update-hummus
   serial: true
   serial_groups: [update]

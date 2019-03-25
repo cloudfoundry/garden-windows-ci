@@ -17,6 +17,19 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/bosh-deployment.git
 
+- name: cf-deployment-concourse-tasks
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
+
+- name: garden-windows-environments
+  type: git
+  source:
+    branch: master
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    uri: git@github.com:pivotal/garden-windows-environments
+
 # Lock Pools
 
 - name: alfredo-lock-pool
@@ -101,6 +114,7 @@ resources:
 
 jobs:
 - name: alfredo-cleanup
+  serial: true
   plan:
   - do:
     - put: alfredo-lock-pool
@@ -134,39 +148,29 @@ jobs:
         release: alfredo-lock-pool
 
 - name: hummus-cleanup
+  serial: true
   plan:
-  - do:
-    - put: hummus-lock-pool
-      params:
-        acquire: true
+  - aggregate:
     - get: every-day
       trigger: true
-    - get: ci
-    - get: bosh-deployment
-    - task: clean-up
-      file: ci/tasks/bosh-cleanup/task.yml
-      params:
-        BOSH_CLIENT: {{HUMMUS_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{HUMMUS_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{HUMMUS_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{HUMMUS_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{HUMMUS_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{HUMMUS_JUMPBOX_SSH_KEY}}
-    - task: update-runtime-config-dns
-      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-      params:
-        BOSH_CLIENT: {{HUMMUS_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{HUMMUS_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{HUMMUS_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{HUMMUS_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{HUMMUS_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{HUMMUS_JUMPBOX_SSH_KEY}}
+    - get: cf-deployment-concourse-tasks
+    - get: garden-windows-environments
+  - put: hummus-lock-pool
+    params:
+      acquire: true
+  - task: clean-up
+    file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
+    params:
+      BBL_STATE_DIR: hummus
+    input_mapping:
+      bbl-state: garden-windows-environments
     ensure:
       put: hummus-lock-pool
       params:
         release: hummus-lock-pool
 
 - name: pesto-cleanup
+  serial: true
   plan:
   - do:
     - put: pesto-lock-pool
@@ -200,6 +204,7 @@ jobs:
         release: pesto-lock-pool
 
 - name: spitfire-cleanup
+  serial: true
   plan:
   - do:
     - put: spitfire-lock-pool
@@ -223,6 +228,7 @@ jobs:
         release: spitfire-lock-pool
 
 - name: tartar-cleanup
+  serial: true
   plan:
   - do:
     - put: tartar-lock-pool
@@ -256,105 +262,73 @@ jobs:
         release: tartar-lock-pool
 
 - name: sriracha-cleanup
+  serial: true
   plan:
-  - do:
-    - put: sriracha-lock-pool
-      params:
-        acquire: true
+  - aggregate:
     - get: every-day
       trigger: true
-    - get: ci
-    - get: bosh-deployment
-    - task: clean-up
-      file: ci/tasks/bosh-cleanup/task.yml
-      params:
-        BOSH_CLIENT: {{SRIRACHA_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{SRIRACHA_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{SRIRACHA_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{SRIRACHA_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{SRIRACHA_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{SRIRACHA_JUMPBOX_SSH_KEY}}
-    - task: update-runtime-config-dns
-      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-      params:
-        BOSH_CLIENT: {{SRIRACHA_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{SRIRACHA_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{SRIRACHA_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{SRIRACHA_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{SRIRACHA_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{SRIRACHA_JUMPBOX_SSH_KEY}}
+    - get: cf-deployment-concourse-tasks
+    - get: garden-windows-environments
+  - put:  sriracha-lock-pool
+    params:
+      acquire: true
+  - task: clean-up
+    file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
+    params:
+      BBL_STATE_DIR:  sriracha
+    input_mapping:
+      bbl-state: garden-windows-environments
     ensure:
-      put: sriracha-lock-pool
+      put:  sriracha-lock-pool
       params:
-        release: sriracha-lock-pool
+        release:  sriracha-lock-pool
 
 - name: aioli-cleanup
+  serial: true
   plan:
-  - do:
-    - put: aioli-lock-pool
-      params:
-        acquire: true
+  - aggregate:
     - get: every-day
       trigger: true
-    - get: ci
-    - get: bosh-deployment
-    - task: clean-up
-      file: ci/tasks/bosh-cleanup/task.yml
-      params:
-        BOSH_CLIENT: {{AIOLI_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{AIOLI_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{AIOLI_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{AIOLI_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{AIOLI_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{AIOLI_JUMPBOX_SSH_KEY}}
-    - task: update-runtime-config-dns
-      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-      params:
-        BOSH_CLIENT: {{AIOLI_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{AIOLI_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{AIOLI_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{AIOLI_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{AIOLI_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{AIOLI_JUMPBOX_SSH_KEY}}
+    - get: cf-deployment-concourse-tasks
+    - get: garden-windows-environments
+  - put: aioli-lock-pool
+    params:
+      acquire: true
+  - task: clean-up
+    file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
+    params:
+      BBL_STATE_DIR: aioli
+    input_mapping:
+      bbl-state: garden-windows-environments
     ensure:
       put: aioli-lock-pool
       params:
         release: aioli-lock-pool
 
 - name: tzatziki-cleanup
+  serial: true
   plan:
-  - do:
-    - put: tzatziki-lock-pool
-      params:
-        acquire: true
+  - aggregate:
     - get: every-day
       trigger: true
-    - get: ci
-    - get: bosh-deployment
-    - task: clean-up
-      file: ci/tasks/bosh-cleanup/task.yml
-      params:
-        BOSH_CLIENT: {{TZATZIKI_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{TZATZIKI_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{TZATZIKI_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{TZATZIKI_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{TZATZIKI_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{TZATZIKI_JUMPBOX_SSH_KEY}}
-    - task: update-runtime-config-dns
-      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-      params:
-        BOSH_CLIENT: {{TZATZIKI_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{TZATZIKI_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{TZATZIKI_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{TZATZIKI_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{TZATZIKI_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{TZATZIKI_JUMPBOX_SSH_KEY}}
+    - get: cf-deployment-concourse-tasks
+    - get: garden-windows-environments
+  - put: tzatziki-lock-pool
+    params:
+      acquire: true
+  - task: clean-up
+    file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
+    params:
+      BBL_STATE_DIR: tzatziki
+    input_mapping:
+      bbl-state: garden-windows-environments
     ensure:
       put: tzatziki-lock-pool
       params:
         release: tzatziki-lock-pool
 
 - name: mulgore-cleanup
+  serial: true
   plan:
   - do:
     - put: mulgore-lock-pool
@@ -393,6 +367,7 @@ jobs:
         release: mulgore-lock-pool
 
 - name: guac-cleanup
+  serial: true
   plan:
   - do:
     - put: guac-lock-pool
