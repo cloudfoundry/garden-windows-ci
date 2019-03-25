@@ -221,9 +221,8 @@ fly-cleanup() {
     -l <(_bosh_creds_yml pesto) \
     -l <(_bosh_creds_yml spitfire) \
     -l <(_bosh_creds_yml tartar) \
-    -l <(_bosh_creds_yml guac) \
     -l <(_bosh_creds_yml mulgore) \
-    -l <(lpass show --notes 'github-deploy-keys' )
+    -l <(lpass show --notes 'github-deploy-keys' 'guac-access' )
 }
 
 fly-garden-windows() {
@@ -236,7 +235,7 @@ fly-garden-windows() {
 
 fly-environments () {
   fly -t garden-windows sp -p environments -c $HOME/workspace/garden-windows-ci/pipelines/environments.yml \
-    -l<(lpass show --notes -G 'github-deploy-keys' 'garden-windows-dev-service-account.json')
+    -l<(lpass show --notes -G 'github-deploy-keys' 'garden-windows-dev-service-account.json' 'guac-access' )
 }
 
 fly-hydrator () {
