@@ -92,10 +92,10 @@ resources:
     branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-deployment.git
 
-- name: winc-release-develop
+- name: winc-release-master
   type: git
   source:
-    branch: develop
+    branch: master
     uri: https://github.com/cloudfoundry/winc-release.git
 
 # Docker Image
@@ -582,7 +582,7 @@ jobs:
     - get: windowsfs-release-develop
       passed: [test-create-release-windows, test-create-release-linux]
       trigger: true
-    - get: winc-release-develop
+    - get: winc-release-master
       trigger: true
     - get: gcp-windows-stemcell
   - aggregate:
@@ -595,7 +595,7 @@ jobs:
     - task: create-winc-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
-        release: winc-release-develop
+        release: winc-release-master
       output_mapping:
         release-tarball: winc-tarball
   - task: create-windowsfs-opsfile
@@ -892,7 +892,7 @@ jobs:
     - get: ci
     - get: windowsfs-online-release-develop
       trigger: true
-    - get: winc-release-develop
+    - get: winc-release-master
       trigger: true
     - get: gcp-windows-stemcell
   - aggregate:
@@ -905,7 +905,7 @@ jobs:
     - task: create-winc-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
-        release: winc-release-develop
+        release: winc-release-master
       output_mapping:
         release-tarball: winc-tarball
   - task: create-windowsfs-opsfile
