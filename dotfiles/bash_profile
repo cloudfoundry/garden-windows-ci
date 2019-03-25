@@ -218,15 +218,11 @@ fly-cleanup() {
     -p cleanup \
     -c $HOME/workspace/garden-windows-ci/pipelines/cleanup.yml \
     -l <(_bosh_creds_yml alfredo) \
-    -l <(_bosh_creds_yml hummus) \
     -l <(_bosh_creds_yml pesto) \
     -l <(_bosh_creds_yml spitfire) \
     -l <(_bosh_creds_yml tartar) \
-    -l <(_bosh_creds_yml tzatziki) \
-    -l <(_bosh_creds_yml aioli) \
     -l <(_bosh_creds_yml guac) \
     -l <(_bosh_creds_yml mulgore) \
-    -l <(_bosh_creds_yml sriracha) \
     -l <(lpass show --notes 'github-deploy-keys' )
 }
 
