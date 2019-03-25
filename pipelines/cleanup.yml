@@ -343,6 +343,29 @@ jobs:
       params:
         release: tzatziki-lock-pool
 
+- name: guac-cleanup
+  serial: true
+  plan:
+  - aggregate:
+    - get: every-day
+      trigger: true
+    - get: cf-deployment-concourse-tasks
+    - get: garden-windows-environments
+  - put: guac-lock-pool
+    timeout: 3h
+    params:
+      acquire: true
+  - task: clean-up
+    file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
+    params:
+      BBL_STATE_DIR: guac
+    input_mapping:
+      bbl-state: garden-windows-environments
+    ensure:
+      put: guac-lock-pool
+      params:
+        release: guac-lock-pool
+
 - name: mulgore-cleanup
   serial: true
   plan:
@@ -386,42 +409,3 @@ jobs:
       put: mulgore-lock-pool
       params:
         release: mulgore-lock-pool
-
-- name: guac-cleanup
-  serial: true
-  plan:
-  - aggregate:
-    - get: every-day
-      trigger: true
-    - get: ci
-    - get: bosh-deployment
-  - put: guac-lock-pool
-    timeout: 3h
-    params:
-      acquire: true
-  - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
-    params:
-      BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{GUAC_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
-    on_failure:
-      put: guac-lock-pool
-      params:
-        release: guac-lock-pool
-  - task: update-runtime-config-dns
-    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-    params:
-      BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{GUAC_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
-    ensure:
-      put: guac-lock-pool
-      params:
-        release: guac-lock-pool

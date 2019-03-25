@@ -6,6 +6,7 @@ groups:
     - bbl-update-aioli
     - bbl-update-pesto
     - bbl-update-sriracha
+    - bbl-update-guac
 - name: bbl-down
   jobs:
     - bbl-down-hummus
@@ -32,6 +33,14 @@ resources:
   source:
     branch: master
     pool: hummus
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
+- name: guac-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: guac
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:greenhouse-ci/locks
 
@@ -119,6 +128,45 @@ jobs:
       - put: hummus-lock-pool
         params:
           release: hummus-lock-pool
+
+- name: bbl-update-guac
+  serial: true
+  serial_groups: [update]
+  plan:
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+    - get: guac-lock-pool
+    - get: garden-windows-environments
+    # - get: sunday-morning
+    #   trigger: true
+  - put: guac-lock-pool
+    timeout: 1m
+    params:
+      acquire: true
+  - task: bbl-up
+    file: cf-deployment-concourse-tasks/bbl-up/task.yml
+    params:
+      BBL_IAAS: aws
+      BBL_AWS_ACCESS_KEY_ID: {{GUAC_AWS_ACCESS_KEY_ID}}
+      BBL_AWS_SECRET_ACCESS_KEY: {{GUAC_AWS_SECRET_ACCESS_KEY}}
+      BBL_AWS_REGION: us-east-1
+      BBL_STATE_DIR: guac
+      BBL_LB_CERT: certs/cert.pem
+      BBL_LB_KEY: certs/key.pem
+      LB_DOMAIN: guac.cf-app.com
+      BBL_ENV_NAME: guac
+    input_mapping:
+      bbl-state: garden-windows-environments
+      bbl-config: garden-windows-environments
+    ensure:
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: guac-lock-pool
+        params:
+          release: guac-lock-pool
 
 - name: bbl-update-tzatziki
   serial: true
