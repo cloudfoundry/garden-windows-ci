@@ -222,7 +222,7 @@ fly-cleanup() {
     -l <(_bosh_creds_yml spitfire) \
     -l <(_bosh_creds_yml tartar) \
     -l <(_bosh_creds_yml mulgore) \
-    -l <(lpass show --notes 'github-deploy-keys' 'guac-access' )
+    -l <(lpass show --notes 'github-deploy-keys')
 }
 
 fly-garden-windows() {
