@@ -183,9 +183,14 @@ _bosh_creds_github() {
   local environment=$1
 
   local envs="/tmp/garden-windows-environments"
-  mkdir -p "${envs}"
 
-  git clone git@github.com:pivotal/garden-windows-environments.git ${envs} || return
+  if [ -d "${envs}" ]; then
+    # Ensure we have the latest version of the environments repo.
+    rm -rf "${envs}"
+  fi
+
+  mkdir -p "${envs}"
+  git clone git@github.com:pivotal/garden-windows-environments.git ${envs}
 
   pushd "${envs}/${environment}"
     eval "$(bbl print-env)"
