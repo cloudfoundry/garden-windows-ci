@@ -161,8 +161,6 @@ _bosh_creds_yml() {
 
     local formatted_key=$(echo "$jumpbox_ssh_key" | sed 's/^/  /')
     echo -e "${uppercase_environment}_JUMPBOX_SSH_KEY: |\n$formatted_key"
-  else
-    echo "echo \"bbl-state.json missing for $project_name\""
   fi
 }
 
