@@ -14,6 +14,7 @@ groups:
     - bbl-down-aioli
     - bbl-down-pesto
     - bbl-down-sriracha
+    - bbl-down-guac
 
 resources:
 - name: cf-deployment-concourse-tasks
@@ -529,6 +530,47 @@ jobs:
       - put: sriracha-lock-pool
         params:
           release: sriracha-lock-pool
+
+- name: bbl-down-guac
+  serial: true
+  serial_groups: [down]
+  plan:
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+      resource: sophiewigmore-cdct
+    - get: guac-lock-pool
+    - get: garden-windows-environments
+  - put: guac-lock-pool
+    timeout: 1m
+    params:
+      acquire: true
+  - task: bosh-delete-all-deployments
+    file: cf-deployment-concourse-tasks/bosh-delete-all-deployments/task.yml
+    params:
+      BBL_STATE_DIR: guac
+    input_mapping:
+      bbl-state: garden-windows-environments
+    on_failure:
+      put: guac-lock-pool
+      params:
+        release: guac-lock-pool
+  - task: bbl-down
+    file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
+    params:
+      BBL_AWS_ACCESS_KEY_ID: {{GUAC_AWS_ACCESS_KEY_ID}}
+      BBL_AWS_SECRET_ACCESS_KEY: {{GUAC_AWS_SECRET_ACCESS_KEY}}
+      BBL_STATE_DIR: guac
+    input_mapping:
+      bbl-state: garden-windows-environments
+    ensure:
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: guac-lock-pool
+        params:
+          release: guac-lock-pool
 
 
 # Task 2:
