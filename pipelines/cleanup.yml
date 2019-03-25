@@ -121,29 +121,32 @@ jobs:
       trigger: true
     - get: ci
     - get: bosh-deployment
-  - do:
-    - put: alfredo-lock-pool
-      timeout: 3h
+  - put: alfredo-lock-pool
+    timeout: 3h
+    params:
+      acquire: true
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+    on_failure:
+      put: alfredo-lock-pool
       params:
-        acquire: true
-    - task: clean-up
-      file: ci/tasks/bosh-cleanup/task.yml
-      params:
-        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
-    - task: update-runtime-config-dns
-      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-      params:
-        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+        release: alfredo-lock-pool
+  - task: update-runtime-config-dns
+    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+    params:
+      BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
     ensure:
       put: alfredo-lock-pool
       params:
@@ -210,23 +213,23 @@ jobs:
 - name: spitfire-cleanup
   serial: true
   plan:
-  - do:
-    - put: spitfire-lock-pool
-      timeout: 3h
-      params:
-        acquire: true
+  - aggregate:
     - get: every-day
       trigger: true
     - get: ci
-    - task: clean-up
-      file: ci/tasks/bosh-cleanup/task.yml
-      params:
-        BOSH_CLIENT: {{SPITFIRE_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{SPITFIRE_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{SPITFIRE_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{SPITFIRE_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{SPITFIRE_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{SPITFIRE_JUMPBOX_SSH_KEY}}
+  - put: spitfire-lock-pool
+    timeout: 3h
+    params:
+      acquire: true
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CLIENT: {{SPITFIRE_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{SPITFIRE_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{SPITFIRE_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{SPITFIRE_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{SPITFIRE_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{SPITFIRE_JUMPBOX_SSH_KEY}}
     ensure:
       put: spitfire-lock-pool
       params:
@@ -235,33 +238,37 @@ jobs:
 - name: tartar-cleanup
   serial: true
   plan:
-  - do:
-    - put: tartar-lock-pool
-      timeout: 3h
-      params:
-        acquire: true
+  - aggregate:
     - get: every-day
       trigger: true
     - get: ci
     - get: bosh-deployment
-    - task: clean-up
-      file: ci/tasks/bosh-cleanup/task.yml
+  - put: tartar-lock-pool
+    timeout: 3h
+    params:
+      acquire: true
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+    on_failure:
+      put: tartar-lock-pool
       params:
-        BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
-    - task: update-runtime-config-dns
-      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-      params:
-        BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+        release: tartar-lock-pool
+  - task: update-runtime-config-dns
+    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+    params:
+      BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
     ensure:
       put: tartar-lock-pool
       params:
@@ -339,11 +346,7 @@ jobs:
 - name: mulgore-cleanup
   serial: true
   plan:
-  - do:
-    - put: mulgore-lock-pool
-      timeout: 3h
-      params:
-        acquire: true
+  - aggregate:
     - get: every-day
       trigger: true
       tags: [vsphere]
@@ -351,26 +354,34 @@ jobs:
       tags: [vsphere]
     - get: bosh-deployment
       tags: [vsphere]
-    - task: clean-up
-      file: ci/tasks/bosh-cleanup/task.yml
-      tags: [vsphere]
+  - put: mulgore-lock-pool
+    timeout: 3h
+    params:
+      acquire: true
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    tags: [vsphere]
+    params:
+      BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{MULGORE_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
+    on_failure:
+      put: mulgore-lock-pool
       params:
-        BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{MULGORE_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
-    - task: update-runtime-config-dns
-      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-      tags: [vsphere]
-      params:
-        BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{MULGORE_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
+        release: mulgore-lock-pool
+  - task: update-runtime-config-dns
+    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+    tags: [vsphere]
+    params:
+      BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{MULGORE_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
     ensure:
       put: mulgore-lock-pool
       params:
@@ -379,33 +390,37 @@ jobs:
 - name: guac-cleanup
   serial: true
   plan:
-  - do:
-    - put: guac-lock-pool
-      timeout: 3h
-      params:
-        acquire: true
+  - aggregate:
     - get: every-day
       trigger: true
     - get: ci
     - get: bosh-deployment
-    - task: clean-up
-      file: ci/tasks/bosh-cleanup/task.yml
+  - put: guac-lock-pool
+    timeout: 3h
+    params:
+      acquire: true
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{GUAC_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
+    on_failure:
+      put: guac-lock-pool
       params:
-        BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{GUAC_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
-    - task: update-runtime-config-dns
-      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-      params:
-        BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{GUAC_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
+        release: guac-lock-pool
+  - task: update-runtime-config-dns
+    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+    params:
+      BOSH_CLIENT: {{GUAC_BOSH_CLIENT}}
+      BOSH_CLIENT_SECRET: {{GUAC_BOSH_CLIENT_SECRET}}
+      BOSH_ENVIRONMENT: {{GUAC_BOSH_ENVIRONMENT}}
+      BOSH_CA_CERT: {{GUAC_BOSH_CA_CERT}}
+      JUMPBOX_IP: {{GUAC_JUMPBOX_IP}}
+      JUMPBOX_SSH_KEY: {{GUAC_JUMPBOX_SSH_KEY}}
     ensure:
       put: guac-lock-pool
       params:
