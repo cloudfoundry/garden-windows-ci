@@ -1,0 +1,48 @@
+#!/bin/bash
+set -e
+
+# Updates go inside a bosh release that sources go from golang-release
+# E.g. usage: update_go ~/workspace/winc-release 1.12
+
+boshrel=$1
+version=$2
+if [ $# -lt 2 ]; then
+	echo "Usage: update_go <bosh-release-path> <go-version>"
+fi
+
+gopkg=golang-${version}-windows
+
+if [ ! -d "$HOME/workspace/golang-release" ]; then
+  git clone https://github.com/bosh-packages/golang-release ~/workspace/golang-release
+fi
+
+if [ ! -d "$HOME/workspace/golang-release/packages/$gopkg" ]; then
+	echo "The version $version is not supported by golang-release"
+	echo "See $HOME/workspace/golang-release/packages for available versions"
+	exit 1
+fi
+
+if ! [[ "$boshrel" =~ release ]]; then
+	read -p "The first arg should be the path to a bosh release. Press Y to continue updating go"
+	[[ ! $REPLY =~ ^[Yy]$ ]] && exit 1
+fi
+
+pushd $boshrel
+  git checkout develop
+  git su
+
+  old_golang_blob=`grep golang/go config/blobs.yml | cut -d ':' -f1`
+  bosh remove-blob $old_golang_blob
+
+  rm -rf packages/golang-* && rm -rf .final_builds/packages/golang-*
+
+  source "${HOME}/workspace/garden-windows-ci/dotfiles/bash_profile" && set_bosh_windows_s3_blobstore
+
+  bosh vendor-package $gopkg ~/workspace/golang-release
+
+  grep -rl "golang-.*windows" ./packages | xargs sed -i "s/golang-.*windows/$gopkg/"
+
+  echo "You are all set!"
+  echo "We're not gonna do everything for you! So stage the changes to packages/ and .final_builds/, and git push"
+  echo "Also, you might want to try creating a release to see everything works fine (bosh create-release --tarball /tmp/tmp.tgz --force or that weird script for offline releases)"
+popd
