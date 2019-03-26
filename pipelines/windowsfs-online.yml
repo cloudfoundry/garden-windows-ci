@@ -80,13 +80,12 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/winc-release.git
 
-- name: cf-vars
+- name: garden-windows-environments
   type: git
   source:
     branch: master
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:pivotal/garden-windows-environments
-    paths: [ aioli/cf/vars.yml ]
 
 # GitHub Release
 
@@ -343,7 +342,7 @@ jobs:
     - get: cf-deployment
     - get: cf-deployment-with-2019-cell
     - get: gcp-windows-stemcell
-    - get: cf-vars
+    - get: garden-windows-environments
   - aggregate:
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
@@ -399,7 +398,7 @@ jobs:
       - windowsfs-opsfile/specified-windowsfs-version.yml
       - ((use-online-fs-opsfile))
       vars_files:
-      - cf-vars/vars.yml
+      - garden-windows-environments/aioli/cf/vars.yml
       cleanup: true
     get_params:
       skip_export: true
