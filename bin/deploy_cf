@@ -90,7 +90,7 @@ else
 fi
 
 echo "Deploying cf on $environment"
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+DIR="$(mktemp -d)"
 
 # When freshly bbl-ed up, create a one-time vars.yml with a randomly generated
 # password. To generate a *new* password, delete <bucket>/cf/vars.yml and redeploy
@@ -105,7 +105,7 @@ fi
 
 if gsutil -q stat gs://$project_name/cf/creds.yml ; then
   gsutil cp gs://$project_name/cf/creds.yml $DIR/creds.yml
-  command="$command -l <(cat $DIR/vars.yml || gsutil cat gs://$project_name/cf/vars.yml)"
+  command="$command -l <(gsutil cat gs://$project_name/cf/vars.yml)"
 fi
 
 command="$command \
