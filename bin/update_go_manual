@@ -1,0 +1,34 @@
+#!/bin/bash
+set -e
+
+# Updates go inside a bosh release
+# E.g. usage: update_go ~/workspace/windows2016fs-release ~/Downloads/go1.11.6.windows-amd64.zip
+
+boshrel=$1
+new_blob_path=$2
+if [ $# -lt 2 ]; then
+  echo "Usage: update_go <bosh-release-path> <go blob path>"
+fi
+
+pushd $boshrel
+  git checkout develop
+  git su
+
+  old_golang_blob=$(bosh blobs | grep golang | awk '{print $1}')
+  bosh remove-blob $old_golang_blob
+
+  new_golang_blob="golang/$(basename $new_blob_path)"
+  bosh add-blob $new_blob_path $new_golang_blob
+
+  source "${HOME}/workspace/garden-windows-ci/dotfiles/bash_profile" && set_bosh_windows_s3_blobstore
+
+  # Ensure we don't accidentally upload a rootfs blob
+  rootfs_name=$(basename $boshrel | cut -d '-' -f1)
+  rm -rf blobs/$rootfs_name
+
+  bosh upload-blobs
+
+  echo "You are all set!"
+  echo "We're not gonna do everything for you! So stage the changes and git push"
+  echo "Also, you might want to try creating a release to see everything works fine (./scripts/create-release --tarball /tmp/tmp.tgz)"
+popd
