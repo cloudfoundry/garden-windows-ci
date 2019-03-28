@@ -20,6 +20,11 @@ resources:
     branch: develop
     uri: ((windowsfs-release-develop-uri))
     private_key: ((GREENHOUSE-CI_SSH_KEY))
+    git_config:
+    - name: user.email
+      value: "pivotal-netgarden-eng@pivotal.io"
+    - name: user.name
+      value: "Greenhouse CI"
 
 - name: windowsfs-release-master
   type: git
@@ -27,6 +32,11 @@ resources:
     branch: master
     uri: ((windowsfs-release-master-uri))
     private_key: ((GREENHOUSE-CI_SSH_KEY))
+    git_config:
+    - name: user.email
+      value: "pivotal-netgarden-eng@pivotal.io"
+    - name: user.name
+      value: "Greenhouse CI"
 
 - name: hydrator
   type: git
@@ -477,14 +487,15 @@ jobs:
     input_mapping:
       windowsfs-release: windowsfs-release-develop
       version: windowsfs-release-version
-  - put: windowsfs-release-develop
+  - put: windowsfs-release-master
     params:
       repository: windowsfs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
-  - put: windowsfs-release-master
+  - put: windowsfs-release-develop
     params:
       repository: windowsfs-release-updated-version
+      merge: true
   - task: generate-github-release
     input_mapping:
       release: windowsfs-release-updated-version
@@ -514,14 +525,15 @@ jobs:
     input_mapping:
       windowsfs-release: windowsfs-release-develop
       version: windowsfs-release-version
-  - put: windowsfs-release-develop
+  - put: windowsfs-release-master
     params:
       repository: windowsfs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
-  - put: windowsfs-release-master
+  - put: windowsfs-release-develop
     params:
       repository: windowsfs-release-updated-version
+      merge: true
   - task: generate-github-release
     input_mapping:
       release: windowsfs-release-updated-version
@@ -551,14 +563,15 @@ jobs:
     input_mapping:
       windowsfs-release: windowsfs-release-develop
       version: windowsfs-release-version
-  - put: windowsfs-release-develop
+  - put: windowsfs-release-master
     params:
       repository: windowsfs-release-updated-version
       tag: windowsfs-release-version/version
       tag_prefix: v
-  - put: windowsfs-release-master
+  - put: windowsfs-release-develop
     params:
       repository: windowsfs-release-updated-version
+      merge: true
   - task: generate-github-release
     input_mapping:
       release: windowsfs-release-updated-version
