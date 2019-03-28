@@ -1,9 +1,5 @@
-FROM ruby:2.4.2
+FROM ruby:2.4
 
-RUN apt-get update -qq && \
-  apt-get install -qqy --no-install-recommends apt-transport-https && rm -rf /var/lib/apt/lists/*
-RUN echo "deb https://packages.cloud.google.com/apt cloud-sdk-jessie main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
-  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 RUN apt-get update -qq && \
   apt-get install -qqy --no-install-recommends \
     apt-utils \
@@ -13,7 +9,6 @@ RUN apt-get update -qq && \
     g++ \
     gcc \
     git \
-    google-cloud-sdk \
     jq \
     libc6-dev \
     lsb-release \
@@ -28,6 +23,12 @@ RUN apt-get update -qq && \
     wget \
     zip \
     && rm -rf /var/lib/apt/lists/*
+
+# Install gcloud
+RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
+  echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+  apt-get update -y && apt-get install google-cloud-sdk -y
 
 RUN gem install bundler
 
@@ -60,8 +61,10 @@ RUN curl -fsSL "$DEP_DOWNLOAD_URL" -o /usr/local/bin/dep \
     && chmod +x /usr/local/bin/dep
 
 #install CF CLI
-RUN wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | apt-key add -
-RUN echo "deb http://packages.cloudfoundry.org/debian stable main" | tee /etc/apt/sources.list.d/cloudfoundry-cli.list
-RUN apt-get update
-RUN apt-get install cf-cli
+ENV cf_cli_version 6.43.0
+RUN \
+  cd /tmp && \
+  wget -q -O cf.deb "https://cli.run.pivotal.io/stable?release=debian64&version=${cf_cli_version}&source=github-rel" && \
+  dpkg -i cf.deb && \
+  rm cf.deb
 
