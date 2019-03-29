@@ -160,7 +160,7 @@ jobs:
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
-    - get: bosh-deployment
+    - get: ci
   - put: hummus-lock-pool
     timeout: 3h
     params:
@@ -289,7 +289,7 @@ jobs:
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
-    - get: bosh-deployment
+    - get: ci
   - put:  sriracha-lock-pool
     timeout: 3h
     params:
@@ -319,7 +319,7 @@ jobs:
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
-    - get: bosh-deployment
+    - get: ci
   - put: aioli-lock-pool
     timeout: 3h
     params:
@@ -349,7 +349,7 @@ jobs:
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
-    - get: bosh-deployment
+    - get: ci
   - put: tzatziki-lock-pool
     timeout: 3h
     params:
@@ -379,7 +379,7 @@ jobs:
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
-    - get: bosh-deployment
+    - get: ci
   - put: guac-lock-pool
     timeout: 3h
     params:
