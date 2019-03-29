@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -eu
+
+function main() {
+  pushd "bbl-state/${BBL_STATE_DIR}"
+    eval "$(bbl print-env)"
+  popd
+
+  echo "Running bosh upload-release"
+  RELEASE_URL=$(bosh int --path=/releases/name=bosh-dns/url bosh-deployment/runtime-configs/dns.yml)
+  RELEASE_SHA=$(bosh int --path=/releases/name=bosh-dns/sha1 bosh-deployment/runtime-configs/dns.yml)
+  bosh upload-release --sha1 "$RELEASE_SHA" "$RELEASE_URL"
+}
+
+main
