@@ -347,7 +347,7 @@ jobs:
       - windowsfs-opsfile/specified-windowsfs-version.yml
       - ((use-offline-fs-opsfile))
       vars_files:
-      - garden-windows-environments/aioli/cf/vars.yml
+      - garden-windows-environments/sriracha/cf/vars.yml
       cleanup: true
     get_params:
       skip_export: true
