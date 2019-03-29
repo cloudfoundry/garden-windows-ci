@@ -160,12 +160,19 @@ jobs:
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: bosh-deployment
   - put: hummus-lock-pool
     timeout: 3h
     params:
       acquire: true
   - task: clean-up
     file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
+    params:
+      BBL_STATE_DIR: hummus
+    input_mapping:
+      bbl-state: garden-windows-environments
+  - task: upload-bosh-dns-release
+    file: ci/tasks/bosh-upload-release/task.yml
     params:
       BBL_STATE_DIR: hummus
     input_mapping:
@@ -282,6 +289,7 @@ jobs:
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: bosh-deployment
   - put:  sriracha-lock-pool
     timeout: 3h
     params:
@@ -290,6 +298,12 @@ jobs:
     file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
     params:
       BBL_STATE_DIR:  sriracha
+    input_mapping:
+      bbl-state: garden-windows-environments
+  - task: upload-bosh-dns-release
+    file: ci/tasks/bosh-upload-release/task.yml
+    params:
+      BBL_STATE_DIR: sriracha
     input_mapping:
       bbl-state: garden-windows-environments
     ensure:
@@ -305,12 +319,19 @@ jobs:
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: bosh-deployment
   - put: aioli-lock-pool
     timeout: 3h
     params:
       acquire: true
   - task: clean-up
     file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
+    params:
+      BBL_STATE_DIR: aioli
+    input_mapping:
+      bbl-state: garden-windows-environments
+  - task: upload-bosh-dns-release
+    file: ci/tasks/bosh-upload-release/task.yml
     params:
       BBL_STATE_DIR: aioli
     input_mapping:
@@ -328,12 +349,19 @@ jobs:
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: bosh-deployment
   - put: tzatziki-lock-pool
     timeout: 3h
     params:
       acquire: true
   - task: clean-up
     file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
+    params:
+      BBL_STATE_DIR: tzatziki
+    input_mapping:
+      bbl-state: garden-windows-environments
+  - task: upload-bosh-dns-release
+    file: ci/tasks/bosh-upload-release/task.yml
     params:
       BBL_STATE_DIR: tzatziki
     input_mapping:
@@ -351,12 +379,19 @@ jobs:
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: bosh-deployment
   - put: guac-lock-pool
     timeout: 3h
     params:
       acquire: true
   - task: clean-up
     file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
+    params:
+      BBL_STATE_DIR: guac
+    input_mapping:
+      bbl-state: garden-windows-environments
+  - task: upload-bosh-dns-release
+    file: ci/tasks/bosh-upload-release/task.yml
     params:
       BBL_STATE_DIR: guac
     input_mapping:
