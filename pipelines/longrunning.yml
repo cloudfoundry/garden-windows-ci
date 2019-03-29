@@ -274,7 +274,7 @@ jobs:
       - ci/operations/enable-rdp-2016.yml
       - ci/operations/enable-rdp-1803.yml
       - ci/operations/enable-rdp-2019.yml
-      - ci/operations/set-password-2019.yml
+      - ci/operations/set-password-all.yml
       - ci/operations/windows2016-provides-tertiary-groot.yml
       - ci/operations/windows1803-provides-secondary-groot.yml
       - ci/operations/windows1803-uses-trusted-certs.yml
