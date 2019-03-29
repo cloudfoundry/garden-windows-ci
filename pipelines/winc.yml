@@ -968,9 +968,8 @@ jobs:
       trigger: true
     - get: cf-acceptance-tests
     - get: cf-deployment-concourse-tasks
-    - resource: cf-deployment
+    - get: cf-deployment
       trigger: true
-      get: cf-deployment
     - get: gcp-1803-stemcell
   - aggregate:
     - task: get-cf-vars
