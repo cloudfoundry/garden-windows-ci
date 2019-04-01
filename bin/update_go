@@ -4,6 +4,10 @@ set -e
 # Updates go inside a bosh release that sources go from golang-release
 # E.g. usage: update_go ~/workspace/winc-release 1.12
 
+# Use this script to bump golang in all releases except for offline rootfs
+# releases. For them, we intend to go old school and not use bosh-vendor-package.
+# See the update_go_manual script for bumping go in offline releases.
+
 boshrel=$1
 version=$2
 if [ $# -lt 2 ]; then

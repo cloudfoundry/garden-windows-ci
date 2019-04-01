@@ -4,6 +4,9 @@ set -e
 # Updates go inside a bosh release
 # E.g. usage: update_go ~/workspace/windows2016fs-release ~/Downloads/go1.11.6.windows-amd64.zip
 
+# This is supposed to be used for bumping go in offline rootfs releases.
+# See the update_go script for other use cases.
+
 boshrel=$1
 new_blob_path=$2
 if [ $# -lt 2 ]; then
