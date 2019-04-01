@@ -128,6 +128,12 @@ resources:
     target: ((SRIRACHA_BOSH_ENVIRONMENT))
     jumpbox_url: ((SRIRACHA_JUMPBOX_URL))
     jumpbox_ssh_key: ((SRIRACHA_JUMPBOX_SSH_KEY))
+    vars_store:
+      provider: gcs
+      config:
+        bucket: cf-garden-windows-dev
+        file_name: sriracha/cf/creds.yml
+        json_key: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
 
 - name: sriracha-smoke-test-deployment
   type: bosh-deployment
