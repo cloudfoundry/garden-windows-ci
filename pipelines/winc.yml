@@ -176,7 +176,7 @@ jobs:
     file: ci/tasks/winc-release-readme/task.yml
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: "docker:///cloudfoundry/windows2016fs:rollback-1709"
+      WINC_TEST_ROOTFS: "docker:///cloudfoundrydevelopers/windows2016fs:rollback-1709"
   - task: override-repo
     input_mapping: { repo: winc-release-develop, override-repo: generated-readme }
     file: ci/tasks/override-repo/task.yml
@@ -299,7 +299,7 @@ jobs:
     file: ci/tasks/test-winc/task.yml
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:rollback-1709
+      WINC_TEST_ROOTFS: docker:///cloudfoundrydevelopers/windows2016fs:rollback-1709
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 1709
 
@@ -327,7 +327,7 @@ jobs:
     tags: [1803]
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:rollback-1803
+      WINC_TEST_ROOTFS: docker:///cloudfoundrydevelopers/windows2016fs:rollback-1803
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 1803
 
@@ -357,7 +357,7 @@ jobs:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       # We're using tag 2019.0.7 to get over the bug in #164941761
       # TODO: We should revert back to 2019 when that's fixed
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:rollback-2019
+      WINC_TEST_ROOTFS: docker:///cloudfoundrydevelopers/windows2016fs:rollback-2019
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 2019
 
@@ -410,7 +410,7 @@ jobs:
     file: ci/tasks/test-diff-exporter/task.yml
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:rollback-1709
+      WINC_TEST_ROOTFS: docker:///cloudfoundrydevelopers/windows2016fs:rollback-1709
       WINDOWS_VERSION: "1709"
 
 - name: diff-exporter-1803
@@ -449,7 +449,7 @@ jobs:
     tags: [1803]
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:rollback-1803
+      WINC_TEST_ROOTFS: docker:///cloudfoundrydevelopers/windows2016fs:rollback-1803
       WINDOWS_VERSION: "1803"
 
 - name: diff-exporter-2019
@@ -488,7 +488,7 @@ jobs:
     tags: [2019]
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:rollback-2019
+      WINC_TEST_ROOTFS: docker:///cloudfoundrydevelopers/windows2016fs:rollback-2019
       WINDOWS_VERSION: "2019"
 
 - name: merge-diff-exporter-to-master
@@ -586,7 +586,7 @@ jobs:
       garden-runc-release: garden-runc-release-forks
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:rollback-1709
+      WINC_TEST_ROOTFS: docker:///cloudfoundrydevelopers/windows2016fs:rollback-1709
       WINDOWS_VERSION: 1709
 
 - name: gats-1803
@@ -662,7 +662,7 @@ jobs:
       garden-runc-release: garden-runc-release-forks
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:rollback-1803
+      WINC_TEST_ROOTFS: docker:///cloudfoundrydevelopers/windows2016fs:rollback-1803
       WINDOWS_VERSION: 1803
 
 - name: gats-2019
@@ -738,7 +738,7 @@ jobs:
       garden-runc-release: garden-runc-release-forks
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:rollback-2019
+      WINC_TEST_ROOTFS: docker:///cloudfoundrydevelopers/windows2016fs:rollback-2019
       WINDOWS_VERSION: 2019
 
 - name: bump-winc-release
