@@ -302,7 +302,7 @@ _cf_creds_github() {
   git clone git@github.com:pivotal/garden-windows-environments.git ${envs} &> /dev/null
 
   pushd "${envs}/${environment}" &> /dev/null
-    export CREDHUB_SECRET=$(bosh int --path /credhub_admin_client_secret cf/creds.yml)
+    export CREDHUB_SECRET=$(bosh int --path /credhub_admin_client_secret vars/director-vars-store.yml)
 
     export ADMIN_PASSWORD=$(bosh int --path /cf_admin_password cf/vars.yml)
   popd &> /dev/null
