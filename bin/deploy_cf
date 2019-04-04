@@ -80,6 +80,7 @@ elif [ "$2" = "1803" ]; then
     "
 elif [ "$2" = "2019" ]; then
   command="$command -o ${CF_DEPLOYMENT}/operations/windows2019-cell.yml \
+    -o ${CF_DEPLOYMENT}/operations/use-online-windows2019fs.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2019.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/windows2019-debug.yml \
     -o ${CF_DEPLOYMENT}/operations/use-latest-windows2019-stemcell.yml \
