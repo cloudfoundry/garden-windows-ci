@@ -219,7 +219,7 @@ jobs:
       BBL_STATE_DIR: guac
       SYSTEM_DOMAIN: guac.cf-app.com
       OPS_FILES: guac/latest-garden-runc.yml guac/latest-winc.yml guac/windows1803-cell.yml guac/enable-rdp-1803.yml guac/windows1803-debug.yml guac/use-latest-windows1803-stemcell.yml guac/use-latest-stemcell.yml guac/scale-to-one-az.yml guac/stop-skipping-tls-validation.yml
-      VARS_FILES: guac/cf/creds.yml
+      VARS_FILES: guac/cf/creds.yml guac/cf/vars.yml
     input_mapping:
       bbl-state: garden-windows-environments
       ops-files: collected-ops-files
