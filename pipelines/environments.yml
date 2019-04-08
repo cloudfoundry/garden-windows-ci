@@ -1,20 +1,23 @@
 groups:
 - name: bbl-up
   jobs:
-    - bbl-update-hummus
-    - bbl-update-tzatziki
-    - bbl-update-aioli
-    - bbl-update-pesto
-    - bbl-update-sriracha
-    - bbl-update-guac
+  - bbl-update-hummus
+  - bbl-update-tzatziki
+  - bbl-update-aioli
+  - bbl-update-pesto
+  - bbl-update-sriracha
+  - bbl-update-guac
+- name: deploy-cf
+  jobs:
+  - deploy-cf-hummus
 - name: bbl-down
   jobs:
-    - bbl-down-hummus
-    - bbl-down-tzatziki
-    - bbl-down-aioli
-    - bbl-down-pesto
-    - bbl-down-sriracha
-    - bbl-down-guac
+  - bbl-down-hummus
+  - bbl-down-tzatziki
+  - bbl-down-aioli
+  - bbl-down-pesto
+  - bbl-down-sriracha
+  - bbl-down-guac
 
 resources:
 - name: cf-deployment-concourse-tasks
@@ -28,6 +31,12 @@ resources:
   source:
     branch: delete-deployments
     uri: https://github.com/sophiewigmore/cf-deployment-concourse-tasks.git
+
+- name: cf-deployment
+  type: git
+  source:
+    branch: release-candidate
+    uri: https://github.com/cloudfoundry/cf-deployment.git
 
 - name: hummus-lock-pool
   type: pool
@@ -84,6 +93,12 @@ resources:
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:pivotal/garden-windows-environments
 
+- name: garden-windows-ci
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/garden-windows-ci
+
 - name: sunday-morning
   type: time
   source:
@@ -129,6 +144,60 @@ jobs:
       - put: hummus-lock-pool
         params:
           release: hummus-lock-pool
+
+- name: deploy-cf-hummus
+  serial: true
+  serial_groups: [deploy-cf]
+  plan:
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+    - get: cf-deployment
+    - get: garden-windows-ci
+    - get: garden-windows-environments
+    - get: hummus-lock-pool
+  - put: hummus-lock-pool
+    params:
+      acquire: true
+  - task: collect-garden-windows-ci-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+    params:
+      BASE_OPS_FILE_DIR: operations
+      NEW_OPS_FILES:
+      - latest-garden-runc.yml
+      - latest-winc.yml
+      - enable-rdp-2012R2.yml
+      - enable-rdp-1803.yml
+      - windows1803-debug.yml
+    input_mapping:
+      base-ops-files: ops-files
+      new-ops-files: garden-windows-ci
+  - task: collect-cf-deployment-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+    params:
+      BASE_OPS_FILE_DIR: operations
+      NEW_OPS_FILES:
+      - windows1803-cell.yml
+      - use-latest-windows1803-stemcell.yml
+      - use-latest-stemcell.yml
+      - windows2012R2-cell.yml
+      - use-latest-windows2012R2-stemcell.yml
+      - scale-to-one-az.yml
+      - stop-skipping-tls-validation.yml
+    input_mapping:
+      base-ops-files: ops-files
+      new-ops-files: cf-deployment
+  - task: deploy-cf
+    file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    params:
+      SYSTEM_DOMAIN: hummus.cf-app.com
+    input_mapping:
+      bbl-state: garden-windows-environments
+      ops-files: garden-windows-environments
+      vars-files: garden-windows-environments
+    ensure:
+      put: hummus-lock-pool
+      params:
+        release: hummus-lock-pool
 
 - name: bbl-update-guac
   serial: true
