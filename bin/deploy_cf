@@ -2,6 +2,9 @@
 
 set -e
 
+echo -e "BEWARE: This script uses gcp buckets to store cf-credentials but we now store them in github.
+So if you use this script please manually copy the cf/ dir from bucket -> github for ct to work"
+
 if [ "$BOSH_TARGET_NAME" != "$1" ]; then
   echo "Current bosh target is \"$BOSH_TARGET_NAME\". Please 'bt $1' and run the script again"
   exit 1
