@@ -591,15 +591,15 @@ jobs:
       BBL_STATE_DIR: guac
       SYSTEM_DOMAIN: guac.cf-app.com
       OPS_FILES: |
-        guac/latest-garden-runc.yml
-        guac/latest-winc.yml
         guac/windows1803-cell.yml
-        guac/enable-rdp-1803.yml
-        guac/windows1803-debug.yml
         guac/use-latest-windows1803-stemcell.yml
         guac/use-latest-stemcell.yml
         guac/scale-to-one-az.yml
         guac/stop-skipping-tls-validation.yml
+        guac/latest-garden-runc.yml
+        guac/latest-winc.yml
+        guac/enable-rdp-1803.yml
+        guac/windows1803-debug.yml
       VARS_FILES: guac/cf/creds.yml guac/cf/vars.yml
     input_mapping:
       bbl-state: garden-windows-environments
@@ -656,15 +656,16 @@ jobs:
       BBL_STATE_DIR: tzatziki
       SYSTEM_DOMAIN: tzatziki.cf-app.com
       OPS_FILES: |
-        tzatziki/latest-garden-runc.yml
-        tzatziki/latest-winc.yml
         tzatziki/windows2019-cell.yml
-        tzatziki/enable-rdp-2019.yml
-        tzatziki/windows2019-debug.yml
+        tzatziki/use-online-windows2019fs.yml
         tzatziki/use-latest-windows2019-stemcell.yml
         tzatziki/use-latest-stemcell.yml
         tzatziki/scale-to-one-az.yml
         tzatziki/stop-skipping-tls-validation.yml
+        tzatziki/latest-garden-runc.yml
+        tzatziki/latest-winc.yml
+        tzatziki/enable-rdp-2019.yml
+        tzatziki/windows2019-debug.yml
       VARS_FILES: tzatziki/cf/creds.yml tzatziki/cf/vars.yml
     input_mapping:
       bbl-state: garden-windows-environments
@@ -720,15 +721,15 @@ jobs:
       BBL_STATE_DIR: hummus
       SYSTEM_DOMAIN: hummus.cf-app.com
       OPS_FILES: |
-        hummus/latest-garden-runc.yml
-        hummus/latest-winc.yml
         hummus/windows2016-cell.yml
-        hummus/enable-rdp-2016.yml
-        hummus/windows2016-debug.yml
         hummus/use-latest-windows2016-stemcell.yml
         hummus/use-latest-stemcell.yml
         hummus/scale-to-one-az.yml
         hummus/stop-skipping-tls-validation.yml
+        hummus/latest-garden-runc.yml
+        hummus/latest-winc.yml
+        hummus/enable-rdp-2016.yml
+        hummus/windows2016-debug.yml
       VARS_FILES: hummus/cf/creds.yml hummus/cf/vars.yml
     input_mapping:
       bbl-state: garden-windows-environments
