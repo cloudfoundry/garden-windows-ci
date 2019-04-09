@@ -2,8 +2,6 @@
 
 set -e
 
-echo -e "BEWARE: This script uses gcp buckets to store cf-credentials but we now store them in github.
-So if you use this script please manually copy the cf/ dir from bucket -> github for ct to work"
 
 if [ "$BOSH_TARGET_NAME" != "$1" ]; then
   echo "Current bosh target is \"$BOSH_TARGET_NAME\". Please 'bt $1' and run the script again"
@@ -14,19 +12,23 @@ if [[ -z "$(gcloud config list --format='value(core.account)')" ]]; then
   exit 1
 fi
 
+envs_dir="/tmp/garden-windows-environments"
+
+if [ -d "${envs_dir}" ]; then
+  # Ensure we have the latest version of the environments repo.
+  rm -rf "${envs_dir}"
+fi
+
+mkdir -p "${envs_dir}" &> /dev/null
+git clone git@github.com:pivotal/garden-windows-environments.git ${envs_dir} &> /dev/null
+if [ $? -ne 0 ]; then
+  echo "'git clone git@github.com:pivotal/garden-windows-environments.git' failed; make sure to run 'load-key'"
+  return 1
+fi
+
 environment=$1
 case "$1" in
-  pesto)
-    project_name=cff-greenhouse-$1
-    ;;
-  tartar  | guac)
-    project_name=cf-greenhouse-$1
-    ;;
-  mulgore)
-    project_name=$1
-    ;;
-  hummus | tzatziki | alfredo | aioli)
-    project_name="cf-garden-windows-dev/$1"
+  hummus | tzatziki | alfredo | guac)
     ;;
   *)
     echo "Cannot deploy environment: $1"
@@ -36,7 +38,7 @@ esac
 echo "deploying $environment..."
 CF_DEPLOYMENT=${CF_DEPLOYMENT:-$HOME/workspace/cf-deployment}
 GARDEN_WINDOWS_CI=${GARDEN_WINDOWS_CI:-$HOME/workspace/garden-windows-ci}
-BOSH_DEPLOYMENT=${BOSH_DEPLOYMENT:-$HOME/workspace/bosh-deployment}
+
 if [[ ! -d "${CF_DEPLOYMENT}" ]]; then
   git clone https://github.com/cloudfoundry/cf-deployment ${CF_DEPLOYMENT}
 else
@@ -45,29 +47,21 @@ else
   popd > /dev/null
 fi
 
-if [[ ! -d "${BOSH_DEPLOYMENT}" ]]; then
-  git clone https://github.com/cloudfoundry/bosh-deployment ${BOSH_DEPLOYMENT}
-else
-  pushd ${BOSH_DEPLOYMENT} > /dev/null
-    git pull
-  popd > /dev/null
-fi
-
-bosh -d cf update-runtime-config ${BOSH_DEPLOYMENT}/runtime-configs/dns.yml --name dns
-
 command="bosh -d cf deploy ${CF_DEPLOYMENT}/cf-deployment.yml \
     -o ${CF_DEPLOYMENT}/operations/use-latest-stemcell.yml \
-    -o ${CF_DEPLOYMENT}/operations/windows2012R2-cell.yml \
-    -o ${CF_DEPLOYMENT}/operations/use-latest-windows2012R2-stemcell.yml \
     -o ${CF_DEPLOYMENT}/operations/scale-to-one-az.yml \
     -o ${CF_DEPLOYMENT}/operations/stop-skipping-tls-validation.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/latest-garden-runc.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/latest-winc.yml \
-    -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2012R2.yml \
     -v system_domain=$environment.cf-app.com \
     --skip-drain \
   "
 
+# To add a 2012R2 cell, uncomment this block
+#command="$command -o ${CF_DEPLOYMENT}/operations/windows2012R2-cell.yml \
+#    -o ${CF_DEPLOYMENT}/operations/use-latest-windows2012R2-stemcell.yml \
+#    -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2012R2.yml \
+#  "
 
 if [ "$2" = "1709" ]; then
   command="$command -o ${CF_DEPLOYMENT}/operations/windows2016-cell.yml \
@@ -94,29 +88,12 @@ else
 fi
 
 echo "Deploying cf on $environment"
-DIR="$(mktemp -d)"
-
-# When freshly bbl-ed up, create a one-time vars.yml with a randomly generated
-# password. To generate a *new* password, delete <bucket>/cf/vars.yml and redeploy
-if ! gsutil -q stat gs://$project_name/cf/vars.yml ; then
-  echo "Creating vars.yml and uploading it to the bucket"
-  cat <<-EOF> $DIR/vars.yml
-	cf_admin_password: `openssl rand -base64 12`
-	system_domain: $environment.cf-app.com
-	EOF
-  gsutil cp $DIR/vars.yml gs://$project_name/cf/vars.yml
-fi
-
-if gsutil -q stat gs://$project_name/cf/creds.yml ; then
-  gsutil cp gs://$project_name/cf/creds.yml $DIR/creds.yml
-  command="$command -l <(gsutil cat gs://$project_name/cf/vars.yml)"
-fi
 
 command="$command \
-  --vars-store $DIR/creds.yml \
+  --vars-store $envs_dir/$environment/cf/creds.yml \
   -v system_domain=$environment.cf-app.com \
+  -l $envs_dir/$environment/cf/vars.yml
   "
 
 eval $command
-gsutil cp $DIR/creds.yml gs://$project_name/cf/creds.yml
-rm $DIR/creds.yml
+rm -rf $envs_dir
