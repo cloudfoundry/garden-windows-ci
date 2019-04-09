@@ -10,6 +10,7 @@ groups:
 - name: deploy-cf
   jobs:
   - deploy-cf-guac
+  - deploy-cf-tzatziki
 - name: bbl-down
   jobs:
   - bbl-down-hummus
@@ -255,6 +256,50 @@ jobs:
       - put: tzatziki-lock-pool
         params:
           release: tzatziki-lock-pool
+
+- name: deploy-cf-tzatziki
+  serial: true
+  serial_groups: [deploy-cf]
+  plan:
+  - put: tzatziki-lock-pool
+    params:
+      acquire: true
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+    - get: cf-deployment
+    - get: garden-windows-ci
+    - get: garden-windows-environments
+  - task: collect-garden-windows-ci-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+    params:
+      BASE_OPS_FILE_DIR: tzatziki
+      NEW_OPS_FILES: operations/latest-garden-runc.yml operations/latest-winc.yml operations/enable-rdp-2019.yml operations/windows2019-debug.yml
+    input_mapping:
+      base-ops-files: garden-windows-environments
+      new-ops-files: garden-windows-ci
+  - task: collect-cf-deployment-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+    params:
+      BASE_OPS_FILE_DIR: tzatziki
+      NEW_OPS_FILES: operations/windows2019-cell.yml operations/use-latest-windows2019-stemcell.yml operations/use-latest-stemcell.yml operations/scale-to-one-az.yml operations/stop-skipping-tls-validation.yml
+    input_mapping:
+      base-ops-files: collected-ops-files
+      new-ops-files: cf-deployment
+  - task: deploy-cf
+    file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    params:
+      BBL_STATE_DIR: tzatziki
+      SYSTEM_DOMAIN: tzatziki.cf-app.com
+      OPS_FILES: tzatziki/latest-garden-runc.yml tzatziki/latest-winc.yml tzatziki/windows2019-cell.yml tzatziki/enable-rdp-2019.yml tzatziki/windows2019-debug.yml tzatziki/use-latest-windows2019-stemcell.yml tzatziki/use-latest-stemcell.yml tzatziki/scale-to-one-az.yml tzatziki/stop-skipping-tls-validation.yml
+      VARS_FILES: tzatziki/cf/creds.yml tzatziki/cf/vars.yml
+    input_mapping:
+      bbl-state: garden-windows-environments
+      ops-files: collected-ops-files
+      vars-files: garden-windows-environments
+    ensure:
+      put: tzatziki-lock-pool
+      params:
+        release: tzatziki-lock-pool
 
 - name: bbl-update-aioli
   serial: true
