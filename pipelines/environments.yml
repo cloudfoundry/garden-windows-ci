@@ -181,50 +181,6 @@ jobs:
         params:
           release: guac-lock-pool
 
-- name: deploy-cf-guac
-  serial: true
-  serial_groups: [deploy-cf]
-  plan:
-  - put: guac-lock-pool
-    params:
-      acquire: true
-  - aggregate:
-    - get: cf-deployment-concourse-tasks
-    - get: cf-deployment
-    - get: garden-windows-ci
-    - get: garden-windows-environments
-  - task: collect-garden-windows-ci-ops-files
-    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
-    params:
-      BASE_OPS_FILE_DIR: guac
-      NEW_OPS_FILES: operations/latest-garden-runc.yml operations/latest-winc.yml operations/enable-rdp-1803.yml operations/windows1803-debug.yml
-    input_mapping:
-      base-ops-files: garden-windows-environments
-      new-ops-files: garden-windows-ci
-  - task: collect-cf-deployment-ops-files
-    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
-    params:
-      BASE_OPS_FILE_DIR: guac
-      NEW_OPS_FILES: operations/windows1803-cell.yml operations/use-latest-windows1803-stemcell.yml operations/use-latest-stemcell.yml operations/scale-to-one-az.yml operations/stop-skipping-tls-validation.yml
-    input_mapping:
-      base-ops-files: collected-ops-files
-      new-ops-files: cf-deployment
-  - task: deploy-cf
-    file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
-    params:
-      BBL_STATE_DIR: guac
-      SYSTEM_DOMAIN: guac.cf-app.com
-      OPS_FILES: guac/latest-garden-runc.yml guac/latest-winc.yml guac/windows1803-cell.yml guac/enable-rdp-1803.yml guac/windows1803-debug.yml guac/use-latest-windows1803-stemcell.yml guac/use-latest-stemcell.yml guac/scale-to-one-az.yml guac/stop-skipping-tls-validation.yml
-      VARS_FILES: guac/cf/creds.yml guac/cf/vars.yml
-    input_mapping:
-      bbl-state: garden-windows-environments
-      ops-files: collected-ops-files
-      vars-files: garden-windows-environments
-    ensure:
-      put: guac-lock-pool
-      params:
-        release: guac-lock-pool
-
 - name: bbl-update-tzatziki
   serial: true
   serial_groups: [update]
@@ -258,50 +214,6 @@ jobs:
       - put: tzatziki-lock-pool
         params:
           release: tzatziki-lock-pool
-
-- name: deploy-cf-tzatziki
-  serial: true
-  serial_groups: [deploy-cf]
-  plan:
-  - put: tzatziki-lock-pool
-    params:
-      acquire: true
-  - aggregate:
-    - get: cf-deployment-concourse-tasks
-    - get: cf-deployment
-    - get: garden-windows-ci
-    - get: garden-windows-environments
-  - task: collect-garden-windows-ci-ops-files
-    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
-    params:
-      BASE_OPS_FILE_DIR: tzatziki
-      NEW_OPS_FILES: operations/latest-garden-runc.yml operations/latest-winc.yml operations/enable-rdp-2019.yml operations/windows2019-debug.yml
-    input_mapping:
-      base-ops-files: garden-windows-environments
-      new-ops-files: garden-windows-ci
-  - task: collect-cf-deployment-ops-files
-    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
-    params:
-      BASE_OPS_FILE_DIR: tzatziki
-      NEW_OPS_FILES: operations/windows2019-cell.yml operations/use-latest-windows2019-stemcell.yml operations/use-latest-stemcell.yml operations/scale-to-one-az.yml operations/stop-skipping-tls-validation.yml
-    input_mapping:
-      base-ops-files: collected-ops-files
-      new-ops-files: cf-deployment
-  - task: deploy-cf
-    file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
-    params:
-      BBL_STATE_DIR: tzatziki
-      SYSTEM_DOMAIN: tzatziki.cf-app.com
-      OPS_FILES: tzatziki/latest-garden-runc.yml tzatziki/latest-winc.yml tzatziki/windows2019-cell.yml tzatziki/enable-rdp-2019.yml tzatziki/windows2019-debug.yml tzatziki/use-latest-windows2019-stemcell.yml tzatziki/use-latest-stemcell.yml tzatziki/scale-to-one-az.yml tzatziki/stop-skipping-tls-validation.yml
-      VARS_FILES: tzatziki/cf/creds.yml tzatziki/cf/vars.yml
-    input_mapping:
-      bbl-state: garden-windows-environments
-      ops-files: collected-ops-files
-      vars-files: garden-windows-environments
-    ensure:
-      put: tzatziki-lock-pool
-      params:
-        release: tzatziki-lock-pool
 
 - name: bbl-update-aioli
   serial: true
@@ -632,3 +544,135 @@ jobs:
       - put: guac-lock-pool
         params:
           release: guac-lock-pool
+
+- name: deploy-cf-guac
+  # serial: true
+  # serial_groups: [deploy-cf]
+  plan:
+  - put: guac-lock-pool
+    params:
+      acquire: true
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+    - get: cf-deployment
+    - get: garden-windows-ci
+    - get: garden-windows-environments
+  - task: collect-garden-windows-ci-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+    params:
+      BASE_OPS_FILE_DIR: guac
+      NEW_OPS_FILES: operations/latest-garden-runc.yml operations/latest-winc.yml operations/enable-rdp-1803.yml operations/windows1803-debug.yml
+    input_mapping:
+      base-ops-files: garden-windows-environments
+      new-ops-files: garden-windows-ci
+  - task: collect-cf-deployment-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+    params:
+      BASE_OPS_FILE_DIR: guac
+      NEW_OPS_FILES: operations/windows1803-cell.yml operations/use-latest-windows1803-stemcell.yml operations/use-latest-stemcell.yml operations/scale-to-one-az.yml operations/stop-skipping-tls-validation.yml
+    input_mapping:
+      base-ops-files: collected-ops-files
+      new-ops-files: cf-deployment
+  - task: deploy-cf
+    file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    params:
+      BBL_STATE_DIR: guac
+      SYSTEM_DOMAIN: guac.cf-app.com
+      OPS_FILES: guac/latest-garden-runc.yml guac/latest-winc.yml guac/windows1803-cell.yml guac/enable-rdp-1803.yml guac/windows1803-debug.yml guac/use-latest-windows1803-stemcell.yml guac/use-latest-stemcell.yml guac/scale-to-one-az.yml guac/stop-skipping-tls-validation.yml
+      VARS_FILES: guac/cf/creds.yml guac/cf/vars.yml
+    input_mapping:
+      bbl-state: garden-windows-environments
+      ops-files: collected-ops-files
+      vars-files: garden-windows-environments
+    ensure:
+      put: guac-lock-pool
+      params:
+        release: guac-lock-pool
+
+- name: deploy-cf-tzatziki
+  # serial: true
+  # serial_groups: [deploy-cf]
+  plan:
+  - put: tzatziki-lock-pool
+    params:
+      acquire: true
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+    - get: cf-deployment
+    - get: garden-windows-ci
+    - get: garden-windows-environments
+  - task: collect-garden-windows-ci-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+    params:
+      BASE_OPS_FILE_DIR: tzatziki
+      NEW_OPS_FILES: operations/latest-garden-runc.yml operations/latest-winc.yml operations/enable-rdp-2019.yml operations/windows2019-debug.yml
+    input_mapping:
+      base-ops-files: garden-windows-environments
+      new-ops-files: garden-windows-ci
+  - task: collect-cf-deployment-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+    params:
+      BASE_OPS_FILE_DIR: tzatziki
+      NEW_OPS_FILES: operations/windows2019-cell.yml operations/use-latest-windows2019-stemcell.yml operations/use-latest-stemcell.yml operations/scale-to-one-az.yml operations/stop-skipping-tls-validation.yml
+    input_mapping:
+      base-ops-files: collected-ops-files
+      new-ops-files: cf-deployment
+  - task: deploy-cf
+    file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    params:
+      BBL_STATE_DIR: tzatziki
+      SYSTEM_DOMAIN: tzatziki.cf-app.com
+      OPS_FILES: tzatziki/latest-garden-runc.yml tzatziki/latest-winc.yml tzatziki/windows2019-cell.yml tzatziki/enable-rdp-2019.yml tzatziki/windows2019-debug.yml tzatziki/use-latest-windows2019-stemcell.yml tzatziki/use-latest-stemcell.yml tzatziki/scale-to-one-az.yml tzatziki/stop-skipping-tls-validation.yml
+      VARS_FILES: tzatziki/cf/creds.yml tzatziki/cf/vars.yml
+    input_mapping:
+      bbl-state: garden-windows-environments
+      ops-files: collected-ops-files
+      vars-files: garden-windows-environments
+    ensure:
+      put: tzatziki-lock-pool
+      params:
+        release: tzatziki-lock-pool
+
+- name: deploy-cf-hummus
+  # serial: true
+  # serial_groups: [deploy-cf]
+  plan:
+  - put: hummus-lock-pool
+    params:
+      acquire: true
+  - aggregate:
+    - get: cf-deployment-concourse-tasks
+    - get: cf-deployment
+    - get: garden-windows-ci
+    - get: garden-windows-environments
+  - task: collect-garden-windows-ci-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+    params:
+      BASE_OPS_FILE_DIR: hummus
+      NEW_OPS_FILES: operations/latest-garden-runc.yml operations/latest-winc.yml operations/enable-rdp-2016.yml operations/windows2016-debug.yml
+    input_mapping:
+      base-ops-files: garden-windows-environments
+      new-ops-files: garden-windows-ci
+  - task: collect-cf-deployment-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+    params:
+      BASE_OPS_FILE_DIR: hummus
+      NEW_OPS_FILES: operations/windows2016-cell.yml operations/use-latest-windows2016-stemcell.yml operations/use-latest-stemcell.yml operations/scale-to-one-az.yml operations/stop-skipping-tls-validation.yml
+    input_mapping:
+      base-ops-files: collected-ops-files
+      new-ops-files: cf-deployment
+  - task: deploy-cf
+    file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+    params:
+      BBL_STATE_DIR: hummus
+      SYSTEM_DOMAIN: hummus.cf-app.com
+      OPS_FILES: hummus/latest-garden-runc.yml hummus/latest-winc.yml hummus/windows2016-cell.yml hummus/enable-rdp-2016.yml hummus/windows2016-debug.yml hummus/use-latest-windows2016-stemcell.yml hummus/use-latest-stemcell.yml hummus/scale-to-one-az.yml hummus/stop-skipping-tls-validation.yml
+      VARS_FILES: hummus/cf/creds.yml hummus/cf/vars.yml
+    input_mapping:
+      bbl-state: garden-windows-environments
+      ops-files: collected-ops-files
+      vars-files: garden-windows-environments
+    ensure:
+      put: hummus-lock-pool
+      params:
+        release: hummus-lock-pool
