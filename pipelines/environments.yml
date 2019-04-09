@@ -618,7 +618,7 @@ jobs:
     file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
     params:
       BASE_OPS_FILE_DIR: tzatziki
-      NEW_OPS_FILES: operations/windows2019-cell.yml operations/use-latest-windows2019-stemcell.yml operations/use-latest-stemcell.yml operations/scale-to-one-az.yml operations/stop-skipping-tls-validation.yml
+      NEW_OPS_FILES: operations/windows2019-cell.yml operations/use-online-windows2019fs.yml operations/use-latest-windows2019-stemcell.yml operations/use-latest-stemcell.yml operations/scale-to-one-az.yml operations/stop-skipping-tls-validation.yml
     input_mapping:
       base-ops-files: collected-ops-files
       new-ops-files: cf-deployment
