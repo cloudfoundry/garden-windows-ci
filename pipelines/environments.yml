@@ -11,6 +11,7 @@ groups:
   jobs:
   - deploy-cf-guac
   - deploy-cf-tzatziki
+  - deploy-cf-hummus
 - name: bbl-down
   jobs:
   - bbl-down-hummus
