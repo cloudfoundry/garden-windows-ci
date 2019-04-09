@@ -27,6 +27,8 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
 
+# TODO:
+# Del this when https://github.com/cloudfoundry/cf-deployment-concourse-tasks/pull/89 is merged
 - name: sophiewigmore-cdct
   type: git
   source:
