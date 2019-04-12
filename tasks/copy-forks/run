@@ -2,9 +2,9 @@
 
 set -eu
 
-rm -rf garden-runc-release/src/gopath/src/code.cloudfoundry.org/garden-integration-tests
+rm -rf garden-runc-release/src/garden-integration-tests
 echo "Copying GATS fork...."
-cp -r garden-integration-tests garden-runc-release/src/gopath/src/code.cloudfoundry.org/garden-integration-tests
+cp -r garden-integration-tests garden-runc-release/src/garden-integration-tests
 
 echo "Removing groot..."
 rm -rf garden-runc-release/src/grootfs

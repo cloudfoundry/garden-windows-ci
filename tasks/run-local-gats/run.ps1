@@ -160,7 +160,7 @@ push-location garden-runc-release
 
   $env:GARDEN_TEST_ROOTFS="$env:WINC_TEST_ROOTFS"
   $env:WINC_BINARY="$wincPath"
-  Push-Location src/gopath/src/code.cloudfoundry.org/garden-integration-tests
+  Push-Location src/garden-integration-tests
     ginkgo -p -randomizeSuites -noisyPendings=false
   Pop-Location
 Pop-Location
