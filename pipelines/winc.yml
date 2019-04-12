@@ -355,7 +355,7 @@ jobs:
     tags: [2019]
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:2019.0.8
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:2019
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 2019
 
