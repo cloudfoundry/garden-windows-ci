@@ -558,7 +558,6 @@ jobs:
     - get: cf-deployment
     - get: garden-windows-ci
     - get: garden-windows-environments
-      passed: [bbl-update-guac]
       trigger: true
   - task: collect-garden-windows-ci-ops-files
     file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
@@ -622,7 +621,6 @@ jobs:
     - get: cf-deployment
     - get: garden-windows-ci
     - get: garden-windows-environments
-      passed: [bbl-update-tzatziki]
       trigger: true
   - task: collect-garden-windows-ci-ops-files
     file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
@@ -688,7 +686,6 @@ jobs:
     - get: cf-deployment
     - get: garden-windows-ci
     - get: garden-windows-environments
-      passed: [bbl-update-hummus]
       trigger: true
   - task: collect-garden-windows-ci-ops-files
     file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
