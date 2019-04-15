@@ -547,8 +547,7 @@ jobs:
           release: guac-lock-pool
 
 - name: deploy-cf-guac
-  # serial: true
-  # serial_groups: [deploy-cf]
+  serial: true
   plan:
   - put: guac-lock-pool
     params:
@@ -558,7 +557,6 @@ jobs:
     - get: cf-deployment
     - get: garden-windows-ci
     - get: garden-windows-environments
-      trigger: true
   - task: collect-garden-windows-ci-ops-files
     file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
     params:
@@ -610,8 +608,7 @@ jobs:
         release: guac-lock-pool
 
 - name: deploy-cf-tzatziki
-  # serial: true
-  # serial_groups: [deploy-cf]
+  serial: true
   plan:
   - put: tzatziki-lock-pool
     params:
@@ -621,7 +618,6 @@ jobs:
     - get: cf-deployment
     - get: garden-windows-ci
     - get: garden-windows-environments
-      trigger: true
   - task: collect-garden-windows-ci-ops-files
     file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
     params:
@@ -675,8 +671,7 @@ jobs:
         release: tzatziki-lock-pool
 
 - name: deploy-cf-hummus
-  # serial: true
-  # serial_groups: [deploy-cf]
+  serial: true
   plan:
   - put: hummus-lock-pool
     params:
@@ -686,7 +681,6 @@ jobs:
     - get: cf-deployment
     - get: garden-windows-ci
     - get: garden-windows-environments
-      trigger: true
   - task: collect-garden-windows-ci-ops-files
     file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
     params:
