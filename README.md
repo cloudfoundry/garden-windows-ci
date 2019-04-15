@@ -14,7 +14,7 @@ Set of concourse tasks, dockerfiles, and pipelines for the CF Garden Windows tea
 |Pesto|GCP|Concourse - Winc pipeline [[URL](https://github.com/cloudfoundry/garden-windows-ci/blob/master/pipelines/winc.yml)]|
 |Alfredo|GCP|Concourse - garden-windows pipeline [[URL](https://github.com/cloudfoundry/garden-windows-ci/blob/master/pipelines/garden-windows.yml)]|
 |Tzatziki|GCP|Dev environment - 2019|
-|Hummus|GCP|Dev environment - 1803|
+|Hummus|GCP|Dev environment - 2019|
 |Guac|AWS|Dev environment - 1803|
 |Chimi|GCP|Acceptance environment - WIP|
 
