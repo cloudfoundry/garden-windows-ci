@@ -727,7 +727,7 @@ jobs:
         hummus/latest-winc.yml
         hummus/enable-rdp-1803.yml
         hummus/windows1803-debug.yml
-      VARS_FILES: hummus/cf/creds.yml hummus/cf/vars.yml
+      VARS_FILES: hummus/cf/vars.yml
     input_mapping:
       bbl-state: garden-windows-environments
       ops-files: collected-ops-files
