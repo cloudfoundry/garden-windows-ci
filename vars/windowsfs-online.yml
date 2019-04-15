@@ -1,7 +1,7 @@
 windowsfs-online-release-develop-uri: git@github.com:cloudfoundry/windowsfs-online-release.git
 windowsfs-online-release-master-uri: git@github.com:cloudfoundry/windowsfs-online-release.git
 os-version: "2019"
-server-core-tag: "ltsc2019"
+server-core-tag: "ltsc2019-amd64"
 windowsfs-online-release-repo: windowsfs-online-release
 fs-version: windows2019fs
 initial-image-version: 2019.0.1

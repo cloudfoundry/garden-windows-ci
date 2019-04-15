@@ -115,6 +115,7 @@ resources:
   source:
     repository: mcr.microsoft.com/windows/servercore
     tag: ((server-core-tag))
+    debug: true
 
 # S3
 
