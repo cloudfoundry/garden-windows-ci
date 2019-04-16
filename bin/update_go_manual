@@ -10,7 +10,7 @@ set -e
 boshrel=$1
 new_blob_path=$2
 if [ $# -lt 2 ]; then
-  echo "Usage: update_go <bosh-release-path> <go blob path>"
+  echo "Usage: update_go_manual <bosh-release-path> <go blob path>"
 fi
 
 pushd $boshrel
