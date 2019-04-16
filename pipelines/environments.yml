@@ -597,7 +597,7 @@ jobs:
         guac/latest-winc.yml
         guac/enable-rdp-1803.yml
         guac/windows1803-debug.yml
-      VARS_FILES: guac/cf/creds.yml guac/cf/vars.yml
+      VARS_FILES: guac/cf/vars.yml
     input_mapping:
       bbl-state: garden-windows-environments
       ops-files: collected-ops-files
