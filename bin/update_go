@@ -36,7 +36,9 @@ pushd $boshrel
   git su
 
   old_golang_blob=`grep golang/go config/blobs.yml | cut -d ':' -f1`
-  bosh remove-blob $old_golang_blob
+  if [ ! -z $old_golang_blob ]; then
+    bosh remove-blob $old_golang_blob
+  fi
 
   rm -rf packages/golang-* && rm -rf .final_builds/packages/golang-*
 
