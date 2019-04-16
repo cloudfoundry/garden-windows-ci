@@ -193,6 +193,7 @@ jobs:
       repository: updated-repo
 
 - name: bump-lib-groot
+  serial: true
   plan:
   - aggregate:
     - get: ci
