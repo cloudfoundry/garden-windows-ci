@@ -11,8 +11,6 @@ groups:
   - sync-garden-windows-release-submodules
   - shipit
   - merge-master-into-develop
-- name: bumps
-  jobs:
   - patch-bump
   - minor-bump
   - major-bump
