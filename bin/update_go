@@ -20,6 +20,12 @@ if [ ! -d "$HOME/workspace/golang-release" ]; then
   git clone https://github.com/bosh-packages/golang-release ~/workspace/golang-release
 fi
 
+pushd "$HOME/workspace/golang-release"
+  git pull origin master
+  version=$(curl --silent "https://api.github.com/repos/bosh-packages/golang-release/releases/latest" | jq -r .tag_name)
+  git co $version
+popd
+
 if [ ! -d "$HOME/workspace/golang-release/packages/$gopkg" ]; then
 	echo "The version $version is not supported by golang-release"
 	echo "See $HOME/workspace/golang-release/packages for available versions"
@@ -33,6 +39,7 @@ fi
 
 pushd $boshrel
   git checkout develop
+  git pull origin develop
   git su
 
   old_golang_blob=`grep golang/go config/blobs.yml | cut -d ':' -f1`
