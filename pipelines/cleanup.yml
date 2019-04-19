@@ -122,7 +122,6 @@ jobs:
     - get: ci
     - get: bosh-deployment
   - put: alfredo-lock-pool
-    timeout: 3h
     params:
       acquire: true
   - task: clean-up
@@ -162,7 +161,6 @@ jobs:
     - get: garden-windows-environments
     - get: ci
   - put: hummus-lock-pool
-    timeout: 3h
     params:
       acquire: true
   - task: clean-up
@@ -187,7 +185,6 @@ jobs:
   plan:
   - do:
     - put: pesto-lock-pool
-      timeout: 3h
       params:
         acquire: true
     - get: every-day
@@ -225,7 +222,6 @@ jobs:
       trigger: true
     - get: ci
   - put: spitfire-lock-pool
-    timeout: 3h
     params:
       acquire: true
   - task: clean-up
@@ -251,7 +247,6 @@ jobs:
     - get: ci
     - get: bosh-deployment
   - put: tartar-lock-pool
-    timeout: 3h
     params:
       acquire: true
   - task: clean-up
@@ -291,7 +286,6 @@ jobs:
     - get: garden-windows-environments
     - get: ci
   - put:  sriracha-lock-pool
-    timeout: 3h
     params:
       acquire: true
   - task: clean-up
@@ -321,7 +315,6 @@ jobs:
     - get: garden-windows-environments
     - get: ci
   - put: aioli-lock-pool
-    timeout: 3h
     params:
       acquire: true
   - task: clean-up
@@ -351,7 +344,6 @@ jobs:
     - get: garden-windows-environments
     - get: ci
   - put: tzatziki-lock-pool
-    timeout: 3h
     params:
       acquire: true
   - task: clean-up
@@ -381,7 +373,6 @@ jobs:
     - get: garden-windows-environments
     - get: ci
   - put: guac-lock-pool
-    timeout: 3h
     params:
       acquire: true
   - task: clean-up
@@ -413,7 +404,6 @@ jobs:
     - get: bosh-deployment
       tags: [vsphere]
   - put: mulgore-lock-pool
-    timeout: 3h
     params:
       acquire: true
   - task: clean-up
