@@ -2,9 +2,6 @@
 
 set -eu
 
-HELPER_SCRIPT="$(dirname "${0}")/helpers.sh"
-source "${HELPER_SCRIPT}"
-
 search_string="" # required
 pipeline_job=""
 build_count=1000
