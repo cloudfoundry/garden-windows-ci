@@ -55,6 +55,10 @@ for build in "${builds[@]}"; do
     continue
   fi
 
+  if [ "${state}" == "pending" ]; then
+    continue
+  fi
+
   echo "looking at build: '${build_no}'"
 
   total_builds="$(( total_builds + 1 ))"
