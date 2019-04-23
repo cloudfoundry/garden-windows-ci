@@ -115,20 +115,8 @@ if ($exitCode -ne 0) {
   Exit $exitCode
 }
 
-ginkgo.exe -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/perf
+ginkgo.exe -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/perf  ./integration/winc-network
 $exitCode = $LastExitCode
 if ($exitCode -ne 0) {
-  Exit $exitCode
-}
-
-# Microsoft claims networking is better on 2019, let's see...
-$os = $env:WINC_TEST_ROOTFS.split(":")[-1]
-if ($os -eq "2019") {
-  ginkgo.exe -p -nodes 2 -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/winc-network
-  $exitCode = $LastExitCode
-  Exit $exitCode
-} else {
-  ginkgo.exe -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/winc-network
-  $exitCode = $LastExitCode
   Exit $exitCode
 }
