@@ -28,14 +28,6 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
 
-# TODO:
-# Del this when https://github.com/cloudfoundry/cf-deployment-concourse-tasks/pull/89 is merged
-- name: sophiewigmore-cdct
-  type: git
-  source:
-    branch: delete-deployments
-    uri: https://github.com/sophiewigmore/cf-deployment-concourse-tasks.git
-
 - name: cf-deployment
   type: git
   source:
@@ -328,12 +320,12 @@ jobs:
       acquire: true
   - aggregate:
     - get: cf-deployment-concourse-tasks
-      resource: sophiewigmore-cdct
     - get: garden-windows-environments
   - task: bosh-delete-all-deployments
-    file: cf-deployment-concourse-tasks/bosh-delete-all-deployments/task.yml
+    file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
     params:
       BBL_STATE_DIR: hummus
+      DELETE_ALL_DEPLOYMENTS: true
     input_mapping:
       bbl-state: garden-windows-environments
     on_failure:
@@ -366,12 +358,12 @@ jobs:
       acquire: true
   - aggregate:
     - get: cf-deployment-concourse-tasks
-      resource: sophiewigmore-cdct
     - get: garden-windows-environments
   - task: bosh-delete-all-deployments
-    file: cf-deployment-concourse-tasks/bosh-delete-all-deployments/task.yml
+    file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
     params:
       BBL_STATE_DIR: tzatziki
+      DELETE_ALL_DEPLOYMENTS: true
     input_mapping:
       bbl-state: garden-windows-environments
     on_failure:
@@ -404,12 +396,12 @@ jobs:
       acquire: true
   - aggregate:
     - get: cf-deployment-concourse-tasks
-      resource: sophiewigmore-cdct
     - get: garden-windows-environments
   - task: bosh-delete-all-deployments
-    file: cf-deployment-concourse-tasks/bosh-delete-all-deployments/task.yml
+    file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
     params:
       BBL_STATE_DIR: aioli
+      DELETE_ALL_DEPLOYMENTS: true
     input_mapping:
       bbl-state: garden-windows-environments
     on_failure:
@@ -442,12 +434,12 @@ jobs:
       acquire: true
   - aggregate:
     - get: cf-deployment-concourse-tasks
-      resource: sophiewigmore-cdct
     - get: garden-windows-environments
   - task: bosh-delete-all-deployments
-    file: cf-deployment-concourse-tasks/bosh-delete-all-deployments/task.yml
+    file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
     params:
       BBL_STATE_DIR: pesto
+      DELETE_ALL_DEPLOYMENTS: true
     input_mapping:
       bbl-state: garden-windows-environments
     on_failure:
@@ -479,12 +471,12 @@ jobs:
       acquire: true
   - aggregate:
     - get: cf-deployment-concourse-tasks
-      resource: sophiewigmore-cdct
     - get: garden-windows-environments
   - task: bosh-delete-all-deployments
-    file: cf-deployment-concourse-tasks/bosh-delete-all-deployments/task.yml
+    file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
     params:
       BBL_STATE_DIR: sriracha
+      DELETE_ALL_DEPLOYMENTS: true
     input_mapping:
       bbl-state: garden-windows-environments
     on_failure:
@@ -516,12 +508,12 @@ jobs:
       acquire: true
   - aggregate:
     - get: cf-deployment-concourse-tasks
-      resource: sophiewigmore-cdct
     - get: garden-windows-environments
   - task: bosh-delete-all-deployments
-    file: cf-deployment-concourse-tasks/bosh-delete-all-deployments/task.yml
+    file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
     params:
       BBL_STATE_DIR: guac
+      DELETE_ALL_DEPLOYMENTS: true
     input_mapping:
       bbl-state: garden-windows-environments
     on_failure:
