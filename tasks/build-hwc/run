@@ -3,5 +3,5 @@
 set -e -x
 
 export GOPATH=$PWD
-
+go version
 ./src/code.cloudfoundry.org/hwc/scripts/build.sh
