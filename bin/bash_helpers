@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-declare -r GITHUB_ENVS="aioli,guac,hummus,sriracha,tzatziki"
+GITHUB_ENVS="aioli,guac,hummus,sriracha,tzatziki"
 
 # Bosh and CF target functions
 bosh_target() {
