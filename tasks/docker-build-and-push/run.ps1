@@ -35,7 +35,7 @@ curl -UseBasicParsing -Outfile buildDir\vc_redist.x64.exe -Uri "https://aka.ms/v
 cd buildDir
 
 Run-Docker "--version"
-Run-Docker "build", "-t", "$env:IMAGE_NAME", "-t", "${env:IMAGE_NAME}:$version", "-t", "${env:IMAGE_NAME}:${env:OS_VERSION}", "."
+Run-Docker "build", "-t", "$env:IMAGE_NAME", "-t", "${env:IMAGE_NAME}:$version", "-t", "${env:IMAGE_NAME}:${env:OS_VERSION}", "--pull", "."
 Run-Docker "images", "-a"
 Run-Docker "login", "-u", "$env:DOCKER_USERNAME", "-p", "$env:DOCKER_PASSWORD"
 Run-Docker "push", "${env:IMAGE_NAME}:latest"
