@@ -547,6 +547,7 @@ jobs:
   - aggregate:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
+      trigger: true
     - get: garden-windows-ci
     - get: garden-windows-environments
   - task: collect-garden-windows-ci-ops-files
@@ -608,6 +609,7 @@ jobs:
   - aggregate:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
+      trigger: true
     - get: garden-windows-ci
     - get: garden-windows-environments
   - task: collect-garden-windows-ci-ops-files
@@ -671,6 +673,7 @@ jobs:
   - aggregate:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
+      trigger: true
     - get: garden-windows-ci
     - get: garden-windows-environments
   - task: collect-garden-windows-ci-ops-files
