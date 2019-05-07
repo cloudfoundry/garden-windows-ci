@@ -12,6 +12,10 @@ if [[ ! -d $CONCOURSE_DEPLOYMENT ]]; then
  pushd $HOME/workspace
   git clone https://github.com/concourse/concourse-bosh-deployment
  popd
+else
+  pushd $CONCOURSE_DEPLOYMENT
+    git pull
+  popd
 fi
 
 GARDEN_WINDOWS_CI=${GARDEN_WINDOWS_CI:-$HOME/workspace/garden-windows-ci}
