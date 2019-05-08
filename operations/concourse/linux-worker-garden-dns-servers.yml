@@ -1,4 +1,4 @@
 # TODO: Remove this once https://github.com/concourse/concourse/issues/2482#issuecomment-458235392 is resolved
 - type: replace
-  path: /instance_groups/name=worker/jobs/name=garden/properties/garden/dns_servers?
+  path: /instance_groups/name=worker/jobs/name=worker/properties/garden?/dns_servers?
   value: ["169.254.169.254"]
