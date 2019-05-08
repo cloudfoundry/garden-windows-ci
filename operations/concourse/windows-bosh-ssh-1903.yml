@@ -4,15 +4,3 @@
   value:
     name: windows-utilities
     version: 0.11.0
-
-- type: replace
-  path: /addons?/-
-  value:
-    name: enable_ssh
-    release: windows-utilities
-    include:
-      stemcell:
-      - os: windows1903
-    jobs:
-    - name: enable_ssh
-      release: windows-utilities
