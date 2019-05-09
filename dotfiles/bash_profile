@@ -145,6 +145,8 @@ function load-key() {
     /usr/bin/ssh-add -D
     tmp_file=`mktemp`
     lpass show --notes $KEY_NOTE > $tmp_file
+    # Make sure nobody messed with ssh-agent's sock $SSH_AUTH_SOCK
+    command -v gnome-keyring-daemon > /dev/null && export eval `gnome-keyring-daemon -s`
     /usr/bin/ssh-add -t ${HOURS}H $tmp_file
     rm $tmp_file
   fi
