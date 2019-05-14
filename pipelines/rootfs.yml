@@ -168,7 +168,7 @@ jobs:
       repository: windowsfs-commit
       rebase: true
   - put: image-version-1709
-    params: {file: image-version-1/version}
+    params: {file: image-version-1709/version}
 
 - name: build-and-push-1803
   serial: true
@@ -280,4 +280,4 @@ jobs:
       repository: windowsfs-commit
       rebase: true
   - put: image-version-2019
-    params: {file: image-version-1/version}
+    params: {file: image-version-2019/version}
