@@ -9,12 +9,12 @@ set -e
 # See the update_go_manual script for bumping go in offline releases.
 
 boshrel=$1
-version=$2
+go_version=$2
 if [ $# -lt 2 ]; then
 	echo "Usage: update_go <bosh-release-path> <go-version>"
 fi
 
-gopkg=golang-${version}-windows
+gopkg=golang-${go_version}-windows
 
 if [ ! -d "$HOME/workspace/golang-release" ]; then
   git clone https://github.com/bosh-packages/golang-release ~/workspace/golang-release
@@ -22,12 +22,13 @@ fi
 
 pushd "$HOME/workspace/golang-release"
   git pull origin master
-  version=$(curl --silent "https://api.github.com/repos/bosh-packages/golang-release/releases/latest" | jq -r .tag_name)
-  git co $version
+  release_version=$(git describe --abbrev=0)
+  echo "Got version $release_version"
+  git co $release_version
 popd
 
 if [ ! -d "$HOME/workspace/golang-release/packages/$gopkg" ]; then
-	echo "The version $version is not supported by golang-release"
+	echo "The version $go_version is not supported by golang-release"
 	echo "See $HOME/workspace/golang-release/packages for available versions"
 	exit 1
 fi
