@@ -53,13 +53,6 @@ resources:
     private_key: ((CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_DEPLOY_KEY))
     ignore_paths: [ ((os-version))/Dockerfile ]
 
-- name: windowsfs-dockerfile
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry/windows2016fs.git
-    paths: [ ((os-version))/Dockerfile ]
-
 - name: cf-acceptance-tests
   type: git
   source:
@@ -93,13 +86,6 @@ resources:
 
 # GitHub Release
 
-- name: git-setup
-  type: github-release
-  source:
-    user: git-for-windows
-    repository: git
-    access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
-
 - name: windowsfs-online-release-github-release
   type: github-release
   source:
@@ -108,24 +94,7 @@ resources:
     drafts: true
     access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
-# Docker Image
-
-- name: windowsservercore
-  type: docker-image
-  source:
-    repository: mcr.microsoft.com/windows/servercore
-    tag: ((server-core-tag))
-    debug: true
-
 # S3
-
-- name: tar
-  type: s3
-  source:
-    bucket: bosh-windows-dependencies
-    regexp: tar-(.*).exe
-    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 
 - name: gcp-windows-stemcell
   type: s3
@@ -202,7 +171,6 @@ groups:
   jobs:
     - bump-windowsfs-online-release-windows2016fs
     - bump-windowsfs-online-release-hydrator
-    - build-and-push
     - create-tracker-story
 - name: windowsfs-online-release
   jobs:
@@ -214,74 +182,12 @@ groups:
 
 jobs:
 
-- name: build-and-push
-  serial: true
-  plan:
-  - aggregate:
-    - get: ci
-      tags: ((resource-get-tag))
-    - get: windows2016fs
-      tags: ((resource-get-tag))
-    - get: windowsservercore
-      tags: ((resource-get-tag))
-      trigger: true
-      params:
-        save: false
-        rootfs: false
-        skip_download: true
-    - get: windowsfs-dockerfile
-      tags: ((resource-get-tag))
-      trigger: true
-    - get: git-setup
-      tags: ((resource-get-tag))
-      trigger: true
-      params:
-        globs: [Git-*-64-bit.exe]
-    - get: tar
-      tags: ((resource-get-tag))
-      trigger: ((windowsfs-uses-tar))
-    - get: image-version
-      tags: ((resource-get-tag))
-      params: {bump: patch}
-  - task: build-and-push
-    tags: ((task-tag))
-    file: ci/tasks/docker-build-and-push/task.yml
-    input_mapping:
-      repo: windowsfs-dockerfile
-      version: image-version
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      DOCKERFILE: repo/((os-version))/Dockerfile
-      IMAGE_NAME: cloudfoundry/windows2016fs
-      DOCKER_USERNAME: ((DOCKER_USERNAME))
-      DOCKER_PASSWORD: ((DOCKER_PASSWORD))
-      OS_VERSION: "((os-version))"
-  - task: update-image-tag
-    file: ci/tasks/update-image-tag/task.yml
-    params:
-      OS_VERSION: "((os-version))"
-  - task: commit-changes
-    file: ci/tasks/commit/task.yml
-    input_mapping:
-      repo: windows2016fs-updated
-    output_mapping:
-      repo_with_commit: windowsfs-commit
-    params:
-      MESSAGE: "Updated image tag"
-  - put: windows2016fs
-    params:
-      repository: windowsfs-commit
-      rebase: true
-  - put: image-version
-    params: {file: image-version/version}
-
 - name: create-tracker-story
   serial: true
   plan:
   - aggregate:
     - get: ci
     - get: image-version
-      passed: [build-and-push]
       trigger: true
   - task: create-story
     file: ci/tasks/create-rootfs-tracker-story/task.yml
