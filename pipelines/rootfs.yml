@@ -113,7 +113,6 @@ jobs:
     - get: image-version-1709
       params: {bump: patch}
   - task: build-and-push
-    tags: [1709]
     file: ci/tasks/docker-build-and-push/task.yml
     input_mapping:
       repo: windowsfs-dockerfile-1709
