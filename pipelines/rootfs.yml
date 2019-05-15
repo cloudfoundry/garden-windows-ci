@@ -89,8 +89,8 @@ resources:
   source:
     access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-    bucket: windows1709fs
-    initial_version: 1709.0.1
+    bucket: windows2016fs
+    initial_version: 0.0.19
     key: image-version
     region_name: us-east-1
 
