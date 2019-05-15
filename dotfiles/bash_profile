@@ -263,11 +263,16 @@ fly-longrunning () {
   -l<(lpass show --notes github-deploy-keys aws-iam-access-keys github-access-tokens spitfire-service-account.json datadog-secrets ci-cell-admin-password) 
 }
 
+fly-rootfs () {
+  fly -t garden-windows sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
+    -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token)
+}
+
 fly-windows1709fs () {
   fly -t garden-windows sp -p windows1709fs -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs.yml \
     -l <(_env_creds_yml tartar) \
-  -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tartar-service-account.json tracker-api-token) \
-  -l $HOME/workspace/garden-windows-ci/vars/windows1709fs.yml
+    -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tartar-service-account.json tracker-api-token) \
+    -l $HOME/workspace/garden-windows-ci/vars/windows1709fs.yml
 }
 
 fly-windows1803fs () {
