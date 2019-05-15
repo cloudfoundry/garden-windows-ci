@@ -162,7 +162,7 @@ jobs:
     output_mapping:
       repo_with_commit: windowsfs-commit
     params:
-      MESSAGE: "Updated image tag"
+      MESSAGE: "Updated 1709 image tag"
   - put: windows2016fs-master
     params:
       repository: windowsfs-commit
@@ -218,7 +218,7 @@ jobs:
     output_mapping:
       repo_with_commit: windowsfs-commit
     params:
-      MESSAGE: "Updated image tag"
+      MESSAGE: "Updated 1803 image tag"
   - put: windows2016fs-master
     params:
       repository: windowsfs-commit
@@ -274,7 +274,7 @@ jobs:
     output_mapping:
       repo_with_commit: windowsfs-commit
     params:
-      MESSAGE: "Updated image tag"
+      MESSAGE: "Updated 2019 image tag"
   - put: windows2016fs-master
     params:
       repository: windowsfs-commit
