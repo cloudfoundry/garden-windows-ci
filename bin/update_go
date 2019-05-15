@@ -55,6 +55,7 @@ pushd $boshrel
   bosh vendor-package $gopkg ~/workspace/golang-release
 
   grep -rl "golang-.*windows" ./packages | xargs sed -i "s/golang-.*windows/$gopkg/"
+  grep -rl "golang-.*windows" ./jobs | xargs sed -i "s/golang-.*windows/$gopkg/"
 
   echo "You are all set!"
   echo "We're not gonna do everything for you! So stage the changes to packages/ and .final_builds/, and git push"
