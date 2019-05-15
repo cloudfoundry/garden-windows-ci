@@ -47,25 +47,15 @@ for build in "${builds[@]}"; do
   state="$(awk '{ print $4 }' <<< "${build}")"
   start_time="$(awk '{ print $5 }' <<< "${build}")"
 
-  if [ "${state}" == "started" ]; then
-    continue
-  fi
+  if [ "${state}" == "failed" ]; then
+    echo "looking at build: '${build_no}'"
 
-  if [ "${state}" == "succeeded" ]; then
-    continue
-  fi
+    total_builds="$(( total_builds + 1 ))"
 
-  if [ "${state}" == "pending" ]; then
-    continue
-  fi
-
-  echo "looking at build: '${build_no}'"
-
-  total_builds="$(( total_builds + 1 ))"
-
-  if fly -t garden-windows watch -b "${build_id}"| sed 's/\x1b\[[0-9;]*m//g' | grep -i "${search_string}"; then
-    echo "Job '${pipeline_and_job}' build ${build_id} at ${start_time} matches (${concourse_url}/builds/${build_id})"
-    total_matches="$(( total_matches + 1 ))"
+    if fly -t garden-windows watch -b "${build_id}"| sed 's/\x1b\[[0-9;]*m//g' | grep -i "${search_string}"; then
+      echo "Job '${pipeline_and_job}' build ${build_id} at ${start_time} matches (${concourse_url}/builds/${build_id})"
+      total_matches="$(( total_matches + 1 ))"
+    fi
   fi
 done
 
