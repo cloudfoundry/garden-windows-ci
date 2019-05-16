@@ -8,13 +8,6 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
-- name: windows2016fs-develop
-  type: git
-  source:
-    branch: develop
-    uri: git@github.com:cloudfoundry/windows2016fs.git
-    private_key: ((CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_DEPLOY_KEY))
-
 - name: windows2016fs-master
   type: git
   source:
@@ -22,24 +15,31 @@ resources:
     uri: git@github.com:cloudfoundry/windows2016fs.git
     private_key: ((CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_DEPLOY_KEY))
 
+- name: windows2016fs-develop
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/windows2016fs.git
+    private_key: ((CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_DEPLOY_KEY))
+
 - name: windowsfs-dockerfile-1709
   type: git
   source:
-    branch: master
+    branch: develop
     uri: https://github.com/cloudfoundry/windows2016fs.git
     paths: [ 1709/Dockerfile ]
 
 - name: windowsfs-dockerfile-1803
   type: git
   source:
-    branch: master
+    branch: develop
     uri: https://github.com/cloudfoundry/windows2016fs.git
     paths: [ 1803/Dockerfile ]
 
 - name: windowsfs-dockerfile-2019
   type: git
   source:
-    branch: master
+    branch: develop
     uri: https://github.com/cloudfoundry/windows2016fs.git
     paths: [ 2019/Dockerfile ]
 
@@ -139,7 +139,7 @@ jobs:
   - task: build-and-push
     file: ci/tasks/docker-build-and-push/task.yml
     input_mapping:
-      repo: windowsfs-dockerfile-1709
+      repo: windows2016fs-develop
       version: image-version-1709
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
@@ -166,7 +166,10 @@ jobs:
   - put: windows2016fs-master
     params:
       repository: windowsfs-commit
-      rebase: true
+  - put: windows2016fs-develop
+    params:
+      repository: windowsfs-commit
+      merge: true
   - put: image-version-1709
     params: {file: image-version-1709/version}
 
@@ -195,7 +198,7 @@ jobs:
     tags: [1803]
     file: ci/tasks/docker-build-and-push/task.yml
     input_mapping:
-      repo: windowsfs-dockerfile-1803
+      repo: windows2016fs-develop
       version: image-version-1803
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
@@ -222,7 +225,10 @@ jobs:
   - put: windows2016fs-master
     params:
       repository: windowsfs-commit
-      rebase: true
+  - put: windows2016fs-develop
+    params:
+      repository: windowsfs-commit
+      merge: true
   - put: image-version-1803
     params: {file: image-version-1803/version}
 
@@ -251,7 +257,7 @@ jobs:
     tags: [2019]
     file: ci/tasks/docker-build-and-push/task.yml
     input_mapping:
-      repo: windowsfs-dockerfile-2019
+      repo: windows2016fs-develop
       version: image-version-2019
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
@@ -278,6 +284,9 @@ jobs:
   - put: windows2016fs-master
     params:
       repository: windowsfs-commit
-      rebase: true
+  - put: windows2016fs-develop
+    params:
+      repository: windowsfs-commit
+      merge: true
   - put: image-version-2019
     params: {file: image-version-2019/version}
