@@ -61,7 +61,7 @@ resources:
   type: docker-image
   source:
     repository: mcr.microsoft.com/windows/servercore
-    tag: "ltsc2019-amd64"
+    tag: "1809-amd64"
 
 # GitHub Release
 
