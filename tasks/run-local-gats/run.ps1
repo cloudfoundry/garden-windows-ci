@@ -108,7 +108,9 @@ push-location garden-runc-release
   # Upstream garden-runc-release switched to go-modules
   # We still use GOPATH, so move guardian accordingly
   mkdir ./src/gopath/src/code.cloudfoundry.org -ea 0
-  mv ./src/guardian ./src/gopath/src/code.cloudfoundry.org/
+  if (Test-Path ./src/guardian) {
+    mv ./src/guardian ./src/gopath/src/code.cloudfoundry.org/
+  }
   go build -o gdn.exe ./src/gopath/src/code.cloudfoundry.org/guardian/cmd/gdn
   if ($LastExitCode -ne 0) {
       throw "Building gdn.exe process returned error code: $LastExitCode"
@@ -160,6 +162,8 @@ push-location garden-runc-release
 
   $env:GARDEN_TEST_ROOTFS="$env:WINC_TEST_ROOTFS"
   $env:WINC_BINARY="$wincPath"
+  $env:GROOT_BINARY="$grootBinary"
+  $env:GROOT_IMAGE_STORE="$grootImageStore"
   Push-Location src/garden-integration-tests
     ginkgo -p -randomizeSuites -noisyPendings=false
   Pop-Location
