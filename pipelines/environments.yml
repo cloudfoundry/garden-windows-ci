@@ -264,8 +264,8 @@ jobs:
       BBL_AZURE_TENANT_ID: {{AZURE_TENANT_ID}}
       BBL_AZURE_SUBSCRIPTION_ID: {{AZURE_SUBSCRIPTION_ID}}
       BBL_STATE_DIR: pesto
-      BBL_LB_CERT: cert.pem
-      BBL_LB_KEY: key.pem
+      BBL_LB_CERT: pfx
+      BBL_LB_KEY: pfx_pass
       LB_DOMAIN: pesto.cf-app.com
       BBL_ENV_NAME: pesto
     input_mapping:
