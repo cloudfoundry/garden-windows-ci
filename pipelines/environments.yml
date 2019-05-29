@@ -258,7 +258,11 @@ jobs:
     file: cf-deployment-concourse-tasks/bbl-up/task.yml
     params:
       BBL_IAAS: azure
-      BBL_AZURE_REGION: "West US"
+      BBL_AZURE_REGION: "westus2"
+      BBL_AZURE_CLIENT_ID: {{AZURE_CLIENT_ID}}
+      BBL_AZURE_CLIENT_SECRET: {{AZURE_CLIENT_SECRET}}
+      BBL_AZURE_TENANT_ID: {{AZURE_TENANT_ID}}
+      BBL_AZURE_SUBSCRIPTION_ID: {{AZURE_SUBSCRIPTION_ID}}
       BBL_STATE_DIR: pesto
       BBL_LB_CERT: cert.pem
       BBL_LB_KEY: key.pem
