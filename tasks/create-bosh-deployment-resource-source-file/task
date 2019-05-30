@@ -10,7 +10,7 @@ main() {
     source_file="source_file"
 
     local jumpbox_url
-    jumpbox_url=$(bbl outputs | yq .jumpbox_url)
+    jumpbox_url=$(bbl jumpbox-address)
 
     echo "client: $BOSH_CLIENT" > "${source_file}"
     echo "client_secret: $BOSH_CLIENT_SECRET" >> "${source_file}"
