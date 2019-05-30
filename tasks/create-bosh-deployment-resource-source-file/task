@@ -7,7 +7,7 @@ main() {
     eval "$(bbl print-env)"
 
     local source_file
-    source_file="${PWD}/source_file"
+    source_file="${ROOT_DIR}/source-file/source-file"
 
     local jumpbox_url
     jumpbox_url=$(bbl jumpbox-address)
