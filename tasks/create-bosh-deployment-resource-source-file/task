@@ -16,7 +16,7 @@ main() {
     echo "client_secret: $BOSH_CLIENT_SECRET" >> "${source_file}"
     echo "target: $BOSH_ENVIRONMENT" >> "${source_file}"
     echo "ca_cert: \"$(echo "${BOSH_CA_CERT}" | awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}')\"" >> "${source_file}"
-    echo "jumpbox_ssh_key: \"$(echo "${JUMPBOX_PRIVATE_KEY}" | awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}')\"" >> "${source_file}"
+    echo "jumpbox_ssh_key: \"$(cat "${JUMPBOX_PRIVATE_KEY}" | awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}')\"" >> "${source_file}"
     echo "jumpbox_url: $jumpbox_url" >> "${source_file}"
     echo "jumpbox_username: jumpbox" >> "${source_file}"
   popd
