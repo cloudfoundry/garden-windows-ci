@@ -454,6 +454,11 @@ jobs:
     file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
     params:
       BBL_STATE_DIR: pesto
+      BBL_AZURE_REGION: West US
+      BBL_AZURE_CLIENT_ID: {{AZURE_CLIENT_ID}}
+      BBL_AZURE_CLIENT_SECRET: {{AZURE_CLIENT_SECRET}}
+      BBL_AZURE_TENANT_ID: {{AZURE_TENANT_ID}}
+      BBL_AZURE_SUBSCRIPTION_ID: {{AZURE_SUBSCRIPTION_ID}}
     input_mapping:
       bbl-state: garden-windows-environments
     ensure:
