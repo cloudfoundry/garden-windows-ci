@@ -24,4 +24,4 @@ params:
   # - If the specified path does not exist, it will be created
 
 run:
-  path: ci/create-bosh-deployment-resource-source-file/task
+  path: ci/tasks/create-bosh-deployment-resource-source-file/task
