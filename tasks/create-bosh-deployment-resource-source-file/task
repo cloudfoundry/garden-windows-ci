@@ -10,7 +10,7 @@ main() {
     source_file="${ROOT_DIR}/source-file/source-file"
 
     local jumpbox_url
-    jumpbox_url=$(bbl jumpbox-address)
+    jumpbox_url="$(bbl jumpbox-address):22"
 
     echo "client: $BOSH_CLIENT" > "${source_file}"
     echo "client_secret: $BOSH_CLIENT_SECRET" >> "${source_file}"
