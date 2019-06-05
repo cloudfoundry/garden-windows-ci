@@ -1,6 +1,0 @@
-- path: /stemcells/alias=windows
-  type: replace
-  value:
-    version: latest
-    os: windows2016
-    alias: windows

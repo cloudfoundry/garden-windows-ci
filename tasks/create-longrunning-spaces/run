@@ -13,7 +13,6 @@ cf enable-org-isolation cfbench windows1803
 cf enable-org-isolation cfbench windows2019
 cf target -o cfbench
 cf create-space windows2012R2
-cf create-space windows2016
 cf create-space windows1803
 cf create-space windows2019
 cf set-space-isolation-segment windows1803 windows1803
@@ -24,7 +23,6 @@ cf enable-org-isolation longrunning windows1803
 cf enable-org-isolation longrunning windows2019
 cf target -o longrunning
 cf create-space windows2012R2
-cf create-space windows2016
 cf create-space windows1803
 cf create-space windows2019
 cf set-space-isolation-segment windows1803 windows1803

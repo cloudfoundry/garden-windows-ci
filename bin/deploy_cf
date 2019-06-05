@@ -48,10 +48,8 @@ else
 fi
 
 command="bosh -d cf deploy ${CF_DEPLOYMENT}/cf-deployment.yml \
-    -o ${CF_DEPLOYMENT}/operations/use-latest-stemcell.yml \
     -o ${CF_DEPLOYMENT}/operations/scale-to-one-az.yml \
     -o ${CF_DEPLOYMENT}/operations/stop-skipping-tls-validation.yml \
-    -o ${GARDEN_WINDOWS_CI}/operations/latest-garden-runc.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/latest-winc.yml \
     -v system_domain=$environment.cf-app.com \
     --skip-drain \
@@ -63,13 +61,7 @@ command="bosh -d cf deploy ${CF_DEPLOYMENT}/cf-deployment.yml \
 #    -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2012R2.yml \
 #  "
 
-if [ "$2" = "1709" ]; then
-  command="$command -o ${CF_DEPLOYMENT}/operations/windows2016-cell.yml \
-    -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-2016.yml \
-    -o ${GARDEN_WINDOWS_CI}/operations/windows2016-debug.yml \
-    -o ${CF_DEPLOYMENT}/operations/use-latest-windows2016-stemcell.yml \
-    "
-elif [ "$2" = "1803" ]; then
+if [ "$2" = "1803" ]; then
   command="$command -o ${CF_DEPLOYMENT}/operations/windows1803-cell.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/enable-rdp-1803.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/windows1803-debug.yml \
@@ -83,7 +75,7 @@ elif [ "$2" = "2019" ]; then
     -o ${CF_DEPLOYMENT}/operations/use-latest-windows2019-stemcell.yml \
     "
 else
-  echo "Invalid version, please select 1709, 1803, or 2019"
+  echo "Invalid version, please select 1803 or 2019"
   exit 1
 fi
 
@@ -96,4 +88,4 @@ command="$command \
   "
 
 eval $command
-rm -rf $envs_dir
+#rm -rf $envs_dir

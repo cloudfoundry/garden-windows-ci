@@ -18,50 +18,7 @@ function check-firewall {
 	}
 }
 
-function setup-firewall-1709 {
-  $anyFirewallsDisabled = !!(Get-NetFirewallProfile -All | Where-Object { $_.Enabled -eq "False" })
-  $adminRuleMissing = !(Get-NetFirewallRule -Name CFAllowAdmins -ErrorAction Ignore)
-  if ($anyFirewallsDisabled -or $adminRuleMissing) {
-    $admins = New-Object System.Security.Principal.NTAccount("Administrators")
-    $adminsSid = $admins.Translate([System.Security.Principal.SecurityIdentifier])
-
-    $LocalUser = "D:(A;;CC;;;$adminsSid)"
-    $otherAdmins = Get-WmiObject win32_groupuser |
-    Where-Object { $_.GroupComponent -match 'administrators' } |
-    ForEach-Object { [wmi]$_.PartComponent }
-
-    foreach($admin in $otherAdmins)
-    {
-      $ntAccount = New-Object System.Security.Principal.NTAccount($admin.Name)
-      $sid = $ntAccount.Translate([System.Security.Principal.SecurityIdentifier]).Value
-      $LocalUser = $LocalUser + "(A;;CC;;;$sid)"
-    }
-    New-NetFirewallRule -Name CFAllowAdmins -DisplayName "Allow admins" `
-      -Description "Allow admin users" -RemotePort Any `
-      -LocalPort Any -LocalAddress Any -RemoteAddress Any `
-      -Enabled True -Profile Any -Action Allow -Direction Outbound `
-      -LocalUser $LocalUser
-
-    Set-NetFirewallProfile -All -DefaultInboundAction Block -DefaultOutboundAction Block -Enabled True
-    check-firewall "public"
-    check-firewall "private"
-    check-firewall "domain"
-    $anyFirewallsDisabled = !!(Get-NetFirewallProfile -All | Where-Object { $_.Enabled -eq "False" })
-    $adminRuleMissing = !(Get-NetFirewallRule -Name CFAllowAdmins -ErrorAction Ignore)
-    if ($anyFirewallsDisabled -or $adminRuleMissing) {
-      Write-Host "anyFirewallsDisabled: $anyFirewallsDisabled"
-      Write-Host "adminRuleMissing: $adminRuleMissing"
-      Write-Error "Failed to Set Firewall rule"
-    }
-  }
-}
-
-if ($env:WINDOWS_VERSION -eq "1709") {
-  setup-firewall-1709
-} else {
-  #1803 or 2019
-  Set-NetFirewallProfile -All -DefaultInboundAction Block -DefaultOutboundAction Allow -Enabled True
-}
+Set-NetFirewallProfile -All -DefaultInboundAction Block -DefaultOutboundAction Allow -Enabled True
 
 go.exe version
 

@@ -11,11 +11,6 @@ $env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
 $env:GROOT_IMAGE_STORE = "$env:EPHEMERAL_DISK_TEMP_PATH\groot"
 $env:GOCACHE = "$env:EPHEMERAL_DISK_TEMP_PATH\go-build"
 
-# Because 1709 needs tar
-if ($env:WINDOWS_VERSION -eq "1709") {
-  $env:PATH="C:\var\vcap\bosh\bin;" + $env:PATH
-}
-
 $env:GROOT_BINARY = "$PWD\groot-binary\groot.exe"
 $env:WINC_BINARY = "$PWD\winc-binary\winc.exe"
 
