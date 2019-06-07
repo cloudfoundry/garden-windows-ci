@@ -105,17 +105,23 @@ jobs:
   - put: alfredo-lock-pool
     params:
       acquire: true
-  - aggregate:
-    - get: ci
-    - get: envoy-nginx-release-develop
-      passed: [test-envoy-nginx]
-      trigger: true
-    - get: cf-acceptance-tests
-    - get: cf-deployment-concourse-tasks
-    - get: cf-deployment
-      trigger: true
-    - get: gcp-windows-stemcell
-  - aggregate:
+  - do:
+    - aggregate:
+      - get: cf-deployment
+        trigger: true
+      - get: envoy-nginx-release-develop
+        passed: [test-envoy-nginx]
+        trigger: true
+      - get: gcp-windows-stemcell
+      - get: cf-acceptance-tests
+      - get: cf-deployment-concourse-tasks
+      - get: ci
+    - task: create-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping: { release: envoy-nginx-release-develop }
+    - task: get-linux-stemcell
+      file: ci/tasks/get-gcp-linux-stemcell/task.yml
+      output_mapping: { stemcell: gcp-linux-stemcell }
     - task: get-cf-vars
       file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
@@ -123,96 +129,95 @@ jobs:
         BUCKET: cf-garden-windows-dev
         FILE_NAME: alfredo/cf/vars.yml
         SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
-    - task: get-linux-stemcell
-      file: ci/tasks/get-gcp-linux-stemcell/task.yml
-      output_mapping: { stemcell: gcp-linux-stemcell }
-    - task: create-envoy-nginx-release
-      file: ci/tasks/bosh-cr/task.yml
-      input_mapping:
-        release: envoy-nginx-release-develop
-      output_mapping:
-        release-tarball: envoy-nginx-tarball
-  - task: delete-deployment
-    file: ci/tasks/bosh-deld/task.yml
-    params:
-      BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
-      BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
-      BOSH_DEPLOYMENT: cf
-      BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
-      JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
-  - task: delete-stemcells
-    file: ci/tasks/bosh-delete-stemcells/task.yml
-    params:
-      BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
-      BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
-      BOSH_DEPLOYMENT: cf
-      BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
-      JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
-  - put: alfredo-cf-deployment
-    params:
-      manifest: cf-deployment/cf-deployment.yml
-      stemcells:
-      - gcp-linux-stemcell/*.tgz
-      - gcp-windows-stemcell/*.tgz
-      releases:
-      - envoy-nginx-tarball/*.tgz
-      ops_files:
-      - cf-deployment/operations/scale-to-one-az.yml
-      - ci/operations/use-3-azs-for-router.yml
-      - cf-deployment/operations/windows2019-cell.yml
-      - cf-deployment/operations/use-online-windows2019fs.yml
-      - cf-deployment/operations/use-latest-windows2019-stemcell.yml
-      - ci/operations/scale-down-windows2019.yml
-      - ci/operations/enable-nginx-routing-integrity-windows2019.yml
-      vars_files:
-      - cf-vars/vars.yml
-      cleanup: true
-    get_params:
-      skip_export: true
-  - task: enable-credhub
-    file: ci/tasks/enable-credhub/task.yml
-    attempts: 3
-    params:
-      BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
-      CF_API: api.alfredo.cf-app.com
-      CF_USERNAME: admin
-      CF_PASSWORD: {{ALFREDO_ADMIN_PASSWORD}}
-  - task: generate-integration-config
-    file: ci/tasks/generate-integration-config/task.yml
-    params:
-      ADMIN_PASSWORD: {{ALFREDO_ADMIN_PASSWORD}}
-      ADMIN_USER: admin
-      API: api.alfredo.cf-app.com
-      APPS_DOMAIN: alfredo.cf-app.com
-      UNALLOCATED_IP: 10.0.0.5
-      WINDOWS_STACK: windows
-      CREDHUB_MODE: assisted
-      CREDHUB_SECRET: {{ALFREDO_CREDHUB_SECRET}}
-  - task: cats
-    file: cf-deployment-concourse-tasks/run-cats/task.yml
-    params:
-      NODES: 4
-    on_success:
-      task: delete-deployment
+    - task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
       params:
-        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
-        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
         BOSH_DEPLOYMENT: cf
         BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
         JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
         JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
-  ensure:
-    put: alfredo-lock-pool
-    params:
-      release: alfredo-lock-pool
+    - task: delete-stemcells
+      file: ci/tasks/bosh-delete-stemcells/task.yml
+      params:
+        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+    - put: alfredo-cf-deployment
+      params:
+        manifest: cf-deployment/cf-deployment.yml
+        stemcells:
+        - gcp-linux-stemcell/*.tgz
+        - gcp-windows-stemcell/*.tgz
+        releases:
+        - release-tarball/*.tgz
+        ops_files:
+        - cf-deployment/operations/scale-to-one-az.yml
+        - ci/operations/use-3-azs-for-router.yml
+        - cf-deployment/operations/windows2019-cell.yml
+        - cf-deployment/operations/use-online-windows2019fs.yml
+        - cf-deployment/operations/use-latest-windows2019-stemcell.yml
+        - ci/operations/scale-down-windows2019.yml
+        - ci/operations/enable-nginx-routing-integrity-windows2019.yml
+        vars_files:
+        - cf-vars/vars.yml
+        cleanup: true
+      get_params:
+        skip_export: true
+    - task: clean-up
+      file: ci/tasks/bosh-cleanup/task.yml
+      params:
+        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+    - task: enable-credhub
+      file: ci/tasks/enable-credhub/task.yml
+      attempts: 3
+      params:
+        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+        BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+        JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+        JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+        CF_API: api.alfredo.cf-app.com
+        CF_USERNAME: admin
+        CF_PASSWORD: {{ALFREDO_ADMIN_PASSWORD}}
+    - task: generate-integration-config
+      file: ci/tasks/generate-integration-config/task.yml
+      params:
+        ADMIN_PASSWORD: {{ALFREDO_ADMIN_PASSWORD}}
+        ADMIN_USER: admin
+        API: api.alfredo.cf-app.com
+        APPS_DOMAIN: alfredo.cf-app.com
+        UNALLOCATED_IP: 10.0.0.5
+        WINDOWS_STACK: windows
+        CREDHUB_MODE: assisted
+        CREDHUB_SECRET: {{ALFREDO_CREDHUB_SECRET}}
+    - task: cats
+      file: cf-deployment-concourse-tasks/run-cats/task.yml
+      params:
+        NODES: 4
+      on_success:
+        task: delete-deployment
+        file: ci/tasks/bosh-deld/task.yml
+        params:
+          BOSH_DEPLOYMENT: cf
+          BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
+          BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
+          BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
+          BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
+          JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
+          JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+    ensure:
+      put: alfredo-lock-pool
+      params:
+        release: alfredo-lock-pool
