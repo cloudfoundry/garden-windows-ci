@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -eu
+
+pushd release-tarball
+release_version=$(bosh int --path /version <(tar -xzf release.tgz -O release.MF))
+popd
+
+echo "Found version: $release_version"
+
+cat << EOF > windowsfs-opsfile/specified-windowsfs-version.yml
+---
+- type: replace
+  path: /releases/name=$FS_VERSION?
+  value:
+    name: $FS_VERSION
+    version: $release_version
+EOF
+
