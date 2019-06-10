@@ -1,4 +1,17 @@
+resource_types:
+- name: command-runner
+  type: docker-image
+  source:
+    repository: cloudfoundrydevelopers/command-runner-resource
+    tag: latest
+
 resources:
+- name: vcredist
+  type: command-runner
+  source:
+    version_key: "url"
+    check_command: "curl --location --silent --write-out %{url_effective} --request HEAD https://aka.ms/vs/16/release/vc_redist.x64.exe"
+    in_command:    "curl --location --silent --fail --output $1/vc_redist.x64.exe https://aka.ms/vs/16/release/vc_redist.x64.exe"
 
 # Git
 
@@ -50,7 +63,7 @@ resources:
     repository: mcr.microsoft.com/windows/servercore
     tag: "1809-amd64"
 
-# GitHub Release
+# Git for Windows Release
 
 - name: git-setup
   type: github-release
@@ -111,6 +124,8 @@ jobs:
       params:
         globs: [Git-*-64-bit.exe]
     - get: tar
+    - get: vcredist
+      trigger: true
     - get: image-version-1803
       params: {bump: patch}
   - task: build-and-push
@@ -170,6 +185,8 @@ jobs:
       params:
         globs: [Git-*-64-bit.exe]
     - get: tar
+    - get: vcredist
+      trigger: true
     - get: image-version-2019
       params: {bump: patch}
   - task: build-and-push
