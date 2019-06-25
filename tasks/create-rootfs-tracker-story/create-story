@@ -18,11 +18,17 @@ client = TrackerApi::Client.new(token: token)
 project = client.project(project_id)
 
 name = "New version of cloudfoundry/windows2016fs #{image_version}"
-description = "A new version of cloudfoundry/windows2016fs is available. Once all the pipelines are green, release new versions of the BOSH releases that consume it.\n\n
+description = "A new version of cloudfoundry/windows2016fs is available. \n
+Once all the pipelines are green, and if there are new changes to the rootfs since the previous release,
+then release new versions of the BOSH releases that consume it.\n\n
+**How to create a new release?**\n
+- On the [CI](https://garden-windows.ci.cf-app.com), go to the pipeline corresponding to the release\n
+- Make sure the pipeline is green\n
+- Trigger a new build on the relevant shipit-* job\n\n
 **A/C**\n
 - Verify there's a release for the github repo cloudfoundry/#{fs_version}-release\n
 - Verify there's a release for the github repo cloudfoundry/#{fs_online_version}-online-release\n
-- Verify KB numbers in the release notes."
+- Verify KB numbers in the release notes.\n\n\n"
 tasks = [{description: "release cloudfoundry/#{fs_version}-release"},
          {description: "release cloudfoundry/#{fs_online_version}-online-release"},
          {description: 'Link releases in comment'},
