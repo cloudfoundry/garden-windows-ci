@@ -474,6 +474,27 @@ del_line() {
   sed -i "$1d" $2
 }
 
+# list containers, their ip address on all windows cells
+function lscon() {
+  local d="${1:-cf}" c="${2:-windows2019-cell}";
+  bosh -d "$d" ssh "$c" --opts=-T \
+  'powershell $s=((Get-NetIPConfiguration -InterfaceAlias "Ethernet*").IPv4Address.IPAddress); "Get-ComputeProcess | % {$o=$_.Id.Substring(0,28); (Get-HnsEndpoint | Where {$_.Name -eq $o}).IPAddress + \"`t\" + $_.Id}"' | \
+  sed 's#: stdout |##g' | sort
+}
+
+# list cell ip and port (default route) for all apps
+function lsapp() {
+  cf apps | grep started | awk '{print $1}' | xargs -I{} cf app {} --guid | xargs -I{} cf curl v2/apps/{}/stats | \
+  grep -oP '"name":\s*"\K([^"]+)|"host":\s*"\K([^"]+)|"port":\s*\K([^,]+)|}$' | xargs | sed 's# }[ }]*#\n#g' | awk /./
+}
+
+# list host container mappings
+function lsmap() {
+  local d="${1:-cf}";
+  bosh -d "$d" ssh diego-cell --opts=-T 'source /etc/profile.d/cfdot.sh && /var/vcap/packages/cfdot/bin/cfdot presences | grep "\"windows" | '\
+  'grep -oP "\"key\":\"\K([^\"]+)" | xargs -I{} /var/vcap/packages/cfdot/bin/cfdot actual-lrps -c {}' | awk -F 'stdout \| ' '{print $2}' | awk /./
+}
+
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/ash/google-cloud-sdk/path.bash.inc' ]; then source '/Users/ash/google-cloud-sdk/path.bash.inc'; fi
 
