@@ -319,6 +319,7 @@ jobs:
     tags: [vsphere]
 
 - name: mulgore-curl-longrunning-app-windows1803
+  build_logs_to_retain: 20000
   serial: true
   serial_groups:
   - longrunning-windows1803
@@ -406,6 +407,7 @@ jobs:
     tags: [vsphere]
 
 - name: mulgore-curl-longrunning-app-windows2019
+  build_logs_to_retain: 20000
   serial: true
   serial_groups:
   - longrunning-windows2019
@@ -493,6 +495,7 @@ jobs:
     tags: [vsphere]
 
 - name: mulgore-curl-longrunning-app-windows2012R2
+  build_logs_to_retain: 20000
   serial: true
   serial_groups:
   - longrunning-windows2012R2

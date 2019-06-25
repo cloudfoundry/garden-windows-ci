@@ -170,6 +170,7 @@ jobs:
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: "docker:///cloudfoundry/windows2016fs:1803"
+    tags: [1803]
   - task: override-repo
     input_mapping: { repo: winc-release-develop, override-repo: generated-readme }
     file: ci/tasks/override-repo/task.yml
@@ -675,6 +676,7 @@ jobs:
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       TEST_PATH: "src/nstar"
+    tags: [2019]
 
 - name: pesto-cats-1803
   serial: true

@@ -36,3 +36,4 @@ jobs:
       params:
         IMPORT_PATH: "code.cloudfoundry.org/filelock"
         EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+      tags: [2019]
