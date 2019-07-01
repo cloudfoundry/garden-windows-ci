@@ -160,7 +160,7 @@ jobs:
   serial: true
   serial_groups: [1803]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: winc-release-develop
       trigger: true
@@ -189,7 +189,7 @@ jobs:
 - name: bump-lib-groot
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: groot-windows-develop
     - get: groot
@@ -207,7 +207,7 @@ jobs:
   serial: true
   serial_groups: [1803]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: every-2hrs
       trigger: true
@@ -225,7 +225,7 @@ jobs:
   serial: true
   serial_groups: [2019]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: every-2hrs
       trigger: true
@@ -242,7 +242,7 @@ jobs:
 - name: merge-groot-to-master
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: groot-windows-develop
       passed: [groot-1803, groot-2019]
@@ -259,7 +259,7 @@ jobs:
   serial: true
   serial_groups: [1803]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: every-2hrs
       trigger: true
@@ -287,7 +287,7 @@ jobs:
   serial: true
   serial_groups: [2019]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: every-2hrs
       trigger: true
@@ -314,7 +314,7 @@ jobs:
 - name: merge-winc-to-master
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: winc-develop
       passed: [winc-1803, winc-2019]
@@ -331,7 +331,7 @@ jobs:
   serial: true
   serial_groups: [1803]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: every-2hrs
       trigger: true
@@ -370,7 +370,7 @@ jobs:
   serial: true
   serial_groups: [2019]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: every-2hrs
       trigger: true
@@ -408,7 +408,7 @@ jobs:
 - name: merge-diff-exporter-to-master
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: diff-exporter-develop
       passed: [diff-exporter-1803, diff-exporter-2019]
@@ -423,7 +423,7 @@ jobs:
 
 - name: test-cert-injector
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: cert-injector
       trigger: true
@@ -437,7 +437,7 @@ jobs:
   serial: true
   serial_groups: [1803]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: every-2hrs
       trigger: true
@@ -449,7 +449,7 @@ jobs:
       trigger: true
     - get: winc-release-develop
     - get: groot-windows-master
-  - aggregate:
+  - in_parallel:
     - task: build-winc
       file: ci/tasks/build-binary/task.yml
       tags: [1803]
@@ -513,7 +513,7 @@ jobs:
   serial: true
   serial_groups: [2019]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: every-2hrs
       trigger: true
@@ -525,7 +525,7 @@ jobs:
       trigger: true
     - get: winc-release-develop
     - get: groot-windows-master
-  - aggregate:
+  - in_parallel:
     - task: build-winc
       file: ci/tasks/build-binary/task.yml
       tags: [2019]
@@ -588,7 +588,7 @@ jobs:
 - name: bump-winc-release
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: winc-release-develop
     - get: winc-master
@@ -665,7 +665,7 @@ jobs:
 
 - name: test-nstar
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: winc-release-develop
       trigger: true
@@ -684,7 +684,7 @@ jobs:
   - put: pesto-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: every-2hrs
       trigger: true
@@ -696,7 +696,7 @@ jobs:
     - get: cf-deployment
       trigger: true
     - get: gcp-1803-stemcell
-  - aggregate:
+  - in_parallel:
     - task: get-cf-vars
       file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
@@ -804,7 +804,7 @@ jobs:
   - put: pesto-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: every-2hrs
       trigger: true
@@ -816,7 +816,7 @@ jobs:
     - get: cf-deployment
       trigger: true
     - get: gcp-2019-stemcell
-  - aggregate:
+  - in_parallel:
     - task: get-cf-vars
       file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
@@ -922,7 +922,7 @@ jobs:
 - name: shipit-major
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: winc-release-develop
       passed: [pesto-cats-1803, pesto-cats-2019]
@@ -961,7 +961,7 @@ jobs:
 - name: shipit-minor
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: winc-release-develop
       passed: [pesto-cats-1803, pesto-cats-2019]
@@ -1000,7 +1000,7 @@ jobs:
 - name: shipit-patch
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: winc-release-develop
       passed: [pesto-cats-1803, pesto-cats-2019]

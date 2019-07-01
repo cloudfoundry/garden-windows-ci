@@ -45,7 +45,7 @@ jobs:
   serial: true
   serial_groups: [((os_version))]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: ((resource_worker_tags))
     - get: every-2hrs
@@ -65,7 +65,7 @@ jobs:
   serial: true
   serial_groups: [((os_version))]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: ((resource_worker_tags))
     - get: every-2hrs
@@ -97,7 +97,7 @@ jobs:
   serial: true
   serial_groups: [((os_version))]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: ((resource_worker_tags))
     - get: every-2hrs
@@ -116,7 +116,7 @@ jobs:
       tags: ((resource_worker_tags))
     - get: groot-windows-master
       tags: ((resource_worker_tags))
-  - aggregate:
+  - in_parallel:
     - task: build-winc
       file: ci/tasks/build-binary/task.yml
       tags: [((os_version))]
