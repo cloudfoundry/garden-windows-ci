@@ -108,7 +108,6 @@ jobs:
   - do:
     - in_parallel:
       - get: cf-deployment
-        trigger: true
       - get: envoy-nginx-release-develop
         passed: [test-envoy-nginx]
         trigger: true
