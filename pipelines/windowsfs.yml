@@ -221,7 +221,7 @@ jobs:
 - name: create-tracker-story
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: image-version
       trigger: true
@@ -237,7 +237,7 @@ jobs:
 - name: bump-windowsfs-release-windows2016fs
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-develop
     - get: windows2016fs
@@ -272,7 +272,7 @@ jobs:
 - name: bump-windowsfs-release-hydrator
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-develop
     - get: hydrator
@@ -292,7 +292,7 @@ jobs:
 - name: bump-windowsfs-online-release-windows2016fs
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
     - get: windows2016fs
@@ -312,7 +312,7 @@ jobs:
 - name: bump-windowsfs-online-release-hydrator
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
     - get: hydrator
@@ -332,13 +332,13 @@ jobs:
 - name: test-create-release-windows
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: ((resource-get-tag))
     - get: windowsfs-release-develop
       tags: ((resource-get-tag))
       trigger: true
-  - aggregate:
+  - in_parallel:
     - task: create-dev-release
       tags: ((task-tag))
       file: ci/tasks/create-fs-release-windows/task.yml
@@ -357,11 +357,11 @@ jobs:
 - name: test-create-release-linux
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-develop
       trigger: true
-  - aggregate:
+  - in_parallel:
     - task: create-dev-release
       file: ci/tasks/create-fs-release-linux/task.yml
       input_mapping:
@@ -378,7 +378,7 @@ jobs:
   - put: tartar-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-develop
       passed: [test-create-release-windows, test-create-release-linux]
@@ -387,7 +387,7 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
     - get: gcp-windows-stemcell
-  - aggregate:
+  - in_parallel:
     - task: get-cf-vars
       file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
@@ -484,7 +484,7 @@ jobs:
   - put: tartar-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-develop
       passed: [test-create-release-windows, test-create-release-linux]
@@ -492,7 +492,7 @@ jobs:
     - get: winc-release-master
       trigger: true
     - get: gcp-windows-stemcell
-  - aggregate:
+  - in_parallel:
     - task: create-windowsfs-release
       file: ci/tasks/create-fs-release-linux/task.yml
       input_mapping:
@@ -571,7 +571,7 @@ jobs:
 - name: shipit-offline-major
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-master
     - get: windowsfs-release-develop
@@ -611,7 +611,7 @@ jobs:
 - name: shipit-offline-minor
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-master
     - get: windowsfs-release-develop
@@ -649,7 +649,7 @@ jobs:
 - name: shipit-offline-patch
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-master
     - get: windowsfs-release-develop
@@ -690,7 +690,7 @@ jobs:
   - put: tartar-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
       trigger: true
@@ -698,7 +698,7 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
     - get: gcp-windows-stemcell
-  - aggregate:
+  - in_parallel:
     - task: get-cf-vars
       file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
@@ -795,14 +795,14 @@ jobs:
   - put: tartar-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
       trigger: true
     - get: winc-release-master
       trigger: true
     - get: gcp-windows-stemcell
-  - aggregate:
+  - in_parallel:
     - task: create-windowsfs-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
@@ -881,7 +881,7 @@ jobs:
 - name: shipit-online-major
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
       passed: [tartar-online-cats, tartar-online-smoke-test]
@@ -925,7 +925,7 @@ jobs:
 - name: shipit-online-minor
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
       passed: [tartar-online-cats, tartar-online-smoke-test]
@@ -969,7 +969,7 @@ jobs:
 - name: shipit-online-patch
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
       passed: [tartar-online-cats, tartar-online-smoke-test]

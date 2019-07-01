@@ -169,7 +169,7 @@ jobs:
 - name: bump-windowsfs-release-windows2016fs
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-develop
     - get: windows2016fs
@@ -204,7 +204,7 @@ jobs:
 - name: bump-windowsfs-release-hydrator
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-develop
     - get: hydrator
@@ -224,13 +224,13 @@ jobs:
 - name: test-create-release-windows
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: ((resource-get-tag))
     - get: windowsfs-release-develop
       tags: ((resource-get-tag))
       trigger: true
-  - aggregate:
+  - in_parallel:
     - task: create-dev-release
       tags: ((task-tag))
       file: ci/tasks/create-fs-release-windows/task.yml
@@ -249,11 +249,11 @@ jobs:
 - name: test-create-release-linux
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-develop
       trigger: true
-  - aggregate:
+  - in_parallel:
     - task: create-dev-release
       file: ci/tasks/create-fs-release-linux/task.yml
       input_mapping:
@@ -270,7 +270,7 @@ jobs:
   - put: sriracha-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-develop
       passed: [test-create-release-windows, test-create-release-linux]
@@ -280,7 +280,7 @@ jobs:
     - get: cf-deployment
     - get: gcp-windows-stemcell
     - get: garden-windows-environments
-  - aggregate:
+  - in_parallel:
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
@@ -370,7 +370,7 @@ jobs:
   - put: sriracha-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-develop
       passed: [test-create-release-windows, test-create-release-linux]
@@ -378,7 +378,7 @@ jobs:
     - get: winc-release-master
       trigger: true
     - get: gcp-windows-stemcell
-  - aggregate:
+  - in_parallel:
     - task: create-windowsfs-release
       file: ci/tasks/create-fs-release-linux/task.yml
       input_mapping:
@@ -456,7 +456,7 @@ jobs:
 - name: shipit-offline-major
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-master
     - get: windowsfs-release-develop
@@ -496,7 +496,7 @@ jobs:
 - name: shipit-offline-minor
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-master
     - get: windowsfs-release-develop
@@ -534,7 +534,7 @@ jobs:
 - name: shipit-offline-patch
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-release-master
     - get: windowsfs-release-develop

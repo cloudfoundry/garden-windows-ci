@@ -185,7 +185,7 @@ jobs:
 - name: create-tracker-story
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: image-version
       trigger: true
@@ -201,7 +201,7 @@ jobs:
 - name: bump-windowsfs-online-release-windows2016fs
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
     - get: windows2016fs
@@ -221,7 +221,7 @@ jobs:
 - name: bump-windowsfs-online-release-hydrator
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
     - get: hydrator
@@ -244,7 +244,7 @@ jobs:
   - put: aioli-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
       trigger: true
@@ -253,7 +253,7 @@ jobs:
     - get: cf-deployment
     - get: gcp-windows-stemcell
     - get: garden-windows-environments
-  - aggregate:
+  - in_parallel:
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping:
@@ -346,14 +346,14 @@ jobs:
   - put: aioli-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
       trigger: true
     - get: winc-release-master
       trigger: true
     - get: gcp-windows-stemcell
-  - aggregate:
+  - in_parallel:
     - task: create-windowsfs-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
@@ -424,7 +424,7 @@ jobs:
 - name: shipit-online-major
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
       passed: [aioli-online-cats, aioli-online-smoke-test]
@@ -468,7 +468,7 @@ jobs:
 - name: shipit-online-minor
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
       passed: [aioli-online-cats, aioli-online-smoke-test]
@@ -512,7 +512,7 @@ jobs:
 - name: shipit-online-patch
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windowsfs-online-release-develop
       passed: [aioli-online-cats, aioli-online-smoke-test]

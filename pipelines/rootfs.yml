@@ -109,7 +109,7 @@ jobs:
   serial: true
   serial_groups: [build-and-push]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windows2016fs-develop
     - get: windowsservercore-1803
@@ -170,7 +170,7 @@ jobs:
   serial: true
   serial_groups: [build-and-push]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: windows2016fs-develop
     - get: windowsservercore-2019
