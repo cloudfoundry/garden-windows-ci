@@ -91,6 +91,9 @@ resources:
 
 - name: mulgore-cf-deployment
   type: bosh-deployment
+  # This check must happen on vsphere because you can't talk to the jumpbox
+  # from let's say a worker on gcp
+  tags: [vsphere]
   source:
     deployment: cf
     client: {{MULGORE_BOSH_CLIENT}}
