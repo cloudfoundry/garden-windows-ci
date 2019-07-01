@@ -116,7 +116,7 @@ jobs:
 - name: alfredo-cleanup
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: every-day
       trigger: true
     - get: ci
@@ -154,7 +154,7 @@ jobs:
 - name: hummus-cleanup
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: every-day
       trigger: true
     - get: cf-deployment-concourse-tasks
@@ -217,7 +217,7 @@ jobs:
 - name: spitfire-cleanup
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: every-day
       trigger: true
     - get: ci
@@ -241,7 +241,7 @@ jobs:
 - name: tartar-cleanup
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: every-day
       trigger: true
     - get: ci
@@ -279,7 +279,7 @@ jobs:
 - name: sriracha-cleanup
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: every-day
       trigger: true
     - get: cf-deployment-concourse-tasks
@@ -308,7 +308,7 @@ jobs:
 - name: aioli-cleanup
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: every-day
       trigger: true
     - get: cf-deployment-concourse-tasks
@@ -337,7 +337,7 @@ jobs:
 - name: tzatziki-cleanup
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: every-day
       trigger: true
     - get: cf-deployment-concourse-tasks
@@ -366,7 +366,7 @@ jobs:
 - name: guac-cleanup
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: every-day
       trigger: true
     - get: cf-deployment-concourse-tasks
@@ -395,7 +395,7 @@ jobs:
 - name: mulgore-cleanup
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: every-day
       trigger: true
       tags: [vsphere]
