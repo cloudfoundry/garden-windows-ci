@@ -18,13 +18,13 @@ jobs:
 - name: test
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: filelock
       trigger: true
     - get: every-day
       trigger: true
-  - aggregate:
+  - in_parallel:
     - task: test-linux
       input_mapping: { repo: filelock }
       file: ci/tasks/ginkgo-to-gopath-linux/task.yml

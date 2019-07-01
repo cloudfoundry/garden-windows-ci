@@ -36,7 +36,7 @@ jobs:
 - name: bump-submodules
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: bsdtar
     - get: libarchive
@@ -69,7 +69,7 @@ jobs:
 - name: build-tar
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: bsdtar
       trigger: true
@@ -82,7 +82,7 @@ jobs:
 - name: bosh-agent-update-tar
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: s3-bucket
       trigger: true
       passed: [build-tar]

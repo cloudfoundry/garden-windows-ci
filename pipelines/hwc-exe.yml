@@ -33,7 +33,7 @@ jobs:
 - name: test
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: hwc-develop
       trigger: true
@@ -51,7 +51,7 @@ jobs:
 - name: build-and-release
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: hwc
       resource: hwc-master
