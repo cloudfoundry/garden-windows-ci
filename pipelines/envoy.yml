@@ -94,7 +94,7 @@ jobs:
 
 - name: bump-envoy-blob
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: envoy-release-develop
     - get: envoy-windows-bucket
@@ -113,7 +113,7 @@ jobs:
 - name: shipit-major
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: envoy-release-develop
     - get: version
@@ -149,7 +149,7 @@ jobs:
 - name: shipit-minor
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: envoy-release-develop
     - get: version
@@ -185,7 +185,7 @@ jobs:
 - name: shipit-patch
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: envoy-release-develop
     - get: version
