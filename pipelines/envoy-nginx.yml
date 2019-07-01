@@ -86,7 +86,7 @@ groups:
 jobs:
 - name: test-envoy-nginx
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: envoy-nginx-release-develop
       trigger: true
@@ -106,7 +106,7 @@ jobs:
     params:
       acquire: true
   - do:
-    - aggregate:
+    - in_parallel:
       - get: cf-deployment
         trigger: true
       - get: envoy-nginx-release-develop
@@ -158,7 +158,6 @@ jobs:
         - release-tarball/*.tgz
         ops_files:
         - cf-deployment/operations/scale-to-one-az.yml
-        - ci/operations/use-3-azs-for-router.yml
         - cf-deployment/operations/windows2019-cell.yml
         - cf-deployment/operations/use-online-windows2019fs.yml
         - cf-deployment/operations/use-latest-windows2019-stemcell.yml
