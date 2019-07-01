@@ -125,7 +125,7 @@ jobs:
   - cfbench
   - longrunning-windows2012R2
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: [vsphere]
     - get: cf-deployment
@@ -152,7 +152,7 @@ jobs:
     - get: envoy-release-develop
       trigger: true
       tags: [vsphere]
-  - aggregate:
+  - in_parallel:
     - task: get-linux-stemcell
       file: ci/tasks/get-vsphere-linux-stemcell/task.yml
       output_mapping: { stemcell: vsphere-linux-stemcell }
@@ -260,7 +260,7 @@ jobs:
   serial_groups:
   - cfbench
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: [vsphere]
     - get: cfbench
@@ -295,7 +295,7 @@ jobs:
   serial_groups:
   - longrunning-windows1803
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: [vsphere]
     - get: cf-acceptance-tests
@@ -324,7 +324,7 @@ jobs:
   serial_groups:
   - longrunning-windows1803
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: [vsphere]
     - get: every-1min
@@ -348,7 +348,7 @@ jobs:
   serial_groups:
   - cfbench
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: [vsphere]
     - get: cfbench
@@ -383,7 +383,7 @@ jobs:
   serial_groups:
   - longrunning-windows2019
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: [vsphere]
     - get: cf-acceptance-tests
@@ -412,7 +412,7 @@ jobs:
   serial_groups:
   - longrunning-windows2019
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: [vsphere]
     - get: every-1min
@@ -436,7 +436,7 @@ jobs:
   serial_groups:
   - cfbench
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: [vsphere]
     - get: cfbench
@@ -471,7 +471,7 @@ jobs:
   serial_groups:
   - longrunning-windows2012R2
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: [vsphere]
     - get: cf-acceptance-tests
@@ -500,7 +500,7 @@ jobs:
   serial_groups:
   - longrunning-windows2012R2
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
       tags: [vsphere]
     - get: every-1min

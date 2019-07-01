@@ -39,7 +39,7 @@ jobs:
 - name: test-hydrator-windows1803
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: hydrator
       resource: hydrator-develop
@@ -50,7 +50,7 @@ jobs:
       trigger: true
     - get: diff-exporter
       trigger: true
-  - aggregate:
+  - in_parallel:
     - task: build-winc
       file: ci/tasks/build-binary/task.yml
       input_mapping:
@@ -90,7 +90,7 @@ jobs:
 - name: test-hydrator-windows2019
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: hydrator
       resource: hydrator-develop
@@ -101,7 +101,7 @@ jobs:
       trigger: true
     - get: diff-exporter
       trigger: true
-  - aggregate:
+  - in_parallel:
     - task: build-winc
       file: ci/tasks/build-binary/task.yml
       input_mapping:
@@ -141,7 +141,7 @@ jobs:
 - name: test-hydrator-linux
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: hydrator
       resource: hydrator-develop
@@ -153,7 +153,7 @@ jobs:
 - name: merge-develop-to-master
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: hydrator-develop
       passed: [test-hydrator-windows1803, test-hydrator-windows2019, test-hydrator-linux]
       trigger: true

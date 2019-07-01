@@ -142,7 +142,7 @@ jobs:
 - name: sync-garden-windows-release-submodules
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: upstream-release
       resource: garden-runc-release
       trigger: true
@@ -167,7 +167,7 @@ jobs:
     params:
       acquire: true
   - do:
-    - aggregate:
+    - in_parallel:
       - get: every-2hrs
         trigger: true
       - get: cf-deployment
@@ -315,7 +315,7 @@ jobs:
 - name: shipit
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: version
       params: {bump: final}
@@ -356,7 +356,7 @@ jobs:
       - finalized-release/garden-windows-*.tgz
 - name: merge-master-into-develop
   plan:
-    - aggregate:
+    - in_parallel:
       - get: ci
       - get: from-repo
         resource: garden-windows-bosh-release-master
@@ -402,7 +402,7 @@ jobs:
 - name: bump-garden-windows-blob
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: ci
     - get: release
       resource: garden-windows-bosh-release-develop
