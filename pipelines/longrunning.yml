@@ -108,15 +108,15 @@ resources:
 
 # Time
 
+- name: every-15mins
+  type: time
+  source:
+    interval: 15m
+
 - name: every-5mins
   type: time
   source:
     interval: 5m
-
-- name: every-1min
-  type: time
-  source:
-    interval: 1m
 
 jobs:
 - name: mulgore-deploy-cf
@@ -267,7 +267,7 @@ jobs:
       tags: [vsphere]
     - get: cf-acceptance-tests
       tags: [vsphere]
-    - get: every-5mins
+    - get: every-15mins
       trigger: true
       tags: [vsphere]
     - get: mulgore-cf-deployment
@@ -327,7 +327,7 @@ jobs:
   - in_parallel:
     - get: ci
       tags: [vsphere]
-    - get: every-1min
+    - get: every-5mins
       trigger: true
       tags: [vsphere]
     - get: mulgore-cf-deployment
@@ -355,7 +355,7 @@ jobs:
       tags: [vsphere]
     - get: cf-acceptance-tests
       tags: [vsphere]
-    - get: every-5mins
+    - get: every-15mins
       trigger: true
       tags: [vsphere]
     - get: mulgore-cf-deployment
@@ -415,7 +415,7 @@ jobs:
   - in_parallel:
     - get: ci
       tags: [vsphere]
-    - get: every-1min
+    - get: every-5mins
       trigger: true
       tags: [vsphere]
     - get: mulgore-cf-deployment
@@ -443,7 +443,7 @@ jobs:
       tags: [vsphere]
     - get: cf-acceptance-tests
       tags: [vsphere]
-    - get: every-5mins
+    - get: every-15mins
       trigger: true
       tags: [vsphere]
     - get: mulgore-cf-deployment
@@ -503,7 +503,7 @@ jobs:
   - in_parallel:
     - get: ci
       tags: [vsphere]
-    - get: every-1min
+    - get: every-5mins
       trigger: true
       tags: [vsphere]
     - get: mulgore-cf-deployment
