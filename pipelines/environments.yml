@@ -110,7 +110,7 @@ jobs:
   - put: hummus-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
     - get: sunday-morning
@@ -146,7 +146,7 @@ jobs:
   - put: guac-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
   - task: bbl-up
@@ -181,7 +181,7 @@ jobs:
   - put: tzatziki-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
   - task: bbl-up
@@ -215,7 +215,7 @@ jobs:
   - put: aioli-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
     - get: sunday-morning
@@ -251,7 +251,7 @@ jobs:
   - put: pesto-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
   - task: bbl-up
@@ -288,7 +288,7 @@ jobs:
   - put: sriracha-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
   - task: bbl-up
@@ -322,7 +322,7 @@ jobs:
   - put: hummus-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
   - task: bosh-delete-all-deployments
@@ -360,7 +360,7 @@ jobs:
   - put: tzatziki-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
   - task: bosh-delete-all-deployments
@@ -398,7 +398,7 @@ jobs:
   - put: aioli-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
   - task: bosh-delete-all-deployments
@@ -436,7 +436,7 @@ jobs:
   - put: pesto-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
   - task: bosh-delete-all-deployments
@@ -478,7 +478,7 @@ jobs:
   - put: sriracha-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
   - task: bosh-delete-all-deployments
@@ -515,7 +515,7 @@ jobs:
   - put: guac-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
   - task: bosh-delete-all-deployments
@@ -553,7 +553,7 @@ jobs:
   - put: guac-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
       trigger: true
@@ -615,7 +615,7 @@ jobs:
   - put: tzatziki-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
       trigger: true
@@ -679,7 +679,7 @@ jobs:
   - put: hummus-lock-pool
     params:
       acquire: true
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
       trigger: true
