@@ -568,6 +568,7 @@ jobs:
         operations/latest-winc.yml
         operations/enable-rdp-1803.yml
         operations/windows1803-debug.yml
+        operations/scale-to-two-windows1803.yml
     input_mapping:
       base-ops-files: garden-windows-environments
       new-ops-files: garden-windows-ci
@@ -599,6 +600,7 @@ jobs:
         guac/latest-winc.yml
         guac/enable-rdp-1803.yml
         guac/windows1803-debug.yml
+        guac/scale-to-two-windows1803.yml
       VARS_FILES: guac/cf/vars.yml
     input_mapping:
       bbl-state: garden-windows-environments
@@ -630,6 +632,7 @@ jobs:
         operations/latest-winc.yml
         operations/enable-rdp-2019.yml
         operations/windows2019-debug.yml
+        operations/scale-to-two-windows2019.yml
     input_mapping:
       base-ops-files: garden-windows-environments
       new-ops-files: garden-windows-ci
@@ -663,6 +666,7 @@ jobs:
         tzatziki/latest-winc.yml
         tzatziki/enable-rdp-2019.yml
         tzatziki/windows2019-debug.yml
+        tzatziki/scale-to-two-windows2019.yml
       VARS_FILES:  tzatziki/cf/vars.yml
     input_mapping:
       bbl-state: garden-windows-environments
