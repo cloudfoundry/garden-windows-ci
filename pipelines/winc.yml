@@ -119,10 +119,10 @@ resources:
     pool: pesto
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:greenhouse-ci/locks
-- name: every-2hrs
+- name: every-4hrs
   type: time
   source:
-    interval: 2h
+    interval: 4h
 - name: version
   type: semver
   source:
@@ -209,7 +209,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-2hrs
+    - get: every-4hrs
       trigger: true
     - get: groot-windows-develop
       trigger: true
@@ -227,7 +227,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-2hrs
+    - get: every-4hrs
       trigger: true
     - get: groot-windows-develop
       trigger: true
@@ -261,7 +261,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-2hrs
+    - get: every-4hrs
       trigger: true
     - get: winc-develop
       trigger: true
@@ -289,7 +289,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-2hrs
+    - get: every-4hrs
       trigger: true
     - get: winc-develop
       trigger: true
@@ -333,7 +333,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-2hrs
+    - get: every-4hrs
       trigger: true
     - get: groot-windows-master
       trigger: true
@@ -372,7 +372,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-2hrs
+    - get: every-4hrs
       trigger: true
     - get: groot-windows-master
       trigger: true
@@ -439,7 +439,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-2hrs
+    - get: every-4hrs
       trigger: true
     - get: gats-fork
     - get: garden-runc-release
@@ -515,7 +515,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-2hrs
+    - get: every-4hrs
       trigger: true
     - get: gats-fork
     - get: garden-runc-release
@@ -686,7 +686,7 @@ jobs:
       acquire: true
   - in_parallel:
     - get: ci
-    - get: every-2hrs
+    - get: every-4hrs
       trigger: true
     - get: winc-release-develop
       passed: [test-nstar]
@@ -805,7 +805,7 @@ jobs:
       acquire: true
   - in_parallel:
     - get: ci
-    - get: every-2hrs
+    - get: every-4hrs
       trigger: true
     - get: winc-release-develop
       passed: [test-nstar]
