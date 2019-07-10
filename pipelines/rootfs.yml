@@ -6,12 +6,19 @@ resource_types:
     tag: latest
 
 resources:
-- name: vcredist
+- name: vcredist-ucrt
   type: command-runner
   source:
     version_key: "url"
     check_command: "curl --location --silent --write-out %{url_effective} --request HEAD https://aka.ms/vs/16/release/vc_redist.x64.exe"
-    in_command:    "curl --location --silent --fail --output $1/vc_redist.x64.exe https://aka.ms/vs/16/release/vc_redist.x64.exe"
+    in_command:    "curl --location --silent --fail --output $1/vcredist-ucrt.x64.exe https://aka.ms/vs/16/release/vc_redist.x64.exe"
+- name: vcredist-2010
+  type: command-runner
+  source:
+    version_key: "2010-hardcoded-url"
+    check_command: "echo https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x64.exe"
+    in_command:    "curl --silent --fail --output $1/vcredist-2010.x64.exe https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x64.exe"
+
 
 # Git
 
@@ -124,7 +131,9 @@ jobs:
       params:
         globs: [Git-*-64-bit.exe]
     - get: tar
-    - get: vcredist
+    - get: vcredist-ucrt
+      trigger: true
+    - get: vcredist-2010
       trigger: true
     - get: image-version-1803
       params: {bump: patch}
@@ -185,7 +194,9 @@ jobs:
       params:
         globs: [Git-*-64-bit.exe]
     - get: tar
-    - get: vcredist
+    - get: vcredist-ucrt
+      trigger: true
+    - get: vcredist-2010
       trigger: true
     - get: image-version-2019
       params: {bump: patch}

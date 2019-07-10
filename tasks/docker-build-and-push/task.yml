@@ -7,7 +7,8 @@ inputs:
 - name: repo
 - name: git-setup
 - name: tar
-- name: vcredist
+- name: vcredist-2010
+- name: vcredist-ucrt
 
 run:
   path: powershell
