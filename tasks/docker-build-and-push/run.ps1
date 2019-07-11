@@ -2,10 +2,6 @@
 $ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
-mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
-$env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
-$env:GOCACHE = "$env:EPHEMERAL_DISK_TEMP_PATH\go-build"
-
 function Run-Docker {
   param([String[]] $cmd)
 
@@ -14,6 +10,11 @@ function Run-Docker {
     Exit $LASTEXITCODE
   }
 }
+
+mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
+$env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
+$env:GOCACHE = "$env:EPHEMERAL_DISK_TEMP_PATH\go-build"
+$repoPath = (Resolve-Path repo).Path
 
 restart-service docker
 
@@ -38,6 +39,18 @@ cd buildDir
 
 Run-Docker "--version"
 Run-Docker "build", "-t", "$env:IMAGE_NAME", "-t", "${env:IMAGE_NAME}:$version", "-t", "${env:IMAGE_NAME}:${env:OS_VERSION}", "--pull", "."
+
+$env:TEST_CANDIDATE_IMAGE=$env:IMAGE_NAME
+$env:VERSION_TAG=$env:OS_VERSION
+
+go get github.com/onsi/ginkgo
+go get github.com/onsi/gomega
+go build -o ginkgo.exe github.com/onsi/ginkgo/ginkgo
+.\ginkgo.exe -v $repoPath
+if ($LASTEXITCODE -ne 0) {
+  Exit $LASTEXITCODE
+}
+
 Run-Docker "images", "-a"
 Run-Docker "login", "-u", "$env:DOCKER_USERNAME", "-p", "$env:DOCKER_PASSWORD"
 Run-Docker "push", "${env:IMAGE_NAME}:latest"
