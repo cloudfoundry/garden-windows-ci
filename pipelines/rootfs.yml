@@ -218,6 +218,11 @@ jobs:
       DOCKER_USERNAME: ((DOCKER_USERNAME))
       DOCKER_PASSWORD: ((DOCKER_PASSWORD))
       OS_VERSION: "2019"
+      SHARE_IP: ((SHARE_IP))
+      SHARE_FQDN: ((SHARE_FQDN))
+      SHARE_NAME: ((SHARE_NAME))
+      SHARE_USERNAME: ((SHARE_USERNAME))
+      SHARE_PASSWORD: ((SHARE_PASSWORD))
   - task: update-image-tag
     file: ci/tasks/update-image-tag/task.yml
     input_mapping:
