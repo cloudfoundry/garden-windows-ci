@@ -18,10 +18,6 @@ Set of concourse tasks, dockerfiles, and pipelines for the CF Garden Windows tea
 |Guac|AWS|Dev environment - 1803|
 |Chimi|GCP|Acceptance environment - WIP|
 
-### Workstations
-
-curly, moe, larry, shemp
-
 ### Databases
 
 |Database|Type|Project|Purpose|
