@@ -20,3 +20,6 @@ $ lpass-ssh USERNAME@pivotal.io
 
 curly, moe, larry, shemp
 
+### VPN Info
+
+https://sites.google.com/a/pivotal.io/pivotal-it/networking/pivotal-vpn/global-protect
