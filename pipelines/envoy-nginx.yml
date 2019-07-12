@@ -160,6 +160,7 @@ jobs:
         - cf-deployment/operations/windows2019-cell.yml
         - cf-deployment/operations/use-online-windows2019fs.yml
         - cf-deployment/operations/use-latest-windows2019-stemcell.yml
+        - ci/operations/use-3-azs-for-router.yml
         - ci/operations/scale-down-windows2019.yml
         - ci/operations/enable-nginx-routing-integrity-windows2019.yml
         vars_files:
