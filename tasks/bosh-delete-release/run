@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -eux
+
+. ci/bin/ci_helpers
+
+trap _close_ssh_connection EXIT
+cmd=$(_bosh_socks5_env "$JUMPBOX_IP" "$JUMPBOX_SSH_KEY")
+eval "$cmd"
+
+bosh -n delete-release "${FS_VERSION}"
