@@ -805,6 +805,7 @@ jobs:
         operations/latest-winc.yml
         operations/enable-rdp-2019.yml
         operations/windows2019-debug.yml
+        operations/enable-nginx-routing-integrity-windows2019.yml
     input_mapping:
       base-ops-files: garden-windows-environments
       new-ops-files: garden-windows-ci
