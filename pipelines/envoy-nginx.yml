@@ -44,6 +44,9 @@ resources:
       value: "pivotal-netgarden-eng@pivotal.io"
     - name: user.name
       value: "Greenhouse CI"
+    ignore_paths:
+    - releases/**
+    - .final_builds/**
 
 - name: version
   type: semver
