@@ -1,3 +1,10 @@
+groups:
+- name: main
+  jobs:
+  - test-envoy-nginx
+  - alfredo-cats
+  - shipit-minor
+
 resource_types:
 - name: bosh-deployment
   type: docker-image
@@ -25,6 +32,36 @@ resources:
       value: "pivotal-netgarden-eng@pivotal.io"
     - name: user.name
       value: "Greenhouse CI"
+
+- name: envoy-nginx-release-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry-incubator/envoy-nginx-release.git
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    git_config:
+    - name: user.email
+      value: "pivotal-netgarden-eng@pivotal.io"
+    - name: user.name
+      value: "Greenhouse CI"
+
+- name: version
+  type: semver
+  source:
+    access_key_id: {{BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID}}
+    secret_access_key: {{BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY}}
+    bucket: envoy-nginx-release
+    initial_version: 0.1.0
+    key: version
+    region_name: us-east-1
+
+- name: envoy-nginx-release-github-release
+  type: github-release
+  source:
+    user: cloudfoundry-incubator
+    repository: envoy-nginx-release
+    drafts: true
+    access_token: {{GREENHOUSE_CI_ACCESS_TOKEN}}
 
 - name: cf-acceptance-tests
   type: git
@@ -76,12 +113,6 @@ resources:
     pool: alfredo
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
-
-groups:
-- name: main
-  jobs:
-    - test-envoy-nginx
-    - alfredo-cats
 
 jobs:
 - name: test-envoy-nginx
@@ -220,3 +251,42 @@ jobs:
       put: alfredo-lock-pool
       params:
         release: alfredo-lock-pool
+
+- name: shipit-minor
+  serial: true
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: envoy-nginx-release-develop
+      passed: [alfredo-cats]
+    - get: envoy-nginx-release-master
+    - get: version
+      params: {bump: minor}
+  - task: finalize-release
+    file: ci/tasks/finalize-release/task.yml
+    input_mapping: { release: envoy-nginx-release-develop }
+    params:
+      RELEASE_NAME: envoy-nginx
+      AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+  - put: envoy-nginx-release-master
+    params:
+      repository: finalized-release/release
+      tag: version/number
+      tag_prefix: v
+  - put: envoy-nginx-release-develop
+    params:
+      repository: finalized-release/release
+      merge: true
+  - put: version
+    params: {file: version/number}
+  - task: generate-github-release
+    input_mapping: { release: finalized-repo }
+    file: ci/tasks/generate-github-release/task.yml
+  - put: envoy-nginx-release-github-release
+    params:
+      commitish: generated-release/commitish
+      name: generated-release/name
+      tag: generated-release/version
+      globs:
+      - finalized-release/envoy-nginx-*.tgz
