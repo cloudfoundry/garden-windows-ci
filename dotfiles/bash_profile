@@ -97,7 +97,10 @@ alias vim='nvim'
 alias gst="git status"
 #use this if you need to run lpass from an ssh connection
 alias lpass-ssh='LPASS_DISABLE_PINENTRY=1 lpass'
+alias gardenwindows=what
+
 v () {
+  [ "$1" == "-h" ] && echo "One among the milion pet names we call vim" && return
   if [[ $# -eq 0 ]] ; then
     nvim .
   else
@@ -105,6 +108,7 @@ v () {
   fi
 }
 n () {
+  [ "$1" == "-h" ] && echo "One among the milion pet names we call vim" && return
   if [[ $# -eq 0 ]] ; then
     nvim .
   else
@@ -112,6 +116,7 @@ n () {
   fi
 }
 gv () {
+  [ "$1" == "-h" ] && echo "Vim (windows mode)" && return
   if [[ $# -eq 0 ]] ; then
     GOOS=windows nvim .
   else
@@ -122,6 +127,7 @@ gv () {
 
 # Load ssh key from lastpass
 function load-key() {
+  [ "$1" == "-h" ] && echo "Get your key from lastpass and add to ssh agent" && return
   local NAME=$1
   local HOURS=$2
   local KEY_NOTE=$3
@@ -155,6 +161,7 @@ alias vkl='load-key'
 
 # Download bosh logs
 bl() {
+  [ "$1" == "-h" ] && echo "Get bosh log from cell and open in vim" && return
   dir=$(mktemp -d)
   pushd $dir
     bosh -d $1 logs $2/${3:-0}
@@ -164,6 +171,7 @@ bl() {
 }
 
 rdp() {
+  [ "$1" == "-h" ] && echo "RDP into a Windows VM" && return
   if [[ -z $1 ]] ; then
     IP='127.0.0.1'
   else
@@ -186,6 +194,7 @@ rdp() {
 }
 
 grdp() {
+  [ "$1" == "-h" ] && echo "RDP into gcloud VM" && return
   project_name=$(_project_name $1)
   instance_name=$2
   user=${3:-admin}
@@ -209,6 +218,7 @@ alias fly-filelock="fly -t garden-windows sp -p filelock -c $HOME/workspace/gard
 alias fly-tar="fly -t garden-windows sp -p tar -c $HOME/workspace/garden-windows-ci/pipelines/tar.yml -l<(lpass show --notes -G github-deploy-keys pesto-secrets github-access-tokens aws-iam-access-keys github-access-tokens tracker-api-token)"
 
 fly-envoy() {
+  [ "$1" == "-h" ] && echo "Push envoy pipeline to concourse" && return
   fly -t garden-windows sp \
     -p envoy \
     -c "$HOME/workspace/garden-windows-ci/pipelines/envoy.yml" \
@@ -216,6 +226,7 @@ fly-envoy() {
 }
 
 fly-cleanup() {
+  [ "$1" == "-h" ] && echo "Push cleanup pipeline to concourse" && return
   fly -t garden-windows sp \
     -p cleanup \
     -c $HOME/workspace/garden-windows-ci/pipelines/cleanup.yml \
@@ -228,6 +239,7 @@ fly-cleanup() {
 }
 
 fly-garden-windows() {
+  [ "$1" == "-h" ] && echo "Push garden-windows pipeline to concourse" && return
   fly -t garden-windows sp \
     -p garden-windows \
     -c $HOME/workspace/garden-windows-ci/pipelines/garden-windows.yml \
@@ -236,6 +248,7 @@ fly-garden-windows() {
 }
 
 fly-envoy-nginx() {
+  [ "$1" == "-h" ] && echo "Push envoy-nginx pipeline to concourse" && return
   fly -t garden-windows sp \
     -p envoy-nginx \
     -c $HOME/workspace/garden-windows-ci/pipelines/envoy-nginx.yml \
@@ -244,39 +257,46 @@ fly-envoy-nginx() {
 }
 
 fly-environments () {
+  [ "$1" == "-h" ] && echo "Push environments pipeline to concourse" && return
   fly -t garden-windows sp -p environments -c $HOME/workspace/garden-windows-ci/pipelines/environments.yml \
     -l<(lpass show --notes -G 'github-deploy-keys' 'garden-windows-dev-service-account.json' 'guac-access' 'azure-garden-windows')
 }
 
 fly-hydrator () {
+  [ "$1" == "-h" ] && echo "Push hydrator pipeline to concourse" && return
   fly -t garden-windows sp -p hydrator -c $HOME/workspace/garden-windows-ci/pipelines/hydrator.yml \
     -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 aws-iam-access-keys github-access-tokens)
 }
 
 fly-winc () {
+  [ "$1" == "-h" ] && echo "Push winc pipeline to concourse" && return
   fly -t garden-windows sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
     -l <(_env_creds_yml pesto) \
   -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 aws-iam-access-keys github-access-tokens pesto-service-account.json)
 }
 
 fly-winc-1903 () {
+  [ "$1" == "-h" ] && echo "Push winc-1903 pipeline to concourse" && return
   fly -t garden-windows sp -p winc-1903 -c $HOME/workspace/garden-windows-ci/pipelines/winc-1903.yml \
     -l<(lpass show --notes github-deploy-keys-2) \
     -l $HOME/workspace/garden-windows-ci/vars/winc-1903.yml
 }
 
 fly-longrunning () {
+  [ "$1" == "-h" ] && echo "Push longrunning pipeline to concourse" && return
   fly -t garden-windows sp -p longrunning -c $HOME/workspace/garden-windows-ci/pipelines/longrunning.yml \
     -l <(_env_creds_yml mulgore) \
   -l<(lpass show --notes github-deploy-keys aws-iam-access-keys github-access-tokens spitfire-service-account.json datadog-secrets ci-cell-admin-password) 
 }
 
 fly-rootfs () {
+  [ "$1" == "-h" ] && echo "Push rootfs pipeline to concourse" && return
   fly -t garden-windows sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
     -l<(lpass show --notes aws-iam-access-keys docker-creds azure-smb-share-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token)
 }
 
 fly-windows1803fs () {
+  [ "$1" == "-h" ] && echo "Push windows1803fs pipeline to concourse" && return
   fly -t garden-windows sp -p windows1803fs -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs.yml \
     -l <(_env_creds_yml tartar) \
   -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tartar-service-account.json tracker-api-token) \
@@ -284,6 +304,7 @@ fly-windows1803fs () {
 }
 
 fly-windows2019fs () {
+  [ "$1" == "-h" ] && echo "Push windows2019fs pipeline to concourse" && return
   fly -t garden-windows sp -p windows2019fs -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-offline.yml \
     -l <(_env_creds_yml sriracha) \
   -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
@@ -291,6 +312,7 @@ fly-windows2019fs () {
 }
 
 fly-windowsfs-online () {
+  [ "$1" == "-h" ] && echo "Push windowsfs-online pipeline to concourse" && return
   fly -t garden-windows set-pipeline -p windowsfs-online -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-online.yml \
     -l <(_env_creds_yml aioli) \
     -l <(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
@@ -298,11 +320,13 @@ fly-windowsfs-online () {
 }
 
 fly-docker () {
+  [ "$1" == "-h" ] && echo "Push docker pipeline to concourse" && return
   fly -t garden-windows sp -p docker -c $HOME/workspace/garden-windows-ci/pipelines/docker.yml \
   -l<(lpass show --notes docker-creds)
 }
 
 ci-failure () {
+  [ "$1" == "-h" ] && echo "Look for failed builds for a pipeline/job (I think)" && return
   if [[ -z "$1" ]]; then
       echo "error: expected at least one argument to ci-failure"
       echo "usage: ci-failure <pipeline[/job]>"
@@ -345,6 +369,7 @@ ci-failure () {
 }
 
 fix-mic-volume () {
+  [ "$1" == "-h" ] && echo "Exactly what it says" && return
   PIDFILE="/tmp/fix-mic-volume.pid"
   PID=$(cat ${PIDFILE} 2>/dev/null)
 
@@ -365,6 +390,7 @@ fix-mic-volume () {
 }
 
 vnc-mirror () {
+  [ "$1" == "-h" ] && echo "Some VNC stuff - I don't care" && return
   export DISPLAY=:0
   echo -n Desired vnc password: 
   read -s password
@@ -401,6 +427,7 @@ __cf_ps1() {
 }
 
 set_bosh_windows_s3_blobstore() {
+  [ "$1" == "-h" ] && echo "Set bosh windows bucket aws credentials to terminal" && return
   note="aws-iam-access-keys"
   export AWS_ACCESS_KEY_ID=$(bosh int --path /BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID <(lpass show --notes $note))
   export AWS_SECRET_ACCESS_KEY=$(bosh int --path /BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY <(lpass show --notes $note))
@@ -417,14 +444,17 @@ _ssh_auth_save() {
 }
 
 cp_lpass() {
+  [ "$1" == "-h" ] && echo "Copy password from lastpass to clipboard" && return
   lpass show --password -G "$1" | pbcopy
 }
 
 ls_lpass() {
+  [ "$1" == "-h" ] && echo "Display all lpass entries by pattern" && return
   lpass show -G "$1"
 }
 
 box_deploy() {
+  [ "$1" == "-h" ] && echo "Deploy VM to dev-box" && return
   local name=$1
   local recreate=$2
   bosh_target "dev-box"
@@ -432,6 +462,7 @@ box_deploy() {
 }
 
 box_ip() {
+  [ "$1" == "-h" ] && echo "Get IP of dev-box VM" && return
   local name=$1
   bosh_target "dev-box"
   local vm_ip=$(bosh vms | grep $name | awk '{print $4}')
@@ -439,6 +470,7 @@ box_ip() {
 }
 
 box_ssh() {
+  [ "$1" == "-h" ] && echo "SSH into the dev-box VM" && return
   local name=$1
   local tmpfile=$(mktemp /tmp/dev-box-ssh.XXXXXX)
   echo "$(bosh int <(lpass show --notes 'dev-box-secrets.yml') --path /DEV_BOX_PRIVATE_KEY)" > $tmpfile
@@ -449,12 +481,14 @@ box_ssh() {
 }
 
 box_rdp() {
+  [ "$1" == "-h" ] && echo "RDP into dev-box" && return
   local name=$1
   local vm_ip="$(box_ip $name)"
   rdp $vm_ip
 }
 
 box_mount_smb() {
+  [ "$1" == "-h" ] && echo "Mount dev-box windows cell's workspace" && return
   local name=$1
   local vm_ip="$(box_ip $name)"
   local mount_dir="/home/pivotal/workspace/vmfiles/vmshare/$name"
@@ -467,32 +501,67 @@ box_mount_smb() {
 }
 
 function box_upload_stemcell() {
+  [ "$1" == "-h" ] && echo "Upload stemcell to the dev-box env" && return
   "${HOME}/workspace/garden-windows-ci/scripts/box_upload_stemcell.sh" "$@"
 }
 
 del_line() {
+  [ "$1" == "-h" ] && echo "Delete a line (what!)" && return
   sed -i "$1d" $2
 }
 
-# list containers, their ip address on all windows cells
 function lscon() {
+  [ "$1" == "-h" ] && echo "List containers, their ip address on all windows cells" && return
   local d="${1:-cf}" c="${2:-windows2019-cell}";
   bosh -d "$d" ssh "$c" --opts=-T \
   'powershell $s=((Get-NetIPConfiguration -InterfaceAlias "Ethernet*").IPv4Address.IPAddress); "Get-ComputeProcess | % {$o=$_.Id.Substring(0,28); (Get-HnsEndpoint | Where {$_.Name -eq $o}).IPAddress + \"`t\" + $_.Id}"' | \
   sed 's#: stdout |##g' | sort
 }
 
-# list cell ip and port (default route) for all apps
 function lsapp() {
+  [ "$1" == "-h" ] && echo "List cell ip and port (default route) for all apps" && return
   cf apps | grep started | awk '{print $1}' | xargs -I{} cf app {} --guid | xargs -I{} cf curl v2/apps/{}/stats | \
   grep -oP '"name":\s*"\K([^"]+)|"host":\s*"\K([^"]+)|"port":\s*\K([^,]+)|}$' | xargs | sed 's# }[ }]*#\n#g' | awk /./
 }
 
-# list host container mappings
 function lsmap() {
+  [ "$1" == "-h" ] && echo "List host container mappings" && return
   local d="${1:-cf}";
   bosh -d "$d" ssh diego-cell --opts=-T 'source /etc/profile.d/cfdot.sh && /var/vcap/packages/cfdot/bin/cfdot presences | grep "\"windows" | '\
   'grep -oP "\"key\":\"\K([^\"]+)" | xargs -I{} /var/vcap/packages/cfdot/bin/cfdot actual-lrps -c {}' | awk -F 'stdout \| ' '{print $2}' | awk /./
+}
+
+what() {
+  [ "$1" == "-h" ] && echo "Help! help!" && return
+  if [ -t 1 ]; then
+    cat << EOF
+Welcome to the **Garden Windows** Team!
+If you're reading this, either you just joined the team
+or you have been here for years and still don't know our
+shell functions!
+
+While you're here, enjoy the list of our shortcuts.
+You can do "type <function>" or "alias <alias>"
+to see their definitions.
+
+Add the following line to your new function to list it here:
+[ "\$1" == "-h" ] && echo "<help-msg>" && return
+*******
+
+EOF
+  fi
+  for i in `declare -F | awk '{print $NF}' | sort | egrep -v "^_"`
+  do
+    def=`declare -f $i`
+    if [[ $def  ==  *"[ \"\$1\" == \"-h\" ] && echo"* ]]; then
+      echo -n "$i"; echo -n $'\t'
+      # It would be easier to simply call <fn> -h, but that comes with the risk of
+      # calling an unknown function that may not have the -h flag
+      echo $def | grep -oP "^.*?==\s+[\"\']-h[\"\'] \]\s+\&\&\s+echo\s+\"\K([^\"]+)"
+    fi
+  done
+  echo -e "\nAliases:\n*******"
+  alias | awk -F= '{print substr($1,7)}'
 }
 
 # The next line updates PATH for the Google Cloud SDK.
