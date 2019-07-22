@@ -275,13 +275,6 @@ fly-winc () {
   -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 aws-iam-access-keys github-access-tokens pesto-service-account.json)
 }
 
-fly-winc-1903 () {
-  [ "$1" == "-h" ] && echo "Push winc-1903 pipeline to concourse" && return
-  fly -t garden-windows sp -p winc-1903 -c $HOME/workspace/garden-windows-ci/pipelines/winc-1903.yml \
-    -l<(lpass show --notes github-deploy-keys-2) \
-    -l $HOME/workspace/garden-windows-ci/vars/winc-1903.yml
-}
-
 fly-longrunning () {
   [ "$1" == "-h" ] && echo "Push longrunning pipeline to concourse" && return
   fly -t garden-windows sp -p longrunning -c $HOME/workspace/garden-windows-ci/pipelines/longrunning.yml \

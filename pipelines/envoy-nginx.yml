@@ -210,19 +210,6 @@ jobs:
         BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
         JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
         JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
-    - task: enable-credhub
-      file: ci/tasks/enable-credhub/task.yml
-      attempts: 3
-      params:
-        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
-        CF_API: api.alfredo.cf-app.com
-        CF_USERNAME: admin
-        CF_PASSWORD: {{ALFREDO_ADMIN_PASSWORD}}
     - task: generate-integration-config
       file: ci/tasks/generate-integration-config/task.yml
       params:
@@ -232,8 +219,6 @@ jobs:
         APPS_DOMAIN: alfredo.cf-app.com
         UNALLOCATED_IP: 10.0.0.5
         WINDOWS_STACK: windows
-        CREDHUB_MODE: assisted
-        CREDHUB_SECRET: {{ALFREDO_CREDHUB_SECRET}}
     - task: cats
       file: cf-deployment-concourse-tasks/run-cats/task.yml
       params:
