@@ -390,7 +390,7 @@ fix-mic-volume () {
 }
 
 vnc-mirror () {
-  [ "$1" == "-h" ] && echo "Some VNC stuff - I don't care" && return
+  [ "$1" == "-h" ] && echo "Start a VNC vino server" && return
   export DISPLAY=:0
   echo -n Desired vnc password: 
   read -s password
