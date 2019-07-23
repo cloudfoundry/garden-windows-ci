@@ -61,6 +61,14 @@ resources:
     branch: develop
     uri: https://github.com/cloudfoundry/envoy-release.git
 
+# Trigger on master, not develop, because the release contains the src code
+# and we don't want to trigger it on every git push
+- name: envoy-nginx-release-master
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry-incubator/envoy-nginx-release.git
+
 # S3
 
 - name: vsphere-windows2012R2-stemcell
@@ -155,6 +163,9 @@ jobs:
     - get: envoy-release-develop
       trigger: true
       tags: [vsphere]
+    - get: envoy-nginx-release-master
+      trigger: true
+      tags: [vsphere]
   - in_parallel:
     - task: get-linux-stemcell
       file: ci/tasks/get-vsphere-linux-stemcell/task.yml
@@ -203,6 +214,13 @@ jobs:
       output_mapping:
         release-tarball: envoy-tarball
       tags: [vsphere]
+    - task: create-envoy-nginx-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping:
+        release: envoy-nginx-release-master
+      output_mapping:
+        release-tarball: envoy-nginx-tarball
+      tags: [vsphere]
   - put: mulgore-cf-deployment
     params:
       manifest: cf-deployment/cf-deployment.yml
@@ -217,6 +235,7 @@ jobs:
       - windowsfs-tarball/*.tgz
       - garden-windows-tarball/*.tgz
       - envoy-tarball/*.tgz
+      - envoy-nginx-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/windows2012R2-cell.yml
@@ -242,6 +261,7 @@ jobs:
       - ci/operations/windows1803-provides-secondary-groot.yml
       - ci/operations/windows2019-uses-trusted-certs.yml
       - ci/operations/windows2019-provides-quaternary-groot.yml
+      - ci/operations/enable-nginx-routing-integrity-windows2019.yml
       vars_files:
       - cf-vars/vars.yml
       vars:
