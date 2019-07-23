@@ -232,7 +232,6 @@ jobs:
         - cf-deployment/operations/scale-to-one-az.yml
         - cf-deployment/operations/use-latest-windows2012R2-stemcell.yml
         - ci/operations/latest-garden-windows.yml
-        - ci/operations/scale-down-credhub.yml
         - ci/operations/enable-rdp-2012R2.yml
         vars_files:
         - cf-vars/vars.yml
@@ -248,19 +247,6 @@ jobs:
         BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
         JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
         JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
-    - task: enable-credhub
-      file: ci/tasks/enable-credhub/task.yml
-      attempts: 3
-      params:
-        BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
-        CF_API: api.alfredo.cf-app.com
-        CF_USERNAME: admin
-        CF_PASSWORD: {{ALFREDO_ADMIN_PASSWORD}}
     - task: warts
       file: ci/tasks/run-warts/task.yml
       params:
@@ -279,8 +265,6 @@ jobs:
         APPS_DOMAIN: alfredo.cf-app.com
         UNALLOCATED_IP: 10.0.0.5
         WINDOWS_STACK: windows2012R2
-        CREDHUB_MODE: assisted
-        CREDHUB_SECRET: {{ALFREDO_CREDHUB_SECRET}}
     - task: cats
       file: cf-deployment-concourse-tasks/run-cats/task.yml
       params:
