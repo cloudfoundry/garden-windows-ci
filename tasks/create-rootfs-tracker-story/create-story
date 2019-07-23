@@ -24,8 +24,8 @@ then release new versions of the BOSH releases that consume it.\n\n
 **How to create a new release?**\n
 - On the [CI](https://garden-windows.ci.cf-app.com), go to the pipeline corresponding to the release\n
 - Make sure the pipeline is green\n
-- Trigger a new build on the relevant shipit-* job\n\n
-- To get the KBs run `docker run cloudfoundry/windows2016fs:#{image_version} powershell Get-Hotfix` from a Windows VM
+- Trigger a new build on the relevant shipit-* job\n
+- To get the KBs run `docker run cloudfoundry/windows2016fs:#{image_version} powershell Get-Hotfix` from a Windows VM\n\n
 **A/C**\n
 - Verify there's a release for the github repo cloudfoundry/#{fs_version}-release\n
 - Verify there's a release for the github repo cloudfoundry/#{fs_online_version}-online-release\n
