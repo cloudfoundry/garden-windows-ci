@@ -755,7 +755,9 @@ jobs:
       skip_export: true
   - task: enable-credhub
     file: ci/tasks/enable-credhub/task.yml
-    attempts: 3
+    # This is temporary. Looks like a GCP load balancer issue
+    # Let's see if this fixes the issue for the time being
+    attempts: 10
     params:
       BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
       BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
