@@ -40,6 +40,10 @@ cd buildDir
 Run-Docker "--version"
 Run-Docker "build", "-t", "$env:IMAGE_NAME", "-t", "${env:IMAGE_NAME}:$version", "-t", "${env:IMAGE_NAME}:${env:OS_VERSION}", "--pull", "."
 
+# output systeminfo including hotfixes for documentation
+Run-Docker "run", "${env:IMAGE_NAME}:$version", "cmd", "/c", "systeminfo"
+Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "Get-ChildItem", "HKLM:SOFTWARE\Classes\Installer\Dependencies\"
+
 $env:TEST_CANDIDATE_IMAGE=$env:IMAGE_NAME
 $env:VERSION_TAG=$env:OS_VERSION
 
