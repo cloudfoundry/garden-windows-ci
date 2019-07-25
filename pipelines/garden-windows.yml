@@ -233,6 +233,7 @@ jobs:
         - cf-deployment/operations/use-latest-windows2012R2-stemcell.yml
         - ci/operations/latest-garden-windows.yml
         - ci/operations/enable-rdp-2012R2.yml
+        - ci/operations/use-2-azs-for-router.yml
         vars_files:
         - cf-vars/vars.yml
         cleanup: true
