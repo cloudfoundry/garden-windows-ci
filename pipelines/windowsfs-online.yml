@@ -195,7 +195,7 @@ jobs:
       version: image-version
     params:
       TRACKER_TOKEN: ((TRACKER_GITBOT_TOKEN))
-      TRACKER_PROJECT_ID: "((GARDEN_WINDOWS_PROJECT_ID))"
+      TRACKER_PROJECT_ID: "((DOTNET_DEVX_PROJECT_ID))"
       FS_VERSION: ((fs-version))
 
 - name: bump-windowsfs-online-release-windows2016fs
