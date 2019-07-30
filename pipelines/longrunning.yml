@@ -261,6 +261,7 @@ jobs:
       - ci/operations/windows1803-provides-secondary-groot.yml
       - ci/operations/windows2019-uses-trusted-certs.yml
       - ci/operations/windows2019-provides-quaternary-groot.yml
+      - ci/operations/decrease-rep-evacuation-timeout.yml
       - ci/operations/enable-nginx-routing-integrity-windows2019.yml
       vars_files:
       - cf-vars/vars.yml
