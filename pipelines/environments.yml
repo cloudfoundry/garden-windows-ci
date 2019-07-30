@@ -676,6 +676,7 @@ jobs:
         operations/latest-winc.yml
         operations/enable-rdp-2019.yml
         operations/windows2019-debug.yml
+        operations/decrease-rep-evacuation-timeout.yml
         operations/scale-to-two-windows2019.yml
     input_mapping:
       base-ops-files: garden-windows-environments
@@ -710,6 +711,7 @@ jobs:
         tzatziki/latest-winc.yml
         tzatziki/enable-rdp-2019.yml
         tzatziki/windows2019-debug.yml
+        tzatziki/decrease-rep-evacuation-timeout.yml
         tzatziki/scale-to-two-windows2019.yml
       VARS_FILES:  tzatziki/cf/vars.yml
     input_mapping:
@@ -742,6 +744,7 @@ jobs:
         operations/latest-winc.yml
         operations/enable-rdp-2019.yml
         operations/windows2019-debug.yml
+        operations/decrease-rep-evacuation-timeout.yml
     input_mapping:
       base-ops-files: garden-windows-environments
       new-ops-files: garden-windows-ci
@@ -774,6 +777,7 @@ jobs:
         hummus/latest-garden-runc.yml
         hummus/latest-winc.yml
         hummus/enable-rdp-2019.yml
+        hummus/decrease-rep-evacuation-timeout.yml
         hummus/windows2019-debug.yml
       VARS_FILES: hummus/cf/vars.yml
     input_mapping:
@@ -805,6 +809,7 @@ jobs:
         operations/latest-winc.yml
         operations/enable-rdp-2019.yml
         operations/windows2019-debug.yml
+        operations/decrease-rep-evacuation-timeout.yml
         operations/enable-nginx-routing-integrity-windows2019.yml
     input_mapping:
       base-ops-files: garden-windows-environments
@@ -838,6 +843,7 @@ jobs:
         jro-acceptance/latest-garden-runc.yml
         jro-acceptance/latest-winc.yml
         jro-acceptance/enable-rdp-2019.yml
+        jro-acceptance/decrease-rep-evacuation-timeout.yml
         jro-acceptance/windows2019-debug.yml
       VARS_FILES: jro-acceptance/cf/vars.yml
     input_mapping:
