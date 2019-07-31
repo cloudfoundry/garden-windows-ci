@@ -51,5 +51,5 @@ Latency distribution:
 	99% in 0.0363 secs
 ```
 
-1. [Nora](https://github.com/cloudfoundry/cf-acceptance-tests/tree/2d0252ab4abee732800b0903b76bfd0ce9b85e42/assets/nora/NoraPublished))
+1. [Nora](https://github.com/cloudfoundry/cf-acceptance-tests/tree/2d0252ab4abee732800b0903b76bfd0ce9b85e42/assets/nora/NoraPublished)
 2. [hey](https://github.com/rakyll/hey)
