@@ -1,0 +1,30 @@
+{
+	"No_of_requests": 10000,
+	"No_of_concurrent_requests": 5,
+	"App_Name": "Nora",
+	"App_src": "https://github.com/cloudfoundry/cf-acceptance-tests/tree/2d0252ab4abee732800b0903b76bfd0ce9b85e42/assets/nora/NoraPublished",
+	"App_instances": 50,
+	"App_path": "/",
+	"App_push_command": "cf push nora -s windows -b hwc_buildpack && cf scale nora -i 50",
+	"IaaS": "GCP",
+	"No_of_windows_cell_instances ": 4,
+	"No_of_gorouter_VM_instances ": 2,
+	"Routing_integrity_via_envoy-nginx_enabled": "false",
+	"Relevant_bosh_releases_versions_used":
+		"cf-networking=2.23.0,capi=1.84.0,diego=2.35.0,garden-runc=1.19.4,hwc-buildpack=3.1.10,routing=0.189.0,winc=1.14.0,windows-utilities=0.13.0,windowsfs=1.9.0",
+	"http_body_resp_size_in_bytes": 59,
+	"Windows_cell_spec":
+		"machine_type: (n1-highmem-4, root_disk_size_gb: 10, type: pd-ssd, name: small-highmem),epemeral_disk: (root_disk_size_gb: 100, type: pd-ssd, name: 100GB_ephemeral_disk), stemcell: (bosh-google-kvm-windows2019-go_agent, 2019.7, windows2019), OS_Name: (Microsoft Windows Server 2019 Datacenter 10.0.17763 N/A Build 17763), Total Physical Memory: 26,624 MB",
+	"Benchmark_tool_command": "hey -n 10000 -c 5 https://<app-url>/",
+	"Average_response_time_in_seconds": 0.0295,
+	"Requests_per_second": 167.7932,
+	"Latency_percentile_distribution_in_seconds": [
+		{"10": 0.0269},
+		{"25": 0.0278},
+		{"50": 0.0288},
+		{"75": 0.0301},
+		{"90": 0.0317},
+		{"95": 0.0330},
+		{"99": 0.0363}
+	]
+}

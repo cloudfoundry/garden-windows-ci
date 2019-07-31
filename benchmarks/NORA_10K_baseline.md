@@ -7,6 +7,8 @@ endpoint was hit at least once before running the benchmark to account for the c
 latency introduced by Just In Time compilation.
 See [tracker story](https://www.pivotaltracker.com/story/show/166612185) for details.
 
+You can get the baseline in json [here](NORA_10K_baseline.json).
+
 ```
 /** Configuration **/
 No. of requests: 10K
@@ -23,7 +25,7 @@ Relevant bosh releases/versions used:
 	cf-networking          2.23.0,
 	capi                   1.84.0,
 	diego                  2.35.0,
-	garden-runc						 1.19.4,
+	garden-runc            1.19.4,
 	hwc-buildpack          3.1.10,
 	routing                0.189.0,
 	winc                   1.14.0,
@@ -36,7 +38,7 @@ Windows cell spec:
 	- stemcell: bosh-google-kvm-windows2019-go_agent, 2019.7, windows2019
 	- OS Name: Microsoft Windows Server 2019 Datacenter 10.0.17763 N/A Build 17763
 	- Total Physical Memory:     26,624 MB
-
+Benchmark tool command: hey -n 10000 -c 5 https://<app-url>/
 /** Output Metrics using hey[2] **/
 Average response time:   0.0295 secs
 Requests per second:     167.7932
