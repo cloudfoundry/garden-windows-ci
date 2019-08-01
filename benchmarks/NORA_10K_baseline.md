@@ -2,12 +2,14 @@
 
 This is the baseline calculated for the purpose of performance testing CF apps when used with the
 envoy-nginx proxy to enable TLS between the router and the app container. This baseline, measured
-under a known configuration can be used as a reference for subsequent measurements. The app
-endpoint was hit at least once before running the benchmark to account for the chance of any
-latency introduced by Just In Time compilation.
-See [tracker story](https://www.pivotaltracker.com/story/show/166612185) for details.
+under a known configuration can be used as a reference for subsequent measurements. To compare
+with this baseline benchmark, the app endpoint must already receive sufficient hits to account for
+the chance of any latency introduced by Just In Time compilation (e.g. `hey -n 300 https://<app-url>/`).
 
-You can get the baseline in json [here](NORA_10K_baseline.json).
+You can get the baseline in json [here](NORA_10K_baseline.json), and the bosh manifest used to generate
+the baseline [here](NORA_10K_baseline.yaml).
+
+See [tracker story](https://www.pivotaltracker.com/story/show/166612185) for details.
 
 ```
 /** Configuration **/
