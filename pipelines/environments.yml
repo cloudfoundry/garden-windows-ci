@@ -609,7 +609,7 @@ jobs:
       BASE_OPS_FILE_DIR: guac
       NEW_OPS_FILES: |
         operations/latest-garden-runc.yml
-        operations/latest-winc.yml
+        operations/latest-winc-env.yml
         operations/enable-rdp-1803.yml
         operations/windows1803-debug.yml
         operations/scale-to-two-windows1803.yml
