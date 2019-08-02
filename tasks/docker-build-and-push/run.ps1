@@ -42,7 +42,8 @@ Run-Docker "build", "-t", "$env:IMAGE_NAME", "-t", "${env:IMAGE_NAME}:$version",
 
 # output systeminfo including hotfixes for documentation
 Run-Docker "run", "${env:IMAGE_NAME}:$version", "cmd", "/c", "systeminfo"
-Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "Get-ChildItem", "HKLM:SOFTWARE\Classes\Installer\Dependencies\"
+Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-childitem C:\Windows\System32\msvcr100.dll).VersionInfo | Select-Object -Property FileDescription,ProductVersion"
+Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-childitem C:\Windows\System32\vcruntime140.dll).VersionInfo | Select-Object -Property FileDescription,ProductVersion"
 
 $env:TEST_CANDIDATE_IMAGE=$env:IMAGE_NAME
 $env:VERSION_TAG=$env:OS_VERSION
