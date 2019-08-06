@@ -49,6 +49,13 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
+- name: garden-windows-environments
+  type: git
+  source:
+    branch: master
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    uri: git@github.com:pivotal/garden-windows-environments
+
 - name: alfredo-cf-deployment
   type: bosh-deployment
   source:
@@ -182,6 +189,7 @@ jobs:
         trigger: true
       - get: cf-deployment-concourse-tasks
       - get: version
+      - get: garden-windows-environments
         params: {pre: rc}
       - get: ci
     - put: version
@@ -193,13 +201,6 @@ jobs:
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
-    - task: get-cf-vars
-      file: ci/tasks/get-gcs-file/task.yml
-      output_mapping: { output: cf-vars }
-      params:
-        BUCKET: cf-garden-windows-dev
-        FILE_NAME: alfredo/cf/vars.yml
-        SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
     - task: delete-deployment
       file: ci/tasks/bosh-deld/task.yml
       params:
@@ -235,7 +236,7 @@ jobs:
         - ci/operations/enable-rdp-2012R2.yml
         - ci/operations/use-2-azs-for-router.yml
         vars_files:
-        - cf-vars/vars.yml
+        - garden-windows-environments/alfredo/cf/vars.yml
         cleanup: true
       get_params:
         skip_export: true
