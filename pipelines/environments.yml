@@ -23,6 +23,7 @@ groups:
   - bbl-down-pesto
   - bbl-down-sriracha
   - bbl-down-guac
+  - bbl-down-alfredo
 
 resources:
 - name: cf-deployment-concourse-tasks
@@ -633,6 +634,44 @@ jobs:
       - put: guac-lock-pool
         params:
           release: guac-lock-pool
+
+- name: bbl-down-alfredo
+  serial: true
+  serial_groups: [down]
+  plan:
+  - put: alfredo-lock-pool
+    params:
+      acquire: true
+  - in_parallel:
+    - get: cf-deployment-concourse-tasks
+    - get: garden-windows-environments
+  - task: bosh-delete-all-deployments
+    file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
+    params:
+      BBL_STATE_DIR: alfredo
+      DELETE_ALL_DEPLOYMENTS: true
+    input_mapping:
+      bbl-state: garden-windows-environments
+    on_failure:
+      put: alfredo-lock-pool
+      params:
+        release: alfredo-lock-pool
+  - task: bbl-down
+    file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
+    params:
+      BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
+      BBL_STATE_DIR: alfredo
+    input_mapping:
+      bbl-state: garden-windows-environments
+    ensure:
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: alfredo-lock-pool
+        params:
+          release: alfredo-lock-pool
 
 - name: deploy-cf-guac
   serial: true
