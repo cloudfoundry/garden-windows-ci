@@ -7,6 +7,7 @@ groups:
   - bbl-update-pesto
   - bbl-update-sriracha
   - bbl-update-guac
+  - bbl-update-alfredo
   - bbl-update-jro-acceptance
 - name: deploy-cf
   jobs:
@@ -81,6 +82,14 @@ resources:
   source:
     branch: master
     pool: sriracha
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:greenhouse-ci/locks
+
+- name: alfredo-lock-pool
+  type: pool
+  source:
+    branch: master
+    pool: alfredo
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:greenhouse-ci/locks
 
@@ -324,6 +333,40 @@ jobs:
       - put: sriracha-lock-pool
         params:
           release: sriracha-lock-pool
+
+- name: bbl-update-alfredo
+  serial: true
+  serial_groups: [update]
+  plan:
+  - put: alfredo-lock-pool
+    params:
+      acquire: true
+  - in_parallel:
+    - get: cf-deployment-concourse-tasks
+    - get: garden-windows-environments
+  - task: bbl-up
+    file: cf-deployment-concourse-tasks/bbl-up/task.yml
+    params:
+      BBL_IAAS: gcp
+      BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
+      BBL_GCP_REGION: us-east1
+      BBL_STATE_DIR: alfredo
+      BBL_LB_CERT: cert.pem
+      BBL_LB_KEY: key.pem
+      LB_DOMAIN: alfredo.cf-app.com
+      BBL_ENV_NAME: alfredo
+    input_mapping:
+      bbl-state: garden-windows-environments
+      bbl-config: garden-windows-environments
+    ensure:
+      do:
+      - put: garden-windows-environments
+        params:
+          repository: updated-bbl-state
+          rebase: true
+      - put: alfredo-lock-pool
+        params:
+          release: alfredo-lock-pool
 
 - name: bbl-update-jro-acceptance
   serial: true
