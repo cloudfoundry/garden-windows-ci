@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -eux
+
+version=$(bosh int --path '/stemcells/os=ubuntu-xenial/version' $bosh_manifest_path)
+cd stemcell
+curl -L "https://bosh.io/d/stemcells/bosh-azure-hyperv-ubuntu-xenial-go_agent?v=${version}" -o "light-bosh-stemcell-${version}-azure-hyperv-ubuntu-xenial-go_agent.tgz"
