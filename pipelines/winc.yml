@@ -770,7 +770,9 @@ jobs:
       UNALLOCATED_IP: 10.0.0.5
       WINDOWS_STACK: windows
       CREDHUB_MODE: assisted
-      CREDHUB_SECRET: {{PESTO_CREDHUB_SECRET}}
+      ENVIRONMENT: pesto
+    input_mapping:
+      bbl-state: garden-windows-environments
   - task: cats
     file: cf-deployment-concourse-tasks/run-cats/task.yml
     params:
@@ -886,7 +888,9 @@ jobs:
       UNALLOCATED_IP: 10.0.0.5
       WINDOWS_STACK: windows
       CREDHUB_MODE: assisted
-      CREDHUB_SECRET: {{PESTO_CREDHUB_SECRET}}
+      ENVIRONMENT: pesto
+    input_mapping:
+      bbl-state: garden-windows-environments
   - task: cats
     file: cf-deployment-concourse-tasks/run-cats/task.yml
     params:

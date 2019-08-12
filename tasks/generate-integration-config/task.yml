@@ -5,6 +5,8 @@ image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-wi
 
 inputs:
   - name: ci
+  - name: bbl-state
+    optional: true
 outputs:
   - name: integration-config
 run:
@@ -20,3 +22,4 @@ params:
   CREDHUB_MODE:
   CREDHUB_CLIENT:
   CREDHUB_SECRET:
+  ENVIRONMENT:

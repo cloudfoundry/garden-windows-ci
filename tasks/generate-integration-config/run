@@ -13,6 +13,23 @@ set -o pipefail
 : ${CREDHUB_CLIENT:="credhub_admin_client"}
 : ${CREDHUB_SECRET:=""}
 
+if [ ! -z "$CREDHUB_MODE" ]; then
+  set -e
+  if ! command -v cred > /dev/null 2>&1; then
+    # TODO add credhub binary to the ci docker image
+    credhub_cli_version=2.5.2
+    wget https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${credhub_cli_version}/credhub-linux-${credhub_cli_version}.tgz -P /tmp
+    tar xzvf /tmp/credhub-linux-${credhub_cli_version}.tgz -C /usr/local/bin
+    chmod +x /usr/local/bin/credhub
+  fi
+
+  pushd "bbl-state/${ENVIRONMENT}"
+    eval "$(bbl print-env)"
+    CREDHUB_SECRET=$(credhub get -n /bosh-${ENVIRONMENT}/cf/credhub_admin_client_secret -j | jq -r .value)
+  popd
+  set +e
+fi
+
 read -r -d '' JSON_TEMPLATE <<EOF || true
 {
   "api": "$API",
