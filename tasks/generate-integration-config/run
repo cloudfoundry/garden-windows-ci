@@ -29,7 +29,7 @@ if [ ! -z "$CREDHUB_MODE" ]; then
       cf_credhub_secret=$(credhub get -n /bosh-${ENVIRONMENT}/cf/credhub_admin_client_secret -j | jq -r .value)
       echo $cf_credhub_secret
       )
-  pop
+  popd
   set +e
 fi
 
