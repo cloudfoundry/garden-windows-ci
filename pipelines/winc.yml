@@ -103,17 +103,20 @@ resources:
   source:
     branch: fork-master
     uri: https://github.com/greenhouse-org/garden-integration-tests.git
-# the "tested" stemcell from all-bosh-windows don't work on "us west"
-# because it looks like light ss have some region restriction
-# TODO move to the light ss in "bosh-windows-stemcells-production" because that is well maintained.
-- name: azure-2019-stemcell
-  type: bosh-io-stemcell
+- name: gcp-1803-stemcell
+  type: s3
   source:
-    name: bosh-azure-hyperv-windows2019-go_agent
-- name: azure-1803-stemcell
-  type: bosh-io-stemcell
+    bucket: all-bosh-windows
+    regexp: 1803/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows1803-go_agent.tgz
+    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+- name: gcp-2019-stemcell
+  type: s3
   source:
-    name: bosh-azure-hyperv-windows1803-go_agent
+    bucket: all-bosh-windows
+    regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
+    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 - name: pesto-lock-pool
   type: pool
   source:
@@ -691,12 +694,12 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
       trigger: true
-    - get: azure-1803-stemcell
+    - get: gcp-1803-stemcell
     - get: garden-windows-environments
   - in_parallel:
     - task: get-linux-stemcell
-      file: ci/tasks/get-azure-linux-stemcell/task.yml
-      output_mapping: { stemcell: azure-linux-stemcell }
+      file: ci/tasks/get-gcp-linux-stemcell/task.yml
+      output_mapping: { stemcell: gcp-linux-stemcell }
     - task: create-winc-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
@@ -727,8 +730,8 @@ jobs:
     params:
       manifest: cf-deployment/cf-deployment.yml
       stemcells:
-      - azure-linux-stemcell/*.tgz
-      - azure-1803-stemcell/*.tgz
+      - gcp-linux-stemcell/*.tgz
+      - gcp-1803-stemcell/*.tgz
       releases:
       - winc-tarball/*.tgz
       ops_files:
@@ -805,12 +808,12 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
       trigger: true
-    - get: azure-2019-stemcell
+    - get: gcp-2019-stemcell
     - get: garden-windows-environments
   - in_parallel:
     - task: get-linux-stemcell
-      file: ci/tasks/get-azure-linux-stemcell/task.yml
-      output_mapping: { stemcell: azure-linux-stemcell }
+      file: ci/tasks/get-gcp-linux-stemcell/task.yml
+      output_mapping: { stemcell: gcp-linux-stemcell }
     - task: create-winc-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
@@ -841,8 +844,8 @@ jobs:
     params:
       manifest: cf-deployment/cf-deployment.yml
       stemcells:
-      - azure-linux-stemcell/*.tgz
-      - azure-2019-stemcell/*.tgz
+      - gcp-linux-stemcell/*.tgz
+      - gcp-2019-stemcell/*.tgz
       releases:
       - winc-tarball/*.tgz
       ops_files:
