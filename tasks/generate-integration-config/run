@@ -24,9 +24,12 @@ if [ ! -z "$CREDHUB_MODE" ]; then
   fi
 
   pushd "bbl-state/${ENVIRONMENT}"
-    eval "$(bbl print-env)"
-    CREDHUB_SECRET=$(credhub get -n /bosh-${ENVIRONMENT}/cf/credhub_admin_client_secret -j | jq -r .value)
-  popd
+    CREDHUB_SECRET=$(
+      eval "$(bbl print-env)"
+      cf_credhub_secret=$(credhub get -n /bosh-${ENVIRONMENT}/cf/credhub_admin_client_secret -j | jq -r .value)
+      echo $cf_credhub_secret
+      )
+  pop
   set +e
 fi
 
