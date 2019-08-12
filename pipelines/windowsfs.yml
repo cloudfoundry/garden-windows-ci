@@ -91,6 +91,13 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/winc-release.git
 
+- name: garden-windows-environments
+  type: git
+  source:
+    branch: master
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    uri: git@github.com:pivotal/garden-windows-environments
+
 # GitHub Release
 
 - name: windowsfs-release-github-release
@@ -164,12 +171,6 @@ resources:
     target: ((TARTAR_BOSH_ENVIRONMENT))
     jumpbox_url: ((TARTAR_JUMPBOX_URL))
     jumpbox_ssh_key: ((TARTAR_JUMPBOX_SSH_KEY))
-    vars_store:
-      provider: gcs
-      config:
-        bucket: cf-greenhouse-tartar
-        file_name: cf/creds.yml
-        json_key: ((TARTAR_SERVICE_ACCOUNT_JSON))
 
 - name: tartar-smoke-test-deployment
   type: bosh-deployment
@@ -387,14 +388,8 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
     - get: gcp-windows-stemcell
+    - get: garden-windows-environments
   - in_parallel:
-    - task: get-cf-vars
-      file: ci/tasks/get-gcs-file/task.yml
-      output_mapping: { output: cf-vars }
-      params:
-        BUCKET: cf-greenhouse-tartar
-        FILE_NAME: cf/vars.yml
-        SERVICE_ACCOUNT_KEY: ((TARTAR_SERVICE_ACCOUNT_JSON))
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
@@ -456,7 +451,7 @@ jobs:
       - ((windows-rdp-ops-file))
       - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
-      - cf-vars/vars.yml
+      - garden-windows-environments/tartar/cf/vars.yml
       cleanup: true
     get_params:
       skip_export: true
@@ -720,14 +715,8 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
     - get: gcp-windows-stemcell
+    - get: garden-windows-environments
   - in_parallel:
-    - task: get-cf-vars
-      file: ci/tasks/get-gcs-file/task.yml
-      output_mapping: { output: cf-vars }
-      params:
-        BUCKET: cf-greenhouse-tartar
-        FILE_NAME: cf/vars.yml
-        SERVICE_ACCOUNT_KEY: ((TARTAR_SERVICE_ACCOUNT_JSON))
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
@@ -778,7 +767,7 @@ jobs:
       - ((windows-rdp-ops-file))
       - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
-      - cf-vars/vars.yml
+      - garden-windows-environments/tartar/cf/vars.yml
       cleanup: true
     get_params:
       skip_export: true
