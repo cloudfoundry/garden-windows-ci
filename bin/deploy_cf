@@ -50,6 +50,7 @@ fi
 command="bosh -d cf deploy ${CF_DEPLOYMENT}/cf-deployment.yml \
     -o ${CF_DEPLOYMENT}/operations/scale-to-one-az.yml \
     -o ${CF_DEPLOYMENT}/operations/stop-skipping-tls-validation.yml \
+    -o ${GARDEN_WINDOWS_CI}/operations/use-2-azs-for-router.yml \
     -o ${GARDEN_WINDOWS_CI}/operations/latest-winc.yml \
     -v system_domain=$environment.cf-app.com \
     --skip-drain \
@@ -82,7 +83,6 @@ fi
 echo "Deploying cf on $environment"
 
 command="$command \
-  --vars-store $envs_dir/$environment/cf/creds.yml \
   -v system_domain=$environment.cf-app.com \
   -l $envs_dir/$environment/cf/vars.yml
   "
