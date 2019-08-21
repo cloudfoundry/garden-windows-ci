@@ -259,7 +259,7 @@ fly-envoy-nginx() {
 fly-environments () {
   [ "$1" == "-h" ] && echo "Push environments pipeline to concourse" && return
   fly -t garden-windows sp -p environments -c $HOME/workspace/garden-windows-ci/pipelines/environments.yml \
-    -l<(lpass show --notes -G 'github-deploy-keys' 'garden-windows-dev-service-account.json' 'guac-access' 'azure-garden-windows' 'pesto-service-account.json')
+    -l<(lpass show --notes -G 'github-deploy-keys' 'garden-windows-dev-service-account.json' 'guac-access' 'azure-garden-windows')
 }
 
 fly-hydrator () {
@@ -272,7 +272,7 @@ fly-winc () {
   [ "$1" == "-h" ] && echo "Push winc pipeline to concourse" && return
   fly -t garden-windows sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
     -l <(_env_creds_yml pesto) \
-  -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 aws-iam-access-keys github-access-tokens pesto-service-account.json)
+  -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 aws-iam-access-keys github-access-tokens garden-windows-dev-service-account.json)
 }
 
 fly-longrunning () {

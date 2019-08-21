@@ -318,10 +318,7 @@ _project_name() {
     spitfire)
       echo "cf-greenhouse-$1"
       ;;
-    pesto)
-      echo "cff-greenhouse-$1"
-      ;;
-    alfredo | mulgore | aioli | sriracha | hummus | tzatziki | jro-acceptance | tartar | guac)
+    pesto | alfredo | mulgore | aioli | sriracha | hummus | tzatziki | jro-acceptance | tartar | guac)
       echo "$1"
       ;;
     edge.buildpacks-gcp.ci)
