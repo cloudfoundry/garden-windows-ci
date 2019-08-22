@@ -525,7 +525,7 @@ function lsmap() {
 }
 
 bosh_ssh_app() {
-  [ "$1" == "-h" ] && echo "ssh into the cell running one the app instances" && return
+  [ "$1" == "-h" ] && echo "ssh into the cell running one of the app instances" && return
   local ip=$(lsapp | grep -w "$1" | head -n1 | awk '{print $2}')
   [ -n "$ip" ] && bosh -d cf ssh $(bosh -d cf vms | grep "$ip" | awk '{print $1}')
 }
