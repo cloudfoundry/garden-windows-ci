@@ -524,6 +524,12 @@ function lsmap() {
   'grep -oP "\"key\":\"\K([^\"]+)" | xargs -I{} /var/vcap/packages/cfdot/bin/cfdot actual-lrps -c {}' | awk -F 'stdout \| ' '{print $2}' | awk /./
 }
 
+bosh_ssh_app() {
+  [ "$1" == "-h" ] && echo "ssh into the cell running one the app instances" && return
+  local ip=$(lsapp | grep -w "$1" | head -n1 | awk '{print $2}')
+  [ -n "$ip" ] && bosh -d cf ssh $(bosh -d cf vms | grep "$ip" | awk '{print $1}')
+}
+
 what() {
   [ "$1" == "-h" ] && echo "Help! help!" && return
   if [ -t 1 ]; then
