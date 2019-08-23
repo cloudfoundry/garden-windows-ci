@@ -91,7 +91,8 @@ resources:
   type: s3
   source:
    bucket: bosh-windows-stemcells-private
-   regexp: 2019/bosh-stemcell-(.*)-vsphere-esxi-windows2019-go_agent.tgz
+   # hardcoded to 2019.1 to verify envoy-nginx possible bug. TODO: revert this
+   regexp: 2019/bosh-stemcell-(2019.1)-vsphere-esxi-windows2019-go_agent.tgz
    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 
