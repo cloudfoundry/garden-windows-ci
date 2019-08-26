@@ -318,6 +318,15 @@ fly-docker () {
   -l<(lpass show --notes docker-creds)
 }
 
+concourse-logs () {
+  [ "$1" == "-h" ] && echo "Download build output from url - usage: concourse-logs <url>" && return
+  target=$(grep -oP 'https://\K([^\.]+)' <<< "$1")
+  pipeline=$(grep -oP 'pipelines/\K([^/]+)' <<< "$1")
+  job=$(grep -oP 'pipelines/\K([^/]+)/jobs/\K([^/]+)' <<< "$1")
+  build=$(grep -oP 'builds/\K([^/]+)' <<< "$1")
+  fly -t "$target" watch -j "$pipeline"/"$job" --build "$build"
+}
+
 ci-failure () {
   [ "$1" == "-h" ] && echo "Look for failed builds for a pipeline/job (I think)" && return
   if [[ -z "$1" ]]; then
@@ -403,6 +412,7 @@ vnc-mirror () {
 source $HOME/workspace/garden-windows-ci/bin/bash_helpers
 alias bt="bosh_target"
 alias ct="cf_target"
+alias cl="concourse-logs"
 
 __bosh_ps1() {
   if [[ "$BOSH_ENVIRONMENT" = "dev-box" ]]; then
