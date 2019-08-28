@@ -37,7 +37,7 @@ resources:
   source:
     branch: master
     pool: alfredo
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
 - name: sriracha-lock-pool
@@ -61,7 +61,7 @@ resources:
   source:
     branch: master
     pool: hummus
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
 - name: guac-lock-pool
@@ -69,7 +69,7 @@ resources:
   source:
     branch: master
     pool: guac
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
 - name: mulgore-lock-pool
@@ -77,7 +77,7 @@ resources:
   source:
     branch: master
     pool: mulgore
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
 - name: pesto-lock-pool
@@ -85,7 +85,7 @@ resources:
   source:
     branch: master
     pool: pesto
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
 - name: spitfire-lock-pool
@@ -93,7 +93,7 @@ resources:
   source:
     branch: master
     pool: spitfire
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
 - name: tartar-lock-pool
@@ -101,7 +101,7 @@ resources:
   source:
     branch: master
     pool: tartar
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
 - name: tzatziki-lock-pool
@@ -109,7 +109,7 @@ resources:
   source:
     branch: master
     pool: tzatziki
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
 jobs:
@@ -121,31 +121,26 @@ jobs:
       trigger: true
     - get: ci
     - get: bosh-deployment
+    - get: garden-windows-environments
   - put: alfredo-lock-pool
     params:
       acquire: true
   - task: clean-up
     file: ci/tasks/bosh-cleanup/task.yml
     params:
-      BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+      BBL_STATE_DIR: alfredo
+    input_mapping:
+      bbl-state: garden-windows-environments
     on_failure:
       put: alfredo-lock-pool
       params:
         release: alfredo-lock-pool
-  - task: update-runtime-config-dns
-    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+  - task: upload-bosh-dns-release
+    file: ci/tasks/bosh-upload-release/task.yml
     params:
-      BOSH_CLIENT: {{ALFREDO_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{ALFREDO_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{ALFREDO_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
+      BBL_STATE_DIR: alfredo
+    input_mapping:
+      bbl-state: garden-windows-environments
     ensure:
       put: alfredo-lock-pool
       params:
@@ -191,24 +186,19 @@ jobs:
       trigger: true
     - get: ci
     - get: bosh-deployment
+    - get: garden-windows-environments
     - task: clean-up
       file: ci/tasks/bosh-cleanup/task.yml
-      params:
-        BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
-    - task: update-runtime-config-dns
-      file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-      params:
-        BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
-        BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
-        BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
-        JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
+    params:
+      BBL_STATE_DIR: pesto
+    input_mapping:
+      bbl-state: garden-windows-environments
+  - task: upload-bosh-dns-release
+    file: ci/tasks/bosh-upload-release/task.yml
+    params:
+      BBL_STATE_DIR: pesto
+    input_mapping:
+      bbl-state: garden-windows-environments
     ensure:
       put: pesto-lock-pool
       params:
@@ -227,12 +217,12 @@ jobs:
   - task: clean-up
     file: ci/tasks/bosh-cleanup/task.yml
     params:
-      BOSH_CLIENT: {{SPITFIRE_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{SPITFIRE_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{SPITFIRE_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{SPITFIRE_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{SPITFIRE_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{SPITFIRE_JUMPBOX_SSH_KEY}}
+      BOSH_CLIENT: ((SPITFIRE_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((SPITFIRE_BOSH_CLIENT_SECRET))
+      BOSH_ENVIRONMENT: ((SPITFIRE_BOSH_ENVIRONMENT))
+      BOSH_CA_CERT: ((SPITFIRE_BOSH_CA_CERT))
+      JUMPBOX_IP: ((SPITFIRE_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((SPITFIRE_JUMPBOX_SSH_KEY))
     ensure:
       put: spitfire-lock-pool
       params:
@@ -246,31 +236,26 @@ jobs:
       trigger: true
     - get: ci
     - get: bosh-deployment
+    - get: garden-windows-environments
   - put: tartar-lock-pool
     params:
       acquire: true
   - task: clean-up
     file: ci/tasks/bosh-cleanup/task.yml
     params:
-      BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+      BBL_STATE_DIR: tartar
+    input_mapping:
+      bbl-state: garden-windows-environments
     on_failure:
       put: tartar-lock-pool
       params:
         release: tartar-lock-pool
-  - task: update-runtime-config-dns
-    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
+  - task: upload-bosh-dns-release
+    file: ci/tasks/bosh-upload-release/task.yml
     params:
-      BOSH_CLIENT: {{TARTAR_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{TARTAR_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{TARTAR_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{TARTAR_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{TARTAR_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{TARTAR_JUMPBOX_SSH_KEY}}
+      BBL_STATE_DIR: tartar
+    input_mapping:
+      bbl-state: garden-windows-environments
     ensure:
       put: tartar-lock-pool
       params:
@@ -410,12 +395,12 @@ jobs:
     file: ci/tasks/bosh-cleanup/task.yml
     tags: [vsphere]
     params:
-      BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{MULGORE_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
+      BOSH_CLIENT: ((MULGORE_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((MULGORE_BOSH_CLIENT_SECRET))
+      BOSH_ENVIRONMENT: ((MULGORE_BOSH_ENVIRONMENT))
+      BOSH_CA_CERT: ((MULGORE_BOSH_CA_CERT))
+      JUMPBOX_IP: ((MULGORE_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((MULGORE_JUMPBOX_SSH_KEY))
     on_failure:
       put: mulgore-lock-pool
       params:
@@ -424,12 +409,12 @@ jobs:
     file: ci/tasks/bosh-update-runtime-config-dns/task.yml
     tags: [vsphere]
     params:
-      BOSH_CLIENT: {{MULGORE_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{MULGORE_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{MULGORE_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{MULGORE_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{MULGORE_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{MULGORE_JUMPBOX_SSH_KEY}}
+      BOSH_CLIENT: ((MULGORE_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((MULGORE_BOSH_CLIENT_SECRET))
+      BOSH_ENVIRONMENT: ((MULGORE_BOSH_ENVIRONMENT))
+      BOSH_CA_CERT: ((MULGORE_BOSH_CA_CERT))
+      JUMPBOX_IP: ((MULGORE_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((MULGORE_JUMPBOX_SSH_KEY))
     ensure:
       put: mulgore-lock-pool
       params:

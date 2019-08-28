@@ -230,10 +230,7 @@ fly-cleanup() {
   fly -t garden-windows sp \
     -p cleanup \
     -c $HOME/workspace/garden-windows-ci/pipelines/cleanup.yml \
-    -l <(_bosh_creds_yml alfredo) \
-    -l <(_bosh_creds_yml pesto) \
     -l <(_bosh_creds_yml spitfire) \
-    -l <(_bosh_creds_yml tartar) \
     -l <(_bosh_creds_yml mulgore) \
     -l <(lpass show --notes 'github-deploy-keys')
 }
