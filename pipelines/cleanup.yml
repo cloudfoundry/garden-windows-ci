@@ -119,22 +119,18 @@ jobs:
   - in_parallel:
     - get: every-day
       trigger: true
-    - get: ci
-    - get: bosh-deployment
+    - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: ci
   - put: alfredo-lock-pool
     params:
       acquire: true
   - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
+    file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
     params:
       BBL_STATE_DIR: alfredo
     input_mapping:
       bbl-state: garden-windows-environments
-    on_failure:
-      put: alfredo-lock-pool
-      params:
-        release: alfredo-lock-pool
   - task: upload-bosh-dns-release
     file: ci/tasks/bosh-upload-release/task.yml
     params:
@@ -178,17 +174,17 @@ jobs:
 - name: pesto-cleanup
   serial: true
   plan:
-  - do:
-    - put: pesto-lock-pool
-      params:
-        acquire: true
+  - in_parallel:
     - get: every-day
       trigger: true
-    - get: ci
-    - get: bosh-deployment
+    - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
-    - task: clean-up
-      file: ci/tasks/bosh-cleanup/task.yml
+    - get: ci
+  - put: pesto-lock-pool
+    params:
+      acquire: true
+  - task: clean-up
+    file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
     params:
       BBL_STATE_DIR: pesto
     input_mapping:
@@ -234,22 +230,18 @@ jobs:
   - in_parallel:
     - get: every-day
       trigger: true
-    - get: ci
-    - get: bosh-deployment
+    - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: ci
   - put: tartar-lock-pool
     params:
       acquire: true
   - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
+    file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
     params:
       BBL_STATE_DIR: tartar
     input_mapping:
       bbl-state: garden-windows-environments
-    on_failure:
-      put: tartar-lock-pool
-      params:
-        release: tartar-lock-pool
   - task: upload-bosh-dns-release
     file: ci/tasks/bosh-upload-release/task.yml
     params:
