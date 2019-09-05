@@ -91,8 +91,8 @@ resources:
   type: s3
   source:
    bucket: bosh-windows-stemcells-private
-   # hardcoded to 2019.8 to reproduce https://www.pivotaltracker.com/story/show/167974750 - TODO: revert this
-   regexp: 2019/bosh-stemcell-(2019.8)-vsphere-esxi-windows2019-go_agent.tgz
+   # hardcoded to 2019.9 to reproduce https://www.pivotaltracker.com/story/show/167974750 - TODO: revert this
+   regexp: 2019/bosh-stemcell-(2019.9)-vsphere-esxi-windows2019-go_agent.tgz
    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 
