@@ -131,6 +131,10 @@ jobs:
       BBL_STATE_DIR: alfredo
     input_mapping:
       bbl-state: garden-windows-environments
+    on_failure:
+      put: alfredo-lock-pool
+      params:
+        release: alfredo-lock-pool
   - task: upload-bosh-dns-release
     file: ci/tasks/bosh-upload-release/task.yml
     params:
@@ -160,6 +164,10 @@ jobs:
       BBL_STATE_DIR: hummus
     input_mapping:
       bbl-state: garden-windows-environments
+    on_failure:
+      put: hummus-lock-pool
+      params:
+        release: hummus-lock-pool
   - task: upload-bosh-dns-release
     file: ci/tasks/bosh-upload-release/task.yml
     params:
@@ -189,6 +197,10 @@ jobs:
       BBL_STATE_DIR: pesto
     input_mapping:
       bbl-state: garden-windows-environments
+    on_failure:
+      put: pesto-lock-pool
+      params:
+        release: pesto-lock-pool
   - task: upload-bosh-dns-release
     file: ci/tasks/bosh-upload-release/task.yml
     params:
@@ -242,6 +254,10 @@ jobs:
       BBL_STATE_DIR: tartar
     input_mapping:
       bbl-state: garden-windows-environments
+    on_failure:
+      put: tartar-lock-pool
+      params:
+        release: tartar-lock-pool
   - task: upload-bosh-dns-release
     file: ci/tasks/bosh-upload-release/task.yml
     params:
@@ -271,6 +287,10 @@ jobs:
       BBL_STATE_DIR:  sriracha
     input_mapping:
       bbl-state: garden-windows-environments
+    on_failure:
+      put: sriracha-lock-pool
+      params:
+        release: sriracha-lock-pool
   - task: upload-bosh-dns-release
     file: ci/tasks/bosh-upload-release/task.yml
     params:
@@ -278,9 +298,9 @@ jobs:
     input_mapping:
       bbl-state: garden-windows-environments
     ensure:
-      put:  sriracha-lock-pool
+      put: sriracha-lock-pool
       params:
-        release:  sriracha-lock-pool
+        release: sriracha-lock-pool
 
 - name: aioli-cleanup
   serial: true
@@ -300,6 +320,10 @@ jobs:
       BBL_STATE_DIR: aioli
     input_mapping:
       bbl-state: garden-windows-environments
+    on_failure:
+      put: aioli-lock-pool
+      params:
+        release: aioli-lock-pool
   - task: upload-bosh-dns-release
     file: ci/tasks/bosh-upload-release/task.yml
     params:
@@ -329,6 +353,10 @@ jobs:
       BBL_STATE_DIR: tzatziki
     input_mapping:
       bbl-state: garden-windows-environments
+    on_failure:
+      put: tzatziki-lock-pool
+      params:
+        release: tzatziki-lock-pool
   - task: upload-bosh-dns-release
     file: ci/tasks/bosh-upload-release/task.yml
     params:
@@ -358,6 +386,10 @@ jobs:
       BBL_STATE_DIR: guac
     input_mapping:
       bbl-state: garden-windows-environments
+    on_failure:
+      put: guac-lock-pool
+      params:
+        release: guac-lock-pool
   - task: upload-bosh-dns-release
     file: ci/tasks/bosh-upload-release/task.yml
     params:
