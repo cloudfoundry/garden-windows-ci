@@ -11,7 +11,7 @@ resources:
 - name: envoy
   type: git
   source:
-    branch: windows-linux-build
+    branch: pivotal-windows-dev
     uri: https://github.com/greenhouse-org/envoy.git
 
 - name: envoy-release-develop
