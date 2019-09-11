@@ -313,7 +313,7 @@ jobs:
       API: api.aioli.cf-app.com
       APPS_DOMAIN: aioli.cf-app.com
       UNALLOCATED_IP: 10.0.0.5
-      WINDOWS_STACK: windows2016
+      WINDOWS_STACK: windows
   - task: cats
     file: cf-deployment-concourse-tasks/run-cats/task.yml
     params:
