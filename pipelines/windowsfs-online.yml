@@ -71,10 +71,15 @@ resources:
     branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-deployment.git
 
-- name: winc-release-master
+# - name: winc-release-master
+#   type: git
+#   source:
+#     branch: master
+#     uri: https://github.com/cloudfoundry/winc-release.git
+- name: winc-release-develop
   type: git
   source:
-    branch: master
+    branch: develop
     uri: https://github.com/cloudfoundry/winc-release.git
 
 - name: garden-windows-environments
@@ -247,11 +252,18 @@ jobs:
     - get: cf-deployment
     - get: gcp-windows-stemcell
     - get: garden-windows-environments
+    - get: winc-release-develop
   - in_parallel:
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping:
         stemcell: gcp-linux-stemcell
+    - task: create-winc-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping:
+        release: winc-release-develop
+      output_mapping:
+        release-tarball: winc-tarball
     - task: create-windowsfs-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
@@ -291,10 +303,12 @@ jobs:
       - gcp-windows-stemcell/*.tgz
       releases:
       - windowsfs-tarball/*.tgz
+      - winc-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       # latest bbl only brings up two router backends by default
       - ci/operations/use-2-azs-for-router.yml
+      - ci/operations/latest-winc.yml
       - ((windows-cell-ops-file))
       - ((latest-windows-stemcell-ops-file))
       - ((windows-rdp-ops-file))
@@ -344,7 +358,7 @@ jobs:
     - get: ci
     - get: windowsfs-online-release-develop
       trigger: true
-    - get: winc-release-master
+    - get: winc-release-develop
       trigger: true
     - get: gcp-windows-stemcell
   - in_parallel:
@@ -357,7 +371,7 @@ jobs:
     - task: create-winc-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
-        release: winc-release-master
+        release: winc-release-develop
       output_mapping:
         release-tarball: winc-tarball
   - task: delete-deployments

@@ -71,10 +71,16 @@ resources:
     branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-deployment.git
 
-- name: winc-release-master
+# - name: winc-release-master
+#   type: git
+#   source:
+#     branch: master
+#     uri: https://github.com/cloudfoundry/winc-release.git
+
+- name: winc-release-develop
   type: git
   source:
-    branch: master
+    branch: develop
     uri: https://github.com/cloudfoundry/winc-release.git
 
 - name: garden-windows-environments
@@ -278,12 +284,19 @@ jobs:
     - get: cf-acceptance-tests
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
+    - get: winc-release-develop
     - get: gcp-windows-stemcell
     - get: garden-windows-environments
   - in_parallel:
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
+    - task: create-winc-release
+      file: ci/tasks/bosh-cr/task.yml
+      input_mapping:
+        release: winc-release-develop
+      output_mapping:
+        release-tarball: winc-tarball
     - task: create-windowsfs-release
       file: ci/tasks/create-fs-release-linux/task.yml
       input_mapping:
@@ -331,9 +344,11 @@ jobs:
       - gcp-windows-stemcell/*.tgz
       releases:
       - windowsfs-tarball/*.tgz
+      - winc-tarball/*.tgz
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - ci/operations/use-2-azs-for-router.yml
+      - ci/operations/latest-winc.yml
       - ((windows-cell-ops-file))
       - ((latest-windows-stemcell-ops-file))
       - ((windows-scale-down-ops-file))
@@ -385,7 +400,7 @@ jobs:
     - get: windowsfs-release-develop
       passed: [test-create-release-windows, test-create-release-linux]
       trigger: true
-    - get: winc-release-master
+    - get: winc-release-develop
       trigger: true
     - get: gcp-windows-stemcell
   - in_parallel:
@@ -398,7 +413,7 @@ jobs:
     - task: create-winc-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
-        release: winc-release-master
+        release: winc-release-develop
       output_mapping:
         release-tarball: winc-tarball
   - task: create-windowsfs-opsfile
