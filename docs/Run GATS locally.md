@@ -27,8 +27,8 @@ Set env variables `GOPATH`, `WINDOWS_VERSION`, `INC_TEST_ROOTFS`, `GROOT_IMAGE_S
 **E.g.**
 ```
 $env:GOPATH=$PWD
-$env:WINDOWS_VERSION="1803"
-$env:WINC_TEST_ROOTFS="docker:///cloudfoundry/windows2016fs:1803"
+$env:WINDOWS_VERSION="2019"
+$env:WINC_TEST_ROOTFS="docker:///cloudfoundry/windows2016fs:2019"
 $env:EPHEMERAL_DISK_TEMP_PATH=$env:TMP
 $env:GROOT_IMAGE_STORE="$env:EPHEMERAL_DISK_TEMP_PATH\groot"
 ```
