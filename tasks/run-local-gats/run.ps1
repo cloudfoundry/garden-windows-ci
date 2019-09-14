@@ -122,7 +122,7 @@ push-location garden-runc-release
   $env:GROOT_BINARY="$grootBinary"
   $env:GROOT_IMAGE_STORE="$grootImageStore"
   Push-Location src/garden-integration-tests
-    ginkgo -p -randomizeSuites -noisyPendings=false
+    ginkgo -randomizeSuites -noisyPendings=false
   Pop-Location
 Pop-Location
 $ExitCode="$LastExitCode"
