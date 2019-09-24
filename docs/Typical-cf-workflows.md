@@ -98,3 +98,14 @@ user manager\containeradministrator
 
 #### 7. Run .NET apps directly on the windows cell without using containers
 Exit out of the container and follow the instructions from [the dotnet-cookbook](https://dotnet-cookbook.cfapps.io/aspnet/local-debug-using-hwc-exe/).
+
+#### 8. To copy a directory into the container filesystem of an app
+From your workstation that has the cf cli targeting the cf api:
+
+```sh
+cf ssh-code
+# use this as the password for scp when prompted
+
+scp -P 2222 -oUser=cf:$(cf app nora --guid)/0 -r my-app-dir/ ssh.<system-domain>:C:/
+```
+For more info, see [diego-ssh](https://github.com/cloudfoundry/diego-ssh)
