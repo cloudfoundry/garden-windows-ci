@@ -5,7 +5,9 @@ This assumes you have your bosh and cf cli targeted to the right api endpoint.
 
 ## 2. Pushing the app
 ```sh
-cd nora/NoraPublished
+git clone https://github.com/cloudfoundry/cf-acceptance-tests/tree/master/assets/nora
+
+cd cf-acceptance-tests/assets/nora/NoraPublished
 
 cf push nora -s windows -b hwc_buildpack
 
@@ -49,13 +51,16 @@ windows2019-cell/fea3bc85-434a-4c9f-82d8-6c33be11a2e1           running z1      
 ## 4. Find the container id of a running app instance
 ```
 cf ssh nora/<instance-id>
-
+```
+```
 Microsoft Windows [Version 10.0.17763.615]
 (c) 2018 Microsoft Corporation. All rights reserved.
 ```
 
 ```
 C:\Users\vcap>hostname
+```
+```
 7928fcab-24f0-4ec0-504f-27a5
 # This is the container-Id
 ```
@@ -63,7 +68,8 @@ C:\Users\vcap>hostname
 ## 5. SSH into that windows cell that runs this app
 ```
 bosh -d <deployment-name> ssh windows2019-cell/fea3bc85-434a-4c9f-82d8-6c33be11a2e1
-
+```
+```
 Microsoft Windows [Version 10.0.17763.678]
 (c) 2018 Microsoft Corporation. All rights reserved.
 
@@ -73,7 +79,8 @@ bosh_9164a78ca398402@VM-A8F7E59A-EC7 C:\Users\bosh_9164a78ca398402>
 To get into powershell:
 ```
 C:\Users\bosh_9164a78ca398402>powershell
-
+```
+```
 Windows PowerShell
 Copyright (C) Microsoft Corporation. All rights reserved.
 
@@ -87,11 +94,15 @@ This uses [winc](https://github.com/cloudfoundry/winc) which is already present 
 
 ```
 PS C:\Users\bosh_2188ba31a99c44b> C:\var\vcap\packages\winc\winc.exe exec <container-Id> powershell
-
+```
+```
 Windows PowerShell
 Copyright (C) Microsoft Corporation. All rights reserved.
-
+```
+```
 PS C:\> whoami
+```
+```
 whoami
 user manager\containeradministrator
 ```
