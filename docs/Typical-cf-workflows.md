@@ -7,7 +7,7 @@ This assumes you have your bosh and cf cli targetted to the right api endpoint.
 ```sh
 cd nora/NoraPublished
 
-cf push nora6 -s windows -b hwc_buildpack
+cf push nora -s windows -b hwc_buildpack
 
 curl nora.<system-domain>
 "hello i am nora running on http://nora.<system-domain>"
@@ -73,4 +73,15 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 PS C:\Users\bosh_9164a78ca398402>
 ```
 
+#### 6. Get a powershell as an admin "inside" the app container
+Use the container Id from Step 4.
+```sh
+PS C:\Users\bosh_2188ba31a99c44b> C:\var\vcap\packages\winc\winc.exe exec <container-id> powershell
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\> whoami
+whoami
+user manager\containeradministrator
+```
 
