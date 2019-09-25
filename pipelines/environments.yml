@@ -35,7 +35,7 @@ resources:
 - name: cf-deployment
   type: git
   source:
-    branch: release-candidate
+    branch: v11.2.0
     uri: https://github.com/cloudfoundry/cf-deployment.git
 
 - name: hummus-lock-pool
