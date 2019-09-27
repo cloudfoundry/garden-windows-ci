@@ -101,7 +101,8 @@ user manager\containeradministrator
 ```
 
 ## 7. Run .NET apps directly on the windows cell without using containers
-Exit out of the container and follow the instructions from [the dotnet-cookbook](https://dotnet-cookbook.cfapps.io/aspnet/local-debug-using-hwc-exe/).
+Exit out of the container and follow the instructions from [the dotnet-cookbook]
+(https://dotnet-cookbook.cfapps.io/aspnet/local-debug-using-hwc-exe/).
 
 ## 8. To copy a directory into the container filesystem of an app
 From your workstation that has the cf cli targeting the cf api:
@@ -113,3 +114,19 @@ cf ssh-code
 scp -P 2222 -oUser=cf:$(cf app nora --guid)/0 -r my-app-dir/ ssh.<system-domain>:C:/
 ```
 For more info, see [diego-ssh](https://github.com/cloudfoundry/diego-ssh)
+
+## 9. Installing docker on your windows diego cell
+
+We can use the docker blob from the [windows-tools-release]
+(https://github.com/cloudfoundry/windows-tools-release)
+
+```powershell
+mkdir C:\docker
+cd C:\docker
+curl.exe -L https://windows-tools-release.s3.amazonaws.com/73880146-3c89-4268-5ef5-01a2ad21e376 -o docker.zip
+Expand-Archive -Path docker.zip -DestinationPath .
+cd docker
+$env:PATH+=";$PWD;"
+dockerd --register-service
+Start-Service Docker
+```
