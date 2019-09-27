@@ -145,6 +145,9 @@ Start-Service Docker
     * Get `hwc.exe` using `curl.exe -L https://github.com/cloudfoundry/hwc/releases/download/17.0.0/hwc.exe -o C:/hwc.exe` (or the latest)
     * Run nora using `& { $env:PORT=8080; C:/hwc.exe -appRootPath C:/norapublished }`
 * In another window, bosh ssh to the same windows cell and run `powershell`
-* Run `C:\docker\docker\docker.exe ps` and find the container id
-* Run `C:\docker\docker\docker.exe exec -it <containerId> powershell`
+* do `$docker = "C:\docker\docker\docker.exe"`
+* Run `$docker ps` and find the container-Id
+* Run `$docker exec -it <container-Id> powershell`
 * In the container powershell that you will get, run `curl.exe http://localhost:8080/`
+* You should see the typical nora response.
+
