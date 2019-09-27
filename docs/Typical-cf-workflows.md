@@ -130,3 +130,19 @@ $env:PATH+=";$PWD;"
 dockerd --register-service
 Start-Service Docker
 ```
+
+## 10. Running nora in a docker container to test out cf containerization
+
+Bosh ssh on to the Windows cell: `bosh -d <deployment-id> ssh <cell-name>`
+Run: `powershell
+Make sure you have installed docker using Step 9`
+Put your app in such a way that C:/nora/NoraPublished is legit
+Run `C:\docker\docker\docker.exe run -it -v C:/nora/NoraPublished:C:/norapublished mcr.microsoft.com/windows/servercore:1809 powershell`
+In the container powershell that you will get, enable windows features required for .NET:
+`Add-WindowsFeature Web-Webserver, Web-WebSockets, Web-WHC, Web-ASP, Web-ASP-Net45`
+Get `hwc.exe` using `curl.exe -L https://github.com/cloudfoundry/hwc/releases/download/17.0.0/hwc.exe -o C:/hwc.exe` (or the latest)
+Run nora using `& { $env:PORT=8080; C:/hwc.exe -appRootPath C:/norapublished }`
+In another window, bosh ssh to the same windows cell and run `powershell`
+Run `C:\docker\docker\docker.exe ps` and find the container id
+Run `C:\docker\docker\docker.exe exec -it <containerId> powershell`
+In the container powershell that you will get, run `curl.exe http://localhost:8080/`
