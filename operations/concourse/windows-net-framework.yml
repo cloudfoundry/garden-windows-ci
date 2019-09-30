@@ -1,0 +1,15 @@
+---
+- type: replace
+  path: /releases/name=windows-netframework-dev-tools?
+  value:
+    name: "windows-netframework-dev-tools"
+    version: 7
+    url: "git+https://github.com/miclip/windows-netframework-dev-tools-release"
+    # url: "https://github.com/miclip/windows-netframework-dev-tools-release/releases/tag/v7"
+    # sha1: "82606431803a37645cca89d24ed7d73b7568ca62"
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: windows-netframework-dev-tools
+    release: windows-netframework-dev-tools
