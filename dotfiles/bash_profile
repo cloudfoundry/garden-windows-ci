@@ -164,7 +164,7 @@ bl() {
   [ "$1" == "-h" ] && echo "Get bosh log from cell and open in vim" && return
   dir=$(mktemp -d)
   pushd $dir
-    bosh -d $1 logs $2/${3:-0}
+    bosh -d $1 logs $2
     tar -xzvf *.tgz
     nvim .
   popd
