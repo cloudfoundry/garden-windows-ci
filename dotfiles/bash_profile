@@ -315,6 +315,12 @@ fly-docker () {
   -l<(lpass show --notes docker-creds)
 }
 
+fly-web-config-buildpack() {
+  [ "$1" == "-h" ] && echo "Push web config buildpack pipeline to concourse" && return
+  fly -t garden-windows sp -p web-config-buildpack -c $HOME/workspace/garden-windows-ci/pipelines/web-config-buildpack.yml \
+  -l<(lpass show --notes 'github-deploy-keys')
+}
+
 concourse-logs () {
   [ "$1" == "-h" ] && echo "Download build output from url - usage: concourse-logs <url>" && return
   target=$(grep -oP 'https://\K([^\.]+)' <<< "$1")

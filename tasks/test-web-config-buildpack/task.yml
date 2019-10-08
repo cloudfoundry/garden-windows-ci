@@ -1,0 +1,12 @@
+---
+platform: linux
+
+image_resource: {type: docker-image, source: {repository: mcr.microsoft.com/dotnet/core/sdk, tag: 2.2.402-bionic}}
+
+inputs:
+- name: ci
+- name: web-config-buildpack
+
+run:
+  path: ../ci/tasks/test-web-config-buildpack/run.sh
+  dir: web-config-buildpack
