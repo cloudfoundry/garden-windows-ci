@@ -8,7 +8,7 @@ resources:
 - name: ci
   type: git
   source:
-    branch: web-config-buildpack
+    branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
 - name: web-config-buildpack
