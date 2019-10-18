@@ -1,5 +1,3 @@
-[DRAFT]
-
 # IWA Exploration
 
 ### Outcome:
@@ -63,11 +61,13 @@ The ~~Garden Windows~~ *Windows Container* team was able to have a running conta
 <tbody>
 <tr>
 <td>log on</td>
-<td>RDP onto BOSH VM as domain administrator (get RDP file from azure portal, username: pivotal, password: Password123!)</td>
+<td>RDP onto BOSH VM as domain administrator (get RDP file from azure portal,
+username: pivotal, password: Password123!)
+</td>
 <td>same as Bosh VM, but get the RDP file for the DC</td>
 </tr>
 <tr>
-<td>create AD user, group</td>
+<td>Create AD user, group</td>
 <td></td>
 <td>
 
@@ -79,7 +79,8 @@ $password = "Password123!"
 Set-ADAccountPassword -Identity 'CN=GardenUser,CN=Users,DC=DEMO,DC=FOOBARTLD' \
 -Reset -NewPassword (ConvertTo-SecureString -AsPlainText $password -Force)
 
-New-ADGroup -Name "GardenGMSAHosts" -SamAccountName "GardenGMSAHosts" -GroupScope Global
+New-ADGroup -Name "GardenGMSAHosts" -SamAccountName "GardenGMSAHosts" \
+-GroupScope Global
 ```
 
 </td>
@@ -96,9 +97,12 @@ $DNS_Serv = <DNS Server IP you find from ipconfig>
 Set-DnsClientServerAddress -InterfaceAlias "<Ethernet adapter name>" \
 -ServerAddresses "$DC,$DNS_Serv"
 
+# Name of DC
 ping cfgh-dc-demo
 
+# DEMO.FOOBARTLD is the name of the domain
 $domain = "DEMO.FOOBARTLD"
+# User Created earlier on DC
 $user = "GardenUser"
 $password = "Password123!"
 
@@ -131,6 +135,8 @@ Get-WmiObject -Class Win32_ComputerSystem
 
 ```powershell
 # dugnri6i0ou2lku is the bosh VM's hostname
+# GardenGMSA is hte name of the AD service account we are creating
+# GardenGMSAHosts is the group we created earlier on the DC
 Add-ADGroupMember -Identity "GardenGMSAHosts" -Members dugnri6i0ou2lku$, \
 GardenUser  New-ADServiceAccount -name GardenGMSA -DNSHostName \
 gardengmsa.demo.foobartld -ServicePrincipalNames http/gardengmsa.demo.foobartld \
@@ -164,34 +170,39 @@ Test-AdServiceAccount GardenGMSA
 
 4. Launch a container on the BOSH VM and use the gMSA
 
-	```
+	```powershell
 	# on the Bosh VM
 
 	Install-Module CredentialSpec
 	$CredSpec = (New-CredentialSpec -Name GardenGMSA -AccountName GardenGMSA)
 	cp $CredSpec.Path .
-	docker run --security-opt "credentialspec=file://GardenGMSA.json" --hostname GardenGMSA.demo.foobartld -it cloudfoundry/windows2016fs:2019.0.28 powershell
+	docker run --security-opt "credentialspec=file://GardenGMSA.json" --hostname \
+	GardenGMSA.demo.foobartld -it cloudfoundry/windows2016fs:2019.0.28 powershell
 
-	# now in container
+	# Now in container
 
-	# Your container app will need to run as Local System or Network Service if it needs to use the gMSA identity. So, set your app pool identity to Network Service (In production the could be added to the rootfs Docker file)
-	& $env:windir\system32\inetsrv\appcmd.exe set AppPool DefaultAppPool -'processModel.identityType:NetworkService'
-	# should see APPPOOL object "DefaultAppPool" changed
+	# Your container app will need to run as Local System or Network Service if it
+	# needs to use the gMSA identity. So, set your app pool identity to
+	# Network Service (In production this could be added to the rootfs Docker file)
 
-	nltest /sc_verify:demo.foobartld
+	# Should see APPPOOL object "DefaultAppPool" changed
+	& $env:windir\system32\inetsrv\appcmd.exe set AppPool DefaultAppPool
+	-'processModel.identityType:NetworkService'
+
 	# should see a response like:
 	# Flags: b0 HAS_IP HAS_TIMESERV
 	# Trusted DC Name \\CFGH-DC-Demo.DEMO.FOOBARTLD
 	# Trusted DC Connection Status Status = 0  0x0 NERR_Success
 	# Trust Verification Status = 0  0x0 NERR_Success
 	# The command completed successfully
+	nltest /sc_verify:demo.foobartld
 
-	klist get krbtgt
 	# should successfully retrieve kerberos tickets
+	klist get krbtgt
 
-	dir \\demo.foobartld\SYSVOL
 	# directory should exist and be listed
+	dir \\demo.foobartld\SYSVOL
 
-	ipconfig /all
 	# DNS Servers section should include the IP of the Domain Controller
+	ipconfig /all
 	```
