@@ -7,8 +7,8 @@ The ~~Garden Windows~~ *Windows Container* team was able to have a running conta
 ### Reproduction:
 1. Following the steps outlined in the [BOSH-Windows IWA exploration](https://www.pivotaltracker.com/story/show/167407385/comments/205160894), we **created a domain controller.**
 2. Deploy a bosh managed VM to be domain-joined in the subsequent step
-	
-	Deployment Manifest:
+
+	Example Deployment Manifest:
 	```
 	instance_groups:
 	- azs:
@@ -50,15 +50,117 @@ The ~~Garden Windows~~ *Windows Container* team was able to have a running conta
 	  serial: false
 	  update_watch_time: 30000-300000
 	```
-3. Get a gmsa installed on the BOSH vm
 
-	| -|On the Bosh VM|On the Domain Controller|
-	| ---|---|---|
-	| log on|RDP onto BOSH VM as domain administrator (get RDP file from azure portal, username: pivotal, password: Password123!)| same as Bosh VM, but get the RDP file for the DC|
-	| create AD user, group||<code> > New-ADUser -Name "GardenUser" -Enabled \$True <br>     > \$password = "Password123!"<br>> Set-ADAccountPassword -Identity 'CN=GardenUser,CN=Users,DC=DEMO,DC=FOOBARTLD' -Reset -NewPassword (ConvertTo-SecureString -AsPlainText $password -Force) <br> > New-ADGroup -Name "GardenGMSAHosts" -SamAccountName "GardenGMSAHosts" -GroupScope Global</code>|
-	| domain join the bosh managed vm|<code> > Set-DnsClientServerAddress -InterfaceAlias "Ethernet 2" -ServerAddresses "10.0.0.9,168.63.129.16" FIX THIS - say how to get <br> > ping cfgh-dc-demo <br> > $domain = "DEMO.FOOBARTLD" <br> > $user = "GardenUser" <br> > $password = "Password123!" <br> > $password = ConvertTo-SecureString -String $password -AsPlainText -Force <br> > \$credObject = New-Object System.Management.Automation.PSCredential ("\$user@\$domain", $password) <br> > Add-Computer -DomainName $domain -Credential $credObject <br> > set-service bosh-agent -startuptype automatic <br> > restart-computer <br> <br> #Confirm Domain Joining <br> > (Get-WmiObject -Class Win32_ComputerSystem).Partofdomain <br> ## should return True <br> > Get-WmiObject -Class Win32_ComputerSystem <br> ## should return the name of the domain</code>||
-	| create gmsa and add VM host to security access group||<code> > Add-ADGroupMember -Identity "GardenGMSAHosts" -Members dugnri6i0ou2lku$, GardenUser <br> > New-ADServiceAccount -name GardenGMSA -DNSHostName gardengmsa.demo.foobartld -ServicePrincipalNames http/gardengmsa.demo.foobartld -PrincipalsAllowedToRetrieveManagedPassword GardenGMSAHosts -PrincipalsAllowedToDelegateToAccount GardenGMSAHosts <br> <br> #Verify the group is added to the AD service account named GardenGMSA <br> > Get-ADServiceAccount GardenGMSA -Properties PrincipalsAllowedToRetrieveManagedPassword, PrincipalsAllowedToDelegateToAccount </code>|
-	| install the created gmsa on the bosh VM |<code> > Add-WindowsFeature RSAT-AD-PowerShell <br> > Import-Module ActiveDirectory <br> > Install-AdServiceAccount GardenGMSA <br> > Test-AdServiceAccount GardenGMSA </code>||
+3. Get a gmsa installed on the BOSH vm
+<table class="table table-striped table-bordered">
+<thead>
+<tr>
+<th>-</th>
+<th>On the Bosh VM</th>
+<th>On the Domain Controller</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>log on</td>
+<td>RDP onto BOSH VM as domain administrator (get RDP file from azure portal, username: pivotal, password: Password123!)</td>
+<td>same as Bosh VM, but get the RDP file for the DC</td>
+</tr>
+<tr>
+<td>create AD user, group</td>
+<td></td>
+<td>
+
+```powershell
+New-ADUser -Name "GardenUser" -Enabled $True
+
+$password = "Password123!"
+
+Set-ADAccountPassword -Identity 'CN=GardenUser,CN=Users,DC=DEMO,DC=FOOBARTLD' \
+-Reset -NewPassword (ConvertTo-SecureString -AsPlainText $password -Force)
+
+New-ADGroup -Name "GardenGMSAHosts" -SamAccountName "GardenGMSAHosts" -GroupScope Global
+```
+
+</td>
+</tr>
+<tr>
+<td>Domain join the bosh managed vm</td>
+<td>
+
+```powershell
+
+# Add DC as the Primary DNS Server
+$DC = <IP addr of the Domain Controller>
+$DNS_Serv = <DNS Server IP you find from ipconfig>
+Set-DnsClientServerAddress -InterfaceAlias "<Ethernet adapter name>" \
+-ServerAddresses "$DC,$DNS_Serv"
+
+ping cfgh-dc-demo
+
+$domain = "DEMO.FOOBARTLD"
+$user = "GardenUser"
+$password = "Password123!"
+
+$password = ConvertTo-SecureString -String $password \
+-AsPlainText -Force
+
+$credObject = New-Object System.Management.Automation.PSCredential\
+("$user@$domain", $password)
+
+Add-Computer -DomainName $domain -Credential $credObject
+
+set-service bosh-agent -startuptype automatic
+
+restart-computer
+
+# Confirm Domain Joining
+# should return True
+(Get-WmiObject -Class Win32_ComputerSystem).Partofdomain
+
+# should return the name of the domain
+Get-WmiObject -Class Win32_ComputerSystem
+```
+</td>
+<td></td>
+</tr>
+<tr>
+<td>Create gMSA and add VM host to security access group</td>
+<td></td>
+<td>
+
+```powershell
+# dugnri6i0ou2lku is the bosh VM's hostname
+Add-ADGroupMember -Identity "GardenGMSAHosts" -Members dugnri6i0ou2lku$, \
+GardenUser  New-ADServiceAccount -name GardenGMSA -DNSHostName \
+gardengmsa.demo.foobartld -ServicePrincipalNames http/gardengmsa.demo.foobartld \
+-PrincipalsAllowedToRetrieveManagedPassword GardenGMSAHosts \
+-PrincipalsAllowedToDelegateToAccount GardenGMSAHosts
+
+#Verify the group is added to the AD service account named GardenGMSA
+Get-ADServiceAccount GardenGMSA -Properties \
+PrincipalsAllowedToRetrieveManagedPassword, PrincipalsAllowedToDelegateToAccount
+```
+</td>
+</tr>
+<tr>
+<td>Install the created gMSA on the bosh VM</td>
+<td>
+
+```powershell
+Add-WindowsFeature RSAT-AD-PowerShell
+
+Import-Module ActiveDirectory
+
+Install-AdServiceAccount GardenGMSA
+
+Test-AdServiceAccount GardenGMSA
+```
+</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
 4. Launch a container on the BOSH VM and use the gMSA
 
