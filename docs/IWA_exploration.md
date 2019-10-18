@@ -1,5 +1,8 @@
 # IWA Exploration
 
+### Tracker Story
+See our full exploration in [this story.](https://www.pivotaltracker.com/story/show/168287679)
+
 ### Outcome:
 The ~~Garden Windows~~ *Windows Container* team was able to have a running container in a domain-joined, bosh-managed VM use a group-managed service account (gMSA) to authenticate with a domain controller.
 ### Reproduction:
@@ -50,10 +53,10 @@ The ~~Garden Windows~~ *Windows Container* team was able to have a running conta
 	```
 
 3. Get a gmsa installed on the BOSH vm
-<table class="table table-striped table-bordered">
+<table>
 <thead>
 <tr>
-<th>-</th>
+<th></th>
 <th>On the Bosh VM</th>
 <th>On the Domain Controller</th>
 </tr>
@@ -61,10 +64,14 @@ The ~~Garden Windows~~ *Windows Container* team was able to have a running conta
 <tbody>
 <tr>
 <td>log on</td>
-<td>RDP onto BOSH VM as domain administrator (get RDP file from azure portal,
-username: pivotal, password: Password123!)
+<td>RDP onto BOSH VM as domain administrator
+
+(get RDP file from azure portal, <br>
+username: pivotal,<br>
+password: Password123!)
 </td>
-<td>same as Bosh VM, but get the RDP file for the DC</td>
+<td>same as Bosh VM, but get the <br>
+RDP file for the DC</td>
 </tr>
 <tr>
 <td>Create AD user, group</td>
@@ -72,14 +79,18 @@ username: pivotal, password: Password123!)
 <td>
 
 ```powershell
-New-ADUser -Name "GardenUser" -Enabled $True
+New-ADUser -Name "GardenUser" \
+-Enabled $True
 
 $password = "Password123!"
 
-Set-ADAccountPassword -Identity 'CN=GardenUser,CN=Users,DC=DEMO,DC=FOOBARTLD' \
--Reset -NewPassword (ConvertTo-SecureString -AsPlainText $password -Force)
+Set-ADAccountPassword -Identity \
+'CN=GardenUser,CN=Users,DC=DEMO,DC=FOOBARTLD' \
+-Reset -NewPassword (ConvertTo-SecureString \
+-AsPlainText $password -Force)
 
-New-ADGroup -Name "GardenGMSAHosts" -SamAccountName "GardenGMSAHosts" \
+New-ADGroup -Name "GardenGMSAHosts" \
+-SamAccountName "GardenGMSAHosts" \
 -GroupScope Global
 ```
 
@@ -94,7 +105,8 @@ New-ADGroup -Name "GardenGMSAHosts" -SamAccountName "GardenGMSAHosts" \
 # Add DC as the Primary DNS Server
 $DC = <IP addr of the Domain Controller>
 $DNS_Serv = <DNS Server IP you find from ipconfig>
-Set-DnsClientServerAddress -InterfaceAlias "<Ethernet adapter name>" \
+Set-DnsClientServerAddress \
+-InterfaceAlias "<Ethernet adapter name>" \
 -ServerAddresses "$DC,$DNS_Serv"
 
 # Name of DC
@@ -102,25 +114,31 @@ ping cfgh-dc-demo
 
 # DEMO.FOOBARTLD is the name of the domain
 $domain = "DEMO.FOOBARTLD"
+
 # User Created earlier on DC
 $user = "GardenUser"
 $password = "Password123!"
 
-$password = ConvertTo-SecureString -String $password \
--AsPlainText -Force
+$password = ConvertTo-SecureString \
+-String $password -AsPlainText -Force
 
-$credObject = New-Object System.Management.Automation.PSCredential\
+$credObject = New-Object \
+System.Management.Automation.PSCredential\
 ("$user@$domain", $password)
 
-Add-Computer -DomainName $domain -Credential $credObject
+Add-Computer -DomainName $domain \
+-Credential $credObject
 
-set-service bosh-agent -startuptype automatic
+set-service bosh-agent -startuptype \
+automatic
 
 restart-computer
 
 # Confirm Domain Joining
+
 # should return True
-(Get-WmiObject -Class Win32_ComputerSystem).Partofdomain
+(Get-WmiObject -Class Win32_ComputerSystem)\
+.Partofdomain
 
 # should return the name of the domain
 Get-WmiObject -Class Win32_ComputerSystem
@@ -135,17 +153,30 @@ Get-WmiObject -Class Win32_ComputerSystem
 
 ```powershell
 # dugnri6i0ou2lku is the bosh VM's hostname
-# GardenGMSA is hte name of the AD service account we are creating
-# GardenGMSAHosts is the group we created earlier on the DC
-Add-ADGroupMember -Identity "GardenGMSAHosts" -Members dugnri6i0ou2lku$, \
-GardenUser  New-ADServiceAccount -name GardenGMSA -DNSHostName \
-gardengmsa.demo.foobartld -ServicePrincipalNames http/gardengmsa.demo.foobartld \
--PrincipalsAllowedToRetrieveManagedPassword GardenGMSAHosts \
--PrincipalsAllowedToDelegateToAccount GardenGMSAHosts
 
-#Verify the group is added to the AD service account named GardenGMSA
+# GardenGMSA is the name of the AD
+# service account we are creating
+
+# GardenGMSAHosts is the group we created
+# earlier on the DC
+
+Add-ADGroupMember -Identity "GardenGMSAHosts" \
+-Members dugnri6i0ou2lku$, GardenUser  \
+New-ADServiceAccount -name GardenGMSA \
+-DNSHostName gardengmsa.demo.foobartld \
+-ServicePrincipalNames \
+http/gardengmsa.demo.foobartld \
+-PrincipalsAllowedToRetrieveManagedPassword \
+GardenGMSAHosts \
+-PrincipalsAllowedToDelegateToAccount \
+GardenGMSAHosts
+
+# Verify the group is added to the AD service
+# account named GardenGMSA
+
 Get-ADServiceAccount GardenGMSA -Properties \
-PrincipalsAllowedToRetrieveManagedPassword, PrincipalsAllowedToDelegateToAccount
+PrincipalsAllowedToRetrieveManagedPassword, \
+PrincipalsAllowedToDelegateToAccount
 ```
 </td>
 </tr>
