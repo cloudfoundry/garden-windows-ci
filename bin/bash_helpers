@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-GITHUB_ENVS="aioli,alfredo,guac,hummus,sriracha,tzatziki,jro-acceptance,pesto,tartar"
+GITHUB_ENVS="aioli,alfredo,guac,hummus,sriracha,tzatziki,jro-acceptance,pesto,tartar,sys.merced"
 
 # Bosh and CF target functions
 bosh_target() {
@@ -318,7 +318,7 @@ _project_name() {
     spitfire)
       echo "cf-greenhouse-$1"
       ;;
-    pesto | alfredo | mulgore | aioli | sriracha | hummus | tzatziki | jro-acceptance | tartar | guac)
+    pesto | alfredo | mulgore | aioli | sriracha | hummus | tzatziki | jro-acceptance | tartar | guac | sys.merced)
       echo "$1"
       ;;
     edge.buildpacks-gcp.ci)
