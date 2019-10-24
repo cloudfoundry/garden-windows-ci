@@ -203,20 +203,26 @@ _bosh_creds_github() {
   git clone git@github.com:pivotal/garden-windows-environments.git ${envs} &> /dev/null
   if [ $? -ne 0 ]; then
     echo "'git clone git@github.com:pivotal/garden-windows-environments.git' failed; make sure to run 'load-key'"
-    return 1
+    exit 1
   fi
 
   pushd "${envs}/${environment}" &> /dev/null
     # If PASW
     if [ $environment = 'sys.merced' ]; then
+      if [ ! -f env ] || [ ! -f ops_manager_target ] || [ ! -f ops_manager.key ]; then
+        echo "Environment files missing: Needs env, ops_manager_target, ops_manager.key files"
+        popd &> /dev/null
+        exit 1
+      fi
+
       tmp_file=$(mktemp)
       cat ops_manager.key > $tmp_file
       ops_manager_target=$(cat ops_manager_target)
-
       export BOSH_ALL_PROXY="ssh+socks5://${ops_manager_target}?private-key=${tmp_file}"
       export CREDHUB_PROXY=$BOSH_ALL_PROXY
       export JUMPBOX_PRIVATE_KEY=$tmp_file
       eval "$(cat env)"
+
     # If open-source
     else
       eval "$(bbl print-env)"
