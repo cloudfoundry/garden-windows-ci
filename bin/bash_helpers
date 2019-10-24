@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-GITHUB_ENVS="aioli,alfredo,guac,hummus,sriracha,tzatziki,jro-acceptance,pesto,tartar,sys.merced"
+# When adding/deleting envs, put them in the right list here
+GITHUB_ENVS_CF="aioli,alfredo,guac,hummus,sriracha,tzatziki,jro-acceptance,pesto,tartar"
+GITHUB_ENVS_PCF="sys.merced"
+GITHUB_ENVS="$GITHUB_ENVS_CF,$GITHUB_ENVS_PCF"
+CONCOURSE_ENV="spitfire"
 
 # Bosh and CF target functions
 bosh_target() {
@@ -17,8 +21,7 @@ bosh_target() {
     fi
   fi
 
-  local concourse_director="spitfire"
-  if [ "${concourse_director}" = "${environment}" ]; then
+  if [ "${CONCOURSE_ENV}" = "${environment}" ]; then
     echo "You are targeting the Concourse Director, try not to break anything :)"
   fi
 
@@ -207,8 +210,7 @@ _bosh_creds_github() {
   fi
 
   pushd "${envs}/${environment}" &> /dev/null
-    # If PASW
-    if [ $environment = 'sys.merced' ]; then
+    if [[ ",$GITHUB_ENVS_PCF," =~ .*\,$environment,.* ]]; then
       if [ ! -f env ] || [ ! -f ops_manager_target ] || [ ! -f ops_manager.key ]; then
         echo "Environment files missing: Needs env, ops_manager_target, ops_manager.key files"
         popd &> /dev/null
@@ -223,7 +225,7 @@ _bosh_creds_github() {
       export JUMPBOX_PRIVATE_KEY=$tmp_file
       eval "$(cat env)"
 
-    # If open-source
+    # Open-source
     else
       eval "$(bbl print-env)"
       if test $print_jumpbox_creds; then
