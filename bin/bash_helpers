@@ -43,6 +43,10 @@ bosh_target() {
 
   if [[ ",$GITHUB_ENVS," =~ .*\,$environment,.* ]]; then
     _bosh_creds_github $environment
+    if [ $? -ne 0 ]; then
+      echo "_bosh_creds_github failed"
+      return
+    fi
   else
     eval "$(_bosh_creds_gcp $environment true)"
   fi
@@ -65,6 +69,10 @@ cf_target() {
 
   if [[ ",$GITHUB_ENVS," =~ .*\,$environment,.* ]]; then
     _bosh_creds_github $environment
+    if [ $? -ne 0 ]; then
+      echo "_bosh_creds_github failed"
+      return
+    fi
     _cf_creds_github $environment
   else
     _is_using_credhub "$environment"
@@ -206,7 +214,7 @@ _bosh_creds_github() {
   git clone git@github.com:pivotal/garden-windows-environments.git ${envs} &> /dev/null
   if [ $? -ne 0 ]; then
     echo "'git clone git@github.com:pivotal/garden-windows-environments.git' failed; make sure to run 'load-key'"
-    exit 1
+    return 1
   fi
 
   pushd "${envs}/${environment}" &> /dev/null
@@ -214,7 +222,7 @@ _bosh_creds_github() {
       if [ ! -f env ] || [ ! -f ops_manager_target ] || [ ! -f ops_manager.key ]; then
         echo "Environment files missing: Needs env, ops_manager_target, ops_manager.key files"
         popd &> /dev/null
-        exit 1
+        return 1
       fi
 
       tmp_file=$(mktemp)
