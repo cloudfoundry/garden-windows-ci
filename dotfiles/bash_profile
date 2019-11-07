@@ -18,6 +18,7 @@ eval "$(direnv hook bash)"
 
 # z (jump to directories)
 source $HOME/.z.sh
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # Show git status and bosh target in prompt
 green="\[\033[01;32m\]"
@@ -575,3 +576,4 @@ EOF
   echo -e "\nAliases:\n*******"
   alias | awk -F= '{print substr($1,7)}'
 }
+
