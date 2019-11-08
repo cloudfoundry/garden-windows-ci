@@ -4,7 +4,7 @@ trap { $host.SetShouldExit(1) }
 Add-Content -Path "C:\Windows\system32\drivers\etc\hosts" -Encoding ASCII "::1 localhost`n127.0.0.1 localhost`n"
 
 $env:BAZEL_SH="c:\var\vcap\packages\msys2\usr\bin\bash.exe"
-$env:BAZEL_VC="C:\var\vcap\data\VSBuildTools\2017\vc"
+$env:BAZEL_VC="C:\var\vcap\data\VSBuildTools\2019\vc"
 $env:ENVOY_BAZEL_ROOT="c:\_eb"
 
 $tempDir = "$env:TEMP\envoy-build-dir"
