@@ -517,6 +517,17 @@ del_line() {
   sed -i "$1d" $2
 }
 
+guess_cfd() {
+  # Commercial cf deployments have weird name but begins with 'cf'
+  [ "$1" == "-h" ] && echo "Guess the name of the cf deployment" && return
+  bosh ds | awk '{print $1}' | grep -v / | grep '^cf'
+}
+
+guess_pasd() {
+  [ "$1" == "-h" ] && echo "Guess the name of the pas deployment" && return
+  bosh ds | awk '{print $1}' | grep -v / | grep '^pas'
+}
+
 function lscon() {
   [ "$1" == "-h" ] && echo "List containers, their ip address on all windows cells" && return
   local d="${1:-cf}" c="${2:-windows2019-cell}";
