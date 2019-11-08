@@ -533,8 +533,8 @@ function lsapp() {
 
 function lsmap() {
   [ "$1" == "-h" ] && echo "List host container mappings" && return
-  local d="${1:-cf}";
-  bosh -d "$d" ssh diego-cell --opts=-T 'source /etc/profile.d/cfdot.sh && /var/vcap/packages/cfdot/bin/cfdot presences | '\
+  local d="${1:-cf}" c="${2:-diego-cell}";
+  bosh -d "$d" ssh "$c" --opts=-T 'source /etc/profile.d/cfdot.sh && /var/vcap/packages/cfdot/bin/cfdot presences | '\
   'grep -oP "\"key\":\"\K([^\"]+)" | xargs -I{} /var/vcap/packages/cfdot/bin/cfdot actual-lrps -c {}' | awk -F 'stdout \| ' '{print $2}' | awk /./
 }
 
