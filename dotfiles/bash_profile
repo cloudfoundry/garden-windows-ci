@@ -530,7 +530,7 @@ guess_pasd() {
 
 function lscon() {
   [ "$1" == "-h" ] && echo "List containers, their ip address on all windows cells" && return
-  local d="${1:-cf}" c="${2:-windows2019-cell}";
+  local d="${1:-$(guess_cfd)}" c="${2:-windows2019-cell}";
   bosh -d "$d" ssh "$c" --opts=-T \
   'powershell $s=((Get-NetIPConfiguration -InterfaceAlias "Ethernet*").IPv4Address.IPAddress); "Get-ComputeProcess | % {$o=$_.Id.Substring(0,28); (Get-HnsEndpoint | Where {$_.Name -eq $o}).IPAddress + \"`t\" + $_.Id}"' | \
   sed 's#: stdout |##g' | sort
@@ -544,7 +544,7 @@ function lsapp() {
 
 function lsmap() {
   [ "$1" == "-h" ] && echo "List host container mappings" && return
-  local d="${1:-cf}" c="${2:-diego-cell}";
+  local d="${1:-$(guess_cfd)}" c="${2:-diego-cell}";
   bosh -d "$d" ssh "$c" --opts=-T 'source /etc/profile.d/cfdot.sh && /var/vcap/packages/cfdot/bin/cfdot presences | '\
   'grep -oP "\"key\":\"\K([^\"]+)" | xargs -I{} /var/vcap/packages/cfdot/bin/cfdot actual-lrps -c {}' | awk -F 'stdout \| ' '{print $2}' | awk /./
 }
