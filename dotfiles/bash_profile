@@ -500,7 +500,7 @@ box_mount_smb() {
   local vm_ip="$(box_ip $name)"
   local mount_dir="/home/pivotal/workspace/vmfiles/vmshare/$name"
 
-  sudo umount $mount_dir
+  sudo umount $mount_dir 2>&1 | sed "s#umount: .*: not mounted.##"
   mkdir -p $mount_dir
   sudo mount -t cifs -o "vers=3.0,user=Administrator,password=Password123!,uid=pivotal,gid=pivotal" \
       "//$vm_ip/workspace" \
