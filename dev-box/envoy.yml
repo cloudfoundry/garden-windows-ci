@@ -3,9 +3,9 @@ name: envoy
 
 releases:
 - name: windows-tools
-  version: 56
-  url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=56
-  sha1: 8b181427fdf0c8b1fe4e1884c6375205f751e2a4
+  version: 57
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=57
+  sha1: db92476bbe942463797c75a1037d7974c9a46821
 - name: windows-utilities
   sha1: efc10ac0f4acae23637ce2c6f864d20df2e3a781
   url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.11.0
@@ -59,6 +59,8 @@ instance_groups:
   - name: vc_redist
     release: windows-tools
   - name: vs_buildtools
+    release: windows-tools
+  - name: llvm
     release: windows-tools
   - name: enable_rdp
     properties:
