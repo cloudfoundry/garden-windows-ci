@@ -9,10 +9,6 @@ resources:
   source:
     branch: master
     uri: http://github.com/cloudfoundry/garden-windows-ci.git
-- name: every-day
-  type: time
-  source:
-    interval: 24h
 
 jobs:
 - name: test
@@ -21,8 +17,6 @@ jobs:
   - in_parallel:
     - get: ci
     - get: filelock
-      trigger: true
-    - get: every-day
       trigger: true
   - in_parallel:
     - task: test-linux
@@ -36,4 +30,4 @@ jobs:
       params:
         IMPORT_PATH: "code.cloudfoundry.org/filelock"
         EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      tags: [2019]
+      tags: ["2019"]
