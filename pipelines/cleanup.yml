@@ -1,7 +1,8 @@
 resources:
-- name: every-day
+- name: twice-a-week
   type: time
   source:
+    days: [Sunday, Wednesday]
     start: 01:00  # 8PM ET
     stop:  02:00  # 9PM ET
 
@@ -117,7 +118,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: every-day
+    - get: twice-a-week
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
@@ -150,7 +151,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: every-day
+    - get: twice-a-week
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
@@ -183,7 +184,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: every-day
+    - get: twice-a-week
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
@@ -216,7 +217,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: every-day
+    - get: twice-a-week
       trigger: true
     - get: ci
   - put: spitfire-lock-pool
@@ -240,7 +241,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: every-day
+    - get: twice-a-week
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
@@ -273,7 +274,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: every-day
+    - get: twice-a-week
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
@@ -306,7 +307,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: every-day
+    - get: twice-a-week
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
@@ -339,7 +340,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: every-day
+    - get: twice-a-week
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
@@ -372,7 +373,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: every-day
+    - get: twice-a-week
       trigger: true
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
@@ -405,7 +406,7 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-    - get: every-day
+    - get: twice-a-week
       trigger: true
       tags: [vsphere]
     - get: ci
