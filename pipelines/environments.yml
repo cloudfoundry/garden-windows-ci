@@ -170,6 +170,8 @@ jobs:
   - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: sunday-morning
+      trigger: true
   - task: bbl-up
     file: cf-deployment-concourse-tasks/bbl-up/task.yml
     params:
@@ -205,6 +207,8 @@ jobs:
   - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: sunday-morning
+      trigger: true
   - task: bbl-up
     file: cf-deployment-concourse-tasks/bbl-up/task.yml
     params:
@@ -275,6 +279,8 @@ jobs:
   - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: sunday-morning
+      trigger: true
   - task: bbl-up
     file: cf-deployment-concourse-tasks/bbl-up/task.yml
     params:
@@ -309,6 +315,8 @@ jobs:
   - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: sunday-morning
+      trigger: true
   - task: bbl-up
     file: cf-deployment-concourse-tasks/bbl-up/task.yml
     params:
@@ -343,6 +351,8 @@ jobs:
   - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: sunday-morning
+      trigger: true
   - task: bbl-up
     file: cf-deployment-concourse-tasks/bbl-up/task.yml
     params:
@@ -377,6 +387,8 @@ jobs:
   - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: garden-windows-environments
+    - get: sunday-morning
+      trigger: true
   - task: bbl-up
     file: cf-deployment-concourse-tasks/bbl-up/task.yml
     params:
