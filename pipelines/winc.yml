@@ -124,10 +124,6 @@ resources:
     pool: pesto
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:greenhouse-ci/locks
-- name: every-4hrs
-  type: time
-  source:
-    interval: 4h
 - name: version
   type: semver
   source:
@@ -208,8 +204,6 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-4hrs
-      trigger: true
     - get: groot-windows-develop
       trigger: true
     - get: groot-windows-master
@@ -226,8 +220,6 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-4hrs
-      trigger: true
     - get: groot-windows-develop
       trigger: true
     - get: groot-windows-master
@@ -260,8 +252,6 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-4hrs
-      trigger: true
     - get: winc-develop
       trigger: true
     - get: groot-windows-master
@@ -288,8 +278,6 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-4hrs
-      trigger: true
     - get: winc-develop
       trigger: true
     - get: groot-windows-master
@@ -332,8 +320,6 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-4hrs
-      trigger: true
     - get: groot-windows-master
       trigger: true
     - get: winc-master
@@ -371,8 +357,6 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-4hrs
-      trigger: true
     - get: groot-windows-master
       trigger: true
     - get: winc-master
@@ -438,8 +422,6 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-4hrs
-      trigger: true
     - get: gats-fork
     - get: garden-runc-release
       trigger: true
@@ -514,8 +496,6 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: every-4hrs
-      trigger: true
     - get: gats-fork
     - get: garden-runc-release
       trigger: true
@@ -685,8 +665,6 @@ jobs:
       acquire: true
   - in_parallel:
     - get: ci
-    - get: every-4hrs
-      trigger: true
     - get: winc-release-develop
       passed: [test-nstar]
       trigger: true
@@ -801,8 +779,6 @@ jobs:
       acquire: true
   - in_parallel:
     - get: ci
-    - get: every-4hrs
-      trigger: true
     - get: winc-release-develop
       passed: [test-nstar]
       trigger: true
