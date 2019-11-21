@@ -1,8 +1,8 @@
 resource_types:
 - name: metalink-repository
+  type: docker-image
   source:
     repository: dpb587/metalink-repository-resource
-  type: docker-image
 
 resources:
 - name: cf
@@ -53,62 +53,17 @@ jobs:
       manifest: tracker-bot-repo/manifest.yml
       path: tracker-bot-repo
 
-
 - name: deploy-slack-delegate-bot
   serial: true
   plan:
   - in_parallel:
+    - get: ci
     - get: slack-delegate-bot
       trigger: true
     - get: config
       trigger: true
   - task: build
-    config:
-      container_limits: {}
-      image_resource:
-        source:
-          repository: alpine
-        type: docker-image
-      inputs:
-      - name: slack-delegate-bot
-      - name: config
-      outputs:
-      - name: app
-      platform: linux
-      run:
-        args:
-        - -c
-        - |
-          set -eu
-
-          # required when running the bot for user timezone configuration
-          apk add --no-cache tzdata
-
-          # avoids google default credentials error during validation
-          export PAIRIST_API_KEY=fake-token
-
-          cp slack-delegate-bot/* app/exec
-          echo 'exec ./exec --config=config/*.yml --config=config/default.delegatebot ${COMMAND:-run}' > app/run.sh
-          chmod +x app/*
-
-          cat > app/cf.yml <<EOF
-          applications:
-          - name: garden-windows-slack-delegate-bot
-            memory: 32M
-            instances: 1
-            buildpack: binary_buildpack
-            env:
-              SLACK_TOKEN: ((slack-token))
-            no-route: true
-            command: ./run.sh
-          EOF
-
-          cp -rp config/config app/config
-
-          cd app
-
-          COMMAND=validate ./run.sh
-        path: sh
+    file: ci/tasks/deploy-delegate-bot/task.yml
   - put: cf
     params:
       manifest: app/cf.yml

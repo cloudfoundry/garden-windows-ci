@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -eu
+
+# required when running the bot for user timezone configuration
+apk add --no-cache tzdata
+
+# avoids google default credentials error during validation
+export PAIRIST_API_KEY=fake-token
+
+cp slack-delegate-bot/* app/exec
+echo 'exec ./exec --config=config/*.yml --config=config/default.delegatebot ${COMMAND:-run}' > app/run.sh
+chmod +x app/*
+
+cat > app/cf.yml <<EOF
+applications:
+- name: garden-windows-slack-delegate-bot
+  memory: 32M
+  instances: 1
+  buildpack: binary_buildpack
+  env:
+    SLACK_TOKEN: ((slack-token))
+  no-route: true
+  command: ./run.sh
+EOF
+
+cp -rp config/config app/config
+
+cd app
+
+COMMAND=validate ./run.sh
