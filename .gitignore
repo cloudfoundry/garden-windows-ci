@@ -2,3 +2,4 @@
 *.sublime-*
 main.retry
 ansible.cfg
+.idea
