@@ -8,13 +8,11 @@ groups:
   - bbl-update-sriracha
   - bbl-update-guac
   - bbl-update-alfredo
-  - bbl-update-jro-acceptance
 - name: deploy-cf
   jobs:
   - deploy-cf-guac
   - deploy-cf-tzatziki
   - deploy-cf-hummus
-  - deploy-cf-jro-acceptance
 - name: bbl-down
   jobs:
   - bbl-down-hummus
@@ -24,7 +22,6 @@ groups:
   - bbl-down-sriracha
   - bbl-down-guac
   - bbl-down-alfredo
-  - bbl-down-jro-acceptance
 
 resources:
 - name: cf-deployment-concourse-tasks
@@ -92,14 +89,6 @@ resources:
   source:
     branch: master
     pool: alfredo
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
-    uri: git@github.com:greenhouse-ci/locks
-
-- name: jro-acceptance-lock-pool
-  type: pool
-  source:
-    branch: master
-    pool: jro-acceptance
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:greenhouse-ci/locks
 
@@ -377,42 +366,6 @@ jobs:
         params:
           release: alfredo-lock-pool
 
-- name: bbl-update-jro-acceptance
-  serial: true
-  serial_groups: [update]
-  plan:
-  - put: jro-acceptance-lock-pool
-    params:
-      acquire: true
-  - in_parallel:
-    - get: cf-deployment-concourse-tasks
-    - get: garden-windows-environments
-    - get: sunday-morning
-      trigger: true
-  - task: bbl-up
-    file: cf-deployment-concourse-tasks/bbl-up/task.yml
-    params:
-      BBL_IAAS: gcp
-      BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
-      BBL_GCP_REGION: us-east1
-      BBL_STATE_DIR: jro-acceptance
-      BBL_LB_CERT: cert.pem
-      BBL_LB_KEY: key.pem
-      LB_DOMAIN: jro-acceptance.cf-app.com
-      BBL_ENV_NAME: jro-acceptance
-    input_mapping:
-      bbl-state: garden-windows-environments
-      bbl-config: garden-windows-environments
-    ensure:
-      do:
-      - put: garden-windows-environments
-        params:
-          repository: updated-bbl-state
-          rebase: true
-      - put: jro-acceptance-lock-pool
-        params:
-          release: jro-acceptance-lock-pool
-
 - name: bbl-down-hummus
   serial: true
   serial_groups: [down]
@@ -680,44 +633,6 @@ jobs:
         params:
           release: alfredo-lock-pool
 
-- name: bbl-down-jro-acceptance
-  serial: true
-  serial_groups: [down]
-  plan:
-  - put: jro-acceptance-lock-pool
-    params:
-      acquire: true
-  - in_parallel:
-    - get: cf-deployment-concourse-tasks
-    - get: garden-windows-environments
-  - task: bosh-delete-all-deployments
-    file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
-    params:
-      BBL_STATE_DIR: jro-acceptance
-      DELETE_ALL_DEPLOYMENTS: true
-    input_mapping:
-      bbl-state: garden-windows-environments
-    on_failure:
-      put: jro-acceptance-lock-pool
-      params:
-        release: jro-acceptance-lock-pool
-  - task: bbl-down
-    file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
-    params:
-      BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
-      BBL_STATE_DIR: jro-acceptance
-    input_mapping:
-      bbl-state: garden-windows-environments
-    ensure:
-      do:
-      - put: garden-windows-environments
-        params:
-          repository: updated-bbl-state
-          rebase: true
-      - put: jro-acceptance-lock-pool
-        params:
-          release: jro-acceptance-lock-pool
-
 - name: deploy-cf-guac
   serial: true
   plan:
@@ -915,69 +830,3 @@ jobs:
       put: hummus-lock-pool
       params:
         release: hummus-lock-pool
-
-- name: deploy-cf-jro-acceptance
-  serial: true
-  plan:
-  - put: jro-acceptance-lock-pool
-    params:
-      acquire: true
-  - in_parallel:
-    - get: cf-deployment-concourse-tasks
-    - get: cf-deployment
-    - get: garden-windows-ci
-    - get: garden-windows-environments
-  - task: collect-garden-windows-ci-ops-files
-    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
-    params:
-      BASE_OPS_FILE_DIR: jro-acceptance
-      NEW_OPS_FILES: |
-        operations/latest-garden-runc.yml
-        operations/latest-winc.yml
-        operations/enable-rdp-2019.yml
-        operations/windows2019-debug.yml
-        operations/decrease-rep-evacuation-timeout.yml
-        operations/enable-nginx-routing-integrity-windows2019.yml
-    input_mapping:
-      base-ops-files: garden-windows-environments
-      new-ops-files: garden-windows-ci
-  - task: collect-cf-deployment-ops-files
-    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
-    params:
-      BASE_OPS_FILE_DIR: jro-acceptance
-      NEW_OPS_FILES: |
-        operations/windows2019-cell.yml
-        operations/use-online-windows2019fs.yml
-        operations/use-latest-windows2019-stemcell.yml
-        operations/use-latest-stemcell.yml
-        operations/scale-to-one-az.yml
-        operations/stop-skipping-tls-validation.yml
-    input_mapping:
-      base-ops-files: collected-ops-files
-      new-ops-files: cf-deployment
-  - task: deploy-cf
-    file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
-    params:
-      BBL_STATE_DIR: jro-acceptance
-      SYSTEM_DOMAIN: jro-acceptance.cf-app.com
-      OPS_FILES: |
-        jro-acceptance/windows2019-cell.yml
-        jro-acceptance/use-online-windows2019fs.yml
-        jro-acceptance/use-latest-windows2019-stemcell.yml
-        jro-acceptance/use-latest-stemcell.yml
-        jro-acceptance/scale-to-one-az.yml
-        jro-acceptance/stop-skipping-tls-validation.yml
-        jro-acceptance/latest-garden-runc.yml
-        jro-acceptance/latest-winc.yml
-        jro-acceptance/enable-rdp-2019.yml
-        jro-acceptance/decrease-rep-evacuation-timeout.yml
-        jro-acceptance/windows2019-debug.yml
-      VARS_FILES: jro-acceptance/cf/vars.yml
-    input_mapping:
-      bbl-state: garden-windows-environments
-      ops-files: collected-ops-files
-      vars-files: garden-windows-environments
-    ensure:
-      put: jro-acceptance-lock-pool
-      params:
-        release: jro-acceptance-lock-pool

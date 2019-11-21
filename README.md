@@ -16,7 +16,6 @@ Set of concourse tasks, dockerfiles, and pipelines for the CF Garden Windows tea
 |Tzatziki|GCP|Dev environment - 2019|
 |Hummus|GCP|Dev environment - 2019|
 |Guac|AWS|Dev environment - 1803|
-|jro-acceptance|GCP|Acceptance environment|
 
 ### Databases
 

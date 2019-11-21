@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # When adding/deleting envs, put them in the right list here
-GITHUB_ENVS_CF="aioli,alfredo,guac,hummus,sriracha,tzatziki,jro-acceptance,pesto,tartar"
+GITHUB_ENVS_CF="aioli,alfredo,guac,hummus,sriracha,tzatziki,pesto,tartar"
 GITHUB_ENVS_PCF="sys.merced"
 GITHUB_ENVS="$GITHUB_ENVS_CF,$GITHUB_ENVS_PCF"
 CONCOURSE_ENV="spitfire"
@@ -347,7 +347,7 @@ _project_name() {
     spitfire)
       echo "cf-greenhouse-$1"
       ;;
-    pesto | alfredo | mulgore | aioli | sriracha | hummus | tzatziki | jro-acceptance | tartar | guac | sys.merced)
+    pesto | alfredo | mulgore | aioli | sriracha | hummus | tzatziki | tartar | guac | sys.merced)
       echo "$1"
       ;;
     edge.buildpacks-gcp.ci)
