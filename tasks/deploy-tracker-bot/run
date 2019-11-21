@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -eu
+
+cat > tracker-bot-repo/config.yml <<EOF
+ignore:
+- envoy-windows-*
+- bbl-down-*
+groups: {}
+EOF
+
+cat > tracker-bot-repo/manifest.yml <<EOF
+applications:
+- name: windows-containers-tracker-bot
+  health-check-type: none
+  command: relint-trackerbot --config-file config.yml
+  buildpack: go_buildpack
+  no-route: true
+  env:
+    GOVERSION: go1.13
+    GOPACKAGENAME: github.com/pivotal-cf-experimental/relint-trackerbot
+    CONCOURSE_HOST: https://garden-windows.ci.cf-app.com
+    CONCOURSE_TEAM: main
+    TRACKER_API_TOKEN: ${TRACKER_API_TOKEN}
+    TRACKER_PROJECT_ID: ${TRACKER_PROJECT_ID}
+EOF

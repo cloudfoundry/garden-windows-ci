@@ -23,6 +23,10 @@ resources:
   source:
     uri: git@github.com:pivotal-cf-experimental/relint-trackerbot.git
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
+- name: ci
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/garden-windows-ci
 - name: slack-delegate-bot
   type: metalink-repository
   source:
@@ -34,48 +38,14 @@ jobs:
 - name: deploy-tracker-bot
   serial: true
   plan:
-  - get: tracker-bot-repo
+  - in_parallel:
+    - get: tracker-bot-repo
+    - get: ci
   - task: write-config-file
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: cloudfoundry/garden-windows-ci
-      inputs:
-      - name: tracker-bot-repo
-      outputs:
-      - name: tracker-bot-repo
-      params:
-        TRACKER_API_TOKEN: ((tracker-api-token))
-        TRACKER_PROJECT_ID: 2409722
-      run:
-        path: bash
-        args:
-        - -c
-        - |
-          cat > tracker-bot-repo/config.yml <<EOF
-          ignore:
-          - envoy-windows-*
-          - bbl-down-*
-          groups: {}
-          EOF
-
-          cat > tracker-bot-repo/manifest.yml <<EOF
-          applications:
-          - name: windows-containers-tracker-bot
-            health-check-type: none
-            command: relint-trackerbot --config-file config.yml
-            buildpack: go_buildpack
-            no-route: true
-            env:
-              GOVERSION: go1.13
-              GOPACKAGENAME: github.com/pivotal-cf-experimental/relint-trackerbot
-              CONCOURSE_HOST: https://garden-windows.ci.cf-app.com
-              CONCOURSE_TEAM: main
-              TRACKER_API_TOKEN: ${TRACKER_API_TOKEN}
-              TRACKER_PROJECT_ID: ${TRACKER_PROJECT_ID}
-          EOF
+    file: ci/tasks/deploy-tracker-bot/task.yml
+    params:
+      TRACKER_API_TOKEN: ((tracker-api-token))
+      TRACKER_PROJECT_ID: 2409722
   - put: cf
     inputs:
     - tracker-bot-repo
