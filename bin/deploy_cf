@@ -28,7 +28,7 @@ fi
 
 environment=$1
 case "$1" in
-  hummus | tzatziki | alfredo | guac)
+  hummus | alfredo | guac)
     ;;
   *)
     echo "Cannot deploy environment: $1"

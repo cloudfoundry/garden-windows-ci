@@ -105,14 +105,6 @@ resources:
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
-- name: tzatziki-lock-pool
-  type: pool
-  source:
-    branch: master
-    pool: tzatziki
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
-    uri: git@github.com:greenhouse-ci/locks
-
 jobs:
 - name: alfredo-cleanup
   serial: true
@@ -335,39 +327,6 @@ jobs:
       put: aioli-lock-pool
       params:
         release: aioli-lock-pool
-
-- name: tzatziki-cleanup
-  serial: true
-  plan:
-  - in_parallel:
-    - get: twice-a-week
-      trigger: true
-    - get: cf-deployment-concourse-tasks
-    - get: garden-windows-environments
-    - get: ci
-  - put: tzatziki-lock-pool
-    params:
-      acquire: true
-  - task: clean-up
-    file: cf-deployment-concourse-tasks/bosh-cleanup/task.yml
-    params:
-      BBL_STATE_DIR: tzatziki
-    input_mapping:
-      bbl-state: garden-windows-environments
-    on_failure:
-      put: tzatziki-lock-pool
-      params:
-        release: tzatziki-lock-pool
-  - task: upload-bosh-dns-release
-    file: ci/tasks/bosh-upload-release/task.yml
-    params:
-      BBL_STATE_DIR: tzatziki
-    input_mapping:
-      bbl-state: garden-windows-environments
-    ensure:
-      put: tzatziki-lock-pool
-      params:
-        release: tzatziki-lock-pool
 
 - name: guac-cleanup
   serial: true

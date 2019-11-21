@@ -2,7 +2,6 @@ groups:
 - name: bbl-up
   jobs:
   - bbl-update-hummus
-  - bbl-update-tzatziki
   - bbl-update-aioli
   - bbl-update-pesto
   - bbl-update-sriracha
@@ -11,12 +10,10 @@ groups:
 - name: deploy-cf
   jobs:
   - deploy-cf-guac
-  - deploy-cf-tzatziki
   - deploy-cf-hummus
 - name: bbl-down
   jobs:
   - bbl-down-hummus
-  - bbl-down-tzatziki
   - bbl-down-aioli
   - bbl-down-pesto
   - bbl-down-sriracha
@@ -49,14 +46,6 @@ resources:
   source:
     branch: master
     pool: guac
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
-    uri: git@github.com:greenhouse-ci/locks
-
-- name: tzatziki-lock-pool
-  type: pool
-  source:
-    branch: master
-    pool: tzatziki
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:greenhouse-ci/locks
 
@@ -185,42 +174,6 @@ jobs:
       - put: guac-lock-pool
         params:
           release: guac-lock-pool
-
-- name: bbl-update-tzatziki
-  serial: true
-  serial_groups: [update]
-  plan:
-  - put: tzatziki-lock-pool
-    params:
-      acquire: true
-  - in_parallel:
-    - get: cf-deployment-concourse-tasks
-    - get: garden-windows-environments
-    - get: sunday-morning
-      trigger: true
-  - task: bbl-up
-    file: cf-deployment-concourse-tasks/bbl-up/task.yml
-    params:
-      BBL_IAAS: gcp
-      BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
-      BBL_GCP_REGION: us-east1
-      BBL_STATE_DIR: tzatziki
-      BBL_LB_CERT: certs/cert.pem
-      BBL_LB_KEY: certs/key.pem
-      LB_DOMAIN: tzatziki.cf-app.com
-      BBL_ENV_NAME: tzatziki
-    input_mapping:
-      bbl-state: garden-windows-environments
-      bbl-config: garden-windows-environments
-    ensure:
-      do:
-      - put: garden-windows-environments
-        params:
-          repository: updated-bbl-state
-          rebase: true
-      - put: tzatziki-lock-pool
-        params:
-          release: tzatziki-lock-pool
 
 - name: bbl-update-aioli
   serial: true
@@ -403,44 +356,6 @@ jobs:
       - put: hummus-lock-pool
         params:
           release: hummus-lock-pool
-
-- name: bbl-down-tzatziki
-  serial: true
-  serial_groups: [down]
-  plan:
-  - put: tzatziki-lock-pool
-    params:
-      acquire: true
-  - in_parallel:
-    - get: cf-deployment-concourse-tasks
-    - get: garden-windows-environments
-  - task: bosh-delete-all-deployments
-    file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
-    params:
-      BBL_STATE_DIR: tzatziki
-      DELETE_ALL_DEPLOYMENTS: true
-    input_mapping:
-      bbl-state: garden-windows-environments
-    on_failure:
-      put: tzatziki-lock-pool
-      params:
-        release: tzatziki-lock-pool
-  - task: bbl-down
-    file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
-    params:
-      BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
-      BBL_STATE_DIR: tzatziki
-    input_mapping:
-      bbl-state: garden-windows-environments
-    ensure:
-      do:
-      - put: garden-windows-environments
-        params:
-          repository: updated-bbl-state
-          rebase: true
-      - put: tzatziki-lock-pool
-        params:
-          release: tzatziki-lock-pool
 
 - name: bbl-down-aioli
   serial: true
@@ -696,74 +611,6 @@ jobs:
       put: guac-lock-pool
       params:
         release: guac-lock-pool
-
-- name: deploy-cf-tzatziki
-  serial: true
-  plan:
-  - put: tzatziki-lock-pool
-    params:
-      acquire: true
-  - in_parallel:
-    - get: cf-deployment-concourse-tasks
-    - get: cf-deployment
-      trigger: true
-    - get: garden-windows-ci
-    - get: garden-windows-environments
-  - task: collect-garden-windows-ci-ops-files
-    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
-    params:
-      BASE_OPS_FILE_DIR: tzatziki
-      NEW_OPS_FILES: |
-        operations/latest-garden-runc.yml
-        operations/latest-winc.yml
-        operations/enable-rdp-2019.yml
-        operations/windows2019-debug.yml
-        operations/decrease-rep-evacuation-timeout.yml
-        operations/scale-to-two-windows2019.yml
-    input_mapping:
-      base-ops-files: garden-windows-environments
-      new-ops-files: garden-windows-ci
-  - task: collect-cf-deployment-ops-files
-    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
-    params:
-      BASE_OPS_FILE_DIR: tzatziki
-      NEW_OPS_FILES: |
-        operations/windows2019-cell.yml
-        operations/use-online-windows2019fs.yml
-        operations/use-latest-windows2019-stemcell.yml
-        operations/use-latest-stemcell.yml
-        operations/scale-to-one-az.yml
-        operations/stop-skipping-tls-validation.yml
-    input_mapping:
-      base-ops-files: collected-ops-files
-      new-ops-files: cf-deployment
-  - task: deploy-cf
-    file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
-    params:
-      BBL_STATE_DIR: tzatziki
-      SYSTEM_DOMAIN: tzatziki.cf-app.com
-      OPS_FILES: |
-        tzatziki/windows2019-cell.yml
-        tzatziki/use-online-windows2019fs.yml
-        tzatziki/use-latest-windows2019-stemcell.yml
-        tzatziki/use-latest-stemcell.yml
-        tzatziki/scale-to-one-az.yml
-        tzatziki/stop-skipping-tls-validation.yml
-        tzatziki/latest-garden-runc.yml
-        tzatziki/latest-winc.yml
-        tzatziki/enable-rdp-2019.yml
-        tzatziki/windows2019-debug.yml
-        tzatziki/decrease-rep-evacuation-timeout.yml
-        tzatziki/scale-to-two-windows2019.yml
-      VARS_FILES:  tzatziki/cf/vars.yml
-    input_mapping:
-      bbl-state: garden-windows-environments
-      ops-files: collected-ops-files
-      vars-files: garden-windows-environments
-    ensure:
-      put: tzatziki-lock-pool
-      params:
-        release: tzatziki-lock-pool
 
 - name: deploy-cf-hummus
   serial: true
