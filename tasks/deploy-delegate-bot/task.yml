@@ -14,5 +14,8 @@ inputs:
 outputs:
 - name: app
 
+params:
+  SLACK_TOKEN:
+
 run:
   path: ci/tasks/deploy-delegate-bot/run

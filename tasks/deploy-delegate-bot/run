@@ -19,7 +19,7 @@ applications:
   instances: 1
   buildpack: binary_buildpack
   env:
-    SLACK_TOKEN: ((slack-token))
+    SLACK_TOKEN: ${SLACK_TOKEN}
   no-route: true
   command: ./run.sh
 EOF

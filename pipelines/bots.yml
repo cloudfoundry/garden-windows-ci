@@ -64,6 +64,8 @@ jobs:
       trigger: true
   - task: build
     file: ci/tasks/deploy-delegate-bot/task.yml
+    params:
+      SLACK_TOKEN: ((slack-token))
   - put: cf
     params:
       manifest: app/cf.yml
