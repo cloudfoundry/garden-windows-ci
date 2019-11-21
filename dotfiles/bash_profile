@@ -3,6 +3,7 @@
 export HISTSIZE='32768'
 export HISTFILESIZE=$HISTSIZE
 export HISTCONTROL='ignoredups'
+shopt -s histappend
 export GIT_DUET_GLOBAL=true
 export GIT_DUET_ROTATE_AUTHOR=1
 export BOSH_USE_GEMFILE=1
@@ -52,6 +53,9 @@ export PATH="$GOPATH/bin:$PATH:$HOME/workspace/garden-windows-ci/bin"
 
 # Homebrew gnu-tar: override defualt BSD tar
 export MANPATH="/usr/local/Cellar/gnu-tar/1.29/share/man:$MANPATH"
+
+# Keep updating history across shells (easy CTL-R)
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 # Hombrew Bash Completion
 brew_cmd () {
