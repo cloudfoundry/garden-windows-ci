@@ -318,8 +318,8 @@ fly-docker () {
 
 fly-bots() {
   [ "$1" == "-h" ] && echo "Push bots pipeline to concourse" && return
-  fly -t garden-windows sp -p delegate-bot -c $HOME/workspace/garden-windows-ci/pipelines/bots.yml \
-  -l<(lpass show --notes bot-creds)
+   fly -t garden-windows sp -p delegate-bot -c $HOME/workspace/garden-windows-ci/pipelines/bots.yml \
+  -l<(lpass show --notes github-deploy-keys bot-creds)
 }
 
 fly-web-config-buildpack() {
