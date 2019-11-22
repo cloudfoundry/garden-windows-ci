@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+ops="
+---
+- type: replace
+  path: /stemcells/alias=windows/version
+  value: "$(< windows-2019-stemcell/version)"
+"
+
+eval "$(bbl --state-dir=garden-windows-environments/spitfire print-env)"
+bosh -d concourse-worker-2019 manifest > artifacts/manifest.yml.OLD
+bosh int artifacts/manifest.yml.OLD -o <(echo "${ops}") > artifacts/manifest.yml

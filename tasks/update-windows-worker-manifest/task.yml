@@ -1,0 +1,17 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/garden-windows-ci
+
+inputs:
+- name: ci
+- name: windows-2019-stemcell
+- name: garden-windows-environments
+
+outputs:
+- name: artifacts
+
+run:
+  path: ci/tasks/update-windows-worker-manifest/run

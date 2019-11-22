@@ -317,7 +317,7 @@ fly-windowsfs-online () {
 fly-docker () {
   [ "$1" == "-h" ] && echo "Push docker pipeline to concourse" && return
   fly -t garden-windows sp -p docker -c $HOME/workspace/garden-windows-ci/pipelines/docker.yml \
-  -l<(lpass show --notes docker-creds)
+  -l<(lpass show --notes docker-creds github-deploy-keys )
 }
 
 fly-bots() {

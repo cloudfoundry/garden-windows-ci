@@ -1,5 +1,17 @@
+resource_types:
+- name: bosh-deployment
+  type: docker-image
+  source:
+    repository: cloudfoundry/bosh-deployment-resource
+
 resources:
 - name: ci
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
+
+- name: docker-ci
   type: git
   source:
     branch: master
@@ -13,14 +25,52 @@ resources:
     username: {{DOCKER_USERNAME}}
     password: {{DOCKER_PASSWORD}}
 
+- name: windows-2019-stemcell
+  type: bosh-io-stemcell
+  source:
+    name: bosh-google-kvm-windows2019-go_agent
+
+- name: concourse-worker-2019-deployment
+  type: bosh-deployment
+  source: ((spitfire-bosh-credentials))
+
+- name: garden-windows-environments
+  type: git
+  source:
+    uri: git@github.com:pivotal/garden-windows-environments
+    branch: master
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
+
 jobs:
 - name: build-and-push
   serial: true
   plan:
   - get: ci
+    resource: docker-ci
     trigger: true
   - put: ci-image
     params:
       build: ci/docker
       dockerfile: ci/docker/Dockerfile.ci
       tag_as_latest: true
+
+- name: update-windows-deployments
+  serial: true
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: windows-2019-stemcell
+      trigger: true
+    - get: garden-windows-environments
+  - task: update-windows2019
+    file: ci/update-windows-worker-manifest/task.yml
+  - put: concourse-worker-2019-deployment
+    inputs:
+    - windows-2019-stemcell
+    - artifacts
+    params:
+      manifest: artifacts/manifest.yml
+      stemcells:
+        - windows-2019-stemcell/stemcell.tgz
+
+
