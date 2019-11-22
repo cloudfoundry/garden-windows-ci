@@ -63,7 +63,7 @@ jobs:
       trigger: true
     - get: garden-windows-environments
   - task: update-windows2019
-    file: ci/update-windows-worker-manifest/task.yml
+    file: ci/tasks/update-windows-worker-manifest/task.yml
   - put: concourse-worker-2019-deployment
     inputs:
     - windows-2019-stemcell
