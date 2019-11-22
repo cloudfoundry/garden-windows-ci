@@ -4,11 +4,11 @@ platform: linux
 image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
 
 inputs:
-- package-repo
-- release-repo
+- name: package-repo
+- name: release-repo
 
 outputs:
-- bumped-release-repo
+- name: bumped-release-repo
 
 run:
   path: ci/tasks/bosh-vendor-package/run
