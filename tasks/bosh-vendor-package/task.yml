@@ -1,0 +1,19 @@
+---
+platform: linux
+
+image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
+
+inputs:
+- package-repo
+- release-repo
+
+outputs:
+- bumped-release-repo
+
+run:
+  path: ci/tasks/bosh-vendor-package/run
+
+params:
+  AWS_ACCESS_KEY_ID:
+  AWS_SECRET_ACCESS_KEY:
+  PACKAGE:
