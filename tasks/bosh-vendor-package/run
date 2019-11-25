@@ -11,8 +11,6 @@ echo "$PRIVATE_YML" > release-repo/config/private.yml
 bosh vendor-package --dir release-repo $PACKAGE package-repo
 
 pushd release-repo
-  git submodule update --recursive --remote --force
-
   if [ -n "$(git status --porcelain)" ]; then
     git config user.email "pivotal-netgarden-eng@pivotal.io"
     git config user.name "CI (Automated)"
