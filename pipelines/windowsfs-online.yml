@@ -94,6 +94,12 @@ resources:
     drafts: true
     access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
+- name: golang-release
+  type: git
+  source:
+    uri: https://github.com/bosh-packages/golang-release.git
+    tag_filter: v*
+
 # S3
 
 - name: gcp-windows-stemcell
@@ -163,6 +169,7 @@ resources:
 groups:
 - name: build-push-bump
   jobs:
+    - bump-go-in-windowsfs
     - bump-windowsfs-online-release-windows2016fs
     - bump-windowsfs-online-release-hydrator
     - create-tracker-story
@@ -231,6 +238,27 @@ jobs:
     params:
       repository: bumped-repo
       rebase: true
+
+- name: bump-go-in-windowsfs
+  serial: true
+  plan:
+  - in_parallel:
+    - get: golang-release
+      trigger: true
+    - get: windowsfs-online-release-develop
+    - get: ci
+  - task: bosh-vendor-package
+    file: ci/tasks/bosh-vendor-package/task.yml
+    params:
+      AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+      PACKAGE: golang-1-windows
+    input_mapping:
+      release-repo: windowsfs-online-release-develop
+      package-repo: golang-release
+  - put: windowsfs-online-release-develop
+    params:
+      repository: bumped-release-repo
 
 - name: aioli-online-cats
   serial: true
