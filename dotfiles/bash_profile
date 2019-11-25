@@ -274,7 +274,7 @@ fly-winc () {
   [ "$1" == "-h" ] && echo "Push winc pipeline to concourse" && return
   fly -t garden-windows sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
     -l <(_env_creds_yml pesto) \
-  -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 aws-iam-access-keys github-access-tokens garden-windows-dev-service-account.json)
+  -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 aws-iam-access-keys github-access-tokens garden-windows-dev-service-account.json)
 }
 
 fly-longrunning () {
