@@ -7,7 +7,7 @@ image_resource:
 
 inputs:
 - name: ci
-- name: windows-2019-stemcell
+- name: windows-stemcell
 - name: garden-windows-environments
 
 outputs:

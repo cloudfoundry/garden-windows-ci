@@ -6,7 +6,7 @@ ops="
 ---
 - type: replace
   path: /stemcells/alias=windows/version
-  value: "$(< windows-2019-stemcell/version)"
+  value: "$(< windows-stemcell/version)"
 "
 
 eval "$(bbl --state-dir=garden-windows-environments/spitfire print-env)"
