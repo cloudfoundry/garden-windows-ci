@@ -320,10 +320,10 @@ fly-windowsfs-online () {
     -l $HOME/workspace/garden-windows-ci/vars/windowsfs-online.yml
 }
 
-fly-docker () {
-  [ "$1" == "-h" ] && echo "Push docker pipeline to concourse" && return
-  fly -t garden-windows sp -p docker -c $HOME/workspace/garden-windows-ci/pipelines/docker.yml \
-  -l<(lpass show --notes docker-creds github-deploy-keys )
+fly-ci () {
+  [ "$1" == "-h" ] && echo "Push ci pipeline to concourse" && return
+  fly -t garden-windows sp -p ci -c $HOME/workspace/garden-windows-ci/pipelines/ci.yml \
+  -l<(lpass show --notes ci-creds github-deploy-keys )
 }
 
 fly-bots() {
