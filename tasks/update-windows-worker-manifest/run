@@ -13,5 +13,5 @@ eval "$(bbl --state-dir=garden-windows-environments/spitfire print-env)"
 bosh -d ${BOSH_DEPLOYMENT} manifest > artifacts/manifest.yml.OLD
 bosh int artifacts/manifest.yml.OLD -o <(echo "${ops}") > artifacts/manifest.yml
 
-echo -n "deployment: ${BOSH_DEPLOYMENT}" > artifacts/source-file.yml
-echo -n "${BOSH_CREDENTIALS}" >> artifacts/source-file.yml
+echo "deployment: ${BOSH_DEPLOYMENT}" > artifacts/source-file.yml
+echo "${BOSH_CREDENTIALS}" >> artifacts/source-file.yml
