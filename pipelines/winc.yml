@@ -199,7 +199,7 @@ jobs:
     params:
       AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
       AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
-      PACKAGE: go-1.13-windows
+      PACKAGE: golang-1.13-windows
     input_mapping:
       release-repo: winc-release-develop
       package-repo: golang-release
