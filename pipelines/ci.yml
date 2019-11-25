@@ -37,6 +37,8 @@ resources:
 
 - name: worker-deployment
   type: bosh-deployment
+  source:
+    skip_check: true
 
 - name: garden-windows-environments
   type: git
