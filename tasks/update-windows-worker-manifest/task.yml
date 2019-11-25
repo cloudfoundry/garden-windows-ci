@@ -13,5 +13,9 @@ inputs:
 outputs:
 - name: artifacts
 
+params:
+  BOSH_DEPLOYMENT:
+  BOSH_CREDENTIALS:
+
 run:
   path: ci/tasks/update-windows-worker-manifest/run

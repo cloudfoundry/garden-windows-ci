@@ -32,7 +32,6 @@ resources:
 
 - name: concourse-worker-2019-deployment
   type: bosh-deployment
-  source: ((spitfire-bosh-credentials))
 
 - name: garden-windows-environments
   type: git
@@ -64,11 +63,15 @@ jobs:
     - get: garden-windows-environments
   - task: update-windows2019
     file: ci/tasks/update-windows-worker-manifest/task.yml
+    params:
+      BOSH_DEPLOYMENT: concourse-worker-2019
+      BOSH_CREDENTIALS: ((spitfire-bosh-credentials))
   - put: concourse-worker-2019-deployment
     inputs:
     - windows-2019-stemcell
     - artifacts
     params:
+      source_file: artifacts/source-file.yml
       manifest: artifacts/manifest.yml
       stemcells:
         - windows-2019-stemcell/stemcell.tgz
