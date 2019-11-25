@@ -10,4 +10,4 @@ echo "$PRIVATE_YML" > release-repo/config/private.yml
 
 bosh vendor-package --dir release-repo $PACKAGE package-repo
 
-cp -r release-repo/* bumped-release-repo/
+cp -r release-repo/. bumped-release-repo/
