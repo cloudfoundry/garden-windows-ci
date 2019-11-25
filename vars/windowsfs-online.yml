@@ -6,8 +6,7 @@ windowsfs-online-release-repo: windowsfs-online-release
 fs-version: windows2019fs
 initial-image-version: 2019.0.1
 initial-online-release-version: 0.0.0
-resource-get-tag:
-task-tag: [2019]
+task-tag: ["2019"]
 finalized-release-glob: finalized-release/windowsfs-*.tgz
 windowsfs-uses-tar: false
 windows-scale-down-ops-file: ci/operations/scale-down-windows2019.yml

@@ -5,8 +5,7 @@ windowsfs-release-repo: windows2019fs-release
 fs-version: windows2019fs
 initial-image-version: 2019.0.1
 initial-release-version: 0.0.0
-resource-get-tag:
-task-tag: [2019]
+task-tag: ["2019"]
 finalized-release-glob: finalized-release/windows2019fs-*.tgz
 windowsfs-uses-tar: false
 windows-cell-ops-file: cf-deployment/operations/windows2019-cell.yml
