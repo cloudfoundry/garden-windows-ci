@@ -35,7 +35,7 @@ resources:
   source:
     name: bosh-google-kvm-windows1803-go_agent
 
-- name: concourse-worker-2019-deployment
+- name: worker-deployment
   type: bosh-deployment
 
 - name: garden-windows-environments
@@ -58,7 +58,7 @@ jobs:
       dockerfile: ci/docker/Dockerfile.ci
       tag_as_latest: true
 
-- name: update-windows-deployments
+- name: update-windows-2019-deployment
   serial: true
   plan:
   - in_parallel:
@@ -73,7 +73,7 @@ jobs:
     params:
       BOSH_DEPLOYMENT: concourse-worker-2019
       BOSH_CREDENTIALS: ((spitfire-bosh-credentials))
-  - put: concourse-worker-2019-deployment
+  - put: worker-deployment
     inputs:
     - windows-2019-stemcell
     - artifacts
@@ -83,7 +83,7 @@ jobs:
       stemcells:
         - windows-2019-stemcell/stemcell.tgz
 
-- name: update-windows-1803-deployments
+- name: update-windows-1803-deployment
   serial: true
   plan:
   - in_parallel:
@@ -98,7 +98,32 @@ jobs:
     params:
       BOSH_DEPLOYMENT: concourse-worker-1803
       BOSH_CREDENTIALS: ((spitfire-bosh-credentials))
-  - put: concourse-worker-2019-deployment
+  - put: worker-deployment
+    inputs:
+    - windows-1803-stemcell
+    - artifacts
+    params:
+      source_file: artifacts/source-file.yml
+      manifest: artifacts/manifest.yml
+      stemcells:
+        - windows-1803-stemcell/stemcell.tgz
+
+- name: update-windows-1803-envoy-deployment
+  serial: true
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: windows-1803-stemcell
+      trigger: true
+    - get: garden-windows-environments
+  - task: update-windows1803-envoy
+    file: ci/tasks/update-windows-worker-manifest/task.yml
+    input_mapping:
+      windows-stemcell: windows-1803-stemcell
+    params:
+      BOSH_DEPLOYMENT: concourse-worker-envoy
+      BOSH_CREDENTIALS: ((spitfire-bosh-credentials))
+  - put: worker-deployment
     inputs:
     - windows-1803-stemcell
     - artifacts
