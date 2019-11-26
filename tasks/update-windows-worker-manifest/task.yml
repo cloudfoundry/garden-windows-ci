@@ -9,6 +9,8 @@ inputs:
 - name: ci
 - name: windows-stemcell
 - name: garden-windows-environments
+- name: windows-tools-release
+  optional: true
 
 outputs:
 - name: artifacts

@@ -7,6 +7,14 @@ ops="
 - type: replace
   path: /stemcells/alias=windows/version
   value: "$(< windows-stemcell/version)"
+
+- type: replace
+  path: /releases/name=windows-tools
+  value:
+    name: windows-tools
+    sha1:
+    url:
+    version:
 "
 
 eval "$(bbl --state-dir=garden-windows-environments/spitfire print-env)"

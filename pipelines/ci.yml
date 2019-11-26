@@ -35,6 +35,11 @@ resources:
   source:
     name: bosh-google-kvm-windows1803-go_agent
 
+- name: windows-tools-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry-incubator/windows-tools-release
+
 - name: worker-deployment
   type: bosh-deployment
   source:
@@ -68,6 +73,7 @@ jobs:
     - get: windows-2019-stemcell
       trigger: true
     - get: garden-windows-environments
+    - get: windows-tools-release
   - task: update-windows2019
     file: ci/tasks/update-windows-worker-manifest/task.yml
     input_mapping:
