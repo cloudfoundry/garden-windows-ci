@@ -12,9 +12,17 @@ ops="
   path: /releases/name=windows-tools
   value:
     name: windows-tools
-    sha1:
-    url:
-    version:
+    sha1: "$(< windows-tools-release/sha1)"
+    url: "$(< windows-tools-release/url)"
+    version: "$(< windows-tools-release/version)"
+
+- type: replace
+  path: /releases/name=windows-utilities
+  value:
+    name: windows-utilities
+    sha1: "$(< windows-utilities-release/sha1)"
+    url: "$(< windows-utilities-release/url)"
+    version: "$(< windows-utilities-release/version)"
 "
 
 eval "$(bbl --state-dir=garden-windows-environments/spitfire print-env)"

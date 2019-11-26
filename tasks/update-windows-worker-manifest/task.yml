@@ -11,6 +11,8 @@ inputs:
 - name: garden-windows-environments
 - name: windows-tools-release
   optional: true
+- name: windows-utilities-release
+  optional: true
 
 outputs:
 - name: artifacts

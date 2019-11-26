@@ -40,6 +40,11 @@ resources:
   source:
     repository: cloudfoundry-incubator/windows-tools-release
 
+- name: windows-utilities-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry-incubator/windows-utilities-release
+
 - name: worker-deployment
   type: bosh-deployment
   source:
@@ -74,6 +79,7 @@ jobs:
       trigger: true
     - get: garden-windows-environments
     - get: windows-tools-release
+    - get: windows-utilities-release
   - task: update-windows2019
     file: ci/tasks/update-windows-worker-manifest/task.yml
     input_mapping:
