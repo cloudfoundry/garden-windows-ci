@@ -79,7 +79,9 @@ jobs:
       trigger: true
     - get: garden-windows-environments
     - get: windows-tools-release
+      trigger: true
     - get: windows-utilities-release
+      trigger: true
   - task: update-windows2019
     file: ci/tasks/update-windows-worker-manifest/task.yml
     input_mapping:
@@ -105,6 +107,10 @@ jobs:
     - get: windows-1803-stemcell
       trigger: true
     - get: garden-windows-environments
+    - get: windows-tools-release
+      trigger: true
+    - get: windows-utilities-release
+      trigger: true
   - task: update-windows1803
     file: ci/tasks/update-windows-worker-manifest/task.yml
     input_mapping:
@@ -130,6 +136,10 @@ jobs:
     - get: windows-1803-stemcell
       trigger: true
     - get: garden-windows-environments
+    - get: windows-tools-release
+      trigger: true
+    - get: windows-utilities-release
+      trigger: true
   - task: update-windows1803-envoy
     file: ci/tasks/update-windows-worker-manifest/task.yml
     input_mapping:
