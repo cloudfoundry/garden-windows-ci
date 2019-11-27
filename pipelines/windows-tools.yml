@@ -2,6 +2,7 @@ groups:
 - name: main
   jobs:
   - bump-go
+  - create-release
 
 resources:
 - name: ci
@@ -16,6 +17,14 @@ resources:
     uri: git@github.com:cloudfoundry/windows-tools-release.git
     branch: master
     private_key: {{CF_WINDOWS_TOOLS_DEPLOY_KEY}}
+
+- name: windows-tools-release-github
+  type: github-release
+  source:
+    user: cloudfoundry
+    repository: windows-tools-release
+    drafts: true
+    access_token: {{CF_WINDOWS_TOOLS_DEPLOY_KEY}}
 
 - name: golang-release
   type: git
@@ -44,3 +53,36 @@ jobs:
   - put: windows-tools-release
     params:
       repository: bumped-release-repo
+
+- name: create-release
+  serial: true
+  plan:
+  - get: windows-tools-release
+  - task: create-release
+    config:
+      platform: linux
+      image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
+      inputs:
+      - name: windows-tools-release
+      outputs:
+      - name: github-release-info
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          version="$(curl --silent https://api.github.com/repos/cloudfoundry/windows-tools-release/releases/latest | jq -r .tag_name | cut -d"v" -f2)"
+          bumpedVersion=$((version+1))
+          echo "v$bumpedVersion" > github-release-info/version
+          echo "Windows tools v$bumpedVersion" > github-release-info/name
+          cd windows-tools-release
+          bosh create-release --final
+          git config user.email "pivotal-netgarden-eng@pivotal.io"
+          git config user.name "CI (Automated)"
+          git add releases/
+          git commit -m "Create release $bumpedVersion"
+          cd -
+  - put: windows-tools-release-github
+    params:
+      name: github-release-info/name
+      tag: github-release-info/version
