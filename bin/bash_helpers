@@ -68,10 +68,6 @@ cf_target() {
   fi
 
   if [[ ",$GITHUB_ENVS," =~ .*\,$environment,.* ]]; then
-    if [ $? -ne 0 ]; then
-      echo "_bosh_creds_github failed"
-      return
-    fi
     _cf_creds_github $environment
   else
     _is_using_credhub "$environment"
