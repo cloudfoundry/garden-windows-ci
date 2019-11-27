@@ -168,7 +168,6 @@ jobs:
     - get: envoy-nginx-release-master
       trigger: true
       tags: [vsphere]
-  - in_parallel:
     - task: get-linux-stemcell
       file: ci/tasks/get-vsphere-linux-stemcell/task.yml
       output_mapping: { stemcell: vsphere-linux-stemcell }
@@ -181,6 +180,7 @@ jobs:
         FILE_NAME: cf/vars.yml
         SERVICE_ACCOUNT_KEY: {{SPITFIRE_SERVICE_ACCOUNT_JSON}}
       tags: [vsphere]
+  - in_parallel:
     - task: create-winc-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
