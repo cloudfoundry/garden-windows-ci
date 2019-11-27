@@ -24,7 +24,7 @@ resources:
     user: cloudfoundry
     repository: windows-tools-release
     drafts: true
-    access_token: {{CF_WINDOWS_TOOLS_DEPLOY_KEY}}
+    access_token: {{GREENHOUSE_CI_ACCESS_TOKEN}}
 
 - name: golang-release
   type: git
