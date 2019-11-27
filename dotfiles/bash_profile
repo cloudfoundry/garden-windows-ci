@@ -93,6 +93,7 @@ alias l="ls -lhFA ${colorflag}"
 alias ll="ls -lhFA ${colorflag}"
 alias ls="command ls ${colorflag}"
 alias grep='grep --color'
+alias diff='diff --color'
 alias watch='watch '
 alias hgrep='history | grep'
 alias be="bundle exec"
