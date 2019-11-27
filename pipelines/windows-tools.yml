@@ -16,7 +16,7 @@ resources:
   source:
     uri: git@github.com:cloudfoundry/windows-tools-release.git
     branch: master
-    private_key: {{CF_WINDOWS_TOOLS_DEPLOY_KEY}}
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
 
 - name: windows-tools-release-github
   type: github-release
