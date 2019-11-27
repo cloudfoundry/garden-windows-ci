@@ -224,6 +224,7 @@ jobs:
         release-tarball: envoy-nginx-tarball
       tags: [vsphere]
   - put: mulgore-cf-deployment
+    attempts: 2
     params:
       manifest: cf-deployment/cf-deployment.yml
       stemcells:
