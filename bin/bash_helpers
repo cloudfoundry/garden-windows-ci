@@ -70,7 +70,13 @@ cf_target() {
   if [[ ",$GITHUB_ENVS," =~ .*\,$environment,.* ]]; then
     _cf_creds_github $environment
   else
-    eval "$(_cf_creds $environment)"
+    if cfcreds_output=$(_cf_creds $environment); then
+      eval "$cfcreds_output"
+    else
+      echo "$cfcreds_output"
+      echo Getting cf creds failed for $environment
+      return 1
+    fi
   fi
 
   cf login --skip-ssl-validation \
@@ -282,6 +288,11 @@ _cf_creds() {
   if [[ -z "$project_name" ]]; then
     echo "Unknown environment: $environment"
     return
+  fi
+
+  if [ -z "$(gsutil stat gs://$project_name/cf/creds.yml 2> /dev/null)" ]; then
+    echo "gs://$project_name/cf/creds.yml does not exist. Exiting"
+    return 1
   fi
 
   local credhub_secret=$(bosh int --path /credhub_admin_client_secret <(gsutil cat gs://$project_name/cf/creds.yml))
