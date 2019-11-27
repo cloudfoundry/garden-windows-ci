@@ -105,14 +105,6 @@ alias gst="git status"
 alias lpass-ssh='export LPASS_DISABLE_PINENTRY=1; lpass'
 alias gardenwindows=what
 
-n () {
-  [ "$1" == "-h" ] && echo "One among the milion pet names we call vim" && return
-  if [[ $# -eq 0 ]] ; then
-    nvim .
-  else
-    nvim $@
-  fi
-}
 gv () {
   [ "$1" == "-h" ] && echo "Vim (windows mode)" && return
   if [[ $# -eq 0 ]] ; then
@@ -121,7 +113,6 @@ gv () {
     GOOS=windows nvim $@
   fi
 }
-
 
 # Load ssh key from lastpass
 function load-key() {
