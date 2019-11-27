@@ -274,7 +274,7 @@ fly-hydrator () {
 fly-windows-tools () {
   [ "$1" == "-h" ] && echo "Push windows-tools pipeline to concourse" && return
   fly -t garden-windows sp -p windows-tools -c $HOME/workspace/garden-windows-ci/pipelines/windows-tools.yml \
-    -l<(lpass show --notes windows-tools-deploy-key aws-iam-access-keys)
+    -l<(lpass show --notes github-access-tokens github-deploy-keys aws-iam-access-keys)
 }
 
 fly-winc () {
