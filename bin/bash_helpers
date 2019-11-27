@@ -275,20 +275,6 @@ _bosh_creds_gcp() {
   fi
 }
 
-_is_using_credhub() {
-  local environment=$1
-  local project_name=$(_project_name $environment)
-  if [[ -z "$project_name" ]]; then
-    echo "Unknown environment: $environment"
-    return
-  fi
-
-  is_using_credhub=true
-  if gsutil ls gs://$project_name/cf/creds.yml > /dev/null 2>&1; then
-    is_using_credhub=false
-  fi
-}
-
 _cf_creds() {
   local environment=$1
   local project_name=$(_project_name $environment)
@@ -298,21 +284,11 @@ _cf_creds() {
     return
   fi
 
-  _is_using_credhub "$environment"
+  local credhub_secret=$(bosh int --path /credhub_admin_client_secret <(gsutil cat gs://$project_name/cf/creds.yml))
+  echo "export CREDHUB_SECRET=$credhub_secret"
 
-  if [[ $is_using_credhub = true ]]; then
-    local credhub_secret=$(credhub get -n /bosh-$environment/cf/credhub_admin_client_secret -j | jq -r .value)
-    echo "export CREDHUB_SECRET=$credhub_secret"
-
-    local admin_password=$(credhub get -n /bosh-$environment/cf/cf_admin_password -j | jq -r .value)
-    echo "export ADMIN_PASSWORD=$admin_password"
-  else
-    local credhub_secret=$(bosh int --path /credhub_admin_client_secret <(gsutil cat gs://$project_name/cf/creds.yml))
-    echo "export CREDHUB_SECRET=$credhub_secret"
-
-    local admin_password=$(bosh int --path /cf_admin_password <(gsutil cat gs://$project_name/cf/vars.yml))
-    echo "export ADMIN_PASSWORD=$admin_password"
-  fi
+  local admin_password=$(bosh int --path /cf_admin_password <(gsutil cat gs://$project_name/cf/vars.yml))
+  echo "export ADMIN_PASSWORD=$admin_password"
 }
 
 _cf_creds_github() {
