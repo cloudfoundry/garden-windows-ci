@@ -70,10 +70,6 @@ cf_target() {
   if [[ ",$GITHUB_ENVS," =~ .*\,$environment,.* ]]; then
     _cf_creds_github $environment
   else
-    _is_using_credhub "$environment"
-    if [[ $is_using_credhub = true ]]; then
-      eval "$(_bosh_creds_gcp $environment true)"
-    fi
     eval "$(_cf_creds $environment)"
   fi
 
