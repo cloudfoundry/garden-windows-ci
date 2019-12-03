@@ -1,5 +1,5 @@
 groups:
-- name: ((fs-version))
+- name: windows1803fs
   jobs:
     - bump-windowsfs-release-windows2016fs
     - bump-windowsfs-online-release-windows2016fs
@@ -32,9 +32,6 @@ resource_types:
     repository: cloudfoundry/bosh-deployment-resource
 
 resources:
-
-# Git
-
 - name: ci
   type: git
   source:
@@ -45,7 +42,7 @@ resources:
   type: git
   source:
     branch: develop
-    uri: ((windowsfs-release-develop-uri))
+    uri: git@github.com:cloudfoundry/windows1803fs-release.git
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     git_config:
     - name: user.email
@@ -57,14 +54,14 @@ resources:
   type: git
   source:
     branch: master
-    uri: ((windowsfs-release-master-uri))
+    uri: git@github.com:cloudfoundry/windows1803fs-release.git
     private_key: ((GREENHOUSE-CI_SSH_KEY))
 
 - name: windowsfs-online-release-develop
   type: git
   source:
     branch: develop
-    uri: ((windowsfs-online-release-develop-uri))
+    uri: git@github.com:cloudfoundry/windows1803fs-online-release.git
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     git_config:
     - name: user.email
@@ -76,7 +73,7 @@ resources:
   type: git
   source:
     branch: master
-    uri: ((windowsfs-online-release-master-uri))
+    uri: git@github.com:cloudfoundry/windows1803fs-online-release.git
     private_key: ((GREENHOUSE-CI_SSH_KEY))
 
 - name: hydrator
@@ -92,7 +89,7 @@ resources:
     branch: master
     uri: git@github.com:cloudfoundry/windows2016fs.git
     private_key: ((CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_DEPLOY_KEY))
-    ignore_paths: [ ((os-version))/Dockerfile ]
+    ignore_paths: [ 1803/Dockerfile ]
 
 - name: cf-acceptance-tests
   type: git
@@ -131,7 +128,7 @@ resources:
   type: github-release
   source:
     user: cloudfoundry
-    repository: ((windowsfs-release-repo))
+    repository: windows1803fs-release
     drafts: true
     access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
@@ -139,7 +136,7 @@ resources:
   type: github-release
   source:
     user: cloudfoundry
-    repository: ((windowsfs-online-release-repo))
+    repository: windows1803fs-online-release
     drafts: true
     access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
@@ -155,7 +152,7 @@ resources:
   type: s3
   source:
     bucket: all-bosh-windows
-    regexp: ((stemcell-regexp))
+    regexp: 1803/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows1803-go_agent.tgz
     access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 
@@ -166,8 +163,8 @@ resources:
   source:
     access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-    bucket: ((fs-version))
-    initial_version: ((initial-release-version))
+    bucket: windows1803fs
+    initial_version: 1.0.0
     key: windowsfs-release-version
     region_name: us-east-1
 
@@ -176,8 +173,8 @@ resources:
   source:
     access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-    bucket: ((fs-version))
-    initial_version: ((initial-online-release-version))
+    bucket: windows1803fs
+    initial_version: 1.0.0
     key: windowsfs-online-release-version
     region_name: us-east-1
 
@@ -186,8 +183,8 @@ resources:
   source:
     access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-    bucket: ((fs-version))
-    initial_version: ((initial-image-version))
+    bucket: windows1803fs
+    initial_version: 1803.0.1
     key: image-version
     region_name: us-east-1
 
@@ -208,7 +205,7 @@ resources:
 - name: tartar-smoke-test-deployment
   type: bosh-deployment
   source:
-    deployment: ((fs-version))
+    deployment: windows1803fs
     client: ((TARTAR_BOSH_CLIENT))
     client_secret: ((TARTAR_BOSH_CLIENT_SECRET))
     ca_cert: ((TARTAR_BOSH_CA_CERT))
@@ -241,7 +238,7 @@ jobs:
     params:
       TRACKER_TOKEN: ((TRACKER_GITBOT_TOKEN))
       TRACKER_PROJECT_ID: "((DOTNET_DEVX_PROJECT_ID))"
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows1803fs
 
 - name: bump-windowsfs-release-windows2016fs
   serial: true
@@ -261,8 +258,8 @@ jobs:
   - task: update-blob
     file: ci/tasks/update-windows2016fs-blob/task.yml
     params:
-      FS_VERSION: ((fs-version))
-      OS_VERSION: "((os-version))"
+      FS_VERSION: windows1803fs
+      OS_VERSION: "1803"
     input_mapping:
       windowsfs-release: bumped-repo
   - task: commit-changes
@@ -449,7 +446,7 @@ jobs:
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows1803fs
     input_mapping: { release-tarball: windowsfs-tarball }
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml
@@ -473,7 +470,7 @@ jobs:
   - task: delete-rootfs-release
     file: ci/tasks/bosh-delete-release/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows1803fs
       BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
       BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
@@ -492,10 +489,10 @@ jobs:
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - ci/operations/use-2-azs-for-router.yml
-      - ((windows-cell-ops-file))
-      - ((latest-windows-stemcell-ops-file))
-      - ((windows-scale-down-ops-file))
-      - ((windows-rdp-ops-file))
+      - cf-deployment/operations/windows1803-cell.yml
+      - cf-deployment/operations/use-latest-windows1803-stemcell.yml
+      - ci/operations/scale-down-windows1803.yml
+      - ci/operations/enable-rdp-1803.yml
       - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
       - garden-windows-environments/tartar/cf/vars.yml
@@ -561,7 +558,7 @@ jobs:
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows1803fs
     input_mapping: { release-tarball: windowsfs-tarball }
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml
@@ -578,14 +575,14 @@ jobs:
       BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
       BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
-      BOSH_DEPLOYMENT: ((fs-version))
+      BOSH_DEPLOYMENT: windows1803fs
       BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
       JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
   - task: delete-rootfs-release
     file: ci/tasks/bosh-delete-release/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows1803fs
       BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
       BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
@@ -609,7 +606,7 @@ jobs:
   - task: smoke-test
     file: ci/tasks/fs-smoke-test/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows1803fs
       BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
       BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
@@ -623,7 +620,7 @@ jobs:
         BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
         BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
         BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
-        BOSH_DEPLOYMENT: ((fs-version))
+        BOSH_DEPLOYMENT: windows1803fs
         BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
         JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
         JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
@@ -645,7 +642,7 @@ jobs:
   - task: update-version-and-shas
     file: ci/tasks/update-fs-release-version/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows1803fs
     input_mapping:
       windowsfs-release: windowsfs-release-develop
       version: windowsfs-release-version
@@ -776,7 +773,7 @@ jobs:
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows1803fs
     input_mapping: { release-tarball: windowsfs-tarball }
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml
@@ -808,10 +805,10 @@ jobs:
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - ci/operations/use-2-azs-for-router.yml
-      - ((windows-cell-ops-file))
-      - ((latest-windows-stemcell-ops-file))
-      - ((windows-scale-down-ops-file))
-      - ((windows-rdp-ops-file))
+      - cf-deployment/operations/windows1803-cell.yml
+      - cf-deployment/operations/use-latest-windows1803-stemcell.yml
+      - ci/operations/scale-down-windows1803.yml
+      - ci/operations/enable-rdp-1803.yml
       - windowsfs-opsfile/specified-windowsfs-version.yml
       vars_files:
       - garden-windows-environments/tartar/cf/vars.yml
@@ -876,7 +873,7 @@ jobs:
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows1803fs
     input_mapping: { release-tarball: windowsfs-tarball }
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml
@@ -893,7 +890,7 @@ jobs:
       BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
       BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
-      BOSH_DEPLOYMENT: ((fs-version))
+      BOSH_DEPLOYMENT: windows1803fs
       BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
       JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
@@ -913,7 +910,7 @@ jobs:
   - task: smoke-test
     file: ci/tasks/fs-smoke-test/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows1803fs
       BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
       BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
@@ -927,7 +924,7 @@ jobs:
         BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
         BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
         BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
-        BOSH_DEPLOYMENT: ((fs-version))
+        BOSH_DEPLOYMENT: windows1803fs
         BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
         JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
         JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
@@ -952,7 +949,7 @@ jobs:
       release: windowsfs-online-release-develop
       version: windowsfs-online-release-version
     params:
-      RELEASE_NAME: ((fs-version))
+      RELEASE_NAME: windows1803fs
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
       CI_SKIP: true
@@ -978,7 +975,7 @@ jobs:
       name: generated-release/name
       tag: generated-release/version
       globs:
-      - ((finalized-release-glob))
+      - finalized-release/windows1803fs-*.tgz
 
 - name: shipit-online-minor
   serial: true
@@ -996,7 +993,7 @@ jobs:
       release: windowsfs-online-release-develop
       version: windowsfs-online-release-version
     params:
-      RELEASE_NAME: ((fs-version))
+      RELEASE_NAME: windows1803fs
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
       CI_SKIP: true
@@ -1022,8 +1019,8 @@ jobs:
       name: generated-release/name
       tag: generated-release/version
       globs:
-      - ((finalized-release-glob))
-
+      - finalized-release/windows1803fs-*.tgz
+      
 - name: shipit-online-patch
   serial: true
   plan:
@@ -1040,7 +1037,7 @@ jobs:
       release: windowsfs-online-release-develop
       version: windowsfs-online-release-version
     params:
-      RELEASE_NAME: ((fs-version))
+      RELEASE_NAME: windows1803fs
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
       CI_SKIP: true
@@ -1066,4 +1063,4 @@ jobs:
       name: generated-release/name
       tag: generated-release/version
       globs:
-      - ((finalized-release-glob))
+      - finalized-release/windows1803fs-*.tgz
