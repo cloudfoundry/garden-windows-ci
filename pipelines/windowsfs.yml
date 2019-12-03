@@ -1,3 +1,30 @@
+groups:
+- name: ((fs-version))
+  jobs:
+    - bump-windowsfs-release-windows2016fs
+    - bump-windowsfs-online-release-windows2016fs
+    - bump-windowsfs-release-hydrator
+    - bump-windowsfs-online-release-hydrator
+    - bump-go-online
+    - bump-go-offline
+    - create-tracker-story
+- name: windowsfs-release
+  jobs:
+    - test-create-release-windows
+    - test-create-release-linux
+    - tartar-offline-cats
+    - tartar-offline-smoke-test
+    - shipit-offline-major
+    - shipit-offline-minor
+    - shipit-offline-patch
+- name: windowsfs-online-release
+  jobs:
+    - tartar-online-cats
+    - tartar-online-smoke-test
+    - shipit-online-major
+    - shipit-online-minor
+    - shipit-online-patch
+
 resource_types:
 - name: bosh-deployment
   type: docker-image
@@ -199,32 +226,6 @@ resources:
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
-groups:
-- name: ((fs-version))
-  jobs:
-    - bump-windowsfs-release-windows2016fs
-    - bump-windowsfs-online-release-windows2016fs
-    - bump-windowsfs-release-hydrator
-    - bump-windowsfs-online-release-hydrator
-    - bump-go-in-windowsfs
-    - create-tracker-story
-- name: windowsfs-release
-  jobs:
-    - test-create-release-windows
-    - test-create-release-linux
-    - tartar-offline-cats
-    - tartar-offline-smoke-test
-    - shipit-offline-major
-    - shipit-offline-minor
-    - shipit-offline-patch
-- name: windowsfs-online-release
-  jobs:
-    - tartar-online-cats
-    - tartar-online-smoke-test
-    - shipit-online-major
-    - shipit-online-minor
-    - shipit-online-patch
-
 jobs:
 - name: create-tracker-story
   serial: true
@@ -337,7 +338,7 @@ jobs:
       repository: bumped-repo
       rebase: true
 
-- name: bump-go-in-windowsfs
+- name: bump-go-online
   serial: true
   plan:
   - in_parallel:
@@ -355,6 +356,26 @@ jobs:
       release-repo: windowsfs-online-release-develop
       package-repo: golang-release
   - put: windowsfs-online-release-develop
+    params:
+      repository: bumped-release-repo
+
+- name: bump-go-offline
+  serial: true
+  plan:
+  - in_parallel:
+    # We don't use this release, but it should get triggered when there is a golang bump
+    - get: golang-release
+      trigger: true
+    - get: windowsfs-release-develop
+    - get: ci
+  - task: bosh-update-blob
+    file: ci/tasks/bosh-update-blob/task.yml
+    params:
+      AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+    input_mapping:
+      release-repo: windowsfs-release-develop
+  - put: windowsfs-release-develop
     params:
       repository: bumped-release-repo
 
