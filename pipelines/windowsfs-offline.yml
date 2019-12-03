@@ -168,6 +168,7 @@ groups:
 jobs:
 - name: bump-windowsfs-release-windows2016fs
   serial: true
+  serial_groups: [bump]
   plan:
   - in_parallel:
     - get: ci
@@ -203,6 +204,7 @@ jobs:
 
 - name: bump-windowsfs-release-hydrator
   serial: true
+  serial_groups: [bump]
   plan:
   - in_parallel:
     - get: ci
