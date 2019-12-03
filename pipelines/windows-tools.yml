@@ -57,40 +57,14 @@ jobs:
 - name: create-release
   serial: true
   plan:
-  - get: windows-tools-release
+  - in_parallel:
+    - get: windows-tools-release
+    - get: ci
   - task: create-release
-    config:
-      platform: linux
-      image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
-      inputs:
-      - name: windows-tools-release
-      outputs:
-      - name: github-release-info
-      params:
-        AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
-        AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
-      run:
-        path: sh
-        args:
-        - -exc
-        - |
-          version="$(curl --silent https://api.github.com/repos/cloudfoundry/windows-tools-release/releases/latest | jq -r .tag_name | cut -d"v" -f2)"
-          bumpedVersion=$((version+1))
-          echo "v$bumpedVersion" > github-release-info/version
-          echo "Windows tools v$bumpedVersion" > github-release-info/name
-          cd windows-tools-release
-          PRIVATE_YML='---
-          blobstore:
-            provider: s3
-            options:
-              credentials_source: env_or_profile'
-          echo "$PRIVATE_YML" > config/private.yml
-          bosh create-release --final
-          git config user.email "pivotal-netgarden-eng@pivotal.io"
-          git config user.name "CI (Automated)"
-          git add releases/
-          git commit -m "Create release $bumpedVersion"
-          cd -
+    file: ci/tasks/create-github-release/task.yml
+    params:
+      AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
   - put: windows-tools-release-github
     params:
       name: github-release-info/name
