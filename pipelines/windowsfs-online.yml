@@ -201,6 +201,7 @@ jobs:
 
 - name: bump-windowsfs-online-release-windows2016fs
   serial: true
+  serial_groups: [bump]
   plan:
   - in_parallel:
     - get: ci
@@ -221,6 +222,7 @@ jobs:
 
 - name: bump-windowsfs-online-release-hydrator
   serial: true
+  serial_groups: [bump]
   plan:
   - in_parallel:
     - get: ci
@@ -241,6 +243,7 @@ jobs:
 
 - name: bump-go
   serial: true
+  serial_groups: [bump]
   plan:
   - in_parallel:
     - get: golang-release
