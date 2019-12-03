@@ -1,6 +1,9 @@
 #!/bin/sh
 
+# Get version from latest github release so it's accurate.
 version="$(curl --silent https://api.github.com/repos/cloudfoundry/windows-tools-release/releases/latest | jq -r .tag_name | cut -d"v" -f2)"
+
+# For windows-tools-release, we only increment major.
 bumpedVersion=$((version+1))
 
 echo "v$bumpedVersion" > github-release-info/version
