@@ -1,0 +1,37 @@
+#!/bin/bash
+set -e
+
+PRIVATE_YML='---
+blobstore:
+  provider: s3
+  options:
+    credentials_source: env_or_profile'
+echo "$PRIVATE_YML" > release-repo/config/private.yml
+
+# Find the latest golang windows zip for amd64.
+zipName=$(curl -s https://golang.org/dl/?mode=json | jq -r 'max_by(.version) | .files | .[] | select(.os == "windows" and .arch == "amd64" and .kind == "archive").filename')
+curl -o $zipName https://dl.google.com/go/$zipName
+
+zipPath="$PWD/$zipName"
+
+pushd release-repo
+	oldBlob=$(bosh blobs | grep golang | awk '{print $1}')
+	bosh remove-blob $oldBlob
+
+	bosh add-blob $zipPath "golang/$zipName"
+
+	# Ensure we don't accidentally upload a rootfs blob.
+	rootfsName=$(basename $PWD | cut -d '-' -f1)
+	rm -rf blobs/$rootfsName
+
+	bosh upload-blobs
+
+  if [ -n "$(git status --porcelain)" ]; then
+    git config user.email "pivotal-netgarden-eng@pivotal.io"
+    git config user.name "CI (Automated)"
+    git add .
+    git commit -m "Bump blob: $zipName"
+  fi
+popd
+
+cp -r release-repo/. bumped-release-repo/
