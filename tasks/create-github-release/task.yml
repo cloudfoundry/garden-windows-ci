@@ -8,6 +8,7 @@ image_resource:
 
 inputs:
 - name: windows-tools-release
+- name: ci
 
 outputs:
 - name: github-release-info
