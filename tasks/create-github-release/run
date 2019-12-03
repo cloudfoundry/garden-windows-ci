@@ -1,0 +1,25 @@
+#!/bin/sh
+
+version="$(curl --silent https://api.github.com/repos/cloudfoundry/windows-tools-release/releases/latest | jq -r .tag_name | cut -d"v" -f2)"
+bumpedVersion=$((version+1))
+
+echo "v$bumpedVersion" > github-release-info/version
+echo "Windows tools v$bumpedVersion" > github-release-info/name
+
+cd windows-tools-release
+
+PRIVATE_YML='---
+blobstore:
+  provider: s3
+  options:
+    credentials_source: env_or_profile'
+echo "$PRIVATE_YML" > config/private.yml
+
+bosh create-release --final
+
+git config user.email "pivotal-netgarden-eng@pivotal.io"
+git config user.name "CI (Automated)"
+git add releases/
+git commit -m "Create release $bumpedVersion"
+
+cd -

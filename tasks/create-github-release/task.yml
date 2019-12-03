@@ -1,0 +1,20 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/garden-windows-ci
+
+inputs:
+- name: windows-tools-release
+
+outputs:
+- name: github-release-info
+
+params:
+  AWS_ACCESS_KEY_ID:
+  AWS_SECRET_ACCESS_KEY:
+
+run:
+  path: ci/tasks/create-github-release/run
