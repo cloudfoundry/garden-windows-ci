@@ -1,3 +1,19 @@
+groups:
+- name: ((fs-version))
+  jobs:
+    - bump-windowsfs-release-windows2016fs
+    - bump-windowsfs-release-hydrator
+    - bump-go
+- name: windowsfs-release
+  jobs:
+    - test-create-release-windows
+    - test-create-release-linux
+    - sriracha-offline-cats
+    - sriracha-offline-smoke-test
+    - shipit-offline-major
+    - shipit-offline-minor
+    - shipit-offline-patch
+
 resource_types:
 - name: bosh-deployment
   type: docker-image
@@ -94,6 +110,12 @@ resources:
     drafts: true
     access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
+- name: golang-release
+  type: git
+  source:
+    uri: https://github.com/bosh-packages/golang-release.git
+    tag_filter: v*
+
 # S3
 
 - name: gcp-windows-stemcell
@@ -149,21 +171,6 @@ resources:
     pool: sriracha
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
-
-groups:
-- name: ((fs-version))
-  jobs:
-    - bump-windowsfs-release-windows2016fs
-    - bump-windowsfs-release-hydrator
-- name: windowsfs-release
-  jobs:
-    - test-create-release-windows
-    - test-create-release-linux
-    - sriracha-offline-cats
-    - sriracha-offline-smoke-test
-    - shipit-offline-major
-    - shipit-offline-minor
-    - shipit-offline-patch
 
 jobs:
 - name: bump-windowsfs-release-windows2016fs
@@ -222,6 +229,26 @@ jobs:
     params:
       repository: bumped-repo
       rebase: false
+
+- name: bump-go
+  serial: true
+  serial_groups: [bump]
+  plan:
+  - in_parallel:
+    - get: golang-release
+      trigger: true
+    - get: windowsfs-release-develop
+    - get: ci
+  - task: bosh-update-blob
+    file: ci/tasks/bosh-update-blob/task.yml
+    params:
+      AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+    input_mapping:
+      release-repo: windowsfs-release-develop
+  - put: windowsfs-release-develop
+    params:
+      repository: bumped-release-repo
 
 - name: test-create-release-windows
   serial: true
