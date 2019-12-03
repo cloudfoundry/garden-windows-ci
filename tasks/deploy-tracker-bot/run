@@ -6,7 +6,9 @@ cat > tracker-bot-repo/config.yml <<EOF
 ignore:
 - envoy-windows-*
 - bbl-down-*
-- longrunning/*app*
+- longrunning/mulgore-cfbench*
+- longrunning/mulgore-push*
+- longrunning/mulgore-curl*
 groups: {}
 EOF
 
