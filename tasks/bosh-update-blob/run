@@ -15,16 +15,15 @@ curl -o $zipName https://dl.google.com/go/$zipName
 zipPath="$PWD/$zipName"
 
 pushd release-repo
-	oldBlob=$(bosh blobs | grep golang | awk '{print $1}')
-	bosh remove-blob $oldBlob
+  oldBlob=$(bosh blobs | grep golang | awk '{print $1}')
+  bosh remove-blob $oldBlob
 
-	bosh add-blob $zipPath "golang/$zipName"
+  # Ensure we don't upload other blobs.
+  rm -rf blobs/*
 
-	# Ensure we don't accidentally upload a rootfs blob.
-	rootfsName=$(basename $PWD | cut -d '-' -f1)
-	rm -rf blobs/$rootfsName
+  bosh add-blob $zipPath "golang/$zipName"
 
-	bosh upload-blobs
+  bosh upload-blobs
 
   if [ -n "$(git status --porcelain)" ]; then
     git config user.email "pivotal-netgarden-eng@pivotal.io"
