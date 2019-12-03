@@ -18,12 +18,14 @@ pushd release-repo
   oldBlob=$(bosh blobs | grep golang | awk '{print $1}')
   bosh remove-blob $oldBlob
 
-  # Ensure we don't upload other blobs.
-  rm -rf blobs/*
-
   bosh add-blob $zipPath "golang/$zipName"
 
+  # When bosh upload-blobs runs, it will upload the golang blob
+  # to the bucket but then fail trying to upload the windows2016fs blob.
+  # This is okay because we do not want to publish this blob to a bucket.
+  set +e
   bosh upload-blobs
+  set -e
 
   if [ -n "$(git status --porcelain)" ]; then
     git config user.email "pivotal-netgarden-eng@pivotal.io"
