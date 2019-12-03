@@ -6,6 +6,7 @@ cat > tracker-bot-repo/config.yml <<EOF
 ignore:
 - envoy-windows-*
 - bbl-down-*
+- longrunning/*app*
 groups: {}
 EOF
 
