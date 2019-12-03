@@ -169,7 +169,7 @@ resources:
 groups:
 - name: build-push-bump
   jobs:
-    - bump-go-in-windowsfs
+    - bump-go
     - bump-windowsfs-online-release-windows2016fs
     - bump-windowsfs-online-release-hydrator
     - create-tracker-story
@@ -239,7 +239,7 @@ jobs:
       repository: bumped-repo
       rebase: true
 
-- name: bump-go-in-windowsfs
+- name: bump-go
   serial: true
   plan:
   - in_parallel:
