@@ -19,7 +19,7 @@ pushd windows-tools-release
       credentials_source: env_or_profile'
   echo "$PRIVATE_YML" > config/private.yml
 
-  bosh create-release --final
+  bosh create-release --final --version $bumpedVersion
 
   git config user.email "pivotal-netgarden-eng@pivotal.io"
   git config user.name "CI (Automated)"
