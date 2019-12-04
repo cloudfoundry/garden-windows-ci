@@ -61,7 +61,7 @@ jobs:
     - get: windows-tools-release
     - get: ci
   - task: create-release
-    file: ci/tasks/create-github-release/task.yml
+    file: ci/tasks/ship-windows-tools/task.yml
     params:
       AWS_ACCESS_KEY_ID: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
       AWS_SECRET_ACCESS_KEY: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}

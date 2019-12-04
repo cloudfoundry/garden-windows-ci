@@ -19,4 +19,4 @@ params:
   AWS_SECRET_ACCESS_KEY:
 
 run:
-  path: ci/tasks/create-github-release/run
+  path: ci/tasks/ship-windows-tools/run
