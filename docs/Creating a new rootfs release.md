@@ -5,26 +5,18 @@ When you create a new windows rootfs release from the copy of an older release (
 
 1. Make sure the submodules are NOT copied over as source.
 
-2. `config/blobs.yml` requires `size` and `sha` of the rootfs blob. To add this blob metadata (for offline releases only):
+1. `config/blobs.yml` requires `size` and `sha` of the rootfs blob. To add this blob metadata (for offline releases only):
 
-* `touch fake-blob`
-  
-* `bosh add-blob fake-blob <blobs path>`
-  
-* `./scripts/create-release`
-  
-* Look in the `blobs` dir to find the output tgz from the create-release script
-  
-* Calculate sha1sum and size
+		* `touch fake-blob`
+			
+		* `bosh add-blob fake-blob <blobs path>`
+			
+		* `./scripts/create-release`
+			
+		* Look in the `blobs` dir to find the output tgz from the create-release script
+			
+		* Calculate sha1sum and size
 
+1. There has to be a `windowsXXXXfs` S3 bucket that contains an `image-version` file, and a `windowsfs-release-version` file. The `image-version file` should contain the IMAGE_TAG from the [windows2016fs repository](https://github.com/cloudfoundry/windows2016fs), and the `windowsfs-release-version` file should contain the value `0.0.0`.
 
-3. Update `bosh-cli` and `bosh-utils` submodules that are located at `src/github.com/cloudfoundry` to point at the following commits. We do this because this version of `bosh-cli` helps use ephemeral disk in favor of user profile for cachedir. And this `bosh-cli` floats on a particular version of `bosh-utils`.
-
-	* bosh-cli - [github.com/greenhouse-org/bosh-cli/commits/use-homedir-fix](https://github.com/greenhouse-org/bosh-cli/commits/use-homedir-fix) (081d847)
-
-	* bosh-utils - [github.com/cloudfoundry/bosh-utils/tree/a960ab178e64b43d19051be6fd2891ff695bb206](https://github.com/cloudfoundry/bosh-utils/tree/a960ab178e64b43d19051be6fd2891ff695bb206)
-
-
-4. There has to be a `windowsXXXXfs` S3 bucket that contains an `image-version` file, and a `windowsfs-release-version` file. The `image-version file` should contain the IMAGE_TAG from the [windows2016fs repository](https://github.com/cloudfoundry/windows2016fs), and the `windowsfs-release-version` file should contain the value `0.0.0`.
-
-5. Concourse has a caching mechanism for resources of type `semver`. For the resource `windowsfs-release-version` of the rootfs-release pipeline, make sure that it starts from `0.0.0` by turning off any previously cached resources. e.g. `number 2.1.0` should be turned off. If you're shipping a release and you don't turn off cached resources (if any), it will create the new release with version number (`prev_cached_semver_version` + 1) instead of starting from `0.0.0`.
+1. Concourse has a caching mechanism for resources of type `semver`. For the resource `windowsfs-release-version` of the rootfs-release pipeline, make sure that it starts from `0.0.0` by turning off any previously cached resources. e.g. `number 2.1.0` should be turned off. If you're shipping a release and you don't turn off cached resources (if any), it will create the new release with version number (`prev_cached_semver_version` + 1) instead of starting from `0.0.0`.
