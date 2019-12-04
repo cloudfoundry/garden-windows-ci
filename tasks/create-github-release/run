@@ -27,4 +27,4 @@ pushd windows-tools-release
   git commit -m "Create release $bumpedVersion"
 popd
 
-cp -a windows-tools-release windows-tools-release-bumped/
+cp -r windows-tools-release/. windows-tools-release-bumped/
