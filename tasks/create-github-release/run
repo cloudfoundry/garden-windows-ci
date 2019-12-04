@@ -20,10 +20,11 @@ pushd windows-tools-release
   echo "$PRIVATE_YML" > config/private.yml
 
   bosh create-release --final
-  bosh upload-release
 
   git config user.email "pivotal-netgarden-eng@pivotal.io"
   git config user.name "CI (Automated)"
   git add .
   git commit -m "Create release $bumpedVersion"
 popd
+
+cp -a windows-tools-release windows-tools-release-bumped/

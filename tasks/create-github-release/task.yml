@@ -11,6 +11,7 @@ inputs:
 - name: ci
 
 outputs:
+- name: windows-tools-release-bumped
 - name: github-release-info
 
 params:
