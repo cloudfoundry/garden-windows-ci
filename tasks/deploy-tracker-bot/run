@@ -9,6 +9,7 @@ ignore:
 - mulgore-cfbench*
 - mulgore-push*
 - mulgore-curl*
+- shipit-(offline|online)-(major|minor)
 groups: {}
 EOF
 
