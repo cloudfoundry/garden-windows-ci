@@ -570,6 +570,7 @@ jobs:
         operations/enable-rdp-1803.yml
         operations/windows1803-debug.yml
         operations/scale-to-two-windows1803.yml
+        operations/install-windows-tools.yml
     input_mapping:
       base-ops-files: garden-windows-environments
       new-ops-files: garden-windows-ci
@@ -602,6 +603,7 @@ jobs:
         guac/enable-rdp-1803.yml
         guac/windows1803-debug.yml
         guac/scale-to-two-windows1803.yml
+        guac/install-windows-tools.yml
       VARS_FILES: guac/cf/vars.yml
     input_mapping:
       bbl-state: garden-windows-environments
@@ -634,6 +636,7 @@ jobs:
         operations/enable-rdp-2019.yml
         operations/windows2019-debug.yml
         operations/decrease-rep-evacuation-timeout.yml
+        operations/install-windows-tools.yml
     input_mapping:
       base-ops-files: garden-windows-environments
       new-ops-files: garden-windows-ci
@@ -668,6 +671,7 @@ jobs:
         hummus/enable-rdp-2019.yml
         hummus/decrease-rep-evacuation-timeout.yml
         hummus/windows2019-debug.yml
+        hummus/install-windows-tools.yml
       VARS_FILES: hummus/cf/vars.yml
     input_mapping:
       bbl-state: garden-windows-environments
