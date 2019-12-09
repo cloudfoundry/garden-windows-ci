@@ -21,10 +21,10 @@
       release: windows-tools
 
 - type: replace
-  path: /releases/name=windows-tools?
+  path: /releases/name=windows-tools
   value:
-    name: "windows-tools"
-    version: "61"
-    url: "https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=61"
-    sha1: "806465c7605d0836909d8ad718b2ced78e92ebc3"
+    name: windows-tools
+    version: "$(< windows-tools-release/version)"
+    url: "$(< windows-tools-release/url)"
+    sha1: "$(< windows-tools-release/sha1)"
 
