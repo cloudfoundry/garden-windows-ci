@@ -1,3 +1,6 @@
+# All credits where due
+# Follow the license rules of microolap tcpdump when you use this
+# The license is found in the zip archive
 mkdir C:/tcpdump
 push-location C:/tcpdump
 curl.exe -LO http://www.microolap.com/downloads/tcpdump/tcpdump_trial_license.zip
