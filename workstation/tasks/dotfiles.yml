@@ -20,6 +20,7 @@
     - { src: "git-prompt.sh", dest: ".git-prompt.sh" }
     - { src: "gitconfig.shared", dest: ".gitconfig.shared" }
     - { src: "gitignore_global", dest: ".gitignore_global" }
+    - { src: "gitmessage", dest: ".gitmessage" }
     - { src: "tmux.conf", dest: ".tmux.conf" }
     - { src: "vimrc.local", dest: ".vimrc.local" }
     - { src: "xsessionrc", dest: ".xsessionrc" }
