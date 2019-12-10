@@ -35,3 +35,11 @@
     mode: 0644
   become: yes
   become_user: pivotal
+- name: Copy gitmessage
+  copy:
+    src: "~/workspace/garden-windows-ci/dotfiles/gitmessage"
+    dest: "~/.gitmessage"
+    owner: pivotal
+    mode: 0644
+  become: yes
+  become_user: pivotal
