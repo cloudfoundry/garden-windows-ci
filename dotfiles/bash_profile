@@ -179,7 +179,8 @@ rdp() {
     USERNAME=$3
   fi
 
-  xfreerdp +nego +sec-rdp +sec-tls +sec-nla +fonts /dynamic-resolution /scale-desktop:150 /u:$USERNAME /p:$PASSWORD /v:$IP /scale:140 /size:1920x1080 +home-drive +clipboard
+  xfreerdp +nego +sec-rdp +sec-tls +sec-nla +fonts /dynamic-resolution /scale-desktop:150 \
+    /u:$USERNAME /p:$PASSWORD /v:$IP /scale:140 /size:1920x1080 +home-drive +clipboard
 }
 
 grdp() {
@@ -230,7 +231,8 @@ fly-garden-windows() {
     -p garden-windows \
     -c $HOME/workspace/garden-windows-ci/pipelines/garden-windows.yml \
     -l <(_env_creds_yml alfredo) \
-    -l <(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' 'aws-iam-access-keys' 'github-access-tokens' 'garden-windows-dev-service-account.json' )
+    -l <(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' \
+    'aws-iam-access-keys' 'github-access-tokens' 'garden-windows-dev-service-account.json' )
 }
 
 fly-envoy-nginx() {
@@ -239,19 +241,22 @@ fly-envoy-nginx() {
     -p envoy-nginx \
     -c $HOME/workspace/garden-windows-ci/pipelines/envoy-nginx.yml \
     -l <(_env_creds_yml alfredo) \
-    -l <(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' 'aws-iam-access-keys' 'github-access-tokens' 'garden-windows-dev-service-account.json' )
+    -l <(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' \
+    'aws-iam-access-keys' 'github-access-tokens' 'garden-windows-dev-service-account.json' )
 }
 
 fly-environments () {
   [ "$1" == "-h" ] && echo "Push environments pipeline to concourse" && return
   fly -t garden-windows sp -p environments -c $HOME/workspace/garden-windows-ci/pipelines/environments.yml \
-    -l<(lpass show --notes -G 'github-deploy-keys' 'garden-windows-dev-service-account.json' 'guac-access' 'azure-garden-windows')
+    -l<(lpass show --notes -G 'github-deploy-keys' \
+    'garden-windows-dev-service-account.json' 'guac-access' 'azure-garden-windows')
 }
 
 fly-hydrator () {
   [ "$1" == "-h" ] && echo "Push hydrator pipeline to concourse" && return
   fly -t garden-windows sp -p hydrator -c $HOME/workspace/garden-windows-ci/pipelines/hydrator.yml \
-    -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 aws-iam-access-keys github-access-tokens)
+    -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 \
+    github-deploy-keys-3 aws-iam-access-keys github-access-tokens)
 }
 
 fly-windows-tools () {
@@ -264,34 +269,39 @@ fly-winc () {
   [ "$1" == "-h" ] && echo "Push winc pipeline to concourse" && return
   fly -t garden-windows sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
     -l <(_env_creds_yml pesto) \
-  -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 aws-iam-access-keys github-access-tokens garden-windows-dev-service-account.json)
+    -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 \
+    aws-iam-access-keys github-access-tokens garden-windows-dev-service-account.json)
 }
 
 fly-longrunning () {
   [ "$1" == "-h" ] && echo "Push longrunning pipeline to concourse" && return
   fly -t garden-windows sp -p longrunning -c $HOME/workspace/garden-windows-ci/pipelines/longrunning.yml \
     -l <(_env_creds_yml mulgore) \
-  -l<(lpass show --notes github-deploy-keys aws-iam-access-keys github-access-tokens spitfire-service-account.json datadog-secrets ci-cell-admin-password) 
+    -l<(lpass show --notes github-deploy-keys aws-iam-access-keys \
+    github-access-tokens spitfire-service-account.json datadog-secrets ci-cell-admin-password)
 }
 
 fly-rootfs () {
   [ "$1" == "-h" ] && echo "Push rootfs pipeline to concourse" && return
   fly -t garden-windows sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
-    -l<(lpass show --notes aws-iam-access-keys docker-creds azure-smb-share-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token)
+    -l<(lpass show --notes aws-iam-access-keys docker-creds \
+    azure-smb-share-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token)
 }
 
 fly-windows1803fs () {
   [ "$1" == "-h" ] && echo "Push windows1803fs pipeline to concourse" && return
   fly -t garden-windows sp -p windows1803fs -c $HOME/workspace/garden-windows-ci/pipelines/windows1803fs.yml \
     -l <(_env_creds_yml tartar) \
-  -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token) 
+    -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys \
+    github-deploy-keys-2 github-access-tokens tracker-api-token)
 }
 
 fly-windows2019fs () {
   [ "$1" == "-h" ] && echo "Push windows2019fs pipeline to concourse" && return
   fly -t garden-windows sp -p windows2019fs -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-offline.yml \
     -l <(_env_creds_yml sriracha) \
-  -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
+  -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys \
+    github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
   -l $HOME/workspace/garden-windows-ci/vars/windows2019fs.yml
 }
 
@@ -299,7 +309,8 @@ fly-windowsfs-online () {
   [ "$1" == "-h" ] && echo "Push windowsfs-online pipeline to concourse" && return
   fly -t garden-windows set-pipeline -p windowsfs-online -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-online.yml \
     -l <(_env_creds_yml aioli) \
-    -l <(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
+    -l <(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys \
+    github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
     -l $HOME/workspace/garden-windows-ci/vars/windowsfs-online.yml
 }
 
@@ -464,7 +475,8 @@ box_deploy() {
   local name=$1
   local recreate=$2
   bosh_target "dev-box"
-  bosh -d $name deploy <(bosh int ~/workspace/garden-windows-ci/dev-box/$name.yml -l <(lpass show --notes dev-box-secrets.yml)) $recreate
+  bosh -d $name deploy <(bosh int ~/workspace/garden-windows-ci/dev-box/$name.yml \
+    -l <(lpass show --notes dev-box-secrets.yml)) $recreate
 }
 
 box_ip() {
@@ -566,22 +578,27 @@ guess_pasd() {
 function lscon() {
   [ "$1" == "-h" ] && echo "List containers, their ip address on all windows cells" && return
   local d="${1:-$(guess_cfd)}" c="${2:-windows2019-cell}";
-  bosh -d "$d" ssh "$c" --opts=-T \
-  'powershell $s=((Get-NetIPConfiguration -InterfaceAlias "Ethernet*").IPv4Address.IPAddress); "Get-ComputeProcess | % {$o=$_.Id.Substring(0,28); (Get-HnsEndpoint | Where {$_.Name -eq $o}).IPAddress + \"`t\" + $_.Id}"' | \
-  sed 's#: stdout |##g' | sort
+  cmd='powershell $s=((Get-NetIPConfiguration -InterfaceAlias "Ethernet*").IPv4Address.IPAddress); '
+  cmd+='"Get-ComputeProcess | % {$o=$_.Id.Substring(0,28); (Get-HnsEndpoint | '
+  cmd+='Where {$_.Name -eq $o}).IPAddress + \"`t\" + $_.Id}"'
+  bosh -d "$d" ssh "$c" --opts=-T "$cmd" | sed 's#: stdout |##g' | sort
 }
 
 function lsapp() {
   [ "$1" == "-h" ] && echo "List cell ip and port (default route) for all apps" && return
-  cf apps | grep started | awk '{print $1}' | xargs -I{} cf app {} --guid | xargs -I{} cf curl v2/apps/{}/stats | \
-  grep -oP '"name":\s*"\K([^"]+)|"host":\s*"\K([^"]+)|"port":\s*\K([^,]+)|}$' | xargs | sed 's# }[ }]*#\n#g' | awk /./
+  cf apps | grep started | awk '{print $1}' | xargs -I{} cf app {} --guid | \
+  xargs -I{} cf curl v2/apps/{}/stats | \
+  grep -oP '"name":\s*"\K([^"]+)|"host":\s*"\K([^"]+)|"port":\s*\K([^,]+)|}$' | \
+  xargs | sed 's# }[ }]*#\n#g' | awk /./
 }
 
 function lsmap() {
   [ "$1" == "-h" ] && echo "List host container mappings" && return
   local d="${1:-$(guess_cfd)}" c="${2:-diego-cell}";
-  bosh -d "$d" ssh "$c" --opts=-T 'source /etc/profile.d/cfdot.sh && /var/vcap/packages/cfdot/bin/cfdot presences | '\
-  'grep -oP "\"key\":\"\K([^\"]+)" | xargs -I{} /var/vcap/packages/cfdot/bin/cfdot actual-lrps -c {}' | awk -F 'stdout \| ' '{print $2}' | awk /./
+  bosh -d "$d" ssh "$c" \
+  --opts=-T 'source /etc/profile.d/cfdot.sh && /var/vcap/packages/cfdot/bin/cfdot presences | '\
+  'grep -oP "\"key\":\"\K([^\"]+)" | xargs -I{} /var/vcap/packages/cfdot/bin/cfdot actual-lrps -c {}' | \
+  awk -F 'stdout \| ' '{print $2}' | awk /./
 }
 
 bosh_ssh_app() {
