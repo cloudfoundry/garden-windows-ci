@@ -552,6 +552,7 @@ story() {
   OLD_IFS=$IFS
   IFS=$'\n'
   nostory
+  COLUMNS=1
   select story in `stories`; do
     story_id=$(echo "$story" | awk '{ print $1}')
     story_title=$(echo "$story" | awk '{ $1=""; print substr($0,2)}')
