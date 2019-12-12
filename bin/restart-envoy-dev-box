@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+vm_id=$(bosh vms --json | jq '.Tables[].Rows[] | select(.instance | startswith("envoy")) | .vm_cid' -r)
+vmx_path="$HOME/workspace/vmfiles/director/store/vm-$vm_id/vm-$vm_id.vmx"
+vmrun start $vmx_path
+vmrun runScriptInGuest $vmx_path '' 'powershell start-service bosh-agent'
