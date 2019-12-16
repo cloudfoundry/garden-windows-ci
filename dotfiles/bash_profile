@@ -317,7 +317,7 @@ fly-windowsfs-online () {
 
 fly-ci () {
   [ "$1" == "-h" ] && echo "Push ci pipeline to concourse" && return
-  fly -t garden-windows sp -p ci -c $HOME/workspace/garden-windows-ci/pipelines/ci.yml \
+  fly -t hh sp -p ci -c $HOME/workspace/garden-windows-ci/pipelines/ci.yml \
   -l<(lpass show --notes ci-creds github-deploy-keys )
 }
 
