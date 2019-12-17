@@ -218,7 +218,7 @@ fly-envoy() {
 
 fly-cleanup() {
   [ "$1" == "-h" ] && echo "Push cleanup pipeline to concourse" && return
-  fly -t garden-windows sp \
+  fly -t hh sp \
     -p cleanup \
     -c $HOME/workspace/garden-windows-ci/pipelines/cleanup.yml \
     -l <(_bosh_creds_yml spitfire) \
@@ -248,7 +248,7 @@ fly-envoy-nginx() {
 
 fly-environments () {
   [ "$1" == "-h" ] && echo "Push environments pipeline to concourse" && return
-  fly -t garden-windows sp -p environments -c $HOME/workspace/garden-windows-ci/pipelines/environments.yml \
+  fly -t hh sp -p environments -c $HOME/workspace/garden-windows-ci/pipelines/environments.yml \
     -l<(lpass show --notes -G 'github-deploy-keys' \
     'garden-windows-dev-service-account.json' 'guac-access' 'azure-garden-windows')
 }
@@ -262,7 +262,7 @@ fly-hydrator () {
 
 fly-windows-tools () {
   [ "$1" == "-h" ] && echo "Push windows-tools pipeline to concourse" && return
-  fly -t garden-windows sp -p windows-tools -c $HOME/workspace/garden-windows-ci/pipelines/windows-tools.yml \
+  fly -t hh sp -p windows-tools -c $HOME/workspace/garden-windows-ci/pipelines/windows-tools.yml \
     -l<(lpass show --notes github-access-tokens github-deploy-keys aws-iam-access-keys)
 }
 
@@ -323,7 +323,7 @@ fly-ci () {
 
 fly-bots() {
   [ "$1" == "-h" ] && echo "Push bots pipeline to concourse" && return
-   fly -t garden-windows sp -p delegate-bot -c $HOME/workspace/garden-windows-ci/pipelines/bots.yml \
+   fly -t hh sp -p delegate-bot -c $HOME/workspace/garden-windows-ci/pipelines/bots.yml \
   -l<(lpass show --notes github-deploy-keys bot-creds)
 }
 
