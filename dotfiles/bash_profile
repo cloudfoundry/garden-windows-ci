@@ -228,7 +228,7 @@ fly-cleanup() {
 
 fly-garden-windows() {
   [ "$1" == "-h" ] && echo "Push garden-windows pipeline to concourse" && return
-  fly -t garden-windows sp \
+  fly -t hh sp \
     -p garden-windows \
     -c $HOME/workspace/garden-windows-ci/pipelines/garden-windows.yml \
     -l <(_env_creds_yml alfredo) \
@@ -329,7 +329,7 @@ fly-bots() {
 
 fly-web-config-buildpack() {
   [ "$1" == "-h" ] && echo "Push web config buildpack pipeline to concourse" && return
-  fly -t garden-windows sp -p web-config-buildpack -c $HOME/workspace/garden-windows-ci/pipelines/web-config-buildpack.yml \
+  fly -t hh sp -p web-config-buildpack -c $HOME/workspace/garden-windows-ci/pipelines/web-config-buildpack.yml \
   -l<(lpass show --notes 'github-deploy-keys')
 }
 
