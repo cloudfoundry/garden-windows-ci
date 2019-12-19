@@ -255,7 +255,7 @@ fly-environments () {
 
 fly-hydrator () {
   [ "$1" == "-h" ] && echo "Push hydrator pipeline to concourse" && return
-  fly -t garden-windows sp -p hydrator -c $HOME/workspace/garden-windows-ci/pipelines/hydrator.yml \
+  fly -t hh sp -p hydrator -c $HOME/workspace/garden-windows-ci/pipelines/hydrator.yml \
     -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 \
     github-deploy-keys-3 aws-iam-access-keys github-access-tokens)
 }
