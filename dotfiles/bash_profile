@@ -284,7 +284,7 @@ fly-longrunning () {
 
 fly-rootfs () {
   [ "$1" == "-h" ] && echo "Push rootfs pipeline to concourse" && return
-  fly -t garden-windows sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
+  fly -t hh sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
     -l<(lpass show --notes aws-iam-access-keys docker-creds \
     azure-smb-share-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token)
 }
