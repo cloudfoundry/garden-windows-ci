@@ -61,12 +61,12 @@ jobs:
         EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         IMPORT_PATH: "code.cloudfoundry.org/winc"
         PACKAGE: "./cmd/winc"
-      tags: [1803]
+      tags: ["1803"]
     - task: build-groot
       file: ci/tasks/build-groot/task.yml
       params:
         EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      tags: [1803]
+      tags: ["1803"]
     - task: build-diff-exporter
       file: ci/tasks/build-binary/task.yml
       input_mapping:
@@ -78,7 +78,7 @@ jobs:
         PACKAGE: "."
         IMPORT_PATH: "code.cloudfoundry.org/diff-exporter"
         BINARY_NAME: "diff-exporter.exe"
-      tags: [1803]
+      tags: ["1803"]
   - task: run-ginkgo-exe
     file: ci/tasks/test-hydrator-windows/task.yml
     params:
@@ -86,7 +86,7 @@ jobs:
       NODES: 2
       IMAGE_TAG: "1803"
       IMAGE_NAME: "cloudfoundry/windows2016fs"
-    tags: [1803]
+    tags: ["1803"]
 - name: test-hydrator-windows2019
   serial: true
   plan:
@@ -112,12 +112,12 @@ jobs:
         EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
         IMPORT_PATH: "code.cloudfoundry.org/winc"
         PACKAGE: "./cmd/winc"
-      tags: [2019]
+      tags: ["2019"]
     - task: build-groot
       file: ci/tasks/build-groot/task.yml
       params:
         EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      tags: [2019]
+      tags: ["2019"]
     - task: build-diff-exporter
       file: ci/tasks/build-binary/task.yml
       input_mapping:
@@ -129,7 +129,7 @@ jobs:
         PACKAGE: "."
         IMPORT_PATH: "code.cloudfoundry.org/diff-exporter"
         BINARY_NAME: "diff-exporter.exe"
-      tags: [2019]
+      tags: ["2019"]
   - task: run-ginkgo-exe
     file: ci/tasks/test-hydrator-windows/task.yml
     params:
@@ -137,7 +137,7 @@ jobs:
       NODES: 2
       IMAGE_TAG: "2019"
       IMAGE_NAME: "cloudfoundry/windows2016fs"
-    tags: [2019]
+    tags: ["2019"]
 - name: test-hydrator-linux
   serial: true
   plan:
