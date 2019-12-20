@@ -41,6 +41,7 @@ jobs:
   - task: test-hwc
     input_mapping: { hwc: hwc-develop }
     file: ci/tasks/test-hwc/task.yml
+    tags: ["2019"]
   - task: merge-develop-to-master
     input_mapping: { from-repo: hwc-develop, to-repo: hwc-master }
     file: ci/tasks/merge-repo/task.yml
