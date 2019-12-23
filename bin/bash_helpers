@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # When adding/deleting envs, put them in the right list here
-GITHUB_ENVS_CF="aioli,alfredo,guac,hummus,sriracha,pesto,tartar"
+GITHUB_ENVS_CF="aioli,alfredo,guac,hummus,sriracha,pesto,tartar,mulgore"
 GITHUB_ENVS_PCF="sys.merced"
 GITHUB_ENVS="$GITHUB_ENVS_CF,$GITHUB_ENVS_PCF"
 CONCOURSE_ENV="spitfire"
