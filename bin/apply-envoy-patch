@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -ex
+
+patchfile=$1
+new_branchname=$2
+
+[ -f $patchfile ] || (echo "patchfile $patchfile does not exist"; exit 1)
+[ ! -z $new_branchname ] || (echo "new branchname must not be empty"; exit 1)
+
+git checkout master
+git pull
+
+# Apply patch to a new branch
+git checkout -b $new_branchname
+git apply --check $patchfile
+git apply $patchfile
+git add .
+git commit -v
+commit_sha=$(git rev-parse HEAD)
+
+# Apply patch to pivotal-fix-upstream
+git checkout pivotal-fix-upstream
+git cherry-pick $commit_sha
+
+# Apply patch to pivotal-windows-dev
+git checkout pivotal-windows-dev
+git rebase pivotal-fix-upstream
