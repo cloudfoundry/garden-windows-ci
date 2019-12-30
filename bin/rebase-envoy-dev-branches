@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -ex
+
+git checkout master
+git pull
+
+git fetch --all
+
+# Reset pivotal-fix-upstream to the latest pushed content
+git checkout pivotal-fix-upstream
+git reset --hard fork/pivotal-fix-upstream
+# Rebase on top of latest master
+git rebase master
+
+# Reset pivotal-windows-dev to the latest pushed content
+git checkout pivotal-windows-dev
+git reset --hard fork/pivotal-windows-dev
+# Rebase on top of latest pivotal-fix-upstream
+git rebase pivotal-fix-upstream
+
+
