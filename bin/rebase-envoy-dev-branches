@@ -2,19 +2,38 @@
 
 set -ex
 
+if ! (git status -uno | grep -q "nothing to commit"); then
+  echo "git status reports activity to be committed"
+  exit 1
+fi
+
 git checkout master
 git pull
 
 git fetch --all
 
 # Reset pivotal-fix-upstream to the latest pushed content
-git checkout pivotal-fix-upstream
+if ! (git checkout pivotal-fix-upstream | grep -q "branch is up to date with"); then
+  echo "git status reports pivotal-fix-upstream fork is not in sync"
+  echo "performing a force reset to fork/"
+fi
+
+if ! (git status -uno | grep -q "nothing to commit"); then
+  echo "git status reports activity to be committed"
+  exit 1
+fi
+
 git reset --hard fork/pivotal-fix-upstream
 # Rebase on top of latest master
 git rebase master
 
 # Reset pivotal-windows-dev to the latest pushed content
 git checkout pivotal-windows-dev
+if ! (git status -uno | grep -q "nothing to commit"); then
+  echo "git status reports activity to be committed"
+  exit 1
+fi
+
 git reset --hard fork/pivotal-windows-dev
 # Rebase on top of latest pivotal-fix-upstream
 git rebase pivotal-fix-upstream
