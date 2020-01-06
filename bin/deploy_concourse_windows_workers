@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [[ -z "$(gcloud config list --format='value(core.account)')" ]]; then
+  echo 'Must log in using `gcloud auth login`'
+  exit 1
+fi
+
+CONCOURSE_DEPLOYMENT=${CONCOURSE_DEPLOYMENT:-$HOME/workspace/concourse-bosh-deployment}
+if [[ ! -d $CONCOURSE_DEPLOYMENT ]]; then
+ pushd $HOME/workspace
+  git clone https://github.com/concourse/concourse-bosh-deployment
+ popd
+else
+  pushd $CONCOURSE_DEPLOYMENT
+    git pull
+  popd
+fi
+
+GARDEN_WINDOWS_CI=${GARDEN_WINDOWS_CI:-$HOME/workspace/garden-windows-ci}
+if [[ ! -d $GARDEN_WINDOWS_CI ]]; then
+ pushd $HOME/workspace
+  git clone git@github.com:cloudfoundry/garden-windows-ci
+ popd
+fi
+
+source $GARDEN_WINDOWS_CI/bin/bash_helpers
+
+concourse_vars_project="cf-greenhouse-spitfire"
+DIR=$(mktemp -d)
+
+bosh_target "spitfire"
+
+bosh -d concourse-worker-1803 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-worker.yml \
+  -v deployment_name=concourse-worker-1803 \
+  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
+  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/windows-worker.yml \
+  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/windows-worker-ephemeral-disk.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/remove-linux-external-worker.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-tags.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-external.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-tools-1803.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-1803-windows2016-stemcell.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh.yml \
+  -v windows_worker_tag=1803 \
+  -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
+  -l <(gsutil cat gs://$concourse_vars_project/concourse/vars.yml) \
+  -l <(gsutil cat gs://$concourse_vars_project/concourse/creds.yml)
+
+bosh -d concourse-worker-2019 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-worker.yml \
+  -v deployment_name=concourse-worker-2019 \
+  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
+  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/windows-worker.yml \
+  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/windows-worker-ephemeral-disk.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/remove-linux-external-worker.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-tags.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-external.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-tools-2019.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-windows2019-stemcell.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh.yml \
+  -v windows_worker_tag=2019 \
+  -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
+  -l <(gsutil cat gs://$concourse_vars_project/concourse/vars.yml) \
+  -l <(gsutil cat gs://$concourse_vars_project/concourse/creds.yml)
