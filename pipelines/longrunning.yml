@@ -103,7 +103,7 @@ resources:
   type: bosh-deployment
   # This check must happen on vsphere because you can't talk to the jumpbox
   # from let's say a worker on gcp
-  tags: [vsphere]
+  tags: [toolsmiths-shared-vsphere]
   source:
     deployment: cf
     client: {{MULGORE_BOSH_CLIENT}}
@@ -140,39 +140,39 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: cf-deployment
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: vsphere-windows2012R2-stemcell
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: vsphere-windows1803-stemcell
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: vsphere-windows2019-stemcell
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: winc-release-develop
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: windows1803fs-release-develop
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: windowsfs-release-develop
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: garden-windows-bosh-release-develop
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: envoy-release-develop
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: envoy-nginx-release-master
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
   - in_parallel:
     - task: get-linux-stemcell
       file: ci/tasks/get-vsphere-linux-stemcell/task.yml
       output_mapping: { stemcell: vsphere-linux-stemcell }
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - task: get-cf-vars
       file: ci/tasks/get-gcs-file/task.yml
       output_mapping: { output: cf-vars }
@@ -180,49 +180,49 @@ jobs:
         BUCKET: mulgore
         FILE_NAME: cf/vars.yml
         SERVICE_ACCOUNT_KEY: {{SPITFIRE_SERVICE_ACCOUNT_JSON}}
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - task: create-winc-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: winc-release-develop
       output_mapping:
         release-tarball: winc-tarball
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - task: create-windows1803fs-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: windows1803fs-release-develop
       output_mapping:
         release-tarball: windows1803fs-tarball
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - task: create-windowsfs-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: windowsfs-release-develop
       output_mapping:
         release-tarball: windowsfs-tarball
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - task: create-garden-windows-bosh-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: garden-windows-bosh-release-develop
       output_mapping:
         release-tarball: garden-windows-tarball
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - task: create-envoy-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: envoy-release-develop
       output_mapping:
         release-tarball: envoy-tarball
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - task: create-envoy-nginx-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
         release: envoy-nginx-release-master
       output_mapping:
         release-tarball: envoy-nginx-tarball
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
   - put: mulgore-cf-deployment
     attempts: 2
     params:
@@ -273,14 +273,14 @@ jobs:
       cleanup: true
     get_params:
       skip_export: true
-    tags: [vsphere]
+    tags: [toolsmiths-shared-vsphere]
   - task: create-longrunning-spaces
     file: ci/tasks/create-longrunning-spaces/task.yml
     params:
       CF_API: api.mulgore.cf-app.com
       CF_USERNAME: admin
       CF_PASSWORD: {{MULGORE_ADMIN_PASSWORD}}
-    tags: [vsphere]
+    tags: [toolsmiths-shared-vsphere]
 
 - name: mulgore-cfbench-windows1803
   serial: true
@@ -289,18 +289,18 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: cfbench
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: cf-acceptance-tests
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: every-15mins
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: mulgore-cf-deployment
       trigger: true
       passed: [mulgore-deploy-cf]
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
   - task: cfbench
     file: ci/tasks/cfbench/task.yml
     input_mapping: {app: cf-acceptance-tests}
@@ -315,7 +315,7 @@ jobs:
       APP_BUILDPACK: hwc_buildpack
       DATADOG_API_KEY: {{DATADOG_API_KEY}}
       DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
-    tags: [vsphere]
+    tags: [toolsmiths-shared-vsphere]
 
 - name: mulgore-push-longrunning-app-windows1803
   serial: true
@@ -324,13 +324,13 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: cf-acceptance-tests
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: mulgore-cf-deployment
       trigger: true
       passed: [mulgore-deploy-cf]
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
   - task: push-app
     file: ci/tasks/push-app/task.yml
     input_mapping: {app: cf-acceptance-tests}
@@ -343,7 +343,7 @@ jobs:
       CF_SPACE: windows1803
       APP_DIR: app/assets/nora/NoraPublished
       APP_BUILDPACK: hwc_buildpack
-    tags: [vsphere]
+    tags: [toolsmiths-shared-vsphere]
 
 - name: mulgore-curl-longrunning-app-windows1803
   build_logs_to_retain: 20000
@@ -353,14 +353,14 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: every-5mins
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: mulgore-cf-deployment
       trigger: true
       passed: [mulgore-push-longrunning-app-windows1803]
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
   - task: curl-app
     file: ci/tasks/curl-app/task.yml
     params:
@@ -368,7 +368,7 @@ jobs:
       DATADOG_TAG: windows1803
       DATADOG_API_KEY: {{DATADOG_API_KEY}}
       DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
-    tags: [vsphere]
+    tags: [toolsmiths-shared-vsphere]
 
 - name: mulgore-cfbench-windows2019
   serial: true
@@ -377,18 +377,18 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: cfbench
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: cf-acceptance-tests
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: every-15mins
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: mulgore-cf-deployment
       trigger: true
       passed: [mulgore-deploy-cf]
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
   - task: cfbench
     file: ci/tasks/cfbench/task.yml
     input_mapping: {app: cf-acceptance-tests}
@@ -403,7 +403,7 @@ jobs:
       APP_BUILDPACK: hwc_buildpack
       DATADOG_API_KEY: {{DATADOG_API_KEY}}
       DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
-    tags: [vsphere]
+    tags: [toolsmiths-shared-vsphere]
 
 - name: mulgore-push-longrunning-app-windows2019
   serial: true
@@ -412,13 +412,13 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: cf-acceptance-tests
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: mulgore-cf-deployment
       trigger: true
       passed: [mulgore-deploy-cf]
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
   - task: push-app
     file: ci/tasks/push-app/task.yml
     input_mapping: {app: cf-acceptance-tests}
@@ -431,7 +431,7 @@ jobs:
       CF_SPACE: windows2019
       APP_DIR: app/assets/nora/NoraPublished
       APP_BUILDPACK: hwc_buildpack
-    tags: [vsphere]
+    tags: [toolsmiths-shared-vsphere]
 
 - name: mulgore-curl-longrunning-app-windows2019
   build_logs_to_retain: 20000
@@ -441,14 +441,14 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: every-5mins
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: mulgore-cf-deployment
       trigger: true
       passed: [mulgore-push-longrunning-app-windows2019]
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
   - task: curl-app
     file: ci/tasks/curl-app/task.yml
     params:
@@ -456,7 +456,7 @@ jobs:
       DATADOG_TAG: windows2019
       DATADOG_API_KEY: {{DATADOG_API_KEY}}
       DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
-    tags: [vsphere]
+    tags: [toolsmiths-shared-vsphere]
 
 - name: mulgore-cfbench-windows2012R2
   serial: true
@@ -465,18 +465,18 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: cfbench
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: cf-acceptance-tests
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: every-15mins
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: mulgore-cf-deployment
       trigger: true
       passed: [mulgore-deploy-cf]
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
   - task: cfbench
     file: ci/tasks/cfbench/task.yml
     input_mapping: {app: cf-acceptance-tests}
@@ -491,7 +491,7 @@ jobs:
       APP_BUILDPACK: hwc_buildpack
       DATADOG_API_KEY: {{DATADOG_API_KEY}}
       DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
-    tags: [vsphere]
+    tags: [toolsmiths-shared-vsphere]
 
 - name: mulgore-push-longrunning-app-windows2012R2
   serial: true
@@ -500,13 +500,13 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: cf-acceptance-tests
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: mulgore-cf-deployment
       trigger: true
       passed: [mulgore-deploy-cf]
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
   - task: push-app
     file: ci/tasks/push-app/task.yml
     input_mapping: {app: cf-acceptance-tests}
@@ -519,7 +519,7 @@ jobs:
       CF_SPACE: windows2012R2
       APP_DIR: app/assets/nora/NoraPublished
       APP_BUILDPACK: hwc_buildpack
-    tags: [vsphere]
+    tags: [toolsmiths-shared-vsphere]
 
 - name: mulgore-curl-longrunning-app-windows2012R2
   build_logs_to_retain: 20000
@@ -529,14 +529,14 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: every-5mins
       trigger: true
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
     - get: mulgore-cf-deployment
       trigger: true
       passed: [mulgore-push-longrunning-app-windows2012R2]
-      tags: [vsphere]
+      tags: [toolsmiths-shared-vsphere]
   - task: curl-app
     file: ci/tasks/curl-app/task.yml
     params:
@@ -544,4 +544,4 @@ jobs:
       DATADOG_TAG: windows2012R2
       DATADOG_API_KEY: {{DATADOG_API_KEY}}
       DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
-    tags: [vsphere]
+    tags: [toolsmiths-shared-vsphere]
