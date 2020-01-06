@@ -23,8 +23,8 @@ applications:
   env:
     GOVERSION: go1.13
     GOPACKAGENAME: github.com/pivotal-cf-experimental/relint-trackerbot
-    CONCOURSE_HOST: https://garden-windows.ci.cf-app.com
-    CONCOURSE_TEAM: main
+    CONCOURSE_HOST: https://hush-house.pivotal.io
+    CONCOURSE_TEAM: windows-containers
     TRACKER_API_TOKEN: ${TRACKER_API_TOKEN}
     TRACKER_PROJECT_ID: ${TRACKER_PROJECT_ID}
 EOF
