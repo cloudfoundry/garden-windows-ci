@@ -238,7 +238,7 @@ fly-garden-windows() {
 
 fly-envoy-nginx() {
   [ "$1" == "-h" ] && echo "Push envoy-nginx pipeline to concourse" && return
-  fly -t garden-windows sp \
+  fly -t hh sp \
     -p envoy-nginx \
     -c $HOME/workspace/garden-windows-ci/pipelines/envoy-nginx.yml \
     -l <(_env_creds_yml alfredo) \
@@ -268,7 +268,7 @@ fly-windows-tools () {
 
 fly-winc () {
   [ "$1" == "-h" ] && echo "Push winc pipeline to concourse" && return
-  fly -t garden-windows sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
+  fly -t hh sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
     -l <(_env_creds_yml pesto) \
     -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 \
     aws-iam-access-keys github-access-tokens garden-windows-dev-service-account.json)
@@ -276,7 +276,7 @@ fly-winc () {
 
 fly-longrunning () {
   [ "$1" == "-h" ] && echo "Push longrunning pipeline to concourse" && return
-  fly -t garden-windows sp -p longrunning -c $HOME/workspace/garden-windows-ci/pipelines/longrunning.yml \
+  fly -t hh sp -p longrunning -c $HOME/workspace/garden-windows-ci/pipelines/longrunning.yml \
     -l <(_env_creds_yml mulgore) \
     -l<(lpass show --notes github-deploy-keys aws-iam-access-keys \
     github-access-tokens spitfire-service-account.json datadog-secrets ci-cell-admin-password)
@@ -291,7 +291,7 @@ fly-rootfs () {
 
 fly-windows1803fs () {
   [ "$1" == "-h" ] && echo "Push windows1803fs pipeline to concourse" && return
-  fly -t garden-windows sp -p windows1803fs -c $HOME/workspace/garden-windows-ci/pipelines/windows1803fs.yml \
+  fly -t hh sp -p windows1803fs -c $HOME/workspace/garden-windows-ci/pipelines/windows1803fs.yml \
     -l <(_env_creds_yml tartar) \
     -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys \
     github-deploy-keys-2 github-access-tokens tracker-api-token)
@@ -299,7 +299,7 @@ fly-windows1803fs () {
 
 fly-windows2019fs () {
   [ "$1" == "-h" ] && echo "Push windows2019fs pipeline to concourse" && return
-  fly -t garden-windows sp -p windows2019fs -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-offline.yml \
+  fly -t hh sp -p windows2019fs -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-offline.yml \
     -l <(_env_creds_yml sriracha) \
   -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys \
     github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
@@ -308,7 +308,7 @@ fly-windows2019fs () {
 
 fly-windowsfs-online () {
   [ "$1" == "-h" ] && echo "Push windowsfs-online pipeline to concourse" && return
-  fly -t garden-windows set-pipeline -p windowsfs-online -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-online.yml \
+  fly -t hh set-pipeline -p windowsfs-online -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-online.yml \
     -l <(_env_creds_yml aioli) \
     -l <(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys \
     github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
