@@ -22,6 +22,12 @@
 - type: replace
   path: /instance_groups/name=windows-worker/jobs/-
   value:
+    name: cmake
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
     name: mingw64
     release: windows-tools
 
