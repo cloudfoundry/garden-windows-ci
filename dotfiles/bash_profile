@@ -105,6 +105,7 @@ alias gst="git status"
 #use this if you need to run lpass from an ssh connection
 alias lpass-ssh='export LPASS_DISABLE_PINENTRY=1; lpass'
 alias gardenwindows=what
+alias k=kubectl
 
 gv () {
   [ "$1" == "-h" ] && echo "Vim (windows mode)" && return
