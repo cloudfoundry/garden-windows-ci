@@ -12,12 +12,6 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
-- name: bosh-deployment
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry/bosh-deployment.git
-
 - name: cf-deployment-concourse-tasks
   type: git
   source:
@@ -70,14 +64,6 @@ resources:
   source:
     branch: master
     pool: guac
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
-    uri: git@github.com:greenhouse-ci/locks
-
-- name: mulgore-lock-pool
-  type: pool
-  source:
-    branch: master
-    pool: mulgore
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:greenhouse-ci/locks
 
@@ -361,45 +347,3 @@ jobs:
       params:
         release: guac-lock-pool
 
-- name: mulgore-cleanup
-  serial: true
-  plan:
-  - in_parallel:
-    - get: twice-a-week
-      trigger: true
-      tags: [vsphere]
-    - get: ci
-      tags: [vsphere]
-    - get: bosh-deployment
-      tags: [vsphere]
-  - put: mulgore-lock-pool
-    params:
-      acquire: true
-  - task: clean-up
-    file: ci/tasks/bosh-cleanup/task.yml
-    tags: [vsphere]
-    params:
-      BOSH_CLIENT: ((MULGORE_BOSH_CLIENT))
-      BOSH_CLIENT_SECRET: ((MULGORE_BOSH_CLIENT_SECRET))
-      BOSH_ENVIRONMENT: ((MULGORE_BOSH_ENVIRONMENT))
-      BOSH_CA_CERT: ((MULGORE_BOSH_CA_CERT))
-      JUMPBOX_IP: ((MULGORE_JUMPBOX_IP))
-      JUMPBOX_SSH_KEY: ((MULGORE_JUMPBOX_SSH_KEY))
-    on_failure:
-      put: mulgore-lock-pool
-      params:
-        release: mulgore-lock-pool
-  - task: update-runtime-config-dns
-    file: ci/tasks/bosh-update-runtime-config-dns/task.yml
-    tags: [vsphere]
-    params:
-      BOSH_CLIENT: ((MULGORE_BOSH_CLIENT))
-      BOSH_CLIENT_SECRET: ((MULGORE_BOSH_CLIENT_SECRET))
-      BOSH_ENVIRONMENT: ((MULGORE_BOSH_ENVIRONMENT))
-      BOSH_CA_CERT: ((MULGORE_BOSH_CA_CERT))
-      JUMPBOX_IP: ((MULGORE_JUMPBOX_IP))
-      JUMPBOX_SSH_KEY: ((MULGORE_JUMPBOX_SSH_KEY))
-    ensure:
-      put: mulgore-lock-pool
-      params:
-        release: mulgore-lock-pool
