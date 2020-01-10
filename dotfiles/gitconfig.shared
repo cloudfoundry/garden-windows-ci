@@ -7,7 +7,7 @@
   co = checkout
   br = branch
   d = diff --submodule=log
-  ci = duet-commit
+  ci = commit -v
   su = submodule update --init --recursive
   prb = pull --rebase
   l = log --graph --decorate=short
