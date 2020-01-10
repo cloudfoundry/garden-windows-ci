@@ -6,6 +6,7 @@ export HISTCONTROL='ignoredups'
 shopt -s histappend
 export GIT_DUET_GLOBAL=true
 export GIT_DUET_ROTATE_AUTHOR=1
+export GIT_DUET_CO_AUTHORED_BY=1
 export BOSH_USE_GEMFILE=1
 export GEM_HOME=~/.gems
 
@@ -106,6 +107,19 @@ alias gst="git status"
 alias lpass-ssh='export LPASS_DISABLE_PINENTRY=1; lpass'
 alias gardenwindows=what
 alias k=kubectl
+
+function setup_git_duet_hooks() {
+  [ "\$1" == "-h" ] && echo "Ensures duet git hooks are properly configured in a repo that may already have git hooks." && return
+
+  [ -d .git ] || (echo "Not in a git repository" && return)
+
+  git duet
+  git init
+  grep -q duet-prepare-commit-msg .git/hooks/prepare-commit-msg || \
+    echo 'exec git duet-prepare-commit-msg "$@"' >> .git/hooks/prepare-commit-msg
+  grep -q duet-post-commit .git/hooks/post-commit || \
+    echo 'exec git duet-post-commit "$@"' >> .git/hooks/post-commit
+}
 
 gv () {
   [ "$1" == "-h" ] && echo "Vim (windows mode)" && return
