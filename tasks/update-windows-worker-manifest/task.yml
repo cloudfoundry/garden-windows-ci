@@ -11,6 +11,7 @@ inputs:
 - name: garden-windows-environments
 - name: windows-tools-release
 - name: windows-utilities-release
+- name: concourse-release
 
 outputs:
 - name: artifacts

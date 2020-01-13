@@ -9,6 +9,14 @@ ops="
   value: "$(< windows-stemcell/version)"
 
 - type: replace
+  path: /releases/name=concourse
+  value:
+    name: concourse
+    sha1: "$(< concourse-release/sha1)"
+    url: "$(< concourse-release/url)"
+    version: "$(< concourse-release/version)"
+
+- type: replace
   path: /releases/name=windows-tools
   value:
     name: windows-tools

@@ -45,6 +45,11 @@ resources:
   source:
     repository: cloudfoundry-incubator/windows-utilities-release
 
+- name: concourse-release
+  type: bosh-io-release
+  source:
+    repository: concourse/concourse-bosh-release
+
 - name: worker-deployment
   type: bosh-deployment
   source:
@@ -75,6 +80,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
+    - get: concourse-release
     - get: windows-2019-stemcell
       trigger: true
     - get: garden-windows-environments
@@ -104,6 +110,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
+    - get: concourse-release
     - get: windows-1803-stemcell
       trigger: true
     - get: garden-windows-environments
