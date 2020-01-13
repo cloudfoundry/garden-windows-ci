@@ -81,12 +81,15 @@ jobs:
   - in_parallel:
     - get: ci
     - get: concourse-release
+      params: {tarball: false}
     - get: windows-2019-stemcell
       trigger: true
     - get: garden-windows-environments
     - get: windows-tools-release
+      params: {tarball: false}
       trigger: true
     - get: windows-utilities-release
+      params: {tarball: false}
       trigger: true
   - task: update-windows2019
     file: ci/tasks/update-windows-worker-manifest/task.yml
@@ -111,12 +114,15 @@ jobs:
   - in_parallel:
     - get: ci
     - get: concourse-release
+      params: {tarball: false}
     - get: windows-1803-stemcell
       trigger: true
     - get: garden-windows-environments
     - get: windows-tools-release
+      params: {tarball: false}
       trigger: true
     - get: windows-utilities-release
+      params: {tarball: false}
       trigger: true
   - task: update-windows1803
     file: ci/tasks/update-windows-worker-manifest/task.yml
