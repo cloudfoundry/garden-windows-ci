@@ -18,7 +18,12 @@ resources:
     version_key: "2010-hardcoded-url"
     check_command: "echo https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x64.exe"
     in_command:    "curl --silent --fail --output $1/vcredist-2010.x64.exe https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x64.exe"
-
+- name: dotnet-48-installer
+  type: command-runner
+  source:
+    version_key: "dotnet-installer-hardcoded-url"
+    check_command: "echo https://download.visualstudio.microsoft.com/download/pr/014120d7-d689-4305-befd-3cb711108212/0fd66638cde16859462a6243a4629a50/ndp48-x86-x64-allos-enu.exe"
+    in_command:    "curl --silent --fail --output $1/dotnet-48-installer.exe https://download.visualstudio.microsoft.com/download/pr/014120d7-d689-4305-befd-3cb711108212/0fd66638cde16859462a6243a4629a50/ndp48-x86-x64-allos-enu.exe"
 
 # Git
 
@@ -202,6 +207,8 @@ jobs:
     - get: vcredist-ucrt
       trigger: true
     - get: vcredist-2010
+      trigger: true
+    - get: dotnet-48-installer
       trigger: true
     - get: image-version-2019
       params: {bump: patch}

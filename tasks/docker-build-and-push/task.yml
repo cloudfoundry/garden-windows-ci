@@ -9,6 +9,7 @@ inputs:
 - name: tar
 - name: vcredist-2010
 - name: vcredist-ucrt
+- name: dotnet-48-installer
 
 run:
   path: powershell
