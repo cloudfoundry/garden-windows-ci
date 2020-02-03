@@ -2,19 +2,19 @@
 name: envoy
 
 releases:
-- name: windows-tools
-  version: 57
-  url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=57
-  sha1: db92476bbe942463797c75a1037d7974c9a46821
-- name: windows-utilities
-  sha1: efc10ac0f4acae23637ce2c6f864d20df2e3a781
-  url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.11.0
-  version: 0.11.0
+- name: "windows-tools"
+  version: "65"
+  url: "https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=65"
+  sha1: "b019267856e094acf1af5403154381ef27d59ad7"
+- name: "windows-utilities"
+  version: "0.13.0"
+  url: "https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.13.0"
+  sha1: "339c0a80a295a3ecfa75688807909b46759d66d1"
 
 stemcells:
 - alias: windows
-  os: windows1803
-  version: 1803.2
+  os: windows2019
+  version: latest
 
 update:
   canaries: 1
@@ -52,13 +52,13 @@ instance_groups:
     release: windows-tools
   - name: ninja
     release: windows-tools
-  - name: python
+  - name: python3
     release: windows-tools
   - name: smb-share
     release: windows-tools
-  - name: vc_redist
-    release: windows-tools
   - name: vs_buildtools
+    release: windows-tools
+  - name: vs2019
     release: windows-tools
   - name: llvm
     release: windows-tools
