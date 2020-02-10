@@ -20,4 +20,4 @@ $env:USERPROFILE = "$env:EPHEMERAL_DISK_TEMP_PATH"
 cd repo
 
 Run-Docker "--version"
-Run-Docker "build", "-t", "$env:IMAGE_NAME", "--pull", "-f", "Dockerfile.Windows"
+Run-Docker "build", "-t", "$env:IMAGE_NAME", "--pull", "-f", "Dockerfile.windows", "."

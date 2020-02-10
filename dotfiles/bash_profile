@@ -297,6 +297,12 @@ fly-longrunning () {
     github-access-tokens spitfire-service-account.json datadog-secrets ci-cell-admin-password)
 }
 
+fly-fluent-bit-windows () {
+  [ "$1" == "-h" ] && echo "Push fluent-bit-windows pipeline to concourse" && return
+  fly -t hh sp -p fluent-bit-windows -c $HOME/workspace/garden-windows-ci/pipelines/fluent-bit-windows.yml \
+    -l<(lpass show --notes docker-creds)
+}
+
 fly-rootfs () {
   [ "$1" == "-h" ] && echo "Push rootfs pipeline to concourse" && return
   fly -t hh sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
