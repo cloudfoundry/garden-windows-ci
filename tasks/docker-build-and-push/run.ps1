@@ -27,7 +27,10 @@ cp git-setup\Git-*-64-bit.exe buildDir\
 cp tar\tar-*.exe buildDir\
 cp vcredist-ucrt\vcredist-ucrt.x64.exe buildDir\
 cp vcredist-2010\vcredist-2010.x64.exe buildDir\
-cp dotnet-48-installer\dotnet-48-installer.exe buildDir\
+
+if (Test-Path dotnet-48-installer) {
+  cp dotnet-48-installer\dotnet-48-installer.exe buildDir\
+}
 
 # download.microsoft.com requires TLS 1.0 (it is disabled by default in the stemcell).
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" -Value 1 -Name 'Enabled' -Type DWORD

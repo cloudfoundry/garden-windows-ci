@@ -10,6 +10,7 @@ inputs:
 - name: vcredist-2010
 - name: vcredist-ucrt
 - name: dotnet-48-installer
+  optional: true
 
 run:
   path: powershell
