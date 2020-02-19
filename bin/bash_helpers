@@ -3,8 +3,8 @@
 # When adding/deleting envs, put them in the right list here
 GITHUB_ENVS_CF="aioli,alfredo,guac,hummus,sriracha,pesto,tartar,mulgore"
 GITHUB_ENVS_PCF="sys.merced"
-GITHUB_ENVS="$GITHUB_ENVS_CF,$GITHUB_ENVS_PCF"
 CONCOURSE_ENV="spitfire"
+GITHUB_ENVS="$CONCOURSE_ENV,$GITHUB_ENVS_CF,$GITHUB_ENVS_PCF"
 
 # Bosh and CF target functions
 bosh_target() {
