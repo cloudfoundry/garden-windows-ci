@@ -38,12 +38,6 @@ resources:
     branch: develop
     uri: https://github.com/cloudfoundry/windowsfs-online-release.git
 
-- name: garden-windows-bosh-release-develop
-  type: git
-  source:
-    branch: develop
-    uri: https://github.com/cloudfoundry-incubator/garden-windows-bosh-release.git
-
 - name: cfbench
   type: git
   source:
@@ -129,9 +123,6 @@ jobs:
     - get: windowsfs-release-develop
       trigger: true
       tags: [toolsmiths-shared-vsphere]
-    - get: garden-windows-bosh-release-develop
-      trigger: true
-      tags: [toolsmiths-shared-vsphere]
     - get: envoy-release-develop
       trigger: true
       tags: [toolsmiths-shared-vsphere]
@@ -165,13 +156,6 @@ jobs:
       output_mapping:
         release-tarball: windowsfs-tarball
       tags: [toolsmiths-shared-vsphere]
-    - task: create-garden-windows-bosh-release
-      file: ci/tasks/bosh-cr/task.yml
-      input_mapping:
-        release: garden-windows-bosh-release-develop
-      output_mapping:
-        release-tarball: garden-windows-tarball
-      tags: [toolsmiths-shared-vsphere]
     - task: create-envoy-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
@@ -196,7 +180,6 @@ jobs:
       releases:
       - winc-tarball/*.tgz
       - windowsfs-tarball/*.tgz
-      - garden-windows-tarball/*.tgz
       - envoy-tarball/*.tgz
       - envoy-nginx-tarball/*.tgz
       ops_files:
@@ -207,7 +190,6 @@ jobs:
       - ci/operations/latest-winc.yml
       - ci/operations/latest-envoy.yml
       - ci/operations/latest-windowsfs-release.yml
-      - ci/operations/latest-garden-windows.yml
       - ci/operations/with-iso-seg.yml
       - ci/operations/enable-rdp-2019.yml
       - ci/operations/set-password-all.yml
