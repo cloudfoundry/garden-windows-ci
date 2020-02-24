@@ -114,6 +114,7 @@ resources:
     target: ((ALFREDO_BOSH_ENVIRONMENT))
     jumpbox_url: ((ALFREDO_JUMPBOX_URL))
     jumpbox_ssh_key: ((ALFREDO_JUMPBOX_SSH_KEY))
+    skip_check: true
 
 # Lock Pool
 

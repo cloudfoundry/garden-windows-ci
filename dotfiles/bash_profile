@@ -231,16 +231,6 @@ fly-envoy() {
     -l <(lpass show --notes 'aws-iam-access-keys' 'github-deploy-keys-3' 'github-access-tokens')
 }
 
-fly-garden-windows() {
-  [ "$1" == "-h" ] && echo "Push garden-windows pipeline to concourse" && return
-  fly -t hh sp \
-    -p garden-windows \
-    -c $HOME/workspace/garden-windows-ci/pipelines/garden-windows.yml \
-    -l <(_env_creds_yml alfredo) \
-    -l <(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' \
-    'aws-iam-access-keys' 'github-access-tokens' 'garden-windows-dev-service-account.json' )
-}
-
 fly-envoy-nginx() {
   [ "$1" == "-h" ] && echo "Push envoy-nginx pipeline to concourse" && return
   fly -t hh sp \
