@@ -1,6 +1,0 @@
----
-- path: /releases/name=garden-runc?
-  type: replace
-  value:
-    name: garden-runc
-    version: latest
