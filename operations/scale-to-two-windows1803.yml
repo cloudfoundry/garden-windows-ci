@@ -1,5 +1,0 @@
----
-# Use this to create multiple windows1803 cells
-- type: replace
-  path: /instance_groups/name=windows1803-cell/instances
-  value: 2

@@ -5,11 +5,9 @@ groups:
   - bbl-update-aioli
   - bbl-update-pesto
   - bbl-update-sriracha
-  - bbl-update-guac
   - bbl-update-alfredo
 - name: deploy-cf
   jobs:
-  - deploy-cf-guac
   - deploy-cf-hummus
 - name: bbl-down
   jobs:
@@ -17,7 +15,6 @@ groups:
   - bbl-down-aioli
   - bbl-down-pesto
   - bbl-down-sriracha
-  - bbl-down-guac
   - bbl-down-alfredo
 
 resources:
@@ -38,14 +35,6 @@ resources:
   source:
     branch: master
     pool: hummus
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
-    uri: git@github.com:greenhouse-ci/locks
-
-- name: guac-lock-pool
-  type: pool
-  source:
-    branch: master
-    pool: guac
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:greenhouse-ci/locks
 
@@ -137,43 +126,6 @@ jobs:
       - put: hummus-lock-pool
         params:
           release: hummus-lock-pool
-
-- name: bbl-update-guac
-  serial: true
-  serial_groups: [update]
-  plan:
-  - put: guac-lock-pool
-    params:
-      acquire: true
-  - in_parallel:
-    - get: cf-deployment-concourse-tasks
-    - get: garden-windows-environments
-    - get: sunday-morning
-      trigger: true
-  - task: bbl-up
-    file: cf-deployment-concourse-tasks/bbl-up/task.yml
-    params:
-      BBL_IAAS: aws
-      BBL_AWS_ACCESS_KEY_ID: {{GUAC_AWS_ACCESS_KEY_ID}}
-      BBL_AWS_SECRET_ACCESS_KEY: {{GUAC_AWS_SECRET_ACCESS_KEY}}
-      BBL_AWS_REGION: us-east-1
-      BBL_STATE_DIR: guac
-      BBL_LB_CERT: certs/cert.pem
-      BBL_LB_KEY: certs/key.pem
-      LB_DOMAIN: guac.cf-app.com
-      BBL_ENV_NAME: guac
-    input_mapping:
-      bbl-state: garden-windows-environments
-      bbl-config: garden-windows-environments
-    ensure:
-      do:
-      - put: garden-windows-environments
-        params:
-          repository: updated-bbl-state
-          rebase: true
-      - put: guac-lock-pool
-        params:
-          release: guac-lock-pool
 
 - name: bbl-update-aioli
   serial: true
@@ -471,45 +423,6 @@ jobs:
         params:
           release: sriracha-lock-pool
 
-- name: bbl-down-guac
-  serial: true
-  serial_groups: [down]
-  plan:
-  - put: guac-lock-pool
-    params:
-      acquire: true
-  - in_parallel:
-    - get: cf-deployment-concourse-tasks
-    - get: garden-windows-environments
-  - task: bosh-delete-all-deployments
-    file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
-    params:
-      BBL_STATE_DIR: guac
-      DELETE_ALL_DEPLOYMENTS: true
-    input_mapping:
-      bbl-state: garden-windows-environments
-    on_failure:
-      put: guac-lock-pool
-      params:
-        release: guac-lock-pool
-  - task: bbl-down
-    file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
-    params:
-      BBL_AWS_ACCESS_KEY_ID: {{GUAC_AWS_ACCESS_KEY_ID}}
-      BBL_AWS_SECRET_ACCESS_KEY: {{GUAC_AWS_SECRET_ACCESS_KEY}}
-      BBL_STATE_DIR: guac
-    input_mapping:
-      bbl-state: garden-windows-environments
-    ensure:
-      do:
-      - put: garden-windows-environments
-        params:
-          repository: updated-bbl-state
-          rebase: true
-      - put: guac-lock-pool
-        params:
-          release: guac-lock-pool
-
 - name: bbl-down-alfredo
   serial: true
   serial_groups: [down]
@@ -547,72 +460,6 @@ jobs:
       - put: alfredo-lock-pool
         params:
           release: alfredo-lock-pool
-
-- name: deploy-cf-guac
-  serial: true
-  plan:
-  - put: guac-lock-pool
-    params:
-      acquire: true
-  - in_parallel:
-    - get: cf-deployment-concourse-tasks
-    - get: cf-deployment
-      trigger: true
-    - get: garden-windows-ci
-    - get: garden-windows-environments
-  - task: collect-garden-windows-ci-ops-files
-    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
-    params:
-      BASE_OPS_FILE_DIR: guac
-      NEW_OPS_FILES: |
-        operations/latest-garden-runc.yml
-        operations/latest-winc.yml
-        operations/enable-rdp-1803.yml
-        operations/windows1803-debug.yml
-        operations/scale-to-two-windows1803.yml
-        operations/install-windows-tools.yml
-    input_mapping:
-      base-ops-files: garden-windows-environments
-      new-ops-files: garden-windows-ci
-  - task: collect-cf-deployment-ops-files
-    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
-    params:
-      BASE_OPS_FILE_DIR: guac
-      NEW_OPS_FILES: |
-        operations/windows1803-cell.yml
-        operations/use-latest-windows1803-stemcell.yml
-        operations/use-latest-stemcell.yml
-        operations/scale-to-one-az.yml
-        operations/stop-skipping-tls-validation.yml
-    input_mapping:
-      base-ops-files: collected-ops-files
-      new-ops-files: cf-deployment
-  - task: deploy-cf
-    file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
-    params:
-      BBL_STATE_DIR: guac
-      SYSTEM_DOMAIN: guac.cf-app.com
-      OPS_FILES: |
-        guac/windows1803-cell.yml
-        guac/use-latest-windows1803-stemcell.yml
-        guac/use-latest-stemcell.yml
-        guac/scale-to-one-az.yml
-        guac/stop-skipping-tls-validation.yml
-        guac/latest-garden-runc.yml
-        guac/latest-winc.yml
-        guac/enable-rdp-1803.yml
-        guac/windows1803-debug.yml
-        guac/scale-to-two-windows1803.yml
-        guac/install-windows-tools.yml
-      VARS_FILES: guac/cf/vars.yml
-    input_mapping:
-      bbl-state: garden-windows-environments
-      ops-files: collected-ops-files
-      vars-files: garden-windows-environments
-    ensure:
-      put: guac-lock-pool
-      params:
-        release: guac-lock-pool
 
 - name: deploy-cf-hummus
   serial: true

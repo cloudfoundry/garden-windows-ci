@@ -32,12 +32,6 @@ resources:
     branch: develop
     uri: https://github.com/cloudfoundry/winc-release.git
 
-- name: windows1803fs-release-develop
-  type: git
-  source:
-    branch: develop
-    uri: https://github.com/cloudfoundry/windows1803fs-online-release.git
-
 - name: windowsfs-release-develop
   type: git
   source:
@@ -76,14 +70,6 @@ resources:
   source:
    bucket: bosh-windows-stemcells-private
    regexp: 2012R2/bosh-stemcell-(.*)-vsphere-esxi-windows2012R2-go_agent.tgz
-   access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-   secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
-
-- name: vsphere-windows1803-stemcell
-  type: s3
-  source:
-   bucket: bosh-windows-stemcells-private
-   regexp: 1803/bosh-stemcell-(.*)-vsphere-esxi-windows1803-go_agent.tgz
    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 
@@ -146,14 +132,9 @@ jobs:
       tags: [toolsmiths-shared-vsphere]
     - get: vsphere-windows2012R2-stemcell
       tags: [toolsmiths-shared-vsphere]
-    - get: vsphere-windows1803-stemcell
-      tags: [toolsmiths-shared-vsphere]
     - get: vsphere-windows2019-stemcell
       tags: [toolsmiths-shared-vsphere]
     - get: winc-release-develop
-      trigger: true
-      tags: [toolsmiths-shared-vsphere]
-    - get: windows1803fs-release-develop
       trigger: true
       tags: [toolsmiths-shared-vsphere]
     - get: windowsfs-release-develop
@@ -187,13 +168,6 @@ jobs:
         release: winc-release-develop
       output_mapping:
         release-tarball: winc-tarball
-      tags: [toolsmiths-shared-vsphere]
-    - task: create-windows1803fs-release
-      file: ci/tasks/bosh-cr/task.yml
-      input_mapping:
-        release: windows1803fs-release-develop
-      output_mapping:
-        release-tarball: windows1803fs-tarball
       tags: [toolsmiths-shared-vsphere]
     - task: create-windowsfs-release
       file: ci/tasks/bosh-cr/task.yml
@@ -230,11 +204,9 @@ jobs:
       stemcells:
       - vsphere-linux-stemcell/*.tgz
       - vsphere-windows2012R2-stemcell/*.tgz
-      - vsphere-windows1803-stemcell/*.tgz
       - vsphere-windows2019-stemcell/*.tgz
       releases:
       - winc-tarball/*.tgz
-      - windows1803fs-tarball/*.tgz
       - windowsfs-tarball/*.tgz
       - garden-windows-tarball/*.tgz
       - envoy-tarball/*.tgz
@@ -242,26 +214,18 @@ jobs:
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - cf-deployment/operations/windows2012R2-cell.yml
-      - cf-deployment/operations/windows1803-cell.yml
       - cf-deployment/operations/windows2019-cell.yml
       - cf-deployment/operations/use-online-windows2019fs.yml
       - cf-deployment/operations/use-latest-windows2012R2-stemcell.yml
-      - cf-deployment/operations/use-latest-windows1803-stemcell.yml
       - cf-deployment/operations/use-latest-windows2019-stemcell.yml
-      - cf-deployment/operations/experimental/enable-routing-integrity-windows1803.yml
       - ci/operations/latest-winc.yml
       - ci/operations/latest-envoy.yml
-      - ci/operations/latest-windows1803fs-release.yml
       - ci/operations/latest-windowsfs-release.yml
       - ci/operations/latest-garden-windows.yml
       - ci/operations/with-iso-seg.yml
       - ci/operations/enable-rdp-2012R2.yml
-      - ci/operations/enable-rdp-1803.yml
       - ci/operations/enable-rdp-2019.yml
       - ci/operations/set-password-all.yml
-      - ci/operations/windows1803-provides-secondary-groot.yml
-      - ci/operations/windows1803-uses-trusted-certs.yml
-      - ci/operations/windows1803-provides-secondary-groot.yml
       - ci/operations/windows2019-uses-trusted-certs.yml
       - ci/operations/windows2019-provides-quaternary-groot.yml
       - ci/operations/decrease-rep-evacuation-timeout.yml
@@ -280,94 +244,6 @@ jobs:
       CF_API: api.mulgore.cf-app.com
       CF_USERNAME: admin
       CF_PASSWORD: {{MULGORE_ADMIN_PASSWORD}}
-    tags: [toolsmiths-shared-vsphere]
-
-- name: mulgore-cfbench-windows1803
-  serial: true
-  serial_groups:
-  - cfbench
-  plan:
-  - in_parallel:
-    - get: ci
-      tags: [toolsmiths-shared-vsphere]
-    - get: cfbench
-      tags: [toolsmiths-shared-vsphere]
-    - get: cf-acceptance-tests
-      tags: [toolsmiths-shared-vsphere]
-    - get: every-15mins
-      trigger: true
-      tags: [toolsmiths-shared-vsphere]
-    - get: mulgore-cf-deployment
-      trigger: true
-      passed: [mulgore-deploy-cf]
-      tags: [toolsmiths-shared-vsphere]
-  - task: cfbench
-    file: ci/tasks/cfbench/task.yml
-    input_mapping: {app: cf-acceptance-tests}
-    params:
-      CF_API: api.mulgore.cf-app.com
-      CF_STACK: windows
-      CF_USERNAME: admin
-      CF_PASSWORD: {{MULGORE_ADMIN_PASSWORD}}
-      CF_ORG: cfbench
-      CF_SPACE: windows1803
-      APP_DIR: app/assets/nora/NoraPublished
-      APP_BUILDPACK: hwc_buildpack
-      DATADOG_API_KEY: {{DATADOG_API_KEY}}
-      DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
-    tags: [toolsmiths-shared-vsphere]
-
-- name: mulgore-push-longrunning-app-windows1803
-  serial: true
-  serial_groups:
-  - longrunning-windows1803
-  plan:
-  - in_parallel:
-    - get: ci
-      tags: [toolsmiths-shared-vsphere]
-    - get: cf-acceptance-tests
-      tags: [toolsmiths-shared-vsphere]
-    - get: mulgore-cf-deployment
-      trigger: true
-      passed: [mulgore-deploy-cf]
-      tags: [toolsmiths-shared-vsphere]
-  - task: push-app
-    file: ci/tasks/push-app/task.yml
-    input_mapping: {app: cf-acceptance-tests}
-    params:
-      CF_API: api.mulgore.cf-app.com
-      CF_STACK: windows
-      CF_USERNAME: admin
-      CF_PASSWORD: {{MULGORE_ADMIN_PASSWORD}}
-      CF_ORG: longrunning
-      CF_SPACE: windows1803
-      APP_DIR: app/assets/nora/NoraPublished
-      APP_BUILDPACK: hwc_buildpack
-    tags: [toolsmiths-shared-vsphere]
-
-- name: mulgore-curl-longrunning-app-windows1803
-  build_logs_to_retain: 20000
-  serial: true
-  serial_groups:
-  - longrunning-windows1803
-  plan:
-  - in_parallel:
-    - get: ci
-      tags: [toolsmiths-shared-vsphere]
-    - get: every-5mins
-      trigger: true
-      tags: [toolsmiths-shared-vsphere]
-    - get: mulgore-cf-deployment
-      trigger: true
-      passed: [mulgore-push-longrunning-app-windows1803]
-      tags: [toolsmiths-shared-vsphere]
-  - task: curl-app
-    file: ci/tasks/curl-app/task.yml
-    params:
-      CF_APP_URL: longrunning-windows1803.mulgore.cf-app.com
-      DATADOG_TAG: windows1803
-      DATADOG_API_KEY: {{DATADOG_API_KEY}}
-      DATADOG_APPLICATION_KEY: {{DATADOG_APPLICATION_KEY}}
     tags: [toolsmiths-shared-vsphere]
 
 - name: mulgore-cfbench-windows2019

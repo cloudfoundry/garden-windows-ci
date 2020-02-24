@@ -103,13 +103,6 @@ resources:
   source:
     branch: fork-master
     uri: https://github.com/greenhouse-org/garden-integration-tests.git
-- name: gcp-1803-stemcell
-  type: s3
-  source:
-    bucket: all-bosh-windows
-    regexp: 1803/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows1803-go_agent.tgz
-    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 - name: gcp-2019-stemcell
   type: s3
   source:
@@ -155,10 +148,11 @@ resources:
     target: {{PESTO_BOSH_ENVIRONMENT}}
     jumpbox_url: {{PESTO_JUMPBOX_URL}}
     jumpbox_ssh_key: {{PESTO_JUMPBOX_SSH_KEY}}
+
 jobs:
 - name: generate-readme
   serial: true
-  serial_groups: ["1803"]
+  serial_groups: ["2019"]
   plan:
   - in_parallel:
     - get: ci
@@ -169,8 +163,8 @@ jobs:
     file: ci/tasks/winc-release-readme/task.yml
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: "docker:///cloudfoundry/windows2016fs:1803"
-    tags: ["1803"]
+      WINC_TEST_ROOTFS: "docker:///cloudfoundry/windows2016fs:2019"
+    tags: ["2019"]
   - task: override-repo
     input_mapping: { repo: winc-release-develop, override-repo: generated-readme }
     file: ci/tasks/override-repo/task.yml
@@ -224,22 +218,6 @@ jobs:
   - put: groot-windows-develop
     params: { repository: bumped-repo }
 
-- name: groot-1803
-  serial: true
-  serial_groups: ["1803"]
-  plan:
-  - in_parallel:
-    - get: ci
-    - get: groot-windows-develop
-      trigger: true
-    - get: groot-windows-master
-  - task: test
-    input_mapping: { groot-windows: groot-windows-develop }
-    file: ci/tasks/test-groot-windows/task.yml
-    tags: ["1803"]
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-
 - name: groot-2019
   serial: true
   serial_groups: ["2019"]
@@ -262,7 +240,7 @@ jobs:
   - in_parallel:
     - get: ci
     - get: groot-windows-develop
-      passed: [groot-1803, groot-2019]
+      passed: [groot-2019]
       trigger: true
     - get: groot-windows-master
   - task: merge-develop-to-master
@@ -271,32 +249,6 @@ jobs:
     params: { FROM_BRANCH: develop }
   - put: groot-windows-master
     params: { repository: merged-repo/to-repo }
-
-- name: winc-1803
-  serial: true
-  serial_groups: ["1803"]
-  plan:
-  - in_parallel:
-    - get: ci
-    - get: winc-develop
-      trigger: true
-    - get: groot-windows-master
-      trigger: true
-  - task: build-groot
-    input_mapping: { groot-windows: groot-windows-master }
-    file: ci/tasks/build-groot/task.yml
-    tags: ["1803"]
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-  - task: test
-    input_mapping: { winc: winc-develop }
-    file: ci/tasks/test-winc/task.yml
-    tags: ["1803"]
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
-      WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
-      WINDOWS_VERSION: 1803
 
 - name: winc-2019
   serial: true
@@ -330,7 +282,7 @@ jobs:
   - in_parallel:
     - get: ci
     - get: winc-develop
-      passed: [winc-1803, winc-2019]
+      passed: [winc-2019]
       trigger: true
     - get: winc-master
   - task: merge-develop-to-master
@@ -339,43 +291,6 @@ jobs:
     params: { FROM_BRANCH: develop }
   - put: winc-master
     params: { repository: merged-repo/to-repo }
-
-- name: diff-exporter-1803
-  serial: true
-  serial_groups: ["1803"]
-  plan:
-  - in_parallel:
-    - get: ci
-    - get: groot-windows-master
-      trigger: true
-    - get: winc-master
-    - get: diff-exporter-develop
-      trigger: true
-  - task: build-groot
-    input_mapping: { groot-windows: groot-windows-master }
-    file: ci/tasks/build-groot/task.yml
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-    tags: ["1803"]
-  - task: build-winc
-    file: ci/tasks/build-binary/task.yml
-    input_mapping:
-      repo: winc-master
-    output_mapping:
-      binary-output: winc-binary
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      IMPORT_PATH: "code.cloudfoundry.org/winc"
-      PACKAGE: "./cmd/winc"
-    tags: ["1803"]
-  - task: test
-    input_mapping: { diff-exporter: diff-exporter-develop }
-    file: ci/tasks/test-diff-exporter/task.yml
-    tags: ["1803"]
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
-      WINDOWS_VERSION: "1803"
 
 - name: diff-exporter-2019
   serial: true
@@ -420,7 +335,7 @@ jobs:
   - in_parallel:
     - get: ci
     - get: diff-exporter-develop
-      passed: [diff-exporter-1803, diff-exporter-2019]
+      passed: [diff-exporter-2019]
       trigger: true
     - get: diff-exporter-master
   - task: merge-develop-to-master
@@ -441,80 +356,6 @@ jobs:
     file: ci/tasks/ginkgo-to-gopath-linux/task.yml
     params:
       IMPORT_PATH: "code.cloudfoundry.org/cert-injector"
-
-- name: gats-1803
-  serial: true
-  serial_groups: ["1803"]
-  plan:
-  - in_parallel:
-    - get: ci
-    - get: gats-fork
-    - get: garden-runc-release
-      trigger: true
-    - get: winc-master
-      passed: [merge-winc-to-master]
-      trigger: true
-    - get: winc-release-develop
-    - get: groot-windows-master
-  - in_parallel:
-    - task: build-winc
-      file: ci/tasks/build-binary/task.yml
-      tags: ["1803"]
-      input_mapping:
-        repo: winc-master
-      output_mapping:
-        binary-output: winc-binary
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        IMPORT_PATH: "code.cloudfoundry.org/winc"
-        PACKAGE: "./cmd/winc"
-    - task: build-winc-network
-      file: ci/tasks/build-winc-network/task.yml
-      tags: ["1803"]
-      input_mapping: { winc: winc-master }
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        WINDOWS_VERSION: 1803
-    - task: build-groot
-      input_mapping: { groot-windows: groot-windows-master }
-      file: ci/tasks/build-groot/task.yml
-      tags: ["1803"]
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-    - task: build-nstar
-      file: ci/tasks/build-binary/task.yml
-      tags: ["1803"]
-      input_mapping:
-        repo: winc-release-develop
-      output_mapping:
-        binary-output: nstar-binary
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        PACKAGE: "./src/nstar"
-    - task: build-garden-init
-      file: ci/tasks/build-binary/task.yml
-      tags: ["1803"]
-      input_mapping:
-        repo: garden-runc-release
-      output_mapping:
-        binary-output: garden-init-binary
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        PACKAGE: "src/guardian/cmd/winit"
-        BINARY_NAME: "garden-init.exe"
-  - task: copy-forks
-    file: ci/tasks/copy-forks/task.yml
-    input_mapping:
-      garden-integration-tests: gats-fork
-  - task: run-gats
-    file: ci/tasks/run-local-gats/task.yml
-    tags: ["1803"]
-    input_mapping:
-      garden-runc-release: garden-runc-release-forks
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:1803
-      WINDOWS_VERSION: 1803
 
 - name: gats-2019
   serial: true
@@ -683,120 +524,6 @@ jobs:
       TEST_PATH: "src/nstar"
     tags: ["2019"]
 
-- name: pesto-cats-1803
-  serial: true
-  plan:
-  - put: pesto-lock-pool
-    params:
-      acquire: true
-  - in_parallel:
-    - get: ci
-    - get: winc-release-develop
-      passed: [test-nstar]
-      trigger: true
-    - get: cf-acceptance-tests
-    - get: cf-deployment-concourse-tasks
-    - get: cf-deployment
-      trigger: true
-    - get: gcp-1803-stemcell
-    - get: garden-windows-environments
-  - in_parallel:
-    - task: get-linux-stemcell
-      file: ci/tasks/get-gcp-linux-stemcell/task.yml
-      output_mapping: { stemcell: gcp-linux-stemcell }
-    - task: create-winc-release
-      file: ci/tasks/bosh-cr/task.yml
-      input_mapping:
-        release: winc-release-develop
-      output_mapping:
-        release-tarball: winc-tarball
-  - task: delete-deployment
-    file: ci/tasks/bosh-deld/task.yml
-    params:
-      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
-      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
-      BOSH_DEPLOYMENT: cf
-      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
-      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
-  - task: delete-stemcells
-    file: ci/tasks/bosh-delete-stemcells/task.yml
-    params:
-      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
-      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
-      BOSH_DEPLOYMENT: cf
-      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
-      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
-  - put: pesto-cf-deployment
-    params:
-      manifest: cf-deployment/cf-deployment.yml
-      stemcells:
-      - gcp-linux-stemcell/*.tgz
-      - gcp-1803-stemcell/*.tgz
-      releases:
-      - winc-tarball/*.tgz
-      ops_files:
-      - cf-deployment/operations/scale-to-one-az.yml
-      - cf-deployment/operations/windows1803-cell.yml
-      - cf-deployment/operations/use-latest-windows1803-stemcell.yml
-      - ci/operations/latest-winc.yml
-      - ci/operations/scale-down-windows1803.yml
-      - ci/operations/enable-rdp-1803.yml
-      - ci/operations/use-2-azs-for-router.yml
-      vars_files:
-      - garden-windows-environments/pesto/cf/vars.yml
-      cleanup: true
-    get_params:
-      skip_export: true
-  - task: enable-credhub
-    file: ci/tasks/enable-credhub/task.yml
-    attempts: 3
-    params:
-      BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
-      BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
-      BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
-      BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
-      JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
-      JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
-      CF_API: api.pesto.cf-app.com
-      CF_USERNAME: admin
-      CF_PASSWORD: {{PESTO_ADMIN_PASSWORD}}
-  - task: generate-integration-config
-    file: ci/tasks/generate-integration-config/task.yml
-    params:
-      ADMIN_PASSWORD: {{PESTO_ADMIN_PASSWORD}}
-      ADMIN_USER: admin
-      API: api.pesto.cf-app.com
-      APPS_DOMAIN: pesto.cf-app.com
-      UNALLOCATED_IP: 10.0.0.5
-      WINDOWS_STACK: windows
-      CREDHUB_MODE: assisted
-      ENVIRONMENT: pesto
-    input_mapping:
-      bbl-state: garden-windows-environments
-  - task: cats
-    file: cf-deployment-concourse-tasks/run-cats/task.yml
-    params:
-      NODES: 4
-    on_success:
-      task: delete-deployment
-      file: ci/tasks/bosh-deld/task.yml
-      params:
-        BOSH_CA_CERT: {{PESTO_BOSH_CA_CERT}}
-        BOSH_CLIENT: {{PESTO_BOSH_CLIENT}}
-        BOSH_CLIENT_SECRET: {{PESTO_BOSH_CLIENT_SECRET}}
-        BOSH_DEPLOYMENT: cf
-        BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
-        JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
-        JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
-  ensure:
-    put: pesto-lock-pool
-    params:
-      release: pesto-lock-pool
-
 - name: pesto-cats-2019
   serial: true
   plan:
@@ -919,7 +646,7 @@ jobs:
   - in_parallel:
     - get: ci
     - get: winc-release-develop
-      passed: [pesto-cats-1803, pesto-cats-2019]
+      passed: [pesto-cats-2019]
     - get: winc-release-master
     - get: version
       params: {bump: major}
@@ -958,7 +685,7 @@ jobs:
   - in_parallel:
     - get: ci
     - get: winc-release-develop
-      passed: [pesto-cats-1803, pesto-cats-2019]
+      passed: [pesto-cats-2019]
     - get: winc-release-master
     - get: version
       params: {bump: minor}
@@ -997,7 +724,7 @@ jobs:
   - in_parallel:
     - get: ci
     - get: winc-release-develop
-      passed: [pesto-cats-1803, pesto-cats-2019]
+      passed: [pesto-cats-2019]
     - get: winc-release-master
     - get: version
       params: {bump: patch}

@@ -231,16 +231,6 @@ fly-envoy() {
     -l <(lpass show --notes 'aws-iam-access-keys' 'github-deploy-keys-3' 'github-access-tokens')
 }
 
-fly-cleanup() {
-  [ "$1" == "-h" ] && echo "Push cleanup pipeline to concourse" && return
-  fly -t hh sp \
-    -p cleanup \
-    -c $HOME/workspace/garden-windows-ci/pipelines/cleanup.yml \
-    -l <(_bosh_creds_yml spitfire) \
-    -l <(_bosh_creds_yml mulgore) \
-    -l <(lpass show --notes 'github-deploy-keys')
-}
-
 fly-garden-windows() {
   [ "$1" == "-h" ] && echo "Push garden-windows pipeline to concourse" && return
   fly -t hh sp \
@@ -265,7 +255,7 @@ fly-environments () {
   [ "$1" == "-h" ] && echo "Push environments pipeline to concourse" && return
   fly -t hh sp -p environments -c $HOME/workspace/garden-windows-ci/pipelines/environments.yml \
     -l<(lpass show --notes -G 'github-deploy-keys' \
-    'garden-windows-dev-service-account.json' 'guac-access' 'azure-garden-windows')
+    'garden-windows-dev-service-account.json' 'azure-garden-windows')
 }
 
 fly-hydrator () {
@@ -308,14 +298,6 @@ fly-rootfs () {
   fly -t hh sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
     -l<(lpass show --notes aws-iam-access-keys docker-creds \
     azure-smb-share-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token)
-}
-
-fly-windows1803fs () {
-  [ "$1" == "-h" ] && echo "Push windows1803fs pipeline to concourse" && return
-  fly -t hh sp -p windows1803fs -c $HOME/workspace/garden-windows-ci/pipelines/windows1803fs.yml \
-    -l <(_env_creds_yml tartar) \
-    -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys \
-    github-deploy-keys-2 github-access-tokens tracker-api-token)
 }
 
 fly-windows2019fs () {

@@ -1,8 +1,0 @@
----
-- type: replace
-  path: /instance_groups/name=windows1803-cell/jobs/name=groot/provides?/groot/as
-  value: secondary-groot
-
-- type: replace
-  path: /instance_groups/name=windows1803-cell/jobs/name=windows1803fs/consumes?/groot/from
-  value: secondary-groot

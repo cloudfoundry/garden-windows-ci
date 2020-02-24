@@ -7,7 +7,6 @@
     include:
       stemcell:
       - os: windows2019
-      - os: windows1803
     jobs:
     - name: golang-1-windows
       release: windows-tools

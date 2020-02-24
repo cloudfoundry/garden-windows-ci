@@ -36,57 +36,6 @@ resources:
     private_key: {{CLOUDFOUNDRYINCUBATOR_DIFF_EXPORTER_DEPLOY_KEY}}
 
 jobs:
-- name: test-hydrator-windows1803
-  serial: true
-  plan:
-  - in_parallel:
-    - get: ci
-    - get: hydrator
-      resource: hydrator-develop
-      trigger: true
-    - get: winc
-      trigger: true
-    - get: groot-windows
-      trigger: true
-    - get: diff-exporter
-      trigger: true
-  - in_parallel:
-    - task: build-winc
-      file: ci/tasks/build-binary/task.yml
-      input_mapping:
-        repo: winc
-      output_mapping:
-        binary-output: winc-binary
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        IMPORT_PATH: "code.cloudfoundry.org/winc"
-        PACKAGE: "./cmd/winc"
-      tags: ["1803"]
-    - task: build-groot
-      file: ci/tasks/build-groot/task.yml
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      tags: ["1803"]
-    - task: build-diff-exporter
-      file: ci/tasks/build-binary/task.yml
-      input_mapping:
-        repo: diff-exporter
-      output_mapping:
-        binary-output: diff-exporter-binary
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        PACKAGE: "."
-        IMPORT_PATH: "code.cloudfoundry.org/diff-exporter"
-        BINARY_NAME: "diff-exporter.exe"
-      tags: ["1803"]
-  - task: run-ginkgo-exe
-    file: ci/tasks/test-hydrator-windows/task.yml
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      NODES: 2
-      IMAGE_TAG: "1803"
-      IMAGE_NAME: "cloudfoundry/windows2016fs"
-    tags: ["1803"]
 - name: test-hydrator-windows2019
   serial: true
   plan:
@@ -155,7 +104,7 @@ jobs:
   plan:
   - in_parallel:
     - get: hydrator-develop
-      passed: [test-hydrator-windows1803, test-hydrator-windows2019, test-hydrator-linux]
+      passed: [test-hydrator-windows2019, test-hydrator-linux]
       trigger: true
     - get: hydrator-master
     - get: ci

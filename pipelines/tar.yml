@@ -75,7 +75,7 @@ jobs:
       trigger: true
   - task: build-tar
     file: ci/tasks/build-tar/task.yml
-    tags: ["1803"]
+    tags: ["2019"]
   - put: s3-bucket
     params:
       file: tar-output/tar-*.exe

@@ -47,13 +47,6 @@ resources:
     uri: git@github.com:cloudfoundry/windows2016fs.git
     private_key: ((CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_DEPLOY_KEY))
 
-- name: windowsfs-dockerfile-1803
-  type: git
-  source:
-    branch: develop
-    uri: https://github.com/cloudfoundry/windows2016fs.git
-    paths: [ 1803/Dockerfile ]
-
 - name: windowsfs-dockerfile-2019
   type: git
   source:
@@ -62,12 +55,6 @@ resources:
     paths: [ 2019/Dockerfile ]
 
 # Docker Image
-
-- name: windowsservercore-1803
-  type: docker-image
-  source:
-    repository: mcr.microsoft.com/windows/servercore
-    tag: "1803-amd64"
 
 - name: windowsservercore-2019
   type: docker-image
@@ -96,16 +83,6 @@ resources:
 
 # Semver
 
-- name: image-version-1803
-  type: semver
-  source:
-    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
-    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-    bucket: windows1803fs
-    initial_version: 1803.0.1
-    key: image-version
-    region_name: us-east-1
-
 - name: image-version-2019
   type: semver
   source:
@@ -117,74 +94,6 @@ resources:
     region_name: us-east-1
 
 jobs:
-- name: build-and-push-1803
-  serial: true
-  serial_groups: [build-and-push]
-  plan:
-  - in_parallel:
-    - get: ci
-    - get: windows2016fs-develop
-    - get: windowsservercore-1803
-      trigger: true
-      params:
-        save: false
-        rootfs: false
-        skip_download: true
-    - get: windowsfs-dockerfile-1803
-      trigger: true
-    - get: git-setup
-      params:
-        globs: [Git-*-64-bit.exe]
-    - get: tar
-    - get: vcredist-ucrt
-      trigger: true
-    - get: vcredist-2010
-      trigger: true
-    - get: image-version-1803
-      params: {bump: patch}
-  - task: build-and-push
-    tags: [1803]
-    file: ci/tasks/docker-build-and-push/task.yml
-    input_mapping:
-      repo: windows2016fs-develop
-      version: image-version-1803
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      DOCKERFILE: repo/1803/Dockerfile
-      IMAGE_NAME: cloudfoundry/windows2016fs
-      DOCKER_USERNAME: ((DOCKER_USERNAME))
-      DOCKER_PASSWORD: ((DOCKER_PASSWORD))
-      OS_VERSION: "1803"
-      SHARE_IP: ((SHARE_IP))
-      SHARE_FQDN: ((SHARE_FQDN))
-      SHARE_NAME: ((SHARE_NAME))
-      SHARE_USERNAME: ((SHARE_USERNAME))
-      SHARE_PASSWORD: ((SHARE_PASSWORD))
-  - task: update-image-tag
-    file: ci/tasks/update-image-tag/task.yml
-    input_mapping:
-      windows2016fs: windows2016fs-develop
-      image-version: image-version-1803
-    params:
-      OS_VERSION: "1803"
-  - task: commit-changes
-    file: ci/tasks/commit/task.yml
-    input_mapping:
-      repo: windows2016fs-updated
-    output_mapping:
-      repo_with_commit: windowsfs-commit
-    params:
-      MESSAGE: "Updated 1803 image tag"
-  - put: windows2016fs-master
-    params:
-      repository: windowsfs-commit
-  - put: windows2016fs-develop
-    params:
-      repository: windowsfs-commit
-      merge: true
-  - put: image-version-1803
-    params: {file: image-version-1803/version}
-
 - name: build-and-push-2019
   serial: true
   serial_groups: [build-and-push]

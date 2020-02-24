@@ -29,28 +29,6 @@ source $GARDEN_WINDOWS_CI/bin/bash_helpers
 
 bosh_target "spitfire"
 
-bosh -d concourse-worker-1803 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-worker.yml \
-  -v deployment_name=concourse-worker-1803 \
-  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
-  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/windows-worker.yml \
-  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/windows-worker-ephemeral-disk.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/concourse/remove-linux-external-worker.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-tags.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-worker-external.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-tools-1803.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/concourse/use-1803-windows2016-stemcell.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/concourse/windows-bosh-ssh.yml \
-  -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
-  -l <(lpass show --notes Shared-Greenhouse/ci-creds) \
-  -v team=windows-containers \
-  -v tsa_host=hush-house.pivotal.io \
-  -v tsa_port=2222 \
-  -v network_name=private \
-  -v windows_worker_vm_type=n1-highmem-16 \
-  -v windows_worker_ephemeral_disk=500GB_ephemeral_disk \
-  -v windows_worker_tag=1803 \
-  --no-redact
-
 bosh -d concourse-worker-2019 deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-worker.yml \
   -v deployment_name=concourse-worker-2019 \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \

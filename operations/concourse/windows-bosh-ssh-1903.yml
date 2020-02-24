@@ -1,6 +1,0 @@
----
-- type: replace
-  path: /releases/name=windows-utilities?
-  value:
-    name: windows-utilities
-    version: 0.11.0
