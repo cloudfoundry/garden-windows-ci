@@ -241,13 +241,6 @@ fly-envoy-nginx() {
     'aws-iam-access-keys' 'github-access-tokens' 'garden-windows-dev-service-account.json' )
 }
 
-fly-environments () {
-  [ "$1" == "-h" ] && echo "Push environments pipeline to concourse" && return
-  fly -t hh sp -p environments -c $HOME/workspace/garden-windows-ci/pipelines/environments.yml \
-    -l<(lpass show --notes -G 'github-deploy-keys' \
-    'garden-windows-dev-service-account.json' 'azure-garden-windows')
-}
-
 fly-hydrator () {
   [ "$1" == "-h" ] && echo "Push hydrator pipeline to concourse" && return
   fly -t hh sp -p hydrator -c $HOME/workspace/garden-windows-ci/pipelines/hydrator.yml \
