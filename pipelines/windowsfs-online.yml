@@ -3,6 +3,10 @@ resource_types:
   type: docker-image
   source:
     repository: cloudfoundry/bosh-deployment-resource
+- name: cron-resource
+  type: docker-image
+  source:
+    repository: cftoolsmiths/cron-resource
 
 resources:
 
@@ -84,6 +88,12 @@ resources:
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:pivotal/garden-windows-environments
 
+- name: monthly-rollup
+  type: cron-resource
+  source:
+    expression: "59 23 20 * *"
+    location: "America/New_York"
+    fire_immediately: true
 # GitHub Release
 
 - name: windowsfs-online-release-github-release
@@ -500,6 +510,8 @@ jobs:
     - get: windowsfs-online-release-master
     - get: windowsfs-online-release-version
       params: {bump: minor}
+    - get: monthly-rollup
+      trigger: true
   - task: finalize-release
     file: ci/tasks/finalize-release/task.yml
     input_mapping:
