@@ -21,17 +21,8 @@ restart-service docker
 $version=(cat image-version/version)
 Run-Docker "--version"
 
-
-$ErrorActionPreference="SilentlyContinue"
-Stop-Transcript | out-null
-$ErrorActionPreference = "Stop"
-Start-Transcript -path C:\notes\notes -append
-
 # output systeminfo including hotfixes for documentation
-Run-Docker "run", "${env:IMAGE_NAME}:$version", "cmd", "/c", "systeminfo"
-Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-childitem C:\Windows\System32\msvcr100.dll).VersionInfo | Select-Object -Property FileDescription,ProductVersion"
-Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-childitem C:\Windows\System32\vcruntime140.dll).VersionInfo | Select-Object -Property FileDescription,ProductVersion"
+Run-Docker "run", "${env:IMAGE_NAME}:$version", "cmd", "/c", "systeminfo" | Out-File -FilePath C:\notes\notes -append
+Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-childitem C:\Windows\System32\msvcr100.dll).VersionInfo | Select-Object -Property FileDescription,ProductVersion"| Out-File -FilePath C:\notes\notes -append
+Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-childitem C:\Windows\System32\vcruntime140.dll).VersionInfo | Select-Object -Property FileDescription,ProductVersion" | Out-File -FilePath C:\notes\notes -append
 
-$ErrorActionPreference="SilentlyContinue"
-Stop-Transcript
-$ErrorActionPreference = "Stop"
