@@ -32,4 +32,6 @@ Run-Docker "run", "${env:IMAGE_NAME}:$version", "cmd", "/c", "systeminfo"
 Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-childitem C:\Windows\System32\msvcr100.dll).VersionInfo | Select-Object -Property FileDescription,ProductVersion"
 Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-childitem C:\Windows\System32\vcruntime140.dll).VersionInfo | Select-Object -Property FileDescription,ProductVersion"
 
+$ErrorActionPreference="SilentlyContinue"
 Stop-Transcript
+$ErrorActionPreference = "Stop"
