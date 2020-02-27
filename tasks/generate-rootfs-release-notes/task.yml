@@ -5,6 +5,9 @@ inputs:
 - name: ci
 - name: image-version
 
+outputs:
+- name: notes
+
 run:
   path: powershell
   args:
