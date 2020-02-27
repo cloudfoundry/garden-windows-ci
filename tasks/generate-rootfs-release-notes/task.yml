@@ -11,7 +11,7 @@ run:
   - "-ExecutionPolicy"
   - "Bypass"
   - "-File"
-  - ci/tasks/docker-build-and-push/run.ps1
+  - ci/tasks/generate-rootfs-release-notes/run.ps1
 
 params:
   IMAGE_NAME: ""
