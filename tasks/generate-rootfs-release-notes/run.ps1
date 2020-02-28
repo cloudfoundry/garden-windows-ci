@@ -28,9 +28,10 @@ $releasedKBs = $releasedJson.kbs
 
 $releaseMetadata = @{}
 $kbs = Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-hotfix).HotFixIDs"
+Write-Output "kbs in image: " + $kbs
 $uniqueKBs = $kbs | Where-Object { $releasedKBs -notcontains $_ }
 $releaseMetadata["kbs"] = $uniqueKBs
-$releaseMetadata["rootfs-version"] = $version
+$releaseMetadata["rootfs-version"] = "$version"
 $releaseMetadata | convertto-json | Out-file -FilePath $releaseNotesDir/$notesFile
 
 $updatedKBs = @{}
