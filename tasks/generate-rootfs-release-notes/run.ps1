@@ -32,15 +32,22 @@ if ("$previousVersion" -eq "$version") {
   Exit 1
 }
 
-$releaseMetadata = @{}
 $kbs = Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-hotfix).HotFixID"
 Write-Output "kbs in image: " + $kbs
-$uniqueKBs = $kbs | Where-Object { $releasedKBs -notcontains $_ }
-$releaseMetadata["kbs"] = $uniqueKBs
-$releaseMetadata["rootfs-version"] = "$version"
-$releaseMetadata["previous-version"] = "$previousVersion"
-$releaseMetadata | convertto-json | Out-file -FilePath $releaseNotesDir/$notesFile
 
+$uniqueKBs = $kbs | Where-Object { $releasedKBs -notcontains $_ }
+Write-Output "unique kbs in image: " + $uniqueKBs
+
+$releaseMetadata = @"""
+### windows2016fs changes
+* Includes `$version` of cloudfoundry/windows2016fs (updated from `$previousVersion`)
+* Includes `$uniqueKBs`
+"""@
+
+$releaseMetadata | Out-file -FilePath $releaseNotesDir/$notesFile
+
+
+# write newly released KBs and current version of rootfs to KBs file
 $updatedKBs = @{}
 $updatedKBs["kbs"] = $releasedJson.kbs + $uniqueKBs
 $updatedKBs["version"] = "$version"
