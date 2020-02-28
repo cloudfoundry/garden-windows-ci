@@ -38,11 +38,11 @@ Write-Output "kbs in image: " + $kbs
 $uniqueKBs = $kbs | Where-Object { $releasedKBs -notcontains $_ }
 Write-Output "unique kbs in image: " + $uniqueKBs
 
-$releaseMetadata = @"""
+$releaseMetadata = @"
 ### windows2016fs changes
 * Includes `$version` of cloudfoundry/windows2016fs (updated from `$previousVersion`)
 * Includes `$uniqueKBs`
-"""@
+"@
 
 $releaseMetadata | Out-file -FilePath $releaseNotesDir/$notesFile
 
