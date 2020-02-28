@@ -27,6 +27,11 @@ $releasedJson = cat $PWD\all-kbs-list\all-kbs | convertfrom-json
 $releasedKBs = $releasedJson.kbs
 $previousVersion = $releasedJson.version
 
+if ("$previousVersion" -eq "$version") {
+  Write-Host "Attempting to release a version that's already been shipped. 'v$version' Exiting.."
+  Exit 1
+}
+
 $releaseMetadata = @{}
 $kbs = Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-hotfix).HotFixID"
 Write-Output "kbs in image: " + $kbs
