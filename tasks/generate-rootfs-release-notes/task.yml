@@ -4,6 +4,7 @@ platform: windows
 inputs:
 - name: ci
 - name: image-version
+- name: all-kbs-list
 
 outputs:
 - name: notes
