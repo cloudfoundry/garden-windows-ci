@@ -33,5 +33,6 @@ $releaseMetadata["kbs"] = $uniqueKBs
 $releaseMetadata["rootfs-version"] = $version
 $releaseMetadata | convertto-json | Out-file -FilePath $releaseNotesDir/$notesFile
 
-$releasedJson["kbs"] = $releasedJson["kbs"] + $uniqueKBs
-$releasedJson | convertto-json | Out-file -FilePath $releaseNotesDir/all-kbs
+$updatedKBs = @{}
+$updatedKBs["kbs"] = $releasedJson.kbs + $uniqueKBs
+$updatedKBs | convertto-json | Out-file -FilePath $releaseNotesDir/all-kbs
