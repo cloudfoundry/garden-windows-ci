@@ -25,15 +25,18 @@ $notesFile = "release-notes-$version"
 
 $releasedJson = cat $PWD\all-kbs-list\all-kbs | convertfrom-json
 $releasedKBs = $releasedJson.kbs
+$previousVersion = $releasedJson.version
 
 $releaseMetadata = @{}
-$kbs = Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-hotfix).HotFixIDs"
+$kbs = Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-hotfix).HotFixID"
 Write-Output "kbs in image: " + $kbs
 $uniqueKBs = $kbs | Where-Object { $releasedKBs -notcontains $_ }
 $releaseMetadata["kbs"] = $uniqueKBs
 $releaseMetadata["rootfs-version"] = "$version"
+$releaseMetadata["previous-version"] = "$previousVersion"
 $releaseMetadata | convertto-json | Out-file -FilePath $releaseNotesDir/$notesFile
 
 $updatedKBs = @{}
 $updatedKBs["kbs"] = $releasedJson.kbs + $uniqueKBs
+$updatedKBs["version"] = "$version"
 $updatedKBs | convertto-json | Out-file -FilePath $releaseNotesDir/all-kbs
