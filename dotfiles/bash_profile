@@ -283,12 +283,19 @@ fly-rootfs () {
     azure-smb-share-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token)
 }
 
+fly-build-and-ship() {
+  [ "$1" == "-h" ] && echo "Push rootfs pipeline to concourse" && return
+  fly -t hh sp -p build-and-ship-rootfs -c $HOME/workspace/garden-windows-ci/pipelines/build-and-ship-rootfs.yml \
+    -l<(lpass show --notes aws-iam-access-keys docker-creds \
+    azure-smb-share-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token sriracha-creds)
+}
+
 fly-windows2019fs () {
   [ "$1" == "-h" ] && echo "Push windows2019fs pipeline to concourse" && return
   fly -t hh sp -p windows2019fs -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-offline.yml \
     -l <(_env_creds_yml sriracha) \
   -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys \
-    github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
+    github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token sriracha-creds) \
   -l $HOME/workspace/garden-windows-ci/vars/windows2019fs.yml
 }
 

@@ -142,26 +142,11 @@ resources:
 
 - name: sriracha-cf-deployment
   type: bosh-deployment
-  source:
-    deployment: cf
-    client: ((SRIRACHA_BOSH_CLIENT))
-    client_secret: ((SRIRACHA_BOSH_CLIENT_SECRET))
-    ca_cert: ((SRIRACHA_BOSH_CA_CERT))
-    target: ((SRIRACHA_BOSH_ENVIRONMENT))
-    jumpbox_url: ((SRIRACHA_JUMPBOX_URL))
-    jumpbox_ssh_key: ((SRIRACHA_JUMPBOX_SSH_KEY))
+  source: ((sriracha_cf_creds))
 
 - name: sriracha-smoke-test-deployment
   type: bosh-deployment
-  source:
-    deployment: ((fs-version))
-    client: ((SRIRACHA_BOSH_CLIENT))
-    client_secret: ((SRIRACHA_BOSH_CLIENT_SECRET))
-    ca_cert: ((SRIRACHA_BOSH_CA_CERT))
-    target: ((SRIRACHA_BOSH_ENVIRONMENT))
-    jumpbox_url: ((SRIRACHA_JUMPBOX_URL))
-    jumpbox_ssh_key: ((SRIRACHA_JUMPBOX_SSH_KEY))
-
+  source: ((sriracha_smoke_test_creds))
 # Lock Pool
 
 - name: sriracha-lock-pool

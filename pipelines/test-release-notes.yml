@@ -1,0 +1,67 @@
+resource_types:
+- name: command-runner
+  type: docker-image
+  source:
+    repository: cloudfoundrydevelopers/command-runner-resource
+    tag: latest
+
+resources:
+# Git
+
+- name: ci
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
+
+# S3
+
+- name: release-notes
+  type: s3
+  source:
+    bucket: rootfs-release-notes
+    regexp: release-notes-(.*)
+    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+- name: all-kbs-list
+  type: s3
+  source:
+    bucket: rootfs-release-notes
+    versioned_file: all-kbs
+    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+- name: image-version
+  type: semver
+  source:
+    bucket: windows2019fs
+    initial_version: 2019.0.1
+    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+    key: image-version
+    region_name: us-east-1
+
+jobs:
+- name: generate-release-notes
+  serial: true
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: image-version
+    - get: all-kbs-list
+  - task: generate
+    tags: [2019]
+    file: ci/tasks/generate-rootfs-release-notes/task.yml
+    input_mapping:
+      version: image-version
+    params:
+      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+      IMAGE_NAME: cloudfoundry/windows2016fs
+      SHARE_IP: ((SHARE_IP))
+      SHARE_FQDN: ((SHARE_FQDN))
+      SHARE_NAME: ((SHARE_NAME))
+      SHARE_USERNAME: ((SHARE_USERNAME))
+      SHARE_PASSWORD: ((SHARE_PASSWORD))
+  - put: release-notes
+    params: {file: notes/release-notes-*}
+  - put: all-kbs-list
+    params: {file: notes/all-kbs}
