@@ -7,3 +7,7 @@ set -e
 version=$(cat version/number)
 echo "v$version" > generated-release/name
 echo "v$version" > generated-release/version
+
+if [ -d release-notes ]; then
+  cp release-notes/release-notes-* generate-release/notes
+fi

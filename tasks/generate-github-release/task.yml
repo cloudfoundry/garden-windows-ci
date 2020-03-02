@@ -7,6 +7,8 @@ inputs:
   - name: version
   - name: release
   - name: ci
+  - name: release-notes
+    optional: true
 
 outputs:
   - name: generated-release
