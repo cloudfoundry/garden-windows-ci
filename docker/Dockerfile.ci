@@ -18,6 +18,7 @@ RUN apt-get update -qq && \
     build-essential \
     ca-certificates \
     curl \
+    dos2unix \
     g++ \
     gcc \
     git \
