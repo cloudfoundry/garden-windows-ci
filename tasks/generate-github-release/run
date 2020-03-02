@@ -9,5 +9,5 @@ echo "v$version" > generated-release/name
 echo "v$version" > generated-release/version
 
 if [ -d release-notes ]; then
-  cp release-notes/release-notes-* generate-release/notes
+  cp release-notes/release-notes-* generated-release/notes
 fi
