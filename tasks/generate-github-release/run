@@ -10,4 +10,5 @@ echo "v$version" > generated-release/version
 
 if [ -d release-notes ]; then
   cp release-notes/release-notes-* generated-release/notes
+  dos2unix generated-release/notes
 fi
