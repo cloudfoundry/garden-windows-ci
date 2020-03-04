@@ -11,9 +11,9 @@ pushd windowsfs-release
   go run ./src/code.cloudfoundry.org/hydrator/cmd/hydrate download -image cloudfoundry/windows2016fs -outputDir blobs/$FS_VERSION -tag ${image_version}
 
   bosh remove-blob "$FS_VERSION/windows2016fs-$blob_version.tgz"
-  bosh add-blob "blobs/$FS_VERSION/windows2016fs-$submodule_version.tgz" "$FS_VERSION/windows2016fs-$submodule_version.tgz"
+  bosh add-blob "blobs/$FS_VERSION/windows2016fs-$image_version.tgz" "$FS_VERSION/windows2016fs-$image_version.tgz"
 
-  rm "blobs/$FS_VERSION/windows2016fs-$submodule_version.tgz"
+  rm "blobs/$FS_VERSION/windows2016fs-$image_version.tgz"
 popd
 
 cp -r ./windowsfs-release/. windowsfs-release-updated-blob/
