@@ -4,6 +4,14 @@ resource_types:
   source:
     repository: cloudfoundrydevelopers/command-runner-resource
     tag: latest
+- name: cron-resource
+  type: docker-image
+  source:
+    repository: cftoolsmiths/cron-resource
+- name: bosh-deployment
+  type: docker-image
+  source:
+    repository: cloudfoundry/bosh-deployment-resource
 
 groups:
 - name: online
@@ -14,7 +22,7 @@ groups:
   - aioli-online-smoke-test
   - bump-go-online
   - bump-hydrator-online
-  - generate-release-notes
+  - generate-rootfs-metadata
   - shipit-online-major
   - shipit-online-minor
   - shipit-online-patch
@@ -29,7 +37,7 @@ groups:
   - test-create-release-linux
   - bump-go-offline
   - bump-hydrator-offline
-  - generate-release-notes
+  - generate-rootfs-metadata
   - shipit-offline-major
   - shipit-offline-minor
   - shipit-offline-patch
@@ -131,7 +139,7 @@ resources:
   type: s3
   source:
     bucket: all-bosh-windows
-    regexp: ((stemcell-regexp))
+    regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
     access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 
@@ -166,6 +174,7 @@ resources:
     target: ((AIOLI_BOSH_ENVIRONMENT))
     jumpbox_url: ((AIOLI_JUMPBOX_URL))
     jumpbox_ssh_key: ((AIOLI_JUMPBOX_SSH_KEY))
+    skip_check: true
 
 - name: aioli-smoke-test-deployment
   type: bosh-deployment
@@ -177,6 +186,7 @@ resources:
     target: ((AIOLI_BOSH_ENVIRONMENT))
     jumpbox_url: ((AIOLI_JUMPBOX_URL))
     jumpbox_ssh_key: ((AIOLI_JUMPBOX_SSH_KEY))
+    skip_check: true
 
 - name: sriracha-lock-pool
   type: pool
@@ -188,11 +198,27 @@ resources:
 
 - name: sriracha-cf-deployment
   type: bosh-deployment
-  source: ((sriracha_cf_creds))
+  source:
+    deployment: cf
+    skip_check: true
+    client: ((SRIRACHA_BOSH_CLIENT))
+    client_secret: ((SRIRACHA_BOSH_CLIENT_SECRET))
+    ca_cert: ((SRIRACHA_BOSH_CA_CERT))
+    target: ((SRIRACHA_BOSH_ENVIRONMENT))
+    jumpbox_url: ((SRIRACHA_JUMPBOX_IP)):22
+    jumpbox_ssh_key: ((SRIRACHA_JUMPBOX_SSH_KEY))
 
 - name: sriracha-smoke-test-deployment
   type: bosh-deployment
-  source: ((sriracha_smoke_test_creds))
+  source:
+    deployment: windows2019fs
+    skip_check: true
+    client: ((SRIRACHA_BOSH_CLIENT))
+    client_secret: ((SRIRACHA_BOSH_CLIENT_SECRET))
+    ca_cert: ((SRIRACHA_BOSH_CA_CERT))
+    target: ((SRIRACHA_BOSH_ENVIRONMENT))
+    jumpbox_url: ((SRIRACHA_JUMPBOX_IP)):22
+    jumpbox_ssh_key: ((SRIRACHA_JUMPBOX_SSH_KEY))
 
 # Git
 
@@ -247,11 +273,11 @@ resources:
 
 # S3
 
-- name: release-notes
+- name: rootfs-metadata
   type: s3
   source:
     bucket: rootfs-release-notes
-    regexp: release-notes-(.*)
+    regexp: rootfs-metadata-(.*)
     access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
 - name: all-kbs-list
@@ -287,7 +313,7 @@ resources:
     access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
     bucket: windowsfs
-    initial_version: ((initial-online-release-version))
+    initial_version: 2019.0.1
     key: windowsfs-online-release-version
     region_name: us-east-1
 
@@ -296,8 +322,8 @@ resources:
   source:
     access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-    bucket: ((fs-version))
-    initial_version: ((initial-release-version))
+    bucket: windows2019fs
+    initial_version: 2019.0.1
     key: windowsfs-release-version
     region_name: us-east-1
 
@@ -307,7 +333,7 @@ resources:
   type: github-release
   source:
     user: cloudfoundry
-    repository: ((windowsfs-online-release-repo))
+    repository: windowsfs-online-release
     drafts: true
     access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
@@ -315,7 +341,7 @@ resources:
   type: github-release
   source:
     user: cloudfoundry
-    repository: ((windowsfs-release-repo))
+    repository: windows2019fs-release
     drafts: true
     access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
@@ -439,6 +465,7 @@ jobs:
       OS_VERSION: "2019"
     input_mapping:
       windowsfs-release: windowsfs-offline-release-develop-2019
+      image-version: image-version-2019
   - task: commit-changes
     file: ci/tasks/commit/task.yml
     input_mapping:
@@ -451,8 +478,6 @@ jobs:
     params:
       repository: windowsfs-release-updated-commit
       rebase: true
-
-
 
 # ------------------ online submodule bump
 
@@ -612,11 +637,11 @@ jobs:
       - cf-deployment/operations/scale-to-one-az.yml
       # latest bbl only brings up two router backends by default
       - ci/operations/use-2-azs-for-router.yml
-      - ((windows-cell-ops-file))
-      - ((latest-windows-stemcell-ops-file))
-      - ((windows-rdp-ops-file))
+      - cf-deployment/operations/windows2019-cell.yml
+      - cf-deployment/operations/use-latest-windows2019-stemcell.yml
+      - ci/operations/enable-rdp-2019.yml
       - windowsfs-opsfile/specified-windowsfs-version.yml
-      - ((use-online-fs-opsfile))
+      - cf-deployment/operations/use-online-windows2019fs.yml
       vars_files:
       - garden-windows-environments/aioli/cf/vars.yml
       cleanup: true
@@ -700,7 +725,7 @@ jobs:
       JUMPBOX_SSH_KEY: ((AIOLI_JUMPBOX_SSH_KEY))
   - put: aioli-smoke-test-deployment
     params:
-      manifest: windowsfs-online-release-develop/manifests/smoke-test-((os-version)).yml
+      manifest: windowsfs-online-release-develop-2019/manifests/smoke-test-2019.yml
       stemcells:
       - gcp-windows-stemcell/*.tgz
       releases:
@@ -712,7 +737,7 @@ jobs:
   - task: smoke-test
     file: ci/tasks/fs-smoke-test/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows2019fs
       BOSH_CA_CERT: ((AIOLI_BOSH_CA_CERT))
       BOSH_CLIENT: ((AIOLI_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((AIOLI_BOSH_CLIENT_SECRET))
@@ -726,7 +751,7 @@ jobs:
         BOSH_CA_CERT: ((AIOLI_BOSH_CA_CERT))
         BOSH_CLIENT: ((AIOLI_BOSH_CLIENT))
         BOSH_CLIENT_SECRET: ((AIOLI_BOSH_CLIENT_SECRET))
-        BOSH_DEPLOYMENT: ((fs-version))
+        BOSH_DEPLOYMENT: windows2019fs
         BOSH_ENVIRONMENT: ((AIOLI_BOSH_ENVIRONMENT))
         JUMPBOX_IP: ((AIOLI_JUMPBOX_IP))
         JUMPBOX_SSH_KEY: ((AIOLI_JUMPBOX_SSH_KEY))
@@ -766,7 +791,7 @@ jobs:
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows2019fs
     input_mapping: { release-tarball: windowsfs-tarball }
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml
@@ -789,7 +814,7 @@ jobs:
   - task: delete-rootfs-release
     file: ci/tasks/bosh-delete-release/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows2019fs
       BOSH_CA_CERT: ((SRIRACHA_BOSH_CA_CERT))
       BOSH_CLIENT: ((SRIRACHA_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((SRIRACHA_BOSH_CLIENT_SECRET))
@@ -807,14 +832,14 @@ jobs:
       ops_files:
       - cf-deployment/operations/scale-to-one-az.yml
       - ci/operations/use-2-azs-for-router.yml
-      - ((windows-cell-ops-file))
-      - ((latest-windows-stemcell-ops-file))
-      - ((windows-scale-down-ops-file))
-      - ((windows-rdp-ops-file))
+      - cf-deployment/operations/windows2019-cell.yml
+      - cf-deployment/operations/use-latest-windows2019-stemcell.yml
+      - ci/operations/scale-down-windows2019.yml
+      - ci/operations/enable-rdp-2019.yml
       - windowsfs-opsfile/specified-windowsfs-version.yml
-      - ((use-offline-fs-opsfile))
-      vars_files:
-      - garden-windows-environments/sriracha/cf/vars.yml
+      - ci/operations/use-offline-windows2019fs.yml
+      # vars_files:
+      # - garden-windows-environments/sriracha/cf/vars.yml
       cleanup: true
     get_params:
       skip_export: true
@@ -879,7 +904,7 @@ jobs:
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows2019fs
     input_mapping: { release-tarball: windowsfs-tarball }
   - task: delete-deployments
     file: ci/tasks/bosh-delete-deployments/task.yml
@@ -902,7 +927,7 @@ jobs:
   - task: delete-rootfs-release
     file: ci/tasks/bosh-delete-release/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows2019fs
       BOSH_CA_CERT: ((SRIRACHA_BOSH_CA_CERT))
       BOSH_CLIENT: ((SRIRACHA_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((SRIRACHA_BOSH_CLIENT_SECRET))
@@ -925,7 +950,7 @@ jobs:
   - task: smoke-test
     file: ci/tasks/fs-smoke-test/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows2019fs
       BOSH_CA_CERT: ((SRIRACHA_BOSH_CA_CERT))
       BOSH_CLIENT: ((SRIRACHA_BOSH_CLIENT))
       BOSH_CLIENT_SECRET: ((SRIRACHA_BOSH_CLIENT_SECRET))
@@ -939,7 +964,7 @@ jobs:
         BOSH_CA_CERT: ((SRIRACHA_BOSH_CA_CERT))
         BOSH_CLIENT: ((SRIRACHA_BOSH_CLIENT))
         BOSH_CLIENT_SECRET: ((SRIRACHA_BOSH_CLIENT_SECRET))
-        BOSH_DEPLOYMENT: ((fs-version))
+        BOSH_DEPLOYMENT: windows2019fs
         BOSH_ENVIRONMENT: ((SRIRACHA_BOSH_ENVIRONMENT))
         JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
         JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
@@ -999,7 +1024,7 @@ jobs:
 # ----- generate release notes
 
 
-- name: generate-release-notes
+- name: generate-rootfs-metadata
   serial: true
   plan:
   - in_parallel:
@@ -1007,33 +1032,26 @@ jobs:
     - get: image-version-2019
       passed: [aioli-online-cats, aioli-online-smoke-test, sriracha-offline-cats, sriracha-offline-smoke-test]
       trigger: true
-    - get: all-kbs-list
   - task: generate
     tags: [2019]
-    file: ci/tasks/generate-rootfs-release-notes/task.yml
+    file: ci/tasks/generate-rootfs-metadata/task.yml
     input_mapping:
       version: image-version-2019
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       IMAGE_NAME: cloudfoundry/windows2016fs
-      SHARE_IP: ((SHARE_IP))
-      SHARE_FQDN: ((SHARE_FQDN))
-      SHARE_NAME: ((SHARE_NAME))
-      SHARE_USERNAME: ((SHARE_USERNAME))
-      SHARE_PASSWORD: ((SHARE_PASSWORD))
-  - put: release-notes
-    params: {file: notes/release-notes-*}
-  - put: all-kbs-list
-    params: {file: notes/all-kbs}
+  - put: rootfs-metadata
+    params: {file: notes/rootfs-metadata-*}
 
 ## ship online
 - name: shipit-online-major
   serial: true
   plan:
   - in_parallel:
+    - get: all-kbs-list
     - get: ci
-    - get: release-notes
-      passed: [generate-release-notes]
+    - get: rootfs-metadata
+      passed: [generate-rootfs-metadata]
     - get: windowsfs-online-release-develop-2019
       passed: [aioli-online-cats, aioli-online-smoke-test]
     - get: windowsfs-online-release-master-2019
@@ -1065,21 +1083,25 @@ jobs:
       release: finalized-repo
       version: windowsfs-online-release-version
     file: ci/tasks/generate-github-release/task.yml
+  - task: generate-release-notes
+    file: ci/tasks/generate-release-notes/task.yml
   - put: windowsfs-online-github-release
     params:
       commitish: generated-release/commitish
       name: generated-release/name
       tag: generated-release/version
+      body: generated-notes/release-notes
       globs:
-      - ((finalized-release-glob))
+      - finalized-release/windowsfs-*.tgz
 
 - name: shipit-online-minor
   serial: true
   plan:
   - in_parallel:
+    - get: all-kbs-list
     - get: ci
-    - get: release-notes
-      passed: [generate-release-notes]
+    - get: rootfs-metadata
+      passed: [generate-rootfs-metadata]
     - get: windowsfs-online-release-develop-2019
       passed: [aioli-online-cats, aioli-online-smoke-test]
     - get: windowsfs-online-release-master-2019
@@ -1113,21 +1135,25 @@ jobs:
       release: finalized-repo
       version: windowsfs-online-release-version
     file: ci/tasks/generate-github-release/task.yml
+  - task: generate-release-notes
+    file: ci/tasks/generate-release-notes/task.yml
   - put: windowsfs-online-github-release
     params:
       commitish: generated-release/commitish
       name: generated-release/name
       tag: generated-release/version
+      body: generated-notes/release-notes
       globs:
-      - ((finalized-release-glob))
+      - finalized-release/windowsfs-*.tgz
 
 - name: shipit-online-patch
   serial: true
   plan:
   - in_parallel:
+    - get: all-kbs-list
     - get: ci
-    - get: release-notes
-      passed: [generate-release-notes]
+    - get: rootfs-metadata
+      passed: [generate-rootfs-metadata]
     - get: windowsfs-online-release-develop-2019
       passed: [aioli-online-cats, aioli-online-smoke-test]
     - get: windowsfs-online-release-master-2019
@@ -1159,22 +1185,26 @@ jobs:
       release: finalized-repo
       version: windowsfs-online-release-version
     file: ci/tasks/generate-github-release/task.yml
+  - task: generate-release-notes
+    file: ci/tasks/generate-release-notes/task.yml
   - put: windowsfs-online-github-release
     params:
       commitish: generated-release/commitish
       name: generated-release/name
       tag: generated-release/version
+      body: generated-notes/release-notes
       globs:
-      - ((finalized-release-glob))
+      - finalized-release/windowsfs-*.tgz
 
 ## ship offline
 - name: shipit-offline-major
   serial: true
   plan:
   - in_parallel:
+    - get: all-kbs-list
     - get: ci
-    - get: release-notes
-      passed: [generate-release-notes]
+    - get: rootfs-metadata
+      passed: [generate-rootfs-metadata]
     - get: windowsfs-offline-release-master-2019
     - get: windowsfs-offline-release-develop-2019
       passed: [sriracha-offline-cats, sriracha-offline-smoke-test]
@@ -1183,7 +1213,7 @@ jobs:
   - task: update-version-and-shas
     file: ci/tasks/update-fs-release-version/task.yml
     params:
-      FS_VERSION: ((fs-version))
+      FS_VERSION: windows2019fs
     input_mapping:
       windowsfs-release: windowsfs-offline-release-develop-2019
       version: windowsfs-offline-release-version
@@ -1201,11 +1231,14 @@ jobs:
       release: windowsfs-release-updated-version
       version: windowsfs-release-version
     file: ci/tasks/generate-github-release/task.yml
+  - task: generate-release-notes
+    file: ci/tasks/generate-release-notes/task.yml
   - put: windowsfs-offline-github-release
     params:
       commitish: generated-release/commitish
       name: generated-release/name
       tag: generated-release/version
+      body: generated-notes/release-notes
   - put: windowsfs-offline-release-version
     params:
       file: windowsfs-release-version/version
@@ -1214,9 +1247,10 @@ jobs:
   serial: true
   plan:
   - in_parallel:
+    - get: all-kbs-list
     - get: ci
-    - get: release-notes
-      passed: [generate-release-notes]
+    - get: rootfs-metadata
+      passed: [generate-rootfs-metadata]
     - get: windowsfs-offline-release-master-2019
     - get: windowsfs-offline-release-develop-2019
       passed: [sriracha-offline-cats, sriracha-offline-smoke-test]
@@ -1241,11 +1275,14 @@ jobs:
       release: windowsfs-release-updated-version
       version: windowsfs-release-version
     file: ci/tasks/generate-github-release/task.yml
+  - task: generate-release-notes
+    file: ci/tasks/generate-release-notes/task.yml
   - put: windowsfs-offline-github-release
     params:
       commitish: generated-release/commitish
       name: generated-release/name
       tag: generated-release/version
+      body: generated-notes/release-notes
   - put: windowsfs-offline-release-version
     params:
       file: windowsfs-release-version/version
@@ -1255,13 +1292,14 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: release-notes
-      passed: [generate-release-notes]
+    - get: rootfs-metadata
+      passed: [generate-rootfs-metadata]
     - get: windowsfs-offline-release-master-2019
     - get: windowsfs-offline-release-develop-2019
       passed: [sriracha-offline-cats, sriracha-offline-smoke-test]
     - get: windowsfs-offline-release-version
       params: {bump: patch}
+    - get: all-kbs-list
   - task: update-version-and-shas
     file: ci/tasks/update-fs-release-version/task.yml
     input_mapping:
@@ -1281,11 +1319,14 @@ jobs:
       release: windowsfs-release-updated-version
       version: windowsfs-release-version
     file: ci/tasks/generate-github-release/task.yml
+  - task: generate-release-notes
+    file: ci/tasks/generate-release-notes/task.yml
   - put: windowsfs-offline-github-release
     params:
       commitish: generated-release/commitish
       name: generated-release/name
       tag: generated-release/version
+      body: generated-notes/release-notes
   - put: windowsfs-offline-release-version
     params:
       file: windowsfs-release-version/version
