@@ -2,6 +2,7 @@
 
 set -eu
 
+blob_version=$(grep $FS_VERSION windowsfs-release/config/blobs.yml |  grep -o '[0-9]\+.[0-9]\+.[0-9]\+')
 image_version=$(< image-version/version)
 
 pushd windowsfs-release
