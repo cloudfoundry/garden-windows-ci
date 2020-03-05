@@ -1036,7 +1036,7 @@ jobs:
     tags: [2019]
     file: ci/tasks/generate-rootfs-metadata/task.yml
     input_mapping:
-      version: image-version-2019
+      image-version: image-version-2019
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       IMAGE_NAME: cloudfoundry/windows2016fs
