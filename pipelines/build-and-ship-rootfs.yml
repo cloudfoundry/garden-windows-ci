@@ -1220,7 +1220,7 @@ jobs:
   - put: windowsfs-offline-release-master-2019
     params:
       repository: windowsfs-release-updated-version
-      tag: windowsfs-release-version/version
+      tag: windowsfs-offline-release-version/version
       tag_prefix: v
   - put: windowsfs-offline-release-develop-2019
     params:
@@ -1229,7 +1229,7 @@ jobs:
   - task: generate-github-release
     input_mapping:
       release: windowsfs-release-updated-version
-      version: windowsfs-release-version
+      version: windowsfs-offline-release-version
     file: ci/tasks/generate-github-release/task.yml
   - task: generate-release-notes
     file: ci/tasks/generate-release-notes/task.yml
@@ -1241,7 +1241,7 @@ jobs:
       body: generated-notes/release-notes
   - put: windowsfs-offline-release-version
     params:
-      file: windowsfs-release-version/version
+      file: windowsfs-offline-release-version/version
 
 - name: shipit-offline-minor
   serial: true
@@ -1264,7 +1264,7 @@ jobs:
   - put: windowsfs-offline-release-master-2019
     params:
       repository: windowsfs-release-updated-version
-      tag: windowsfs-release-version/version
+      tag: windowsfs-offline-release-version/version
       tag_prefix: v
   - put: windowsfs-offline-release-develop-2019
     params:
@@ -1273,7 +1273,7 @@ jobs:
   - task: generate-github-release
     input_mapping:
       release: windowsfs-release-updated-version
-      version: windowsfs-release-version
+      version: windowsfs-offline-release-version
     file: ci/tasks/generate-github-release/task.yml
   - task: generate-release-notes
     file: ci/tasks/generate-release-notes/task.yml
@@ -1285,7 +1285,7 @@ jobs:
       body: generated-notes/release-notes
   - put: windowsfs-offline-release-version
     params:
-      file: windowsfs-release-version/version
+      file: windowsfs-offline-release-version/version
 
 - name: shipit-offline-patch
   serial: true
@@ -1304,11 +1304,11 @@ jobs:
     file: ci/tasks/update-fs-release-version/task.yml
     input_mapping:
       windowsfs-release: windowsfs-offline-release-develop-2019
-      version: windowsfs-release-version
+      version: windowsfs-offline-release-version
   - put: windowsfs-offline-release-master-2019
     params:
       repository: windowsfs-release-updated-version
-      tag: windowsfs-release-version/version
+      tag: windowsfs-offline-release-version/version
       tag_prefix: v
   - put: windowsfs-offline-release-develop-2019
     params:
@@ -1317,7 +1317,7 @@ jobs:
   - task: generate-github-release
     input_mapping:
       release: windowsfs-release-updated-version
-      version: windowsfs-release-version
+      version: windowsfs-offline-release-version
     file: ci/tasks/generate-github-release/task.yml
   - task: generate-release-notes
     file: ci/tasks/generate-release-notes/task.yml
@@ -1329,4 +1329,4 @@ jobs:
       body: generated-notes/release-notes
   - put: windowsfs-offline-release-version
     params:
-      file: windowsfs-release-version/version
+      file: windowsfs-offline-release-version/version
