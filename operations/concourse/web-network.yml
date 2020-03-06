@@ -1,16 +1,5 @@
 ---
 - type: replace
-  path: /instance_groups/name=web/networks
-  value:
-  - name: private
-    default:
-    - dns
-    - gateway
-  - name: vip
-    static_ips:
-    - ((vip_static_ip))
-
-- type: replace
   path: /instance_groups/name=web/vm_extensions?/-
   value: ((web_network_vm_extension))
 

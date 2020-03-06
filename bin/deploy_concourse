@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
 
-set -e
+RED='\033[1;31m'
+NC='\033[0m' # No Color
 
-if [[ -z "$(gcloud config list --format='value(core.account)')" ]]; then
-  echo 'Must log in using `gcloud auth login`'
+lpass status > /dev/null
+if [[ $? != 0 ]]; then
+  echo -e "${RED}Error${NC}: You must log into lastpass before running this script."
   exit 1
 fi
+
+set -e
 
 CONCOURSE_DEPLOYMENT=${CONCOURSE_DEPLOYMENT:-$HOME/workspace/concourse-bosh-deployment}
 if [[ ! -d $CONCOURSE_DEPLOYMENT ]]; then
  pushd $HOME/workspace
   git clone https://github.com/concourse/concourse-bosh-deployment
  popd
-else
-  pushd $CONCOURSE_DEPLOYMENT
-    git pull
-  popd
 fi
 
 GARDEN_WINDOWS_CI=${GARDEN_WINDOWS_CI:-$HOME/workspace/garden-windows-ci}
@@ -27,40 +27,43 @@ fi
 
 source $GARDEN_WINDOWS_CI/bin/bash_helpers
 
-concourse_vars_project="cf-greenhouse-spitfire"
-
-DIR=$(mktemp -d)
-gsutil cp gs://$concourse_vars_project/concourse/creds.yml $DIR/creds.yml
-
 bosh_target "spitfire"
+
 bosh -d concourse deploy ${CONCOURSE_DEPLOYMENT}/cluster/concourse.yml \
   -v deployment_name=concourse \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/external-postgres.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/external-postgres-tls.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/external-postgres-client-cert.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/github-auth.yml  \
-  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/scale.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/enable-lets-encrypt.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/privileged-https.yml \
   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/storage-driver.yml \
+  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/scale.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/web-network.yml \
   -o ${GARDEN_WINDOWS_CI}/operations/concourse/linux-worker-garden-dns-servers.yml \
   -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
-  -l <(gsutil cat gs://$concourse_vars_project/concourse/vars.yml) \
+  -l <(lpass show --notes Shared-Greenhouse/ci-creds) \
+  -v network_name=private \
+  -v web_vm_type=n1-standard-2 \
+  -v web_network_vm_extension=lb \
+  -v web_instances=1 \
+  -v worker_ephemeral_disk=100GB_ephemeral_disk \
+  -v worker_vm_type=small-highmem \
+  -v worker_instances=4 \
   -v storage_driver=overlay \
-  --vars-store $DIR/creds.yml
+  --no-redact
 
 # mulgore is our vsphere environment.
 # we need a linux worker for concourse GETs and windows worker for running tests.
-bosh_target "mulgore"
-bosh -d concourse-workers deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-worker.yml \
-  -v deployment_name=concourse-workers \
-  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
-  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/storage-driver.yml \
-  -o ${GARDEN_WINDOWS_CI}/operations/concourse/scale-linux-worker.yml \
-  -v storage_driver=overlay \
-  -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
-  -l <(gsutil cat gs://$concourse_vars_project/concourse/vars.yml) \
-  -v worker_instances=2 \
-  -l $DIR/creds.yml
+# bosh_target "mulgore"
+# bosh -d concourse-workers deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-worker.yml \
+#   -v deployment_name=concourse-workers \
+#   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
+#   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/storage-driver.yml \
+#   -o ${GARDEN_WINDOWS_CI}/operations/concourse/scale-linux-worker.yml \
+#   -v storage_driver=overlay \
+#   -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
+#   -l <(gsutil cat gs://$concourse_vars_project/concourse/vars.yml) \
+#   -v worker_instances=2 \
+#   -l $DIR/creds.yml
