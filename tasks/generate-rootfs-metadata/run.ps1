@@ -28,7 +28,7 @@ Write-Output "kbs in image: " + $kbs
 
 $releaseMetadata = @{}
 $releaseMetadata["kbs"] = $kbs
-$releaseMetadata["version"] = $version
+$releaseMetadata["version"] = "$version"
 
 
 $releaseMetadata | convertto-json |  Out-file -FilePath $releaseNotesDir/$notesFile
