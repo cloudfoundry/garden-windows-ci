@@ -91,7 +91,7 @@ jobs:
     input_mapping:
       windows-stemcell: windows-2019-stemcell
     params:
-      BOSH_DEPLOYMENT: concourse-worker-2019
+      BOSH_DEPLOYMENT: concourse
       BOSH_CREDENTIALS: ((spitfire-bosh-credentials))
   - put: worker-deployment
     inputs:

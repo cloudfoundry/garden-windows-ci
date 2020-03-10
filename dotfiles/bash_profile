@@ -219,21 +219,13 @@ grdp() {
 }
 
 # Set Pipelines
-alias fly-hwc-exe="fly -t hh sp -p hwc-exe -c $HOME/workspace/garden-windows-ci/pipelines/hwc-exe.yml -l<(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' 'aws-iam-access-keys' 'github-access-tokens')"
-alias fly-filelock="fly -t hh sp -p filelock -c $HOME/workspace/garden-windows-ci/pipelines/filelock.yml"
-alias fly-tar="fly -t hh sp -p tar -c $HOME/workspace/garden-windows-ci/pipelines/tar.yml -l<(lpass show --notes -G github-deploy-keys pesto-secrets github-access-tokens aws-iam-access-keys github-access-tokens tracker-api-token)"
-
-fly-envoy() {
-  [ "$1" == "-h" ] && echo "Push envoy pipeline to concourse" && return
-  fly -t garden-windows sp \
-    -p envoy \
-    -c "$HOME/workspace/garden-windows-ci/pipelines/envoy.yml" \
-    -l <(lpass show --notes 'aws-iam-access-keys' 'github-deploy-keys-3' 'github-access-tokens')
-}
+alias fly-hwc-exe="fly -t garden-windows sp -p hwc-exe -c $HOME/workspace/garden-windows-ci/pipelines/hwc-exe.yml -l<(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' 'aws-iam-access-keys' 'github-access-tokens')"
+alias fly-filelock="fly -t garden-windows sp -p filelock -c $HOME/workspace/garden-windows-ci/pipelines/filelock.yml"
+alias fly-tar="fly -t garden-windows sp -p tar -c $HOME/workspace/garden-windows-ci/pipelines/tar.yml -l<(lpass show --notes -G github-deploy-keys pesto-secrets github-access-tokens aws-iam-access-keys github-access-tokens tracker-api-token)"
 
 fly-envoy-nginx() {
   [ "$1" == "-h" ] && echo "Push envoy-nginx pipeline to concourse" && return
-  fly -t hh sp \
+  fly -t garden-windows sp \
     -p envoy-nginx \
     -c $HOME/workspace/garden-windows-ci/pipelines/envoy-nginx.yml \
     -l <(_env_creds_yml alfredo) \
@@ -243,20 +235,20 @@ fly-envoy-nginx() {
 
 fly-hydrator () {
   [ "$1" == "-h" ] && echo "Push hydrator pipeline to concourse" && return
-  fly -t hh sp -p hydrator -c $HOME/workspace/garden-windows-ci/pipelines/hydrator.yml \
+  fly -t garden-windows sp -p hydrator -c $HOME/workspace/garden-windows-ci/pipelines/hydrator.yml \
     -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 \
     github-deploy-keys-3 aws-iam-access-keys github-access-tokens)
 }
 
 fly-windows-tools () {
   [ "$1" == "-h" ] && echo "Push windows-tools pipeline to concourse" && return
-  fly -t hh sp -p windows-tools -c $HOME/workspace/garden-windows-ci/pipelines/windows-tools.yml \
+  fly -t garden-windows sp -p windows-tools -c $HOME/workspace/garden-windows-ci/pipelines/windows-tools.yml \
     -l<(lpass show --notes github-access-tokens github-deploy-keys aws-iam-access-keys)
 }
 
 fly-winc () {
   [ "$1" == "-h" ] && echo "Push winc pipeline to concourse" && return
-  fly -t hh sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
+  fly -t garden-windows sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
     -l <(_env_creds_yml pesto) \
     -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 \
     aws-iam-access-keys github-access-tokens garden-windows-dev-service-account.json)
@@ -264,7 +256,7 @@ fly-winc () {
 
 fly-longrunning () {
   [ "$1" == "-h" ] && echo "Push longrunning pipeline to concourse" && return
-  fly -t hh sp -p longrunning -c $HOME/workspace/garden-windows-ci/pipelines/longrunning.yml \
+  fly -t garden-windows sp -p longrunning -c $HOME/workspace/garden-windows-ci/pipelines/longrunning.yml \
     -l <(_env_creds_yml mulgore) \
     -l<(lpass show --notes github-deploy-keys aws-iam-access-keys \
     github-access-tokens spitfire-service-account.json datadog-secrets ci-cell-admin-password)
@@ -272,58 +264,33 @@ fly-longrunning () {
 
 fly-fluent-bit-windows () {
   [ "$1" == "-h" ] && echo "Push fluent-bit-windows pipeline to concourse" && return
-  fly -t hh sp -p fluent-bit-windows -c $HOME/workspace/garden-windows-ci/pipelines/fluent-bit-windows.yml \
+  fly -t garden-windows sp -p fluent-bit-windows -c $HOME/workspace/garden-windows-ci/pipelines/fluent-bit-windows.yml \
     -l<(lpass show --notes docker-creds)
-}
-
-fly-rootfs () {
-  [ "$1" == "-h" ] && echo "Push rootfs pipeline to concourse" && return
-  fly -t hh sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
-    -l<(lpass show --notes aws-iam-access-keys docker-creds \
-    azure-smb-share-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token)
 }
 
 fly-build-and-ship() {
   [ "$1" == "-h" ] && echo "Push rootfs pipeline to concourse" && return
-  fly -t hh sp -p build-and-ship-rootfs -c $HOME/workspace/garden-windows-ci/pipelines/build-and-ship-rootfs.yml \
+  fly -t garden-windows sp -p build-and-ship-rootfs -c $HOME/workspace/garden-windows-ci/pipelines/build-and-ship-rootfs.yml \
     -l <(_env_creds_yml aioli) \
     -l<(lpass show --notes aws-iam-access-keys docker-creds garden-windows-dev-service-account.json \
     azure-smb-share-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token sriracha-creds)
 }
 
-fly-windows2019fs () {
-  [ "$1" == "-h" ] && echo "Push windows2019fs pipeline to concourse" && return
-  fly -t hh sp -p windows2019fs -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-offline.yml \
-    -l <(_env_creds_yml sriracha) \
-  -l<(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys \
-    github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token sriracha-creds) \
-  -l $HOME/workspace/garden-windows-ci/vars/windows2019fs.yml
-}
-
-fly-windowsfs-online () {
-  [ "$1" == "-h" ] && echo "Push windowsfs-online pipeline to concourse" && return
-  fly -t hh set-pipeline -p windowsfs-online -c $HOME/workspace/garden-windows-ci/pipelines/windowsfs-online.yml \
-    -l <(_env_creds_yml aioli) \
-    -l <(lpass show --notes aws-iam-access-keys docker-creds github-deploy-keys \
-    github-deploy-keys-2 github-access-tokens garden-windows-dev-service-account.json tracker-api-token) \
-    -l $HOME/workspace/garden-windows-ci/vars/windowsfs-online.yml
-}
-
 fly-ci () {
   [ "$1" == "-h" ] && echo "Push ci pipeline to concourse" && return
-  fly -t hh sp -p ci -c $HOME/workspace/garden-windows-ci/pipelines/ci.yml \
+  fly -t garden-windows sp -p ci -c $HOME/workspace/garden-windows-ci/pipelines/ci.yml \
   -l<(lpass show --notes ci-creds github-deploy-keys )
 }
 
 fly-bots() {
   [ "$1" == "-h" ] && echo "Push bots pipeline to concourse" && return
-   fly -t hh sp -p delegate-bot -c $HOME/workspace/garden-windows-ci/pipelines/bots.yml \
+   fly -t garden-windows sp -p delegate-bot -c $HOME/workspace/garden-windows-ci/pipelines/bots.yml \
   -l<(lpass show --notes github-deploy-keys bot-creds)
 }
 
 fly-web-config-buildpack() {
   [ "$1" == "-h" ] && echo "Push web config buildpack pipeline to concourse" && return
-  fly -t hh sp -p web-config-buildpack -c $HOME/workspace/garden-windows-ci/pipelines/web-config-buildpack.yml \
+  fly -t garden-windows sp -p web-config-buildpack -c $HOME/workspace/garden-windows-ci/pipelines/web-config-buildpack.yml \
   -l<(lpass show --notes 'github-deploy-keys')
 }
 
