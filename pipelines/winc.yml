@@ -142,6 +142,7 @@ resources:
   type: bosh-deployment
   source:
     deployment: cf
+    skip_check: true
     client: {{PESTO_BOSH_CLIENT}}
     client_secret: {{PESTO_BOSH_CLIENT_SECRET}}
     ca_cert: {{PESTO_BOSH_CA_CERT}}
