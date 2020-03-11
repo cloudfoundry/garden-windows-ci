@@ -557,6 +557,7 @@ jobs:
 # --------------- Tests
 - name: aioli-online-cats
   serial: true
+  serial_groups: [aioli]
   plan:
   - in_parallel:
     - get: ci
@@ -655,6 +656,7 @@ jobs:
 
 - name: aioli-online-smoke-test
   serial: true
+  serial_groups: [aioli]
   plan:
   - in_parallel:
     - get: ci
@@ -732,6 +734,7 @@ jobs:
 
 - name: sriracha-offline-cats
   serial: true
+  serial_groups: [sriracha]
   plan:
   - in_parallel:
     - get: ci
@@ -837,6 +840,7 @@ jobs:
 
 - name: sriracha-offline-smoke-test
   serial: true
+  serial_groups: [sriracha]
   plan:
   - in_parallel:
     - get: ci
