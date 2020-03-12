@@ -273,7 +273,7 @@ fly-build-and-ship() {
   fly -t garden-windows sp -p build-and-ship-rootfs -c $HOME/workspace/garden-windows-ci/pipelines/build-and-ship-rootfs.yml \
     -l <(_env_creds_yml aioli) \
     -l<(lpass show --notes aws-iam-access-keys docker-creds garden-windows-dev-service-account.json \
-    azure-smb-share-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token sriracha-creds)
+    azure-smb-share-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token sriracha-creds ci-creds)
 }
 
 fly-ci () {

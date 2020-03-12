@@ -1,0 +1,15 @@
+---
+platform: linux
+
+image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
+
+inputs:
+- name: windowsfs-online-release-version
+- name: generated-notes
+
+run:
+  path: ci/tasks/send-release-slack-alert/run
+
+params:
+  CHANNEL:
+  SLACK_URL:

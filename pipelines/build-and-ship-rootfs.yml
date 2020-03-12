@@ -1082,6 +1082,11 @@ jobs:
               name: generated-offline-release/name
               tag: generated-offline-release/version
               body: generated-notes/release-notes
+    - task: send-release-slack-alert
+      file: ci/tasks/send-release-slack-alert/task.yml
+      params:
+        CHANNEL: pcf-windows
+        SLACK_URL: ((release-slack-url))
     - put: windowsfs-online-release-version
       params: {file: windowsfs-online-release-version/number}
 
@@ -1169,6 +1174,11 @@ jobs:
             name: generated-offline-release/name
             tag: generated-offline-release/version
             body: generated-notes/release-notes
+  - task: send-release-slack-alert
+    file: ci/tasks/send-release-slack-alert/task.yml
+    params:
+      CHANNEL: pcf-windows
+      SLACK_URL: ((release-slack-url))
   - put: windowsfs-online-release-version
     params: {file: windowsfs-online-release-version/number}
 
@@ -1254,5 +1264,10 @@ jobs:
             name: generated-offline-release/name
             tag: generated-offline-release/version
             body: generated-notes/release-notes        
+  - task: send-release-slack-alert
+    file: ci/tasks/send-release-slack-alert/task.yml
+    params:
+      CHANNEL: pcf-windows
+      SLACK_URL: ((release-slack-url))
   - put: windowsfs-online-release-version
     params: {file: windowsfs-online-release-version/number}
