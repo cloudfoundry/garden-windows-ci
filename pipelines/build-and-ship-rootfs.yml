@@ -23,9 +23,9 @@ groups:
   - bump-go-online
   - bump-hydrator-online
   - generate-rootfs-metadata
-  - shipit-online-major
-  - shipit-online-minor
-  - shipit-online-patch
+  - shipit-major
+  - shipit-minor
+  - shipit-patch
 
 - name: offline
   jobs:
@@ -38,9 +38,9 @@ groups:
   - bump-go-offline
   - bump-hydrator-offline
   - generate-rootfs-metadata
-  - shipit-offline-major
-  - shipit-offline-minor
-  - shipit-offline-patch
+  - shipit-major
+  - shipit-minor
+  - shipit-patch
 
 - name: bump-submodules
   jobs:
@@ -300,17 +300,6 @@ resources:
     initial_version: 2019.0.1
     key: windowsfs-online-release-version
     region_name: us-east-1
-
-- name: windowsfs-offline-release-version
-  type: semver
-  source:
-    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
-    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-    bucket: windows2019fs
-    initial_version: 2019.0.1
-    key: windowsfs-release-version
-    region_name: us-east-1
-
 
 # GitHub Release
 - name: windowsfs-online-github-release
@@ -1003,58 +992,96 @@ jobs:
   - put: rootfs-metadata
     params: {file: notes/rootfs-metadata-*}
 
-## ship online
-- name: shipit-online-major
-  serial: true
-  plan:
-  - in_parallel:
-    - get: all-kbs-list
-    - get: ci
-    - get: rootfs-metadata
-      passed: [generate-rootfs-metadata]
-    - get: windowsfs-online-release-develop-2019
-      passed: [aioli-online-cats, aioli-online-smoke-test]
-    - get: windowsfs-online-release-master-2019
-    - get: windowsfs-online-release-version
-      params: {bump: major}
-  - task: finalize-release
-    file: ci/tasks/finalize-release/task.yml
-    input_mapping:
-      release: windowsfs-online-release-develop-2019
-      version: windowsfs-online-release-version
-    params:
-      RELEASE_NAME: windowsfs
-      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
-      CI_SKIP: true
-  - put: windowsfs-online-release-master-2019
-    params:
-      repository: finalized-release/release
-      tag: windowsfs-online-release-version/number
-      tag_prefix: v
-  - put: windowsfs-online-release-develop-2019
-    params:
-      repository: finalized-release/release
-      merge: true
-  - put: windowsfs-online-release-version
-    params: {file: windowsfs-online-release-version/number}
-  - task: generate-github-release
-    input_mapping:
-      release: finalized-repo
-      version: windowsfs-online-release-version
-    file: ci/tasks/generate-github-release/task.yml
-  - task: generate-release-notes
-    file: ci/tasks/generate-release-notes/task.yml
-  - put: windowsfs-online-github-release
-    params:
-      commitish: generated-release/commitish
-      name: generated-release/name
-      tag: generated-release/version
-      body: generated-notes/release-notes
-      globs:
-      - finalized-release/windowsfs-*.tgz
+## ship
 
-- name: shipit-online-minor
+- name: shipit-major
+  serial: true
+  plan:
+    - in_parallel:
+        - get: all-kbs-list
+        - get: ci
+        - get: rootfs-metadata
+          passed: [generate-rootfs-metadata]
+        - get: windowsfs-online-release-master-2019          
+        - get: windowsfs-online-release-develop-2019
+          passed: [aioli-online-cats, aioli-online-smoke-test]
+        - get: windowsfs-offline-release-master-2019
+        - get: windowsfs-offline-release-develop-2019
+          passed: [sriracha-offline-cats, sriracha-offline-smoke-test]          
+        - get: windowsfs-online-release-version
+          params: {bump: major}
+    - task: generate-release-notes
+      file: ci/tasks/generate-release-notes/task.yml         
+    - in_parallel:
+        - do:
+          - task: finalize-release
+            file: ci/tasks/finalize-release/task.yml
+            input_mapping:
+              release: windowsfs-online-release-develop-2019
+              version: windowsfs-online-release-version
+            params:
+              RELEASE_NAME: windowsfs
+              AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+              AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+              CI_SKIP: true
+          - put: windowsfs-online-release-master-2019
+            params:
+              repository: finalized-release/release
+              tag: windowsfs-online-release-version/number
+              tag_prefix: v
+          - put: windowsfs-online-release-develop-2019
+            params:
+              repository: finalized-release/release
+              merge: true
+          - task: generate-github-release
+            file: ci/tasks/generate-github-release/task.yml
+            input_mapping:
+              release: finalized-repo
+              version: windowsfs-online-release-version
+            output_mapping:
+              generated-release: generated-online-release
+          - put: windowsfs-online-github-release
+            params:
+              commitish: generated-online-release/commitish
+              name: generated-online-release/name
+              tag: generated-online-release/version
+              body: generated-notes/release-notes
+              globs:
+                - finalized-release/windowsfs-*.tgz
+        - do:
+          - task: update-version-and-shas
+            file: ci/tasks/update-fs-release-version/task.yml
+            params:
+              FS_VERSION: windows2019fs
+            input_mapping:
+              windowsfs-release: windowsfs-offline-release-develop-2019
+              version: windowsfs-online-release-version
+          - put: windowsfs-offline-release-master-2019
+            params:
+              repository: windowsfs-release-updated-version
+              tag: windowsfs-online-release-version/version
+              tag_prefix: v
+          - put: windowsfs-offline-release-develop-2019
+            params:
+              repository: windowsfs-release-updated-version
+              merge: true
+          - task: generate-github-release
+            file: ci/tasks/generate-github-release/task.yml
+            input_mapping:
+              release: windowsfs-release-updated-version
+              version: windowsfs-online-release-version
+            output_mapping:
+              generated-release: generated-offline-release
+          - put: windowsfs-offline-github-release
+            params:
+              commitish: generated-offline-release/commitish
+              name: generated-offline-release/name
+              tag: generated-offline-release/version
+              body: generated-notes/release-notes
+    - put: windowsfs-online-release-version
+      params: {file: windowsfs-online-release-version/number}
+
+- name: shipit-minor
   serial: true
   plan:
   - in_parallel:
@@ -1062,51 +1089,86 @@ jobs:
     - get: ci
     - get: rootfs-metadata
       passed: [generate-rootfs-metadata]
+    - get: windowsfs-online-release-master-2019
     - get: windowsfs-online-release-develop-2019
       passed: [aioli-online-cats, aioli-online-smoke-test]
-    - get: windowsfs-online-release-master-2019
+    - get: windowsfs-offline-release-master-2019
+    - get: windowsfs-offline-release-develop-2019
+      passed: [sriracha-offline-cats, sriracha-offline-smoke-test]
     - get: windowsfs-online-release-version
       params: {bump: minor}
     - get: monthly-rollup
       trigger: true
-  - task: finalize-release
-    file: ci/tasks/finalize-release/task.yml
-    input_mapping:
-      release: windowsfs-online-release-develop-2019
-      version: windowsfs-online-release-version
-    params:
-      RELEASE_NAME: windowsfs
-      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
-      CI_SKIP: true
-  - put: windowsfs-online-release-master-2019
-    params:
-      repository: finalized-release/release
-      tag: windowsfs-online-release-version/number
-      tag_prefix: v
-  - put: windowsfs-online-release-develop-2019
-    params:
-      repository: finalized-release/release
-      merge: true
-  - put: windowsfs-online-release-version
-    params: {file: windowsfs-online-release-version/number}
-  - task: generate-github-release
-    input_mapping:
-      release: finalized-repo
-      version: windowsfs-online-release-version
-    file: ci/tasks/generate-github-release/task.yml
   - task: generate-release-notes
     file: ci/tasks/generate-release-notes/task.yml
-  - put: windowsfs-online-github-release
-    params:
-      commitish: generated-release/commitish
-      name: generated-release/name
-      tag: generated-release/version
-      body: generated-notes/release-notes
-      globs:
-      - finalized-release/windowsfs-*.tgz
+  - in_parallel:
+      - do:
+        - task: finalize-release
+          file: ci/tasks/finalize-release/task.yml
+          input_mapping:
+            release: windowsfs-online-release-develop-2019
+            version: windowsfs-online-release-version
+          params:
+            RELEASE_NAME: windowsfs
+            AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+            AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+            CI_SKIP: true
+        - put: windowsfs-online-release-master-2019
+          params:
+            repository: finalized-release/release
+            tag: windowsfs-online-release-version/number
+            tag_prefix: v
+        - put: windowsfs-online-release-develop-2019
+          params:
+            repository: finalized-release/release
+            merge: true
+        - task: generate-github-release
+          file: ci/tasks/generate-github-release/task.yml
+          input_mapping:
+            release: finalized-repo
+            version: windowsfs-online-release-version
+          output_mapping:
+            generated-release: generated-online-release
+        - put: windowsfs-online-github-release
+          params:
+            commitish: generated-online-release/commitish
+            name: generated-online-release/name
+            tag: generated-online-release/version
+            body: generated-notes/release-notes
+            globs:
+            - finalized-release/windowsfs-*.tgz
+      - do:
+        - task: update-version-and-shas
+          file: ci/tasks/update-fs-release-version/task.yml
+          input_mapping:
+            windowsfs-release: windowsfs-offline-release-develop-2019
+            version: windowsfs-online-release-version
+        - put: windowsfs-offline-release-master-2019
+          params:
+            repository: windowsfs-release-updated-version
+            tag: windowsfs-online-release-version/version
+            tag_prefix: v
+        - put: windowsfs-offline-release-develop-2019
+          params:
+            repository: windowsfs-release-updated-version
+            merge: true
+        - task: generate-github-release
+          file: ci/tasks/generate-github-release/task.yml
+          input_mapping:
+            release: windowsfs-release-updated-version
+            version: windowsfs-online-release-version
+          output_mapping:
+            generated-release: generated-offline-release
+        - put: windowsfs-offline-github-release
+          params:
+            commitish: generated-offline-release/commitish
+            name: generated-offline-release/name
+            tag: generated-offline-release/version
+            body: generated-notes/release-notes
+  - put: windowsfs-online-release-version
+    params: {file: windowsfs-online-release-version/number}
 
-- name: shipit-online-patch
+- name: shipit-patch
   serial: true
   plan:
   - in_parallel:
@@ -1114,179 +1176,79 @@ jobs:
     - get: ci
     - get: rootfs-metadata
       passed: [generate-rootfs-metadata]
+    - get: windowsfs-online-release-master-2019
     - get: windowsfs-online-release-develop-2019
       passed: [aioli-online-cats, aioli-online-smoke-test]
-    - get: windowsfs-online-release-master-2019
+    - get: windowsfs-offline-release-master-2019
+    - get: windowsfs-offline-release-develop-2019
+      passed: [sriracha-offline-cats, sriracha-offline-smoke-test]      
     - get: windowsfs-online-release-version
       params: {bump: patch}
-  - task: finalize-release
-    file: ci/tasks/finalize-release/task.yml
-    input_mapping:
-      release: windowsfs-online-release-develop-2019
-      version: windowsfs-online-release-version
-    params:
-      RELEASE_NAME: windowsfs
-      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
-      CI_SKIP: true
-  - put: windowsfs-online-release-master-2019
-    params:
-      repository: finalized-release/release
-      tag: windowsfs-online-release-version/number
-      tag_prefix: v
-  - put: windowsfs-online-release-develop-2019
-    params:
-      repository: finalized-release/release
-      merge: true
+  - task: generate-release-notes
+    file: ci/tasks/generate-release-notes/task.yml     
+  - in_parallel:
+      - do:
+        - task: finalize-release
+          file: ci/tasks/finalize-release/task.yml
+          input_mapping:
+            release: windowsfs-online-release-develop-2019
+            version: windowsfs-online-release-version
+          params:
+            RELEASE_NAME: windowsfs
+            AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
+            AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+            CI_SKIP: true
+        - put: windowsfs-online-release-master-2019
+          params:
+            repository: finalized-release/release
+            tag: windowsfs-online-release-version/number
+            tag_prefix: v
+        - put: windowsfs-online-release-develop-2019
+          params:
+            repository: finalized-release/release
+            merge: true
+        - task: generate-github-release
+          file: ci/tasks/generate-github-release/task.yml
+          input_mapping:
+            release: finalized-repo
+            version: windowsfs-online-release-version
+          output_mapping:
+            generated-release: generated-online-release
+        - put: windowsfs-online-github-release
+          params:
+            commitish: generated-online-release/commitish
+            name: generated-online-release/name
+            tag: generated-online-release/version
+            body: generated-notes/release-notes
+            globs:
+            - finalized-release/windowsfs-*.tgz
+      - do:
+        - task: update-version-and-shas
+          file: ci/tasks/update-fs-release-version/task.yml
+          input_mapping:
+            windowsfs-release: windowsfs-offline-release-develop-2019
+            version: windowsfs-online-release-version
+        - put: windowsfs-offline-release-master-2019
+          params:
+            repository: windowsfs-release-updated-version
+            tag: windowsfs-online-release-version/version
+            tag_prefix: v
+        - put: windowsfs-offline-release-develop-2019
+          params:
+            repository: windowsfs-release-updated-version
+            merge: true
+        - task: generate-github-release
+          file: ci/tasks/generate-github-release/task.yml
+          input_mapping:
+            release: windowsfs-release-updated-version
+            version: windowsfs-online-release-version
+          output_mapping:
+            generated-release: generated-offline-release
+        - put: windowsfs-offline-github-release
+          params:
+            commitish: generated-offline-release/commitish
+            name: generated-offline-release/name
+            tag: generated-offline-release/version
+            body: generated-notes/release-notes        
   - put: windowsfs-online-release-version
     params: {file: windowsfs-online-release-version/number}
-  - task: generate-github-release
-    input_mapping:
-      release: finalized-repo
-      version: windowsfs-online-release-version
-    file: ci/tasks/generate-github-release/task.yml
-  - task: generate-release-notes
-    file: ci/tasks/generate-release-notes/task.yml
-  - put: windowsfs-online-github-release
-    params:
-      commitish: generated-release/commitish
-      name: generated-release/name
-      tag: generated-release/version
-      body: generated-notes/release-notes
-      globs:
-      - finalized-release/windowsfs-*.tgz
-
-## ship offline
-- name: shipit-offline-major
-  serial: true
-  plan:
-  - in_parallel:
-    - get: all-kbs-list
-    - get: ci
-    - get: rootfs-metadata
-      passed: [generate-rootfs-metadata]
-    - get: windowsfs-offline-release-master-2019
-    - get: windowsfs-offline-release-develop-2019
-      passed: [sriracha-offline-cats, sriracha-offline-smoke-test]
-    - get: windowsfs-offline-release-version
-      params: {bump: major}
-  - task: update-version-and-shas
-    file: ci/tasks/update-fs-release-version/task.yml
-    params:
-      FS_VERSION: windows2019fs
-    input_mapping:
-      windowsfs-release: windowsfs-offline-release-develop-2019
-      version: windowsfs-offline-release-version
-  - put: windowsfs-offline-release-master-2019
-    params:
-      repository: windowsfs-release-updated-version
-      tag: windowsfs-offline-release-version/version
-      tag_prefix: v
-  - put: windowsfs-offline-release-develop-2019
-    params:
-      repository: windowsfs-release-updated-version
-      merge: true
-  - task: generate-github-release
-    input_mapping:
-      release: windowsfs-release-updated-version
-      version: windowsfs-offline-release-version
-    file: ci/tasks/generate-github-release/task.yml
-  - task: generate-release-notes
-    file: ci/tasks/generate-release-notes/task.yml
-  - put: windowsfs-offline-github-release
-    params:
-      commitish: generated-release/commitish
-      name: generated-release/name
-      tag: generated-release/version
-      body: generated-notes/release-notes
-  - put: windowsfs-offline-release-version
-    params:
-      file: windowsfs-offline-release-version/version
-
-- name: shipit-offline-minor
-  serial: true
-  plan:
-  - in_parallel:
-    - get: all-kbs-list
-    - get: ci
-    - get: rootfs-metadata
-      passed: [generate-rootfs-metadata]
-    - get: windowsfs-offline-release-master-2019
-    - get: windowsfs-offline-release-develop-2019
-      passed: [sriracha-offline-cats, sriracha-offline-smoke-test]
-    - get: windowsfs-offline-release-version
-      params: {bump: minor}
-  - task: update-version-and-shas
-    file: ci/tasks/update-fs-release-version/task.yml
-    input_mapping:
-      windowsfs-release: windowsfs-offline-release-develop-2019
-      version: windowsfs-offline-release-version
-  - put: windowsfs-offline-release-master-2019
-    params:
-      repository: windowsfs-release-updated-version
-      tag: windowsfs-offline-release-version/version
-      tag_prefix: v
-  - put: windowsfs-offline-release-develop-2019
-    params:
-      repository: windowsfs-release-updated-version
-      merge: true
-  - task: generate-github-release
-    input_mapping:
-      release: windowsfs-release-updated-version
-      version: windowsfs-offline-release-version
-    file: ci/tasks/generate-github-release/task.yml
-  - task: generate-release-notes
-    file: ci/tasks/generate-release-notes/task.yml
-  - put: windowsfs-offline-github-release
-    params:
-      commitish: generated-release/commitish
-      name: generated-release/name
-      tag: generated-release/version
-      body: generated-notes/release-notes
-  - put: windowsfs-offline-release-version
-    params:
-      file: windowsfs-offline-release-version/version
-
-- name: shipit-offline-patch
-  serial: true
-  plan:
-  - in_parallel:
-    - get: ci
-    - get: rootfs-metadata
-      passed: [generate-rootfs-metadata]
-    - get: windowsfs-offline-release-master-2019
-    - get: windowsfs-offline-release-develop-2019
-      passed: [sriracha-offline-cats, sriracha-offline-smoke-test]
-    - get: windowsfs-offline-release-version
-      params: {bump: patch}
-    - get: all-kbs-list
-  - task: update-version-and-shas
-    file: ci/tasks/update-fs-release-version/task.yml
-    input_mapping:
-      windowsfs-release: windowsfs-offline-release-develop-2019
-      version: windowsfs-offline-release-version
-  - put: windowsfs-offline-release-master-2019
-    params:
-      repository: windowsfs-release-updated-version
-      tag: windowsfs-offline-release-version/version
-      tag_prefix: v
-  - put: windowsfs-offline-release-develop-2019
-    params:
-      repository: windowsfs-release-updated-version
-      merge: true
-  - task: generate-github-release
-    input_mapping:
-      release: windowsfs-release-updated-version
-      version: windowsfs-offline-release-version
-    file: ci/tasks/generate-github-release/task.yml
-  - task: generate-release-notes
-    file: ci/tasks/generate-release-notes/task.yml
-  - put: windowsfs-offline-github-release
-    params:
-      commitish: generated-release/commitish
-      name: generated-release/name
-      tag: generated-release/version
-      body: generated-notes/release-notes
-  - put: windowsfs-offline-release-version
-    params:
-      file: windowsfs-offline-release-version/version
