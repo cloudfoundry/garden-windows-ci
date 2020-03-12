@@ -981,6 +981,10 @@ jobs:
     - get: image-version-2019
       passed: [aioli-online-cats, aioli-online-smoke-test, sriracha-offline-cats, sriracha-offline-smoke-test]
       trigger: true
+    - get: windowsfs-online-release-develop-2019
+      passed: [aioli-online-cats, aioli-online-smoke-test]
+    - get: windowsfs-offline-release-develop-2019
+      passed: [sriracha-offline-cats, sriracha-offline-smoke-test]
   - task: generate
     tags: [2019]
     file: ci/tasks/generate-rootfs-metadata/task.yml
@@ -1004,10 +1008,10 @@ jobs:
           passed: [generate-rootfs-metadata]
         - get: windowsfs-online-release-master-2019          
         - get: windowsfs-online-release-develop-2019
-          passed: [aioli-online-cats, aioli-online-smoke-test]
+          passed: [generate-rootfs-metadata]
         - get: windowsfs-offline-release-master-2019
         - get: windowsfs-offline-release-develop-2019
-          passed: [sriracha-offline-cats, sriracha-offline-smoke-test]          
+          passed: [generate-rootfs-metadata]
         - get: windowsfs-online-release-version
           params: {bump: major}
     - task: generate-release-notes
@@ -1091,10 +1095,10 @@ jobs:
       passed: [generate-rootfs-metadata]
     - get: windowsfs-online-release-master-2019
     - get: windowsfs-online-release-develop-2019
-      passed: [aioli-online-cats, aioli-online-smoke-test]
+      passed: [generate-rootfs-metadata]
     - get: windowsfs-offline-release-master-2019
     - get: windowsfs-offline-release-develop-2019
-      passed: [sriracha-offline-cats, sriracha-offline-smoke-test]
+      passed: [generate-rootfs-metadata]
     - get: windowsfs-online-release-version
       params: {bump: minor}
     - get: monthly-rollup
@@ -1178,10 +1182,10 @@ jobs:
       passed: [generate-rootfs-metadata]
     - get: windowsfs-online-release-master-2019
     - get: windowsfs-online-release-develop-2019
-      passed: [aioli-online-cats, aioli-online-smoke-test]
+      passed: [generate-rootfs-metadata]
     - get: windowsfs-offline-release-master-2019
     - get: windowsfs-offline-release-develop-2019
-      passed: [sriracha-offline-cats, sriracha-offline-smoke-test]      
+      passed: [generate-rootfs-metadata]
     - get: windowsfs-online-release-version
       params: {bump: patch}
   - task: generate-release-notes
