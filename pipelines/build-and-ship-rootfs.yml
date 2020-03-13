@@ -1006,7 +1006,7 @@ jobs:
         - get: ci
         - get: rootfs-metadata
           passed: [generate-rootfs-metadata]
-        - get: windowsfs-online-release-master-2019          
+        - get: windowsfs-online-release-master-2019
         - get: windowsfs-online-release-develop-2019
           passed: [generate-rootfs-metadata]
         - get: windowsfs-offline-release-master-2019
@@ -1015,7 +1015,7 @@ jobs:
         - get: windowsfs-online-release-version
           params: {bump: major}
     - task: generate-release-notes
-      file: ci/tasks/generate-release-notes/task.yml         
+      file: ci/tasks/generate-release-notes/task.yml
     - in_parallel:
         - do:
           - task: finalize-release
@@ -1082,13 +1082,13 @@ jobs:
               name: generated-offline-release/name
               tag: generated-offline-release/version
               body: generated-notes/release-notes
+    - put: windowsfs-online-release-version
+      params: {file: windowsfs-online-release-version/number}
     - task: send-release-slack-alert
       file: ci/tasks/send-release-slack-alert/task.yml
       params:
         CHANNEL: pcf-windows
         SLACK_URL: ((release-slack-url))
-    - put: windowsfs-online-release-version
-      params: {file: windowsfs-online-release-version/number}
 
 - name: shipit-minor
   serial: true
@@ -1174,13 +1174,13 @@ jobs:
             name: generated-offline-release/name
             tag: generated-offline-release/version
             body: generated-notes/release-notes
+  - put: windowsfs-online-release-version
+    params: {file: windowsfs-online-release-version/number}
   - task: send-release-slack-alert
     file: ci/tasks/send-release-slack-alert/task.yml
     params:
       CHANNEL: pcf-windows
       SLACK_URL: ((release-slack-url))
-  - put: windowsfs-online-release-version
-    params: {file: windowsfs-online-release-version/number}
 
 - name: shipit-patch
   serial: true
@@ -1199,7 +1199,7 @@ jobs:
     - get: windowsfs-online-release-version
       params: {bump: patch}
   - task: generate-release-notes
-    file: ci/tasks/generate-release-notes/task.yml     
+    file: ci/tasks/generate-release-notes/task.yml
   - in_parallel:
       - do:
         - task: finalize-release
@@ -1263,11 +1263,11 @@ jobs:
             commitish: generated-offline-release/commitish
             name: generated-offline-release/name
             tag: generated-offline-release/version
-            body: generated-notes/release-notes        
+            body: generated-notes/release-notes
+  - put: windowsfs-online-release-version
+    params: {file: windowsfs-online-release-version/number}
   - task: send-release-slack-alert
     file: ci/tasks/send-release-slack-alert/task.yml
     params:
       CHANNEL: pcf-windows
       SLACK_URL: ((release-slack-url))
-  - put: windowsfs-online-release-version
-    params: {file: windowsfs-online-release-version/number}
