@@ -1084,11 +1084,12 @@ jobs:
               body: generated-notes/release-notes
     - put: windowsfs-online-release-version
       params: {file: windowsfs-online-release-version/number}
-    - task: send-release-slack-alert
-      file: ci/tasks/send-release-slack-alert/task.yml
-      params:
-        CHANNEL: pcf-windows
-        SLACK_URL: ((release-slack-url))
+    - try:
+        task: send-release-slack-alert
+        file: ci/tasks/send-release-slack-alert/task.yml
+        params:
+          CHANNEL: pcf-windows
+          SLACK_URL: ((release-slack-url))
 
 - name: shipit-minor
   serial: true
@@ -1176,11 +1177,12 @@ jobs:
             body: generated-notes/release-notes
   - put: windowsfs-online-release-version
     params: {file: windowsfs-online-release-version/number}
-  - task: send-release-slack-alert
-    file: ci/tasks/send-release-slack-alert/task.yml
-    params:
-      CHANNEL: pcf-windows
-      SLACK_URL: ((release-slack-url))
+  - try:
+      task: send-release-slack-alert
+      file: ci/tasks/send-release-slack-alert/task.yml
+      params:
+        CHANNEL: pcf-windows
+        SLACK_URL: ((release-slack-url))
 
 - name: shipit-patch
   serial: true
@@ -1266,8 +1268,9 @@ jobs:
             body: generated-notes/release-notes
   - put: windowsfs-online-release-version
     params: {file: windowsfs-online-release-version/number}
-  - task: send-release-slack-alert
-    file: ci/tasks/send-release-slack-alert/task.yml
-    params:
-      CHANNEL: pcf-windows
-      SLACK_URL: ((release-slack-url))
+  - try:
+      task: send-release-slack-alert
+      file: ci/tasks/send-release-slack-alert/task.yml
+      params:
+        CHANNEL: pcf-windows
+        SLACK_URL: ((release-slack-url))
