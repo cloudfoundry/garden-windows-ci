@@ -30,10 +30,11 @@ bold_white="\[\033[1;37m\]"
 yellow="\e[1;33m"
 no_color="\[\033[0m\]"
 
-export GIT_PS1_SHOWSTASHSTATE=1
-export GIT_PS1_SHOWUNTRACKEDFILES=1
-export GIT_PS1_SHOWDIRTYSTATE=1
-export GIT_PS1_SHOWUPSTREAM=1
+# Uncomment these if more info in the git prompt is desired
+# export GIT_PS1_SHOWSTASHSTATE=1
+# export GIT_PS1_SHOWUNTRACKEDFILES=1
+# export GIT_PS1_SHOWDIRTYSTATE=1
+# export GIT_PS1_SHOWUPSTREAM=1
 source $HOME/.git-prompt.sh
 if type __git_ps1 > /dev/null 2>&1; then
     export PS1="${green}\h${no_color}:${blue}\w${no_color}${green}\$(__git_ps1)${no_color} ${no_color}${bold_white}\$(__git_duet_ps1)${no_color} ${cyan}\$(__bosh_ps1)${no_color}${yellow}\$(__cf_ps1)${no_color}\n$ "
