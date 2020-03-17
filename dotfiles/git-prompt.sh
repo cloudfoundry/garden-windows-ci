@@ -1,4 +1,4 @@
-# https://github.com/git/git/blob/b3622a4ee94e4916cd05e6d96e41eeb36b941182/contrib/completion/git-prompt.sh
+# https://github.com/git/git/blob/6c85aac65fb455af85745130ce35ddae4678db84/contrib/completion/git-prompt.sh
 
 # bash/zsh git prompt support
 #
@@ -280,11 +280,43 @@ __git_ps1_colorize_gitstring ()
 	r="$c_clear$r"
 }
 
+# Helper function to read the first line of a file into a variable.
+# __git_eread requires 2 arguments, the file path and the name of the
+# variable, in that order.
 __git_eread ()
 {
-	local f="$1"
-	shift
-	test -r "$f" && read "$@" <"$f"
+	test -r "$1" && IFS=$'\r\n' read "$2" <"$1"
+}
+
+# see if a cherry-pick or revert is in progress, if the user has committed a
+# conflict resolution with 'git commit' in the middle of a sequence of picks or
+# reverts then CHERRY_PICK_HEAD/REVERT_HEAD will not exist so we have to read
+# the todo file.
+__git_sequencer_status ()
+{
+	local todo
+	if test -f "$g/CHERRY_PICK_HEAD"
+	then
+		r="|CHERRY-PICKING"
+		return 0;
+	elif test -f "$g/REVERT_HEAD"
+	then
+		r="|REVERTING"
+		return 0;
+	elif __git_eread "$g/sequencer/todo" todo
+	then
+		case "$todo" in
+		p[\ \	]|pick[\ \	]*)
+			r="|CHERRY-PICKING"
+			return 0
+		;;
+		revert[\ \	]*)
+			r="|REVERTING"
+			return 0
+		;;
+		esac
+	fi
+	return 1
 }
 
 # __git_ps1 accepts 0 or 1 arguments (i.e., format string)
@@ -399,11 +431,7 @@ __git_ps1 ()
 		__git_eread "$g/rebase-merge/head-name" b
 		__git_eread "$g/rebase-merge/msgnum" step
 		__git_eread "$g/rebase-merge/end" total
-		if [ -f "$g/rebase-merge/interactive" ]; then
-			r="|REBASE-i"
-		else
-			r="|REBASE-m"
-		fi
+		r="|REBASE"
 	else
 		if [ -d "$g/rebase-apply" ]; then
 			__git_eread "$g/rebase-apply/next" step
@@ -418,10 +446,8 @@ __git_ps1 ()
 			fi
 		elif [ -f "$g/MERGE_HEAD" ]; then
 			r="|MERGING"
-		elif [ -f "$g/CHERRY_PICK_HEAD" ]; then
-			r="|CHERRY-PICKING"
-		elif [ -f "$g/REVERT_HEAD" ]; then
-			r="|REVERTING"
+		elif __git_sequencer_status; then
+			:
 		elif [ -f "$g/BISECT_LOG" ]; then
 			r="|BISECTING"
 		fi
