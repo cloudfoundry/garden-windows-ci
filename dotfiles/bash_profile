@@ -153,7 +153,7 @@ function load-key() {
   fi
 
   if [[ `lpass status` != *"$NAME@pivotal.io"* ]]; then
-    lpass login "$NAME@pivotal.io"
+    LPASS_DISABLE_PINENTRY=1 lpass login "$NAME@pivotal.io"
   fi
 
   lpass status 2>&1 > /dev/null
