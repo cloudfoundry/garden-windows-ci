@@ -3,9 +3,9 @@
   path: /releases/name=windows-tools?
   value:
     name: "windows-tools"
-    version: "59"
-    url: "https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=59"
-    sha1: "3bf60f9c1a54f399f050dda7ab63843e465e4948"
+    version: "65"
+    url: "https://bosh.io/d/github.com/cloudfoundry-incubator/windows-tools-release?v=65"
+    sha1: "b019267856e094acf1af5403154381ef27d59ad7"
 
 - type: replace
   path: /instance_groups/name=windows-worker/jobs/-
@@ -35,4 +35,10 @@
   path: /instance_groups/name=windows-worker/jobs/-
   value:
     name: processhacker
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: cmake
     release: windows-tools
