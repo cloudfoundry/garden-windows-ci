@@ -33,8 +33,6 @@ groups:
   - update-windowsfs-offline-2019
   - sriracha-offline-cats
   - sriracha-offline-smoke-test
-  - test-create-release-windows
-  - test-create-release-linux
   - bump-go-offline
   - bump-hydrator-offline
   - generate-rootfs-metadata
@@ -708,9 +706,9 @@ jobs:
   - in_parallel:
     - get: ci
     - get: image-version-2019
-      passed: [test-create-release-windows, test-create-release-linux]
+      passed: [update-windowsfs-offline-2019]
     - get: windowsfs-offline-release-develop-2019
-      passed: [test-create-release-windows, test-create-release-linux]
+      passed: [update-windowsfs-offline-2019]
       trigger: true
     - get: cf-acceptance-tests
     - get: cf-deployment-concourse-tasks
@@ -795,9 +793,9 @@ jobs:
   - in_parallel:
     - get: ci
     - get: image-version-2019
-      passed: [test-create-release-windows, test-create-release-linux]
+      passed: [update-windowsfs-offline-2019]
     - get: windowsfs-offline-release-develop-2019
-      passed: [test-create-release-windows, test-create-release-linux]
+      passed: [update-windowsfs-offline-2019]
       trigger: true
     - get: winc-release-master
       trigger: true
@@ -864,54 +862,6 @@ jobs:
         BOSH_ENVIRONMENT: ((SRIRACHA_BOSH_ENVIRONMENT))
         JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
         JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
-
-- name: test-create-release-windows
-  serial: true
-  plan:
-  - in_parallel:
-    - get: image-version-2019
-      passed: [update-windowsfs-offline-2019]
-    - get: ci
-    - get: windowsfs-offline-release-develop-2019
-      passed: [update-windowsfs-offline-2019]
-      trigger: true
-  - in_parallel:
-    - task: create-dev-release
-      tags: ["2019"]
-      file: ci/tasks/create-fs-release-windows/task.yml
-      input_mapping:
-        windowsfs-release: windowsfs-offline-release-develop-2019
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-    - task: run-ginkgo-exe
-      tags: ["2019"]
-      file: ci/tasks/ginkgo-from-gopath-windows/task.yml
-      input_mapping: { repo: windowsfs-offline-release-develop-2019}
-      params:
-        TEST_PATH: src/create
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-
-- name: test-create-release-linux
-  serial: true
-  plan:
-  - in_parallel:
-    - get: image-version-2019
-      passed: [update-windowsfs-offline-2019]
-    - get: ci
-    - get: windowsfs-offline-release-develop-2019
-      passed: [update-windowsfs-offline-2019]
-      trigger: true
-  - in_parallel:
-    - task: create-dev-release
-      file: ci/tasks/create-fs-release-linux/task.yml
-      input_mapping:
-        windowsfs-release: windowsfs-offline-release-develop-2019
-    - task: run-ginkgo
-      file: ci/tasks/ginkgo-from-gopath-linux/task.yml
-      input_mapping: { repo: windowsfs-offline-release-develop-2019}
-      params:
-        TEST_PATH: src/create
-
 
 # ----- generate release notes
 
