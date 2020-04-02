@@ -3,5 +3,5 @@
 set -e
 
 pushd windowsfs-release
-  ./scripts/create-release --tarball ../release-tarball/release.tgz
+  ./scripts/create-release --tarball ../release-tarball/release.tgz --timestamp-version
 popd
