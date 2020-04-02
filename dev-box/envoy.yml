@@ -34,8 +34,6 @@ instance_groups:
   jobs:
   - name: bazel
     release: windows-tools
-  - name: cmake
-    release: windows-tools
   - name: diego-ssh
     properties:
       diego_ssh:
@@ -44,21 +42,17 @@ instance_groups:
     release: windows-tools
   - name: git
     release: windows-tools
-  - name: load-powershell-env
-    release: windows-tools
-  - name: make
+  # - name: load-powershell-env
+  #   release: windows-tools
+  - name: docker
     release: windows-tools
   - name: msys2
-    release: windows-tools
-  - name: ninja
     release: windows-tools
   - name: python3
     release: windows-tools
   - name: smb-share
     release: windows-tools
   - name: vs_buildtools
-    release: windows-tools
-  - name: vs2019
     release: windows-tools
   - name: llvm
     release: windows-tools
