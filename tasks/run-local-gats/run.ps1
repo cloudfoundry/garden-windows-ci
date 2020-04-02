@@ -121,8 +121,9 @@ push-location garden-runc-release
   $env:WINC_BINARY="$wincPath"
   $env:GROOT_BINARY="$grootBinary"
   $env:GROOT_IMAGE_STORE="$grootImageStore"
-  Remove-Item env:GOPATH
+
   Push-Location src/garden-integration-tests
+    go mod vendor
     ginkgo -randomizeSuites -noisyPendings=false
   Pop-Location
 Pop-Location
