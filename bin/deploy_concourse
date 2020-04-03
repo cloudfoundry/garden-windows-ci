@@ -61,7 +61,7 @@ bosh -d concourse deploy ${CONCOURSE_DEPLOYMENT}/cluster/concourse.yml \
   -v windows_worker_tag=2019 \
   --no-redact
 
- # mulgore is our vsphere ("longrunning") environment.
+# mulgore is our vsphere ("longrunning") environment.
 
 bosh_target "mulgore"
 
