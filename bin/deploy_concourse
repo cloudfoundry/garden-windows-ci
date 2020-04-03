@@ -63,20 +63,20 @@ bosh -d concourse deploy ${CONCOURSE_DEPLOYMENT}/cluster/concourse.yml \
 
  # mulgore is our vsphere ("longrunning") environment.
 
- bosh_target "mulgore"
+bosh_target "mulgore"
 
- bosh -d concourse-workers deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-worker.yml \
-   -v deployment_name=concourse-workers \
-   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
-   -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/storage-driver.yml \
-   -o ${GARDEN_WINDOWS_CI}/operations/concourse/scale-linux-worker.yml \
-   -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
-   -l <(lpass show --notes Shared-Greenhouse/ci-creds) \
-   -v azs=[z1] \
-   -v external_worker_network_name=default \
-   -v storage_driver=overlay \
-   -v worker_tags=[longrunning] \
-   -v worker_ephemeral_disk=100GB_ephemeral_disk \
-   -v worker_vm_type=small-highmem \
-   -v worker_instances=1 \
-   --no-redact
+bosh -d concourse-workers deploy ${CONCOURSE_DEPLOYMENT}/cluster/external-worker.yml \
+  -v deployment_name=concourse-workers \
+  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/worker-ephemeral-disk.yml \
+  -o ${CONCOURSE_DEPLOYMENT}/cluster/operations/storage-driver.yml \
+  -o ${GARDEN_WINDOWS_CI}/operations/concourse/scale-linux-worker.yml \
+  -l ${CONCOURSE_DEPLOYMENT}/versions.yml \
+  -l <(lpass show --notes Shared-Greenhouse/ci-creds) \
+  -v azs=[z1] \
+  -v external_worker_network_name=default \
+  -v storage_driver=overlay \
+  -v worker_tags=[longrunning] \
+  -v worker_ephemeral_disk=100GB_ephemeral_disk \
+  -v worker_vm_type=small-highmem \
+  -v worker_instances=1 \
+  --no-redact
