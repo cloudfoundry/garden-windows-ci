@@ -105,15 +105,16 @@ jobs:
     params:
       BOSH_DEPLOYMENT: concourse
       BOSH_CREDENTIALS: ((spitfire-bosh-credentials))
-  - put: worker-deployment
-    inputs:
-    - windows-2019-stemcell
-    - artifacts
-    params:
-      source_file: artifacts/source-file.yml
-      manifest: artifacts/manifest.yml
-      stemcells:
-        - windows-2019-stemcell/stemcell.tgz
+  - try:
+      put: worker-deployment
+      inputs:
+      - windows-2019-stemcell
+      - artifacts
+      params:
+        source_file: artifacts/source-file.yml
+        manifest: artifacts/manifest.yml
+        stemcells:
+          - windows-2019-stemcell/stemcell.tgz
 
 - name: update-longrunning-worker-deployment
   serial: true
@@ -134,13 +135,14 @@ jobs:
     params:
       BOSH_DEPLOYMENT: concourse-workers
       BOSH_CREDENTIALS: ((mulgore-bosh-credentials))
-  - put: longrunning-worker-deployment
-    tags: [longrunning]
-    inputs:
-      - stemcell
-      - artifacts
-    params:
-      source_file: artifacts/source-file.yml
-      manifest: artifacts/manifest.yml
-      stemcells:
-        - stemcell/stemcell.tgz
+  - try:
+      put: longrunning-worker-deployment
+      tags: [longrunning]
+      inputs:
+        - stemcell
+        - artifacts
+      params:
+        source_file: artifacts/source-file.yml
+        manifest: artifacts/manifest.yml
+        stemcells:
+          - stemcell/stemcell.tgz
