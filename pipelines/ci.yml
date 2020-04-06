@@ -30,6 +30,11 @@ resources:
   source:
     name: bosh-google-kvm-windows2019-go_agent
 
+- name: xenial-stemcell
+  type: bosh-io-stemcell
+  source:
+    name: bosh-vsphere-esxi-ubuntu-xenial-go_agent
+
 - name: windows-tools-release
   type: bosh-io-release
   source:
@@ -46,6 +51,11 @@ resources:
     repository: concourse/concourse-bosh-release
 
 - name: worker-deployment
+  type: bosh-deployment
+  source:
+    skip_check: true
+
+- name: longrunning-worker-deployment
   type: bosh-deployment
   source:
     skip_check: true
@@ -72,14 +82,16 @@ jobs:
 
 - name: update-windows-2019-deployment
   serial: true
+  serial_groups: [ deploy ]
   plan:
   - in_parallel:
     - get: ci
-    - get: concourse-release
-      params: {tarball: false}
+    - get: garden-windows-environments
     - get: windows-2019-stemcell
       trigger: true
-    - get: garden-windows-environments
+    - get: concourse-release
+      params: {tarball: false}
+      trigger: true
     - get: windows-tools-release
       params: {tarball: false}
       trigger: true
@@ -103,3 +115,30 @@ jobs:
       stemcells:
         - windows-2019-stemcell/stemcell.tgz
 
+- name: update-longrunning-worker-deployment
+  serial: true
+  serial_groups: [ deploy ]
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: garden-windows-environments
+    - get: stemcell
+      resource: xenial-stemcell
+    - get: concourse-release
+      params: {tarball: false}
+      trigger: true
+  - task: update-longrunning-worker
+    file: ci/tasks/update-longrunning-worker-manifest/task.yml
+    tags: [longrunning]
+    params:
+      BOSH_DEPLOYMENT: concourse-workers
+      BOSH_CREDENTIALS: ((mulgore-bosh-credentials))
+  - put: longrunning-worker-deployment
+    inputs:
+      - stemcell
+      - artifacts
+    params:
+      source_file: artifacts/source-file.yml
+      manifest: artifacts/manifest.yml
+      stemcells:
+        - stemcell/stemcell.tgz
