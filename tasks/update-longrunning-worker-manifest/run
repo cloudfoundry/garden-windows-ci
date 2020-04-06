@@ -5,7 +5,7 @@ set -eu
 ops="
 ---
 - type: replace
-  path: /stemcells/alias=windows/version
+  path: /stemcells/alias=xenial/version
   value: "$(< stemcell/version)"
 
 - type: replace
