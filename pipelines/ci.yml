@@ -125,6 +125,7 @@ jobs:
     - get: stemcell
       resource: xenial-stemcell
     - get: concourse-release
+      passed: [update-windows-2019-deployment]
       params: {tarball: false}
       trigger: true
   - task: update-longrunning-worker
