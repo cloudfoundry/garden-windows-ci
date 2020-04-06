@@ -17,6 +17,8 @@ ops="
     version: "$(< concourse-release/version)"
 "
 
+echo "$ops"
+
 eval "$(bbl --state-dir=garden-windows-environments/mulgore print-env)"
 bosh -d ${BOSH_DEPLOYMENT} manifest > artifacts/manifest.yml.OLD
 bosh int artifacts/manifest.yml.OLD -o <(echo "${ops}") > artifacts/manifest.yml
