@@ -273,9 +273,9 @@ fly-fluent-bit-windows () {
     -l<(lpass show --notes docker-creds)
 }
 
-fly-build-and-ship() {
+fly-rootfs() {
   [ "$1" == "-h" ] && echo "Push rootfs pipeline to concourse" && return
-  fly -t garden-windows sp -p build-and-ship-rootfs -c $HOME/workspace/garden-windows-ci/pipelines/build-and-ship-rootfs.yml \
+  fly -t garden-windows sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
     -l <(_env_creds_yml aioli) \
     -l<(lpass show --notes aws-iam-access-keys docker-creds garden-windows-dev-service-account.json \
     azure-smb-share-creds github-deploy-keys github-deploy-keys-2 github-access-tokens tracker-api-token sriracha-creds ci-creds)
