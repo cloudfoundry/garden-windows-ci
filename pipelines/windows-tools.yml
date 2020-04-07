@@ -1,5 +1,29 @@
 groups:
-- name: main
+- name: filelock
+  jobs:
+    - test-filelock
+
+- name: hwc
+  jobs:
+    - test-hwc
+    - build-and-release-hwc
+
+- name: hydrator
+  jobs:
+    - test-hydrator
+    - merge-hydrator-develop-to-master
+
+- name: tar
+  jobs:
+    - bump-submodules-tar
+    - build-tar
+    - bosh-agent-update-tar
+
+- name: web-config-buildpack
+  jobs:
+    - unit-and-integration-tests
+
+- name: windows-tools
   jobs:
   - bump-go
   - create-release
@@ -31,6 +55,117 @@ resources:
   source:
     uri: https://github.com/bosh-packages/golang-release.git
     tag_filter: v*
+
+- name: web-config-buildpack
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry-community/web-config-transform-buildpack.git
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    git_config:
+      - name: user.email
+        value: "pivotal-netgarden-eng@pivotal.io"
+      - name: user.name
+        value: "Greenhouse CI"
+
+- name: filelock
+  type: git
+  source:
+    branch: master
+    uri: http://github.com/cloudfoundry/filelock.git
+
+- name: hwc-develop
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry/hwc.git
+
+- name: hwc-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/hwc.git
+    private_key: {{CLOUDFOUNDRYINCUBATOR_HWC_DEPLOY_KEY}}
+
+- name: hwc-release
+  type: github-release
+  source:
+    user: cloudfoundry
+    repository: hwc
+    access_token: {{GREENHOUSE_CI_ACCESS_TOKEN}}
+
+- name: hwc-version
+  type: semver
+  source:
+    bucket: hwc-release
+    key: versions/hwc-version
+    access_key_id: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
+    secret_access_key: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+    initial_version: "1.0.0"
+
+- name: s3-bucket
+  type: s3
+  source:
+    bucket: bosh-windows-dependencies
+    regexp: tar-(.*).exe
+    access_key_id: {{BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID}}
+    secret_access_key: {{BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY}}
+
+- name: bsdtar
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/bsdtar.git
+    private_key: {{CLOUDFOUNDRY_BSDTAR_DEPLOY_KEY}}
+
+- name: libarchive
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/libarchive/libarchive.git
+    tag_filter: v*
+
+- name: zlib
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/madler/zlib.git
+    tag_filter: v*
+
+- name: hydrator-develop
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/hydrator.git
+    private_key: ((CLOUDFOUNDRY_HYDRATOR_DEPLOY_KEY))
+
+- name: hydrator-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/hydrator.git
+    private_key: ((CLOUDFOUNDRY_HYDRATOR_DEPLOY_KEY))
+
+- name: winc
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/winc.git
+    private_key: {{CLOUDFOUNDRYINCUBATOR_WINC_DEPLOY_KEY}}
+
+- name: groot-windows
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/groot-windows.git
+    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
+
+- name: diff-exporter
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
+    private_key: {{CLOUDFOUNDRYINCUBATOR_DIFF_EXPORTER_DEPLOY_KEY}}
 
 jobs:
 - name: bump-go
@@ -73,3 +208,213 @@ jobs:
     params:
       name: github-release-info/name
       tag: github-release-info/version
+
+- name: unit-and-integration-tests
+  plan:
+    - in_parallel:
+        - get: ci
+        - get: web-config-buildpack
+          trigger: true
+    - task: run-unit-and-integration-tests
+      file: ci/tasks/test-web-config-buildpack/task.yml
+
+- name: test-filelock
+  serial: true
+  plan:
+    - in_parallel:
+        - get: ci
+        - get: filelock
+          trigger: true
+    - in_parallel:
+        - task: test-linux
+          input_mapping: { repo: filelock }
+          file: ci/tasks/ginkgo-to-gopath-linux/task.yml
+          params:
+            IMPORT_PATH: "code.cloudfoundry.org/filelock"
+        - task: test-windows
+          input_mapping: { repo: filelock }
+          file: ci/tasks/ginkgo-to-gopath-windows/task.yml
+          params:
+            IMPORT_PATH: "code.cloudfoundry.org/filelock"
+            EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+          tags: ["2019"]
+
+- name: test-hwc
+  serial: true
+  plan:
+    - in_parallel:
+        - get: ci
+        - get: hwc-develop
+          trigger: true
+        - get: hwc-master
+    - task: test-hwc
+      input_mapping: { hwc: hwc-develop }
+      file: ci/tasks/test-hwc/task.yml
+      tags: ["2019"]
+    - task: merge-develop-to-master
+      input_mapping: { from-repo: hwc-develop, to-repo: hwc-master }
+      file: ci/tasks/merge-repo/task.yml
+      params: { FROM_BRANCH: develop }
+    - put: hwc-master
+      params: { repository: merged-repo/to-repo }
+
+- name: build-and-release-hwc
+  serial: true
+  plan:
+    - in_parallel:
+        - get: ci
+        - get: hwc
+          resource: hwc-master
+          passed: [test-hwc]
+        - get: hwc-version
+    - task: build-hwc
+      file: ci/tasks/build-hwc/task.yml
+    - put: hwc-version
+      params: {bump: major}
+    - put: hwc-release
+      params:
+        name: hwc-version/number
+        tag: hwc-version/number
+        globs:
+          - hwc-rel/hwc.exe
+
+- name: bump-submodules-tar
+  serial: true
+  plan:
+    - in_parallel:
+        - get: ci
+        - get: bsdtar
+        - get: libarchive
+          trigger: true
+        - get: zlib
+          trigger: true
+    - task: bump-libarchive
+      file: ci/tasks/bump-submodule/task.yml
+      params:
+        SUBMODULE: "libarchive"
+      input_mapping:
+        source-repo: bsdtar
+        module-repo: libarchive
+      output_mapping:
+        bumped-repo: bumped-libarchive
+    - task: bump-zlib
+      file: ci/tasks/bump-submodule/task.yml
+      params:
+        SUBMODULE: "zlib"
+      input_mapping:
+        source-repo: bumped-libarchive
+        module-repo: zlib
+      output_mapping:
+        bumped-repo: bumped-zlib
+    - put: bsdtar
+      params:
+        repository: bumped-zlib
+        rebase: true
+
+- name: build-tar
+  serial: true
+  plan:
+    - in_parallel:
+        - get: ci
+        - get: bsdtar
+          trigger: true
+    - task: build-tar
+      file: ci/tasks/build-tar/task.yml
+      tags: ["2019"]
+    - put: s3-bucket
+      params:
+        file: tar-output/tar-*.exe
+
+- name: bosh-agent-update-tar
+  serial: true
+  plan:
+    - in_parallel:
+        - get: s3-bucket
+          trigger: true
+          passed: [build-tar]
+    - task: create-tracker-task
+      params:
+        TOKEN: {{TRACKER_GITBOT_TOKEN}}
+        PROJECT_ID: {{BOSH_WINDOWS_PROJECT_ID}}
+      config:
+        platform: linux
+        image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
+        run:
+          path: /bin/bash
+          args:
+            - -c
+            - |
+              curl -f -X POST -H "X-TrackerToken: $TOKEN" -H "Content-Type: application/json" -d '{"name":"New Build of Tar available!", "description": "A new build of tar.exe is available at https://garden-windows.ci.cf-app.com/teams/main/pipelines/tar. An update should be made to https://github.com/cloudfoundry/bosh-agent."}' "https://www.pivotaltracker.com/services/v5/projects/$PROJECT_ID/stories"
+
+- name: test-hydrator
+  serial: true
+  plan:
+    - in_parallel:
+        - get: ci
+        - get: hydrator
+          resource: hydrator-develop
+          trigger: true
+        - get: winc
+          trigger: true
+        - get: groot-windows
+          trigger: true
+        - get: diff-exporter
+          trigger: true
+    - in_parallel:
+        - task: build-winc
+          tags: ["2019"]
+          file: ci/tasks/build-binary/task.yml
+          input_mapping:
+            repo: winc
+          output_mapping:
+            binary-output: winc-binary
+          params:
+            EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+            IMPORT_PATH: "code.cloudfoundry.org/winc"
+            PACKAGE: "./cmd/winc"
+        - task: build-groot
+          file: ci/tasks/build-groot/task.yml
+          params:
+            EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+          tags: ["2019"]
+        - task: build-diff-exporter
+          tags: ["2019"]
+          file: ci/tasks/build-binary/task.yml
+          input_mapping:
+            repo: diff-exporter
+          output_mapping:
+            binary-output: diff-exporter-binary
+          params:
+            EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+            PACKAGE: "."
+            IMPORT_PATH: "code.cloudfoundry.org/diff-exporter"
+            BINARY_NAME: "diff-exporter.exe"
+    - in_parallel:
+        - task: test-hydrator-linux
+          file: ci/tasks/test-hydrator-linux/task.yml
+          params:
+            IGNORE_PACKAGES: ""
+        - task: test-hydrator-windows
+          tags: ["2019"]
+          file: ci/tasks/test-hydrator-windows/task.yml
+          params:
+            EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+            NODES: 2
+            IMAGE_TAG: "2019"
+            IMAGE_NAME: "cloudfoundry/windows2016fs"
+
+- name: merge-hydrator-develop-to-master
+  serial: true
+  plan:
+    - in_parallel:
+        - get: hydrator-develop
+          passed: [test-hydrator]
+          trigger: true
+        - get: hydrator-master
+        - get: ci
+    - task: merge-develop-to-master
+      input_mapping: { from-repo: hydrator-develop, to-repo: hydrator-master}
+      file: ci/tasks/merge-repo/task.yml
+      params: { FROM_BRANCH: develop }
+    - put: hydrator-master
+      params: { repository: merged-repo/to-repo }

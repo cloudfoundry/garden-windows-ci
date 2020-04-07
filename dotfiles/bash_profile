@@ -224,10 +224,6 @@ grdp() {
 }
 
 # Set Pipelines
-alias fly-hwc-exe="fly -t garden-windows sp -p hwc-exe -c $HOME/workspace/garden-windows-ci/pipelines/hwc-exe.yml -l<(lpass show --notes -G 'github-deploy-keys' 'github-access-tokens' 'aws-iam-access-keys' 'github-access-tokens')"
-alias fly-filelock="fly -t garden-windows sp -p filelock -c $HOME/workspace/garden-windows-ci/pipelines/filelock.yml"
-alias fly-tar="fly -t garden-windows sp -p tar -c $HOME/workspace/garden-windows-ci/pipelines/tar.yml -l<(lpass show --notes -G github-deploy-keys pesto-secrets github-access-tokens aws-iam-access-keys github-access-tokens tracker-api-token)"
-
 fly-envoy-nginx() {
   [ "$1" == "-h" ] && echo "Push envoy-nginx pipeline to concourse" && return
   fly -t garden-windows sp \
@@ -238,17 +234,10 @@ fly-envoy-nginx() {
     'aws-iam-access-keys' 'github-access-tokens' 'garden-windows-dev-service-account.json' )
 }
 
-fly-hydrator () {
-  [ "$1" == "-h" ] && echo "Push hydrator pipeline to concourse" && return
-  fly -t garden-windows sp -p hydrator -c $HOME/workspace/garden-windows-ci/pipelines/hydrator.yml \
-    -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 \
-    github-deploy-keys-3 aws-iam-access-keys github-access-tokens)
-}
-
 fly-windows-tools () {
   [ "$1" == "-h" ] && echo "Push windows-tools pipeline to concourse" && return
   fly -t garden-windows sp -p windows-tools -c $HOME/workspace/garden-windows-ci/pipelines/windows-tools.yml \
-    -l<(lpass show --notes github-access-tokens github-deploy-keys aws-iam-access-keys)
+    -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 github-access-tokens aws-iam-access-keys tracker-api-token)
 }
 
 fly-winc () {
@@ -267,12 +256,6 @@ fly-longrunning () {
     github-access-tokens spitfire-service-account.json datadog-secrets ci-cell-admin-password)
 }
 
-fly-fluent-bit-windows () {
-  [ "$1" == "-h" ] && echo "Push fluent-bit-windows pipeline to concourse" && return
-  fly -t garden-windows sp -p fluent-bit-windows -c $HOME/workspace/garden-windows-ci/pipelines/fluent-bit-windows.yml \
-    -l<(lpass show --notes docker-creds)
-}
-
 fly-rootfs() {
   [ "$1" == "-h" ] && echo "Push rootfs pipeline to concourse" && return
   fly -t garden-windows sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
@@ -285,12 +268,6 @@ fly-ci () {
   [ "$1" == "-h" ] && echo "Push ci pipeline to concourse" && return
   fly -t garden-windows sp -p ci -c $HOME/workspace/garden-windows-ci/pipelines/ci.yml \
   -l<(lpass show --notes ci-creds github-deploy-keys )
-}
-
-fly-web-config-buildpack() {
-  [ "$1" == "-h" ] && echo "Push web config buildpack pipeline to concourse" && return
-  fly -t garden-windows sp -p web-config-buildpack -c $HOME/workspace/garden-windows-ci/pipelines/web-config-buildpack.yml \
-  -l<(lpass show --notes 'github-deploy-keys')
 }
 
 concourse-logs () {
