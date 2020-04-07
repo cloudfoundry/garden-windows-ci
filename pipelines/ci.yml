@@ -4,6 +4,11 @@ resource_types:
   source:
     repository: cloudfoundry/bosh-deployment-resource
 
+- name: metalink-repository
+  type: docker-image
+  source:
+    repository: dpb587/metalink-repository-resource
+
 resources:
 - name: ci
   type: git
@@ -66,6 +71,28 @@ resources:
     uri: git@github.com:pivotal/garden-windows-environments
     branch: master
     private_key: ((GREENHOUSE-CI_SSH_KEY))
+
+- name: cf
+  type: cf
+  source:
+    api: https://api.run.pivotal.io
+    organization: garden-windows
+    space: topic-bots
+    username: ((cf-username))
+    password: ((cf-password))
+
+- name: config
+  type: git
+  source:
+    uri: https://github.com/greenhouse-org/delegate-bot-config.git
+    branch: garden-windows
+
+- name: slack-delegate-bot
+  type: metalink-repository
+  source:
+    include_files:
+      - delegatebot-*-linux-amd64
+    uri: git+https://github.com/dpb587/slack-delegate-bot.git//published#artifacts
 
 jobs:
 - name: build-and-push
@@ -146,3 +173,21 @@ jobs:
         manifest: artifacts/manifest.yml
         stemcells:
           - stemcell/stemcell.tgz
+
+- name: deploy-slack-delegate-bot
+  serial: true
+  plan:
+    - in_parallel:
+        - get: ci
+        - get: slack-delegate-bot
+          trigger: true
+        - get: config
+          trigger: true
+    - task: build
+      file: ci/tasks/deploy-delegate-bot/task.yml
+      params:
+        SLACK_TOKEN: ((slack-token))
+    - put: cf
+      params:
+        manifest: app/cf.yml
+        path: app
