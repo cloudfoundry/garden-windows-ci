@@ -237,7 +237,7 @@ fly-envoy-nginx() {
 fly-windows-tools () {
   [ "$1" == "-h" ] && echo "Push windows-tools pipeline to concourse" && return
   fly -t garden-windows sp -p windows-tools -c $HOME/workspace/garden-windows-ci/pipelines/windows-tools.yml \
-    -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 github-access-tokens aws-iam-access-keys tracker-api-token)
+    -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 github-access-tokens aws-iam-access-keys)
 }
 
 fly-winc () {

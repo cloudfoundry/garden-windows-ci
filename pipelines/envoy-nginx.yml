@@ -116,16 +116,6 @@ resources:
     jumpbox_ssh_key: ((ALFREDO_JUMPBOX_SSH_KEY))
     skip_check: true
 
-# Lock Pool
-
-- name: alfredo-lock-pool
-  type: pool
-  source:
-    branch: master
-    pool: alfredo
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
-    uri: git@github.com:greenhouse-ci/locks
-
 jobs:
 - name: test-envoy-nginx
   plan:
@@ -145,9 +135,6 @@ jobs:
 - name: alfredo-cats
   serial: true
   plan:
-  - put: alfredo-lock-pool
-    params:
-      acquire: true
   - do:
     - in_parallel:
       - get: cf-deployment
@@ -239,10 +226,6 @@ jobs:
           BOSH_CA_CERT: {{ALFREDO_BOSH_CA_CERT}}
           JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
           JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
-    ensure:
-      put: alfredo-lock-pool
-      params:
-        release: alfredo-lock-pool
 
 - name: shipit-minor
   serial: true

@@ -110,13 +110,6 @@ resources:
     regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
     access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
     secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
-- name: pesto-lock-pool
-  type: pool
-  source:
-    branch: master
-    pool: pesto
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
-    uri: git@github.com:greenhouse-ci/locks
 - name: version
   type: semver
   source:
@@ -528,9 +521,6 @@ jobs:
 - name: pesto-cats-2019
   serial: true
   plan:
-  - put: pesto-lock-pool
-    params:
-      acquire: true
   - in_parallel:
     - get: ci
     - get: winc-release-develop
@@ -636,10 +626,6 @@ jobs:
         BOSH_ENVIRONMENT: {{PESTO_BOSH_ENVIRONMENT}}
         JUMPBOX_IP: {{PESTO_JUMPBOX_IP}}
         JUMPBOX_SSH_KEY: {{PESTO_JUMPBOX_SSH_KEY}}
-  ensure:
-    put: pesto-lock-pool
-    params:
-      release: pesto-lock-pool
 
 - name: shipit-major
   serial: true
