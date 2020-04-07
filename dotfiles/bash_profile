@@ -19,7 +19,7 @@ export PATH="$HOME/.rbenv/bin:$PATH:$HOME/.nvim/gobin:$GEM_HOME/bin"
 eval "$(direnv hook bash)"
 
 # z (jump to directories)
-source $HOME/.z.sh
+[ -f $HOME/.z.sh ] && source $HOME/.z.sh
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # Show git status and bosh target in prompt
@@ -35,7 +35,7 @@ no_color="\[\033[0m\]"
 # export GIT_PS1_SHOWUNTRACKEDFILES=1
 # export GIT_PS1_SHOWDIRTYSTATE=1
 # export GIT_PS1_SHOWUPSTREAM=1
-source $HOME/.git-prompt.sh
+[ -f $HOME/.git-prompt.sh ] && source $HOME/.git-prompt.sh
 if type __git_ps1 > /dev/null 2>&1; then
     export PS1="${green}\h${no_color}:${blue}\w${no_color}${green}\$(__git_ps1)${no_color} ${no_color}${bold_white}\$(__git_duet_ps1)${no_color} ${cyan}\$(__bosh_ps1)${no_color}${yellow}\$(__cf_ps1)${no_color}\n$ "
 else
