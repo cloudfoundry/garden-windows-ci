@@ -18,11 +18,6 @@ resources:
   source:
     uri: https://github.com/greenhouse-org/delegate-bot-config.git
     branch: garden-windows
-- name: tracker-bot-repo
-  type: git
-  source:
-    uri: git@github.com:pivotal-cf-experimental/relint-trackerbot.git
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
 - name: ci
   type: git
   source:
@@ -35,24 +30,6 @@ resources:
     uri: git+https://github.com/dpb587/slack-delegate-bot.git//published#artifacts
 
 jobs:
-- name: deploy-tracker-bot
-  serial: true
-  plan:
-  - in_parallel:
-    - get: tracker-bot-repo
-    - get: ci
-  - task: write-config-file
-    file: ci/tasks/deploy-tracker-bot/task.yml
-    params:
-      TRACKER_API_TOKEN: ((tracker-api-token))
-      TRACKER_PROJECT_ID: 2409722
-  - put: cf
-    inputs:
-    - tracker-bot-repo
-    params:
-      manifest: tracker-bot-repo/manifest.yml
-      path: tracker-bot-repo
-
 - name: deploy-slack-delegate-bot
   serial: true
   plan:
