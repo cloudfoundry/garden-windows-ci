@@ -977,7 +977,7 @@ jobs:
         task: send-release-slack-alert
         file: ci/tasks/send-release-slack-alert/task.yml
         params:
-          CHANNEL: pcf-windows
+          CHANNEL: tas-windows
           SLACK_URL: ((release-slack-url))
 
 - name: shipit-minor
@@ -1070,7 +1070,7 @@ jobs:
       task: send-release-slack-alert
       file: ci/tasks/send-release-slack-alert/task.yml
       params:
-        CHANNEL: pcf-windows
+        CHANNEL: tas-windows
         SLACK_URL: ((release-slack-url))
 
 - name: shipit-patch
@@ -1161,5 +1161,5 @@ jobs:
       task: send-release-slack-alert
       file: ci/tasks/send-release-slack-alert/task.yml
       params:
-        CHANNEL: pcf-windows
+        CHANNEL: tas-windows
         SLACK_URL: ((release-slack-url))
