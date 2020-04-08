@@ -143,6 +143,42 @@ resources:
     jumpbox_url: {{PESTO_JUMPBOX_URL}}
     jumpbox_ssh_key: {{PESTO_JUMPBOX_SSH_KEY}}
 
+groups:
+- name: main
+  jobs:
+    - generate-readme
+    - bump-winc-release
+    - test-nstar
+    - pesto-cats-2019
+    - shipit-major
+    - shipit-minor
+    - shipit-patch
+
+- name: cert-injector
+  jobs:
+    - test-cert-injector
+
+- name: diff-exporter
+  jobs:
+    - diff-exporter-2019
+    - merge-diff-exporter-to-master
+
+- name: golang
+  jobs:
+    - bump-go-in-winc
+
+- name: groot
+  jobs:
+    - bump-lib-groot
+    - groot-2019
+    - merge-groot-to-master
+
+- name: winc-binary
+  jobs:
+    - winc-2019
+    - merge-winc-to-master
+    - gats-2019
+
 jobs:
 - name: generate-readme
   serial: true
@@ -151,6 +187,7 @@ jobs:
   - in_parallel:
     - get: ci
     - get: winc-release-develop
+      passed: [bump-winc-release]
       trigger: true
   - task: winc-release-readme
     input_mapping: { winc-release: winc-release-develop }
@@ -508,6 +545,7 @@ jobs:
   - in_parallel:
     - get: ci
     - get: winc-release-develop
+      passed: [bump-winc-release]
       trigger: true
   - task: run-ginkgo-exe
     file: ci/tasks/ginkgo-from-gopath-windows/task.yml
