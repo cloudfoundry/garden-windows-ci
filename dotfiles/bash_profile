@@ -248,14 +248,6 @@ fly-winc () {
     aws-iam-access-keys github-access-tokens garden-windows-dev-service-account.json)
 }
 
-fly-longrunning () {
-  [ "$1" == "-h" ] && echo "Push longrunning pipeline to concourse" && return
-  fly -t garden-windows sp -p longrunning -c $HOME/workspace/garden-windows-ci/pipelines/longrunning.yml \
-    -l <(_env_creds_yml mulgore) \
-    -l<(lpass show --notes github-deploy-keys aws-iam-access-keys \
-    github-access-tokens spitfire-service-account.json datadog-secrets ci-cell-admin-password)
-}
-
 fly-rootfs() {
   [ "$1" == "-h" ] && echo "Push rootfs pipeline to concourse" && return
   fly -t garden-windows sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
