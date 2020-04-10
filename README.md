@@ -6,7 +6,6 @@ Set of concourse tasks, dockerfiles, and pipelines for the CF Garden Windows tea
 
 |Name|IaaS|Purpose|
 |:---:|:---:|---|
-|Mulgore|vSphere|Concourse - Longrunning pipeline [[URL](https://github.com/cloudfoundry/garden-windows-ci/blob/master/pipelines/longrunning.yml)]|
 |Spitfire|GCP|Concourse workers [[URL](https://github.com/cloudfoundry/garden-windows-ci/blob/master/bin/deploy_concourse)]|
 |Sriracha|GCP|Concourse - Windows2019fs offline release [[URL](https://github.com/cloudfoundry/garden-windows-ci/blob/master/pipelines/windowsfs-offline.yml)]|
 |Aioli|GCP|Concourse - Windows2019fs online release [[URL](https://github.com/cloudfoundry/garden-windows-ci/blob/master/pipelines/windowsfs-online.yml)]|
