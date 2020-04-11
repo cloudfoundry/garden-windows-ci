@@ -234,13 +234,13 @@ fly-envoy-nginx() {
     'aws-iam-access-keys' 'github-access-tokens' 'garden-windows-dev-service-account.json' )
 }
 
-fly-windows-tools () {
+fly-misc() {
   [ "$1" == "-h" ] && echo "Push windows-tools pipeline to concourse" && return
-  fly -t garden-windows sp -p windows-tools -c $HOME/workspace/garden-windows-ci/pipelines/windows-tools.yml \
+  fly -t garden-windows sp -p misc -c $HOME/workspace/garden-windows-ci/pipelines/misc.yml \
     -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 github-access-tokens aws-iam-access-keys)
 }
 
-fly-winc () {
+fly-winc() {
   [ "$1" == "-h" ] && echo "Push winc pipeline to concourse" && return
   fly -t garden-windows sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
     -l <(_env_creds_yml pesto) \
