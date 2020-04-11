@@ -45,7 +45,7 @@ resources:
   source:
     repository: concourse/concourse-bosh-release
 
-- name: worker-deployment
+- name: concourse-deployment
   type: bosh-deployment
   source:
     skip_check: true
@@ -70,7 +70,7 @@ jobs:
       dockerfile: ci/docker/Dockerfile.ci
       tag_as_latest: true
 
-- name: update-windows-2019-deployment
+- name: update-concourse
   serial: true
   serial_groups: [ deploy ]
   plan:
@@ -96,7 +96,7 @@ jobs:
       BOSH_DEPLOYMENT: concourse
       BOSH_CREDENTIALS: ((spitfire-bosh-credentials))
   - try:
-      put: worker-deployment
+      put: concourse-deployment
       inputs:
       - windows-2019-stemcell
       - artifacts
