@@ -88,7 +88,7 @@ jobs:
     - get: windows-utilities-release
       params: {tarball: false}
       trigger: true
-  - task: update-windows2019
+  - task: update-concourse-manifest
     file: ci/tasks/update-windows-worker-manifest/task.yml
     input_mapping:
       windows-stemcell: windows-2019-stemcell
