@@ -44,6 +44,10 @@ vm_types:
     ram: 24576
   name: envoy-builder
 - cloud_properties:
+    cpu: 2
+    ram: 7168
+  name: envoy-builder-mimic-azp
+- cloud_properties:
     cpu: 4
     disk: 131072
     ram: 8192

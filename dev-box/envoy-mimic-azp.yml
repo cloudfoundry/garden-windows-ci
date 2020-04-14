@@ -1,0 +1,68 @@
+---
+name: envoy-mimic-azp
+
+releases:
+- name: "windows-tools"
+  version: create
+  url: file:///home/pivotal/workspace/windows-tools-release
+- name: "windows-utilities"
+  version: "0.13.0"
+  url: "https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.13.0"
+  sha1: "339c0a80a295a3ecfa75688807909b46759d66d1"
+
+stemcells:
+- alias: windows
+  os: windows2019
+  version: latest
+
+update:
+  canaries: 1
+  canary_watch_time: 30000-300000
+  update_watch_time: 30000-300000
+  max_in_flight: 3
+  max_errors: 2
+  serial: false
+
+instance_groups:
+- name: envoy-mimic-azp
+  stemcell: windows
+  vm_type: envoy-builder-mimic-azp
+  azs: [z1]
+  networks:
+  - name: default
+  jobs:
+  - name: bazel
+    release: windows-tools
+  - name: diego-ssh
+    properties:
+      diego_ssh:
+        public_key: ((DEV_BOX_PUBLIC_KEY))
+        port: 2222
+    release: windows-tools
+  - name: git
+    release: windows-tools
+  # - name: load-powershell-env
+  #   release: windows-tools
+  - name: msys2
+    release: windows-tools
+  - name: python3
+    release: windows-tools
+  - name: smb-share
+    release: windows-tools
+  - name: vs_buildtools
+    release: windows-tools
+  - name: llvm
+    release: windows-tools
+  - name: enable_rdp
+    properties:
+      enable_rdp:
+        enabled: true
+    release: windows-utilities
+  - name: set_password
+    properties:
+      set_password:
+        username: "Administrator"
+        password: ((DEV_BOX_PASSWORD))
+    release: windows-utilities
+  instances: 1
+  lifecycle: service
