@@ -581,6 +581,7 @@ jobs:
       JUMPBOX_IP: ((AIOLI_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((AIOLI_JUMPBOX_SSH_KEY))
   - put: aioli-cf-deployment
+    attempts: 2
     params:
       manifest: cf-deployment/cf-deployment.yml
       stemcells:
@@ -664,6 +665,7 @@ jobs:
       JUMPBOX_IP: ((AIOLI_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((AIOLI_JUMPBOX_SSH_KEY))
   - put: aioli-smoke-test-deployment
+    attempts: 2
     params:
       manifest: windowsfs-online-release-develop-2019/manifests/smoke-test-2019.yml
       stemcells:
@@ -737,6 +739,7 @@ jobs:
       JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
   - put: sriracha-cf-deployment
+    attempts: 2
     params:
       manifest: cf-deployment/cf-deployment.yml
       stemcells:
@@ -825,6 +828,7 @@ jobs:
       JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
   - put: sriracha-smoke-test-deployment
+    attempts: 2
     params:
       manifest: windowsfs-offline-release-develop-2019/manifests/smoke-test.yml
       stemcells:
