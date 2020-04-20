@@ -1,3 +1,10 @@
+resource_types:
+  - name: pivnet
+    type: docker-image
+    source:
+      repository: pivotalcf/pivnet-resource
+      tag: latest-final
+
 groups:
 - name: filelock
   jobs:
@@ -21,6 +28,7 @@ groups:
 - name: web-config-buildpack
   jobs:
     - unit-and-integration-tests
+    - web-config-shipit
 
 - name: windows-tools
   jobs:
@@ -166,6 +174,12 @@ resources:
     uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_DIFF_EXPORTER_DEPLOY_KEY}}
 
+- name: buildpack-extensions-pivnet
+  type: pivnet
+  source:
+    api_token: ((PIVNET_API_TOKEN))
+    product_slug: buildpack-extensions
+
 jobs:
 - name: bump-go
   serial: true
@@ -216,6 +230,80 @@ jobs:
           trigger: true
     - task: run-unit-and-integration-tests
       file: ci/tasks/test-web-config-buildpack/task.yml
+
+- name: web-config-shipit
+  plan:
+    - in_parallel:
+        - get: ci
+        - get: web-config-buildpack
+          passed: [unit-and-integration-tests]
+    - task: shipit-github
+      config:
+        platform: linux
+        image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
+        inputs:
+          - name: ci
+          - name: web-config-buildpack
+        outputs:
+          - name: artifacts
+        run:
+          path: bash
+          args:
+            - -c
+            - |
+              set -e
+
+              # C:\Users\Pivotal\workspace\web-config-transform-buildpack\artifacts\Web.Config.Transform.Buildpack-win-x64-1.1.10.zip
+              touch artifacts/Web.Config.Transform.Buildpack-win-x64-1.1.11.zip
+    - task: prepare-metadata-for-pivnet
+      config:
+        platform: linux
+        image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
+        inputs:
+          - name: ci
+          - name: artifacts
+        outputs:
+          - name: metadata
+        params:
+          TAS_VERSION: 2.9
+        run:
+          path: bash
+          args:
+            - -c
+            - |
+              set -e
+
+              filepath=$(ls artifacts/Web.Config.Transform.Buildpack-*.zip)
+              version=$(echo ${filepath} | grep -oP '\d*\.\d*\.\d*')
+
+              cat > metadata/metadata <<EOF
+              ---
+              release:
+                version: ".NET Web Config ${version}"
+                release_type: "Minor Release"
+                availability: "Admins Only"
+                eula_slug: "pivotal_beta_eula"
+                release_notes_url: "https://docs.pivotal.io/platform/application-service/${TAS_VERSION}/buildpacks/hwc/web-config-transform-buildpack.html",
+                description: |
+                  .NET Framework Web Config Transform Extension Buildpack
+
+                  Cloud Native Applications are expected to bring in configurations from external sources like environment variables, config server, etc.
+
+                  In applications that run on IIS (e.g. ASP.NET), configuration settings are injected through Web.config files. As per cloud native principles, configuration should stay out of build artifacts. This extension buildpack provides a solution to this problem by using token replacement during ‘cf push’ staging.
+
+                  Github page: https://github.com/cloudfoundry-community/web-config-transform-buildpack
+              product_files:
+              - file: ${filepath}
+                file_type: "Open Source License"
+              EOF
+
+              cat metadata/metadata
+
+    - put: buildpack-extensions-pivnet
+      inputs: [metadata, artifacts]
+      params:
+        file_glob: artifacts/Web.Config.Transform.Buildpack-linux-x64-*.zip
+        metadata_file: metadata/metadata
 
 - name: test-filelock
   serial: true
