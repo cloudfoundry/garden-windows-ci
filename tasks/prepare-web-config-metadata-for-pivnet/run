@@ -13,6 +13,8 @@ release:
   availability: "Admins Only"
   eula_slug: "pivotal_software_eula"
   release_notes_url: "https://docs.pivotal.io/platform/application-service/${TAS_VERSION}/buildpacks/hwc/web-config-transform-buildpack.html"
+  eccn: "5D002"
+  license_exception: "TSU"
   description: |
     .NET Framework Web Config Transform Extension Buildpack
 
