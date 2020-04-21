@@ -11,7 +11,7 @@ release:
 version: ".NET Web Config ${version}"
 release_type: "Minor Release"
 availability: "Admins Only"
-eula_slug: "pivotal_beta_eula"
+eula_slug: "pivotal_software_eula"
 release_notes_url: "https://docs.pivotal.io/platform/application-service/${TAS_VERSION}/buildpacks/hwc/web-config-transform-buildpack.html"
 description: |
   .NET Framework Web Config Transform Extension Buildpack
