@@ -4,7 +4,7 @@ set -eu
 
 version=$(< windowsfs-online-release-version/number)
 notes=$(< generated-notes/release-notes)
-payload="The following *2 rootfs* releases just shipped:
+payload="The following 2 *rootfs (${version})* releases just shipped:
 - https://github.com/cloudfoundry/windowsfs-online-release/releases/tag/v${version}
 - https://github.com/cloudfoundry/windows2019fs-release/releases/tag/v${version}
 
