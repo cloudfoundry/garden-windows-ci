@@ -8,8 +8,9 @@ payload="The following *2 rootfs* releases just shipped:
 - https://github.com/cloudfoundry/windowsfs-online-release/releases/tag/v${version}
 - https://github.com/cloudfoundry/windows2019fs-release/releases/tag/v${version}
 
-${USERS}
 ${notes}
+
+${USERS}
 "
 
 curl \
