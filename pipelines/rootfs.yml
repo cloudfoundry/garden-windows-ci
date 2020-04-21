@@ -983,6 +983,7 @@ jobs:
         params:
           CHANNEL: tas-windows
           SLACK_URL: ((release-slack-url))
+          USERS: "<@U055J9EJW> <@UC53SHZ32>"
 
 - name: shipit-minor
   serial: true
