@@ -50,12 +50,24 @@ resources:
     version_key: "url"
     check_command: "curl --location --silent --write-out %{url_effective} --request HEAD https://aka.ms/vs/16/release/vc_redist.x64.exe"
     in_command:    "curl --location --silent --fail --output $1/vcredist-ucrt.x64.exe https://aka.ms/vs/16/release/vc_redist.x64.exe"
+- name: vcredist-ucrt-x86
+  type: command-runner
+  source:
+    version_key: "url"
+    check_command: "curl --location --silent --write-out %{url_effective} --request HEAD https://aka.ms/vs/16/release/vc_redist.x86.exe"
+    in_command:    "curl --location --silent --fail --output $1/vcredist-ucrt.x64.exe https://aka.ms/vs/16/release/vc_redist.x86.exe"
 - name: vcredist-2010
   type: command-runner
   source:
     version_key: "2010-hardcoded-url"
     check_command: "echo https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x64.exe"
     in_command:    "curl --silent --fail --output $1/vcredist-2010.x64.exe https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x64.exe"
+- name: vcredist-2010-x86
+  type: command-runner
+  source:
+    version_key: "2010-hardcoded-url"
+    check_command: "echo https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe"
+    in_command:    "curl --silent --fail --output $1/vcredist-2010.x64.exe https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe"
 - name: dotnet-48-installer
   type: command-runner
   source:
@@ -343,7 +355,11 @@ jobs:
     - get: tar
     - get: vcredist-ucrt
       trigger: true
+    - get: vcredist-ucrt-x86
+      trigger: true
     - get: vcredist-2010
+      trigger: true
+    - get: vcredist-2010-x86
       trigger: true
     - get: dotnet-48-installer
       trigger: true

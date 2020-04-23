@@ -8,7 +8,9 @@ inputs:
 - name: git-setup
 - name: tar
 - name: vcredist-2010
+- name: vcredist-2010-x86
 - name: vcredist-ucrt
+- name: vcredist-ucrt-x86
 - name: dotnet-48-installer
   optional: true
 
