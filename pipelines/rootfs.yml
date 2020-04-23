@@ -406,7 +406,7 @@ jobs:
 
 - name: update-windowsfs-online-2019
   serial: true
-  serial_groups: [bump]
+  serial_groups: [bump-online]
   plan:
   - in_parallel:
     - get: ci
@@ -433,7 +433,7 @@ jobs:
 
 - name: update-windowsfs-offline-2019
   serial: true
-  serial_groups: [bump]
+  serial_groups: [bump-offline]
   plan:
   - in_parallel:
     - get: ci
