@@ -311,6 +311,7 @@ jobs:
         tag: hwc-version/number
         globs:
           - hwc-rel/hwc.exe
+          - hwc-rel/hwc_x86.exe
 
 - name: bump-submodules-tar
   serial: true
