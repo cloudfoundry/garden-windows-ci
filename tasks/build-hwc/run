@@ -8,4 +8,4 @@ pushd hwc
   ./scripts/build.sh
 popd
 
-cp -r hwc/hwc-rel/*.exe hwc-rel
+cp hwc/hwc-rel/*.exe hwc-rel
