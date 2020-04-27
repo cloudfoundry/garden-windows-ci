@@ -4,4 +4,8 @@ set -e -x
 
 go version
 
-./hwc/scripts/build.sh
+pushd hwc
+  ./scripts/build.sh
+popd
+
+cp -r hwc/hwc-rel/*.exe hwc-rel
