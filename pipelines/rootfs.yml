@@ -556,6 +556,9 @@ jobs:
 # --------------- Tests
 - name: aioli-online-cats
   serial: true
+  # The online tests keep failing when run in parallel
+  # so running them serially
+  serial_groups: [online-tests]
   plan:
   - in_parallel:
     - get: ci
@@ -645,6 +648,9 @@ jobs:
 
 - name: aioli-online-smoke-test
   serial: true
+  # The online tests keep failing when run in parallel
+  # so running them serially
+  serial_groups: [online-tests]
   plan:
   - in_parallel:
     - get: ci
