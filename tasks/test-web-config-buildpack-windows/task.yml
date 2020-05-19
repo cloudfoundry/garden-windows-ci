@@ -1,0 +1,14 @@
+---
+platform: windows
+
+inputs:
+- name: ci
+- name: web-config-buildpack
+
+run:
+  path: powershell
+  args:
+    - "-ExecutionPolicy"
+    - "Bypass"
+    - "-File"
+    - ci/tasks/test-web-config-buildpack/run.ps1

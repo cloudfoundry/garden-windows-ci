@@ -1,4 +1,4 @@
 #!/bin/bash
 
-chmod +x build.sh
+cd web-config-buildpack
 ./build.sh Test --stack Linux
