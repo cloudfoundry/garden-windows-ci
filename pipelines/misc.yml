@@ -228,11 +228,16 @@ jobs:
         - get: ci
         - get: web-config-buildpack
           trigger: true
-    - task: run-unit-and-integration-tests
-      file: ci/tasks/test-web-config-buildpack/task.yml
-    - task: run-unit-and-integration-tests-windows
-      file: ci/tasks/test-web-config-buildpack-windows/task.yml
-      tags: ["2019"]
+    - in_parallel:
+        - task: run-unit-and-integration-tests
+          file: ci/tasks/test-web-config-buildpack/task.yml
+          params:
+            BRANCH: master
+        - task: run-unit-and-integration-tests-windows
+          file: ci/tasks/test-web-config-buildpack-windows/task.yml
+          tags: ["2019"]
+          params:
+            BRANCH: master
 
 - name: web-config-shipit
   plan:
