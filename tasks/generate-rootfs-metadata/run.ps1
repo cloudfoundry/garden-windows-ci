@@ -23,7 +23,7 @@ Run-Docker "--version"
 $releaseNotesDir = "$PWD\notes"
 $notesFile = "rootfs-metadata-$version"
 
-$kbs = Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-hotfix).HotFixID"
+$kbs = Run-Docker "run", "--rm", "${env:IMAGE_NAME}:$version", "powershell", "(get-hotfix).HotFixID"
 Write-Output "kbs in image: " + $kbs
 
 $releaseMetadata = @{}
