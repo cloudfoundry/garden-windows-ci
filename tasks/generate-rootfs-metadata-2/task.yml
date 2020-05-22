@@ -1,0 +1,20 @@
+---
+platform: windows
+
+inputs:
+- name: ci
+- name: image-version
+
+outputs:
+- name: artifacts
+
+run:
+  path: powershell
+  args:
+  - "-ExecutionPolicy"
+  - "Bypass"
+  - "-File"
+  - ci/tasks/generate-rootfs-metadata-2/run.ps1
+
+params:
+  IMAGE_NAME: ""
