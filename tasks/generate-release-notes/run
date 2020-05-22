@@ -9,7 +9,7 @@ blob_version=$(grep $FS_VERSION windowsfs-release/config/blobs.yml |  grep -o '[
 
 cat > generated-notes/release-notes <<EOF
 ### windows2016fs changes
-* Includes ${blob_version} of cloudfoundry/windows2016fs
+* Includes \`${blob_version}\` of [cloudfoundry/windows2016fs](https://github.com/cloudfoundry/windows2016fs)
 
 \`\`\`
 $(cat kb-metadata/kb-metadata)
