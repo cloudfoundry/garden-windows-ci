@@ -12,7 +12,7 @@ cat > generated-notes/release-notes <<EOF
 * Includes ${blob_version} of cloudfoundry/windows2016fs
 
 \`\`\`
-$(< kb-metadata/kb-metadata)
+$(cat kb-metadata/kb-metadata)
 \`\`\`
 EOF
 
