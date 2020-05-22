@@ -8,9 +8,8 @@ docker run `
   -v "$PWD\artifacts:c:\artifacts" `
   -w c:\artifacts `
   --rm `
-  --tty `
   "cloudfoundry/windows2016fs:$version" `
-  "powershell" "-Command" "Get-Hotfix | Format-Table -Auto > kb-metadata"
+  "powershell" "-Command" "Get-Hotfix | Select HotFixID,InstalledOn,Description,InstalledBy > kb-metadata"
 if ($LASTEXITCODE -ne 0) {
   Exit $LASTEXITCODE
 }
