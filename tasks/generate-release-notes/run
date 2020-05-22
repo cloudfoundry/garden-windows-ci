@@ -1,28 +1,17 @@
 #!/bin/sh
 
-set -e
-
+set -eu
 
 # convert files written on Windows OS originally
-cp rootfs-metadata/rootfs-metadata-* generated-notes/metadata.json
-dos2unix generated-notes/metadata.json
-dos2unix all-kbs-list/all-kbs
+dos2unix kb-metadata/kb-metadata
 
-ruby -e "
-require 'json'
+blob_version=$(grep $FS_VERSION windowsfs-release/config/blobs.yml |  grep -o '[0-9]\+.[0-9]\+.[0-9]\+')
 
-rootfsKBs       = JSON.parse(File.read('generated-notes/metadata.json'))
-allKBs          = JSON.parse(File.read('all-kbs-list/all-kbs'))
-uniqueRootfsKBs = rootfsKBs['kbs'] - allKBs['kbs']
-
-allKBs['kbs']     += uniqueRootfsKBs
-allKBs['version'] = rootfsKBs['version']
-File.write('generated-notes/all-released-kbs', allKBs.to_json)
-
-releaseNotes=<<EOF
+cat > generated-notes/release-notes <<EOF
 ### windows2016fs changes
-* Includes \`#{rootfsKBs['version']}\` of cloudfoundry/windows2016fs (updated from \`#{allKBs['version']}\`)
-* Includes \`#{uniqueRootfsKBs.join(' ')}\`
+* Includes ${blob_version} of cloudfoundry/windows2016fs
+
+\`\`\`
+$(< kb-metadata/kb-metadata)
+\`\`\`
 EOF
-File.write('generated-notes/release-notes', releaseNotes)
-"

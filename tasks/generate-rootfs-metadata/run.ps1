@@ -2,35 +2,19 @@
 $ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
-function Run-Docker {
-  param([String[]] $cmd)
+$version=(cat image-version/version)
 
-  docker @cmd
-  if ($LASTEXITCODE -ne 0) {
-    Exit $LASTEXITCODE
-  }
+docker run `
+  -v "$PWD\artifacts:c:\artifacts" `
+  -w c:\artifacts `
+  --rm `
+  "cloudfoundry/windows2016fs:$version" `
+  "powershell" "-Command" "Get-Hotfix | Select HotFixID,InstalledOn,Description,InstalledBy > kb-metadata"
+if ($LASTEXITCODE -ne 0) {
+  Exit $LASTEXITCODE
 }
 
-mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
-$env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
-$env:GOCACHE = "$env:EPHEMERAL_DISK_TEMP_PATH\go-build"
-$env:USERPROFILE = "$env:EPHEMERAL_DISK_TEMP_PATH"
-
-restart-service docker
-
-$version=(cat image-version/version)
-Run-Docker "--version"
-$releaseNotesDir = "$PWD\notes"
-$notesFile = "rootfs-metadata-$version"
-
-$kbs = Run-Docker "run", "--rm", "${env:IMAGE_NAME}:$version", "powershell", "(get-hotfix).HotFixID"
-Write-Output "kbs in image: " + $kbs
-
-$releaseMetadata = @{}
-$releaseMetadata["kbs"] = $kbs
-$releaseMetadata["version"] = "$version"
-
-
-$releaseMetadata | convertto-json |  Out-file -FilePath $releaseNotesDir/$notesFile
+Write-Output "$env:IMAGE_NAME:$version"
+Get-Content "$PWD\artifacts\kb-metadata"
 
 
