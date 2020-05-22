@@ -42,6 +42,7 @@ groups:
     - bump-hydrator-online
     - bump-go-offline
     - bump-hydrator-offline
+    - anthony-test
 
 resources:
 - name: vcredist-ucrt
@@ -301,6 +302,14 @@ resources:
     region_name: us-east-1
 
 # GitHub Release
+- name: garden-windows-ci-github-release
+  type: github-release
+  source:
+    user: cloudfoundry
+    repository: garden-windows-ci
+    drafts: false
+    access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
+
 - name: windowsfs-online-github-release
   type: github-release
   source:
@@ -1001,6 +1010,42 @@ jobs:
           CHANNEL: tas-windows
           SLACK_URL: ((release-slack-url))
           USERS: "<@U055J9EJW> <@UC53SHZ32>"
+
+- name: anthony-test
+  serial: true
+  plan:
+    - in_parallel:
+        - get: ci
+        - get: kb-metadata
+          passed: [generate-rootfs-metadata]
+        - get: windowsfs-offline-release-develop-2019
+          passed: [generate-rootfs-metadata]
+    - task: generate-release-notes
+      file: ci/tasks/generate-release-notes/task.yml
+      input_mapping:
+        windowsfs-release: windowsfs-offline-release-develop-2019
+      params:
+        FS_VERSION: windows2019fs
+    - task: something
+      config:
+        platform: linux
+        image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
+        outputs:
+          - name: artifacts
+        run:
+          path: bash
+          args:
+            - -c
+            - |
+              echo v1 > artifacts/name
+              echo v1 > artifacts/tag
+              echo 97e8063501f7e00d3e0914f2fe719f42a105e3f5 > artifacts/commitish
+    - put: garden-windows-ci-github-release
+      params:
+        commitish: artifacts/commitish
+        name: artifacts/name
+        tag: artifacts/tag
+        body: generated-notes/release-notes
 
 - name: shipit-minor
   serial: true
