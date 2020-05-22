@@ -306,7 +306,7 @@ resources:
   source:
     user: cloudfoundry
     repository: windowsfs-online-release
-    drafts: true
+    drafts: false
     access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
 - name: windowsfs-offline-github-release
@@ -314,7 +314,7 @@ resources:
   source:
     user: cloudfoundry
     repository: windows2019fs-release
-    drafts: true
+    drafts: false
     access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
 
 
