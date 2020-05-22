@@ -15,6 +15,6 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Output "$env:IMAGE_NAME:$version"
-Write-Output $output
+Get-Content "$PWD\artifacts\kb-metadata"
 
 
