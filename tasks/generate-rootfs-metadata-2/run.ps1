@@ -9,7 +9,7 @@ docker run `
   -w c:\artifacts `
   --rm `
   --tty `
-  "$env:IMAGE_NAME:$version" `
+  "cloudfoundry/windows2016fs:$version" `
   "powershell" "-Command" "Get-Hotfix | Format-Table -Auto > kb-metadata"
 if ($LASTEXITCODE -ne 0) {
   Exit $LASTEXITCODE

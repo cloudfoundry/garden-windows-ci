@@ -15,6 +15,3 @@ run:
   - "Bypass"
   - "-File"
   - ci/tasks/generate-rootfs-metadata-2/run.ps1
-
-params:
-  IMAGE_NAME: ""
