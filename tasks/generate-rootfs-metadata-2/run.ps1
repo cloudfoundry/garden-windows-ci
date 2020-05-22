@@ -8,7 +8,7 @@ docker run `
   -v "$PWD\artifacts:c:\artifacts" `
   -w c:\artifacts `
   --rm `
-  -it `
+  --tty `
   "$env:IMAGE_NAME:$version" `
   "powershell" "-Command" "Get-Hotfix | Format-Table -Auto > kb-metadata"
 if ($LASTEXITCODE -ne 0) {
