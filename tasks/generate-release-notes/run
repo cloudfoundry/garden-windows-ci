@@ -15,3 +15,5 @@ cat > generated-notes/release-notes <<EOF
 $(< kb-metadata/kb-metadata)
 \`\`\`
 EOF
+
+cat generated-notes/release-notes
