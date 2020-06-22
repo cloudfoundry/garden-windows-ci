@@ -6,7 +6,7 @@ image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-wi
 inputs:
 - name: ci
 - name: windowsfs-online-release-version
-- name: generated-notes
+- name: kb-metadata
 
 run:
   path: ci/tasks/send-release-slack-alert/run
@@ -14,4 +14,3 @@ run:
 params:
   CHANNEL:
   SLACK_URL:
-  USERS:

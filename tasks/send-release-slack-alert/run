@@ -2,15 +2,16 @@
 
 set -eu
 
-version=$(< windowsfs-online-release-version/number)
-notes=$(< generated-notes/release-notes)
-payload="The following 2 *rootfs (v${version})* releases just shipped:
+version=$(cat windowsfs-online-release-version/number)
+notes=$(cat kb-metadata/kb-metadata | cut -d ' ' -f 1,2,3,4)
+
+payload="The following *2 rootfs (v${version})* releases just shipped:
 - https://github.com/cloudfoundry/windowsfs-online-release/releases/tag/v${version}
 - https://github.com/cloudfoundry/windows2019fs-release/releases/tag/v${version}
 
+\`\`\`
 ${notes}
-
-${USERS}
+\`\`\`
 "
 
 curl \
