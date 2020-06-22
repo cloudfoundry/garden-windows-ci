@@ -992,12 +992,6 @@ jobs:
               body: generated-notes/release-notes
     - put: windowsfs-online-release-version
       params: {file: windowsfs-online-release-version/number}
-    - try:
-        task: send-release-slack-alert
-        file: ci/tasks/send-release-slack-alert/task.yml
-        params:
-          CHANNEL: tas-windows
-          SLACK_URL: ((release-slack-url))
 
 - name: shipit-minor
   serial: true
@@ -1088,12 +1082,6 @@ jobs:
             body: generated-notes/release-notes
   - put: windowsfs-online-release-version
     params: {file: windowsfs-online-release-version/number}
-  - try:
-      task: send-release-slack-alert
-      file: ci/tasks/send-release-slack-alert/task.yml
-      params:
-        CHANNEL: tas-windows
-        SLACK_URL: ((release-slack-url))
 
 - name: shipit-patch
   serial: true
@@ -1182,9 +1170,3 @@ jobs:
             body: generated-notes/release-notes
   - put: windowsfs-online-release-version
     params: {file: windowsfs-online-release-version/number}
-  - try:
-      task: send-release-slack-alert
-      file: ci/tasks/send-release-slack-alert/task.yml
-      params:
-        CHANNEL: tas-windows
-        SLACK_URL: ((release-slack-url))
