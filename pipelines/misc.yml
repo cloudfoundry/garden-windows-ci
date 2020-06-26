@@ -249,6 +249,7 @@ jobs:
       tags: ["2019"]
       file: ci/tasks/web-config-github-shipit/task.yml
       params:
+        BRANCH: master
         GITHUB_AUTH_TOKEN: ((GREENHOUSE_CI_ACCESS_TOKEN))
     - task: prepare-metadata-for-pivnet
       file: ci/tasks/prepare-web-config-metadata-for-pivnet/task.yml

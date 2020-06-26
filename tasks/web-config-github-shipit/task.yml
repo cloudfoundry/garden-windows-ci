@@ -17,4 +17,5 @@ run:
   - ci/tasks/web-config-github-shipit/run.ps1
 
 params:
+  BRANCH:
   GITHUB_AUTH_TOKEN:
