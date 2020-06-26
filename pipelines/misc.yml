@@ -321,6 +321,7 @@ jobs:
         globs:
           - hwc-rel/hwc.exe
           - hwc-rel/hwc_x86.exe
+          - hwc-rel/hwc.tar.gz
 
 - name: bump-submodules-tar
   serial: true

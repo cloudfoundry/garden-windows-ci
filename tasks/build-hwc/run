@@ -9,3 +9,5 @@ pushd hwc
 popd
 
 cp hwc/hwc-rel/*.exe hwc-rel
+
+tar -c -z -f hwc-rel/hwc.tar.gz -C hwc/hwc-rel .
