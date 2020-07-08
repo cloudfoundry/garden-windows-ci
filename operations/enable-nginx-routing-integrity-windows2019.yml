@@ -30,3 +30,9 @@
   value:
     name: envoy-nginx
     version: latest
+
+- path: /releases/name=diego?
+  type: replace
+  value:
+    name: diego
+    version: 2.47.0+develop
