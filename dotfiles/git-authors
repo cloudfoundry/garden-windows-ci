@@ -1,14 +1,13 @@
 authors:
-  gl: Genevieve LEsperance; glesperance
-  mh: Matthew Horan; mhoran
-  jf: Jack Feeny; jfeeny
   wr: William A Rowe Jr; wrowe
-  mv: Malini; mvalliath
+  mv: Malini Valliath; mvalliath
   ae: Anthony Emengo; aemengo
   sb: Sunjay Bhatia; sbhatia
   vh: Victoria Henry; vhenry
   my: Micah Young
+  am: Andrew Meyer
 email:
   domain: pivotal.io
 email_addresses:
   my: ymicah@vmware.com
+  am: meyeran@vmware.com
