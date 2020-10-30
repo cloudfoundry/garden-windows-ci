@@ -30,6 +30,10 @@ groups:
   - bump-go
   - create-release
 
+- name: redis-buildpack
+  jobs:
+  - redis-buildpack-unit-and-integration-tests
+
 resources:
 - name: ci
   type: git
@@ -63,6 +67,18 @@ resources:
   source:
     branch: master
     uri: git@github.com:cloudfoundry-community/web-config-transform-buildpack.git
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    git_config:
+      - name: user.email
+        value: "pivotal-netgarden-eng@pivotal.io"
+      - name: user.name
+        value: "Greenhouse CI"
+
+- name: redis-buildpack
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry-community/redis-session-aspnet-buildpack.git
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     git_config:
       - name: user.email
@@ -204,6 +220,18 @@ jobs:
           tags: ["2019"]
           params:
             BRANCH: master
+
+- name: redis-buildpack-unit-and-integration-tests
+  plan:
+    - in_parallel:
+        - get: ci
+        - get: redis-buildpack
+          trigger: true
+    - in_parallel:
+        - task: run-unit-and-integration-tests-windows
+          file: ci/tasks/test-redis-buildpack/task.yml
+          params:
+            BRANCH: main
 
 - name: web-config-shipit
   plan:
