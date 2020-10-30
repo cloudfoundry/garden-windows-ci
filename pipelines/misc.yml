@@ -229,7 +229,7 @@ jobs:
           trigger: true
     - in_parallel:
         - task: run-unit-and-integration-tests-windows
-          file: ci/tasks/test-redis-buildpack/task.yml
+          file: ci/tasks/test-redis-buildpack-windows/task.yml
           params:
             BRANCH: main
 
