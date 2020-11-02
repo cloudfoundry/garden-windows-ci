@@ -228,7 +228,11 @@ jobs:
         - get: redis-buildpack
           trigger: true
     - in_parallel:
-        - task: run-unit-and-integration-tests-windows
+        - task: run-redis-buildpack-unit-and-integration-tests
+          file: ci/tasks/test-redis-buildpack/task.yml
+          params:
+            BRANCH: master
+        - task: run-redis-buildpack-unit-and-integration-tests-windows
           file: ci/tasks/test-redis-buildpack-windows/task.yml
           tags: ["2019"]
           params:
