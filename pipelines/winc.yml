@@ -101,8 +101,9 @@ resources:
 - name: gats-fork
   type: git
   source:
-    branch: fork-master
-    uri: https://github.com/greenhouse-org/garden-integration-tests.git
+    branch: main
+    uri: git@github.com:pivotal/garden-integration-tests-windows.git
+    private_key: ((GARDEN_INTEGRATION_TESTS_DEPLOY_KEY))
 - name: gcp-2019-stemcell
   type: s3
   source:
