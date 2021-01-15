@@ -56,7 +56,7 @@ $env:TEST_CANDIDATE_IMAGE=$env:IMAGE_NAME
 $env:VERSION_TAG=$env:OS_VERSION
 
 go get -u github.com/onsi/ginkgo/ginkgo
-& $env:HOME\go\bin\ginkgo.exe -v $repoPath
+& $env:USERPROFILE\go\bin\ginkgo.exe -v $repoPath
 if ($LASTEXITCODE -ne 0) {
   Exit $LASTEXITCODE
 }
