@@ -55,10 +55,8 @@ Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-childitem C:
 $env:TEST_CANDIDATE_IMAGE=$env:IMAGE_NAME
 $env:VERSION_TAG=$env:OS_VERSION
 
-go get github.com/onsi/ginkgo
-go get github.com/onsi/gomega
-go build -o ginkgo.exe github.com/onsi/ginkgo/ginkgo
-.\ginkgo.exe -v $repoPath
+go get -u github.com/onsi/ginkgo/ginkgo
+~\go\bin\ginkgo.exe -v $repoPath
 if ($LASTEXITCODE -ne 0) {
   Exit $LASTEXITCODE
 }
