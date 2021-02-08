@@ -231,12 +231,12 @@ jobs:
         - task: run-redis-buildpack-unit-and-integration-tests
           file: ci/tasks/test-redis-buildpack/task.yml
           params:
-            BRANCH: master
+            BRANCH: main
         - task: run-redis-buildpack-unit-and-integration-tests-windows
           file: ci/tasks/test-redis-buildpack-windows/task.yml
           tags: ["2019"]
           params:
-            BRANCH: master
+            BRANCH: main
 
 - name: web-config-shipit
   plan:
