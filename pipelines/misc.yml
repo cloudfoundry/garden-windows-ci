@@ -77,7 +77,7 @@ resources:
 - name: redis-buildpack
   type: git
   source:
-    branch: master
+    branch: main
     uri: git@github.com:cloudfoundry-community/redis-session-aspnet-buildpack.git
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     git_config:
