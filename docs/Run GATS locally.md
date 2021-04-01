@@ -49,7 +49,7 @@ git clone  --recurse-submodules https://github.com/cloudfoundry/garden-runc-rele
 #### 4. Plug in windows based garden integration tests into the release
 ```
 rm -r -force $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release\src\garden-integration-tests
-git clone -b fork-master https://github.com/greenhouse-org/garden-integration-tests.git $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release\src\garden-integration-tests
+git clone -b fork-master https://github.com/pivotal/garden-integration-tests-windows.git $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release\src\garden-integration-tests
 ```
 <br/>
 
