@@ -11,7 +11,8 @@ Install-WindowsFeature Web-ASP-Net45
 cd hwc
 
 Write-Host "Installing Ginkgo"
-go.exe get github.com/onsi/ginkgo/ginkgo
+go.exe get -u github.com/onsi/ginkgo/ginkgo
+go.exe get -u github.com/onsi/gomega/...
 if ($LastExitCode -ne 0) {
     throw "Ginkgo installation process returned error code: $LastExitCode"
 }
