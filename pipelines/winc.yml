@@ -258,13 +258,10 @@ jobs:
     - get: ci
     - get: groot-windows-develop
       trigger: true
-    - get: groot-windows-master
   - task: test
     input_mapping: { groot-windows: groot-windows-develop }
     file: ci/tasks/test-groot-windows/task.yml
     tags: ["2019"]
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
 
 - name: merge-groot-to-master
   serial: true
