@@ -171,7 +171,7 @@ groups:
 - name: groot
   jobs:
     - bump-lib-groot
-    - groot-2019
+    - test-groot
     - merge-groot-to-master
 
 - name: winc-binary
@@ -250,18 +250,21 @@ jobs:
   - put: groot-windows-develop
     params: { repository: bumped-repo }
 
-- name: groot-2019
+- name: test-groot
+  old_name: groot-2019
   serial: true
-  serial_groups: ["2019"]
+  serial_groups: [ "2019" ]
   plan:
-  - in_parallel:
-    - get: ci
-    - get: groot-windows-develop
-      trigger: true
-  - task: test
-    input_mapping: { groot-windows: groot-windows-develop }
-    file: ci/tasks/test-groot-windows/task.yml
-    tags: ["2019"]
+    - in_parallel:
+        - get: ci
+        - get: groot-windows-develop
+          trigger: true
+    - task: run-ginkgo-exe
+      tags: ["2019"]
+      file: ci/tasks/ginkgo-test-windows/task.yml
+      input_mapping: { repo: groot-windows-develop }
+      params:
+        TEST_PATH: "repo"
 
 - name: merge-groot-to-master
   serial: true
@@ -269,7 +272,7 @@ jobs:
   - in_parallel:
     - get: ci
     - get: groot-windows-develop
-      passed: [groot-2019]
+      passed: [test-groot]
       trigger: true
     - get: groot-windows-master
   - task: merge-develop-to-master
