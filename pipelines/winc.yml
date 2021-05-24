@@ -546,13 +546,12 @@ jobs:
       passed: [bump-winc-release]
       trigger: true
   - task: run-ginkgo-exe
-    file: ci/tasks/ginkgo-from-gopath-windows/task.yml
+    file: ci/tasks/ginkgo-test-windows/task.yml
+    tags: ["2019"]
     input_mapping:
       repo: winc-release-develop
     params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      TEST_PATH: "src/nstar"
-    tags: ["2019"]
+      TEST_PATH: "repo/src/nstar"
 
 - name: pesto-cats-2019
   serial: true
