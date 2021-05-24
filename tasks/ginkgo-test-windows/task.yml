@@ -15,3 +15,4 @@ run:
 
 params:
   TEST_PATH:
+  NODES: 4
