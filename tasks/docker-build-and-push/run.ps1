@@ -11,10 +11,6 @@ function Run-Docker {
   }
 }
 
-mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
-$env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
-$env:GOCACHE = "$env:EPHEMERAL_DISK_TEMP_PATH\go-build"
-$env:USERPROFILE = "$env:EPHEMERAL_DISK_TEMP_PATH"
 $repoPath = (Resolve-Path repo).Path
 
 restart-service docker
@@ -55,9 +51,8 @@ Run-Docker "run", "${env:IMAGE_NAME}:$version", "powershell", "(get-childitem C:
 $env:TEST_CANDIDATE_IMAGE=$env:IMAGE_NAME
 $env:VERSION_TAG=$env:OS_VERSION
 
-go get -u github.com/onsi/ginkgo/ginkgo
-go get -u github.com/onsi/gomega/...
-& $env:USERPROFILE\go\bin\ginkgo.exe -v $repoPath
+cd $repoPath
+~/go/bin/ginkgo.exe -v
 if ($LASTEXITCODE -ne 0) {
   Exit $LASTEXITCODE
 }

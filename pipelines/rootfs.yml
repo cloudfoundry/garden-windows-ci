@@ -363,7 +363,6 @@ jobs:
       repo: windows2016fs-master
       version: image-version-2019
     params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       DOCKERFILE: repo/2019/Dockerfile
       IMAGE_NAME: cloudfoundry/windows2016fs
       DOCKER_USERNAME: ((DOCKER_USERNAME))
