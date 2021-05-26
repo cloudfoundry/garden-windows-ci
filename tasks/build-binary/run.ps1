@@ -9,7 +9,7 @@ if ($env:PACKAGE -eq "") {
   Write-Error "Define PACKAGE env variable"
 }
 
-if ($env:BINARY_NAME -ne "") {
+if ($env:BINARY_NAME -eq "") {
   Write-Error "Define BINARY_NAME env variable"
 }
 
