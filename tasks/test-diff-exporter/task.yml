@@ -4,7 +4,6 @@ platform: windows
 inputs:
 - name: ci
 - name: diff-exporter
-  path: src/code.cloudfoundry.org/diff-exporter
 - name: groot-binary
 - name: winc-binary
 
@@ -19,4 +18,3 @@ run:
 params:
   WINC_TEST_ROOTFS:
   WINDOWS_VERSION:
-  EPHEMERAL_DISK_TEMP_PATH:
