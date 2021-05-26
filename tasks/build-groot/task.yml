@@ -17,5 +17,3 @@ run:
   - "-File"
   - ci/tasks/build-groot/run.ps1
 
-params:
-  EPHEMERAL_DISK_TEMP_PATH:

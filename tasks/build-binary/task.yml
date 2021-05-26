@@ -17,7 +17,6 @@ run:
   - ci/tasks/build-binary/run.ps1
 
 params:
-  IMPORT_PATH:
+  GO_MOD_PATH:
   PACKAGE:
   BINARY_NAME:
-  EPHEMERAL_DISK_TEMP_PATH:

@@ -3,29 +3,10 @@ trap { $host.SetShouldExit(1) }
 
 . "$PSScriptRoot\..\shared-functions.ps1"
 
-$env:PATH = "$env:GOPATH\bin;" + $env:PATH
-
-mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
-$env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
-$env:GOCACHE = "$env:EPHEMERAL_DISK_TEMP_PATH\go-build"
-
 go.exe version
 
 if ($env:PACKAGE -eq "") {
   Write-Error "Define PACKAGE env variable"
-}
-
-if ($env:IMPORT_PATH -ne "") {
-  if (!$env:IMPORT_PATH.StartsWith("src")) {
-    $env:IMPORT_PATH = (Join-Path "src" $env:IMPORT_PATH)
-  }
-  New-Item -Type Directory -Force -Path $env:IMPORT_PATH
-  Copy-Item -Recurse -Force repo/* "$env:IMPORT_PATH"
-  $env:GOPATH=$PWD
-  $env:PACKAGE = (Resolve-Path (Join-Path $env:IMPORT_PATH $env:PACKAGE) -Relative)
-} else {
-  $env:GOPATH=(Resolve-Path "repo").Path
-  $env:PACKAGE = (Resolve-Path (Join-Path $env:GOPATH $env:PACKAGE) -Relative)
 }
 
 if ($env:BINARY_NAME -ne "") {
@@ -35,8 +16,9 @@ if ($env:BINARY_NAME -ne "") {
 }
 
 $binaryDir = "$PWD\binary-output"
-
 $binaryDir = updateDirIfSymlink "$binaryDir"
+
+cd $env:GO_MOD_PATH
 
 go.exe build -o "$binaryDir\$BINARY" $env:PACKAGE
 if ($LastExitCode -ne 0) {
