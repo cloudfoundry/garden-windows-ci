@@ -336,28 +336,25 @@ jobs:
     - get: diff-exporter-develop
       trigger: true
   - task: build-groot
-    input_mapping: { groot-windows: groot-windows-master }
-    file: ci/tasks/build-groot/task.yml
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
     tags: ["2019"]
+    file: ci/tasks/build-groot/task.yml
+    input_mapping: { groot-windows: groot-windows-master }
   - task: build-winc
+    tags: ["2019"]
     file: ci/tasks/build-binary/task.yml
     input_mapping:
       repo: winc-master
     output_mapping:
       binary-output: winc-binary
     params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      IMPORT_PATH: "code.cloudfoundry.org/winc"
+      GO_MOD_PATH: "repo"
       PACKAGE: "./cmd/winc"
-    tags: ["2019"]
+      BINARY_NAME: "winc.exe"
   - task: test
-    input_mapping: { diff-exporter: diff-exporter-develop }
-    file: ci/tasks/test-diff-exporter/task.yml
     tags: ["2019"]
+    file: ci/tasks/test-diff-exporter/task.yml
+    input_mapping: { diff-exporter: diff-exporter-develop }
     params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:2019
       WINDOWS_VERSION: "2019"
 
