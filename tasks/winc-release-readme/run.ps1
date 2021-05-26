@@ -16,14 +16,10 @@ The following powershell script can be used to quickly create a new container.
 
 push-location winc-release
 
-$env:GOPATH = $PWD
-$env:GOBIN = "$env:GOPATH\bin"
-$env:PATH="$env:GOBIN;$env:PATH"
-
-mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
-$env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
-$env:GOCACHE = "$env:EPHEMERAL_DISK_TEMP_PATH\go-build"
-$env:GROOT_IMAGE_STORE = "$env:EPHEMERAL_DISK_TEMP_PATH\groot"
+$ephemeral_disk_temp_path="C:\var\vcap\data\tmp"
+mkdir "$ephemeral_disk_temp_path" -ea 0
+$env:TEMP = $env:TMP = $ephemeral_disk_temp_path
+$env:GROOT_IMAGE_STORE = "$ephemeral_disk_temp_path\groot"
 
 Write-Host "Build Binaries"
 Start-Process -FilePath "powershell.exe" `
