@@ -15,5 +15,4 @@ run:
 
 params:
   TEST_PATH:
-  NODES: 4
   EPHEMERAL_DISK_TEMP_PATH:
