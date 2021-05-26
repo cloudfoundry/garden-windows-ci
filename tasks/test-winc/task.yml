@@ -4,7 +4,6 @@ platform: windows
 inputs:
 - name: ci
 - name: winc
-  path: src/code.cloudfoundry.org/winc
 - name: groot-binary
 
 run:
@@ -19,4 +18,3 @@ params:
   WINC_TEST_ROOTFS:
   WINC_TEST_PERF_CONCURRENT_CONTAINERS: 15
   WINDOWS_VERSION:
-  EPHEMERAL_DISK_TEMP_PATH:
