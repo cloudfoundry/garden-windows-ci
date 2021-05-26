@@ -10,9 +10,7 @@ if ($env:PACKAGE -eq "") {
 }
 
 if ($env:BINARY_NAME -ne "") {
-  $BINARY=$env:BINARY_NAME
-} else {
-  $BINARY=(Get-Item $env:PACKAGE).BaseName + ".exe"
+  Write-Error "Define BINARY_NAME env variable"
 }
 
 $binaryDir = "$PWD\binary-output"
