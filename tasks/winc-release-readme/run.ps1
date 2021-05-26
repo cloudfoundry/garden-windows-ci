@@ -16,6 +16,9 @@ The following powershell script can be used to quickly create a new container.
 
 push-location winc-release
 
+$env:GOBIN="$PWD\bin"
+$env:PATH="$env:GOBIN;$env:PATH"
+
 $ephemeral_disk_temp_path="C:\var\vcap\data\tmp"
 mkdir "$ephemeral_disk_temp_path" -ea 0
 $env:TEMP = $env:TMP = $ephemeral_disk_temp_path
