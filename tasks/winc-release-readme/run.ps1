@@ -19,8 +19,6 @@ push-location winc-release
 $env:GOBIN="$PWD\bin"
 $env:PATH="$env:GOBIN;$env:PATH"
 
-Write-Host "$env:GOBIN"
-
 $ephemeral_disk_temp_path="C:\var\vcap\data\tmp"
 mkdir "$ephemeral_disk_temp_path" -ea 0
 $env:TEMP = $env:TMP = $ephemeral_disk_temp_path

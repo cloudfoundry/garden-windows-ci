@@ -191,12 +191,11 @@ jobs:
       passed: [bump-winc-release]
       trigger: true
   - task: winc-release-readme
-    input_mapping: { winc-release: winc-release-develop }
-    file: ci/tasks/winc-release-readme/task.yml
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      WINC_TEST_ROOTFS: "docker:///cloudfoundry/windows2016fs:2019"
     tags: ["2019"]
+    file: ci/tasks/winc-release-readme/task.yml
+    input_mapping: { winc-release: winc-release-develop }
+    params:
+      WINC_TEST_ROOTFS: "docker:///cloudfoundry/windows2016fs:2019"
   - task: override-repo
     input_mapping: { repo: winc-release-develop, override-repo: generated-readme }
     file: ci/tasks/override-repo/task.yml
@@ -293,17 +292,14 @@ jobs:
     - get: groot-windows-master
       trigger: true
   - task: build-groot
-    input_mapping: { groot-windows: groot-windows-master }
+    tags: ["2019"]
     file: ci/tasks/build-groot/task.yml
-    tags: ["2019"]
-    params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+    input_mapping: { groot-windows: groot-windows-master }
   - task: test
-    input_mapping: { winc: winc-develop }
-    file: ci/tasks/test-winc/task.yml
     tags: ["2019"]
+    file: ci/tasks/test-winc/task.yml
+    input_mapping: { winc: winc-develop }
     params:
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:2019
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 2019
