@@ -383,11 +383,12 @@ jobs:
     - get: ci
     - get: cert-injector
       trigger: true
-  - task: test
+  - task: run-ginkgo-exe
+    tags: ["2019"]
+    file: ci/tasks/ginkgo-test-windows/task.yml
     input_mapping: { repo: cert-injector }
-    file: ci/tasks/ginkgo-to-gopath-linux/task.yml
     params:
-      IMPORT_PATH: "code.cloudfoundry.org/cert-injector"
+      TEST_PATH: "repo"
 
 - name: gats-2019
   serial: true
