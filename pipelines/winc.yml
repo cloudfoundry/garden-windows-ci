@@ -265,6 +265,7 @@ jobs:
       input_mapping: { repo: groot-windows-develop }
       params:
         TEST_PATH: "repo"
+        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
 
 - name: merge-groot-to-master
   serial: true
