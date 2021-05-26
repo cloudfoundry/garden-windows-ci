@@ -15,4 +15,3 @@ run:
 
 params:
   TEST_PATH:
-  EPHEMERAL_DISK_TEMP_PATH:

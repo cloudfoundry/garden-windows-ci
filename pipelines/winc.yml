@@ -265,7 +265,6 @@ jobs:
       input_mapping: { repo: groot-windows-develop }
       params:
         TEST_PATH: "repo"
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
 
 - name: merge-groot-to-master
   serial: true
@@ -556,7 +555,6 @@ jobs:
       repo: winc-release-develop
     params:
       TEST_PATH: "repo/src/nstar"
-      EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
 
 - name: pesto-cats-2019
   serial: true

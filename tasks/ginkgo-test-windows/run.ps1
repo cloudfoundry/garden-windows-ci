@@ -1,8 +1,9 @@
 ﻿$ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
-mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
-$env:TEMP = $env:TMP = $env:EPHEMERAL_DISK_TEMP_PATH
+$ephemeral_disk_temp_path="C:\var\vcap\data\tmp"
+mkdir "$ephemeral_disk_temp_path" -ea 0
+$env:TEMP = $env:TMP = $ephemeral_disk_temp_path
 
 go.exe version
 
