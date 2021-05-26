@@ -22,9 +22,7 @@ $env:TEMP = $env:TMP = $ephemeral_disk_temp_path
 $env:GROOT_IMAGE_STORE = "$ephemeral_disk_temp_path\groot"
 
 Write-Host "Build Binaries"
-Start-Process -FilePath "powershell.exe" `
-    -ArgumentList "-ExecutionPolicy ByPass -File .\src\build-binaries.ps1" `
-    -Wait -PassThru -NoNewWindow
+.\src\build-binaries.ps1
 
 $NEXT = @"
  `n
@@ -39,9 +37,7 @@ $README = [string]::join(" ",$README, $NEXT)
 
 Write-Host "Create Container"
 $containerId = [guid]::NewGuid().Guid
-Start-Process -FilePath "powershell.exe" `
-    -ArgumentList "-ExecutionPolicy ByPass -File .\src\create-container.ps1 $containerId" `
-    -Wait -PassThru -NoNewWindow
+.\src\create-container.ps1 $containerId
 $NEXT = @"
  `n
 - Create Container with an optional containerId as an argument. This requires
@@ -88,9 +84,7 @@ $validBundleConfig.root.path = "\\?\Volume{guid-xxxx-xxxx-xxxxxxxxxxxxx}"
 $validBundleConfig = ($validBundleConfig | ConvertTo-Json -depth 80)
 
 Write-Host "Delete Container"
-Start-Process -FilePath "powershell.exe" `
-    -ArgumentList "-ExecutionPolicy ByPass -File .\src\delete-container.ps1 $containerId" `
-    -Wait -PassThru -NoNewWindow
+.\src\delete-container.ps1 $containerId
 $NEXT = @"
  `n
 - Delete Container
