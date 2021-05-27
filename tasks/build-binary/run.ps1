@@ -18,7 +18,7 @@ $binaryDir = updateDirIfSymlink "$binaryDir"
 
 cd $env:GO_MOD_PATH
 
-go.exe build -o "$binaryDir\$BINARY_NAME" $env:PACKAGE
+go.exe build -o "$binaryDir\$env:BINARY_NAME" $env:PACKAGE
 if ($LastExitCode -ne 0) {
   exit $LastExitCode
 }
