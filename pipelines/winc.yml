@@ -406,16 +406,13 @@ jobs:
       output_mapping:
         binary-output: winc-binary
       params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        IMPORT_PATH: "code.cloudfoundry.org/winc"
+        GO_MOD_PATH: "repo"
         PACKAGE: "./cmd/winc"
+        BINARY_NAME: "winc.exe"
     - task: build-winc-network
       file: ci/tasks/build-winc-network/task.yml
       tags: ["2019"]
       input_mapping: { winc: winc-master }
-      params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        WINDOWS_VERSION: 2019
     - task: build-groot
       input_mapping: { groot-windows: groot-windows-master }
       file: ci/tasks/build-groot/task.yml
@@ -430,8 +427,9 @@ jobs:
       output_mapping:
         binary-output: nstar-binary
       params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        PACKAGE: "./src/nstar"
+        GO_MOD_PATH: "repo/src/nstar"
+        PACKAGE: "."
+        BINARY_NAME: "nstar.exe"
     - task: build-garden-init
       file: ci/tasks/build-binary/task.yml
       tags: ["2019"]
@@ -440,8 +438,8 @@ jobs:
       output_mapping:
         binary-output: garden-init-binary
       params:
-        EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-        PACKAGE: "src/guardian/cmd/winit"
+        GO_MOD_PATH: "repo/src/guardian"
+        PACKAGE: "./cmd/winit"
         BINARY_NAME: "garden-init.exe"
   - task: copy-forks
     file: ci/tasks/copy-forks/task.yml
