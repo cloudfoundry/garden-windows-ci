@@ -345,13 +345,11 @@ jobs:
           output_mapping:
             binary-output: winc-binary
           params:
-            EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-            IMPORT_PATH: "code.cloudfoundry.org/winc"
+            GO_MOD_PATH: "repo"
             PACKAGE: "./cmd/winc"
+            BINARY_NAME: "winc.exe"
         - task: build-groot
           file: ci/tasks/build-groot/task.yml
-          params:
-            EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
           tags: ["2019"]
         - task: build-diff-exporter
           tags: ["2019"]
@@ -361,9 +359,8 @@ jobs:
           output_mapping:
             binary-output: diff-exporter-binary
           params:
-            EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
+            GO_MOD_PATH: "repo"
             PACKAGE: "."
-            IMPORT_PATH: "code.cloudfoundry.org/diff-exporter"
             BINARY_NAME: "diff-exporter.exe"
     - in_parallel:
         - task: test-hydrator-linux
@@ -374,8 +371,7 @@ jobs:
           tags: ["2019"]
           file: ci/tasks/test-hydrator-windows/task.yml
           params:
-            EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-            NODES: 2
+            NODES: 1
             IMAGE_TAG: "2019"
             IMAGE_NAME: "cloudfoundry/windows2016fs"
 

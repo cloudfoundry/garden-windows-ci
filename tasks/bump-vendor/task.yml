@@ -14,5 +14,4 @@ run:
   path: ci/tasks/bump-vendor/run
 
 params:
-  SOURCE_IMPORT_PATH:
   DEP:
