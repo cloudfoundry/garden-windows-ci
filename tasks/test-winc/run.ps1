@@ -29,7 +29,7 @@ if ($LastExitCode -ne 0) {
 # Turn on debug for winc integration
 $env:DEBUG="true"
 
-~/go/bin/ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 -skipPackage winc-network,perf
+~/go/bin/ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 -skipPackage winc-network,perf,netinterface
 $exitCode = $LastExitCode
 if ($exitCode -ne 0) {
   Exit $exitCode
