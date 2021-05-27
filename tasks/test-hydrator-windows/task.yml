@@ -17,5 +17,4 @@ run:
   - ci/tasks/test-hydrator-windows/run.ps1
 
 params:
-  EPHEMERAL_DISK_TEMP_PATH:
   NODES: 1

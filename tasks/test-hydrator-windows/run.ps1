@@ -12,5 +12,5 @@ $env:GROOT_IMAGE_STORE = "$ephemeral_disk_temp_path\groot"
 
 cd hydrator
 
-~/go/bin/ginkgo.exe -nodes $env:NODES -r -race -keepGoing -randomizeSuites src/code.cloudfoundry.org/hydrator
+~/go/bin/ginkgo.exe -nodes $env:NODES -r -race -keepGoing -randomizeSuites
 Exit $LastExitCode
