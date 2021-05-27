@@ -4,7 +4,6 @@ platform: windows
 inputs:
 - name: ci
 - name: winc
-  path: src/code.cloudfoundry.org/winc
 
 outputs:
 - name: winc-network-binary
