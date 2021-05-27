@@ -10,5 +10,7 @@ $env:GROOT_BINARY = "$PWD\groot-binary\groot.exe"
 $env:DIFF_EXPORTER_BINARY = "$PWD\diff-exporter-binary\diff-exporter.exe"
 $env:GROOT_IMAGE_STORE = "$ephemeral_disk_temp_path\groot"
 
+cd hydrator
+
 ~/go/bin/ginkgo.exe -nodes $env:NODES -r -race -keepGoing -randomizeSuites src/code.cloudfoundry.org/hydrator
 Exit $LastExitCode
