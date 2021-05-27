@@ -244,7 +244,7 @@ jobs:
     input_mapping: { source-repo: groot-windows-develop }
     file: ci/tasks/bump-vendor/task.yml
     params:
-      DEP: "code.cloudfoundry.org/groot"
+      DEP: "code.cloudfoundry.org/groot@master"
   - put: groot-windows-develop
     params: { repository: bumped-repo }
 

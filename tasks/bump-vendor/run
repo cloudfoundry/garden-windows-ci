@@ -3,7 +3,7 @@
 set -ex
 
 pushd source-repo
-  go get -u $DEP
+  go get $DEP
   go mod vendor
 
   if [ -n "$(git status --porcelain)" ]; then
