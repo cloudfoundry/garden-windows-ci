@@ -29,25 +29,20 @@ $env:PATH = "C:/var/vcap/bosh/bin;" + $env:PATH
 
 go version
 
-mkdir "$env:EPHEMERAL_DISK_TEMP_PATH" -ea 0
-$env:TEMP = $env:TMP = $env:GOTMPDIR = $env:EPHEMERAL_DISK_TEMP_PATH
-$env:GOCACHE = "$env:EPHEMERAL_DISK_TEMP_PATH\go-build"
-
-$env:GOPATH = "$PWD/garden-runc-release/src/gopath"
-$env:PATH= "$env:GOPATH/bin;" + $env:PATH
-
-$gardenInitBinary = "$PWD\garden-init-binary\garden-init.exe"
+$ephemeral_disk_temp_path="C:\var\vcap\data\tmp"
+mkdir "$ephemeral_disk_temp_path" -ea 0
+$env:TEMP = $env:TMP = $ephemeral_disk_temp_path
 
 $grootBinary = "$PWD\groot-binary\groot.exe"
 $grootImageStore = "$env:EPHEMERAL_DISK_TEMP_PATH\groot"
-
 & $grootBinary --driver-store "$grootImageStore" pull "$env:WINC_TEST_ROOTFS"
 
-$grootConfigPath = "$PWD/config.yml"
+$grootConfigPath = "$PWD\config.yml"
 Set-Content -Value "log_level: debug" -Path "$grootConfigPath"
 
-$wincPath = "$PWD/winc-binary/winc.exe"
-$wincNetworkPath = "$PWD/winc-network-binary/winc-network.exe"
+$wincPath = "$PWD\winc-binary\winc.exe"
+$wincNetworkPath = "$PWD\winc-network-binary\winc-network.exe"
+$gardenInitBinary = "$PWD\garden-init-binary\garden-init.exe"
 
 $config = '{"mtu": 0, "network_name": "winc-nat", "subnet_range": "172.30.0.0/22", "gateway_address": "172.30.0.1"}'
 set-content -path "$env:TEMP/interface.json" -value $config
@@ -57,21 +52,12 @@ set-content -path "$env:TEMP/interface.json" -value $config
 $nstarPath = "$PWD/nstar-binary/nstar.exe"
 
 push-location garden-runc-release
-  go install ./src/gopath/src/github.com/onsi/ginkgo/ginkgo
-  if ($LastExitCode -ne 0) {
-      throw "Ginkgo installation process returned error code: $LastExitCode"
-  }
-
-  # Upstream garden-runc-release switched to go-modules
-  # We still use GOPATH, so move guardian accordingly
-  mkdir ./src/gopath/src/code.cloudfoundry.org -ea 0
-  if (Test-Path ./src/guardian) {
-    mv ./src/guardian ./src/gopath/src/code.cloudfoundry.org/
-  }
-  go build -o gdn.exe ./src/gopath/src/code.cloudfoundry.org/guardian/cmd/gdn
-  if ($LastExitCode -ne 0) {
-      throw "Building gdn.exe process returned error code: $LastExitCode"
-  }
+  push-location ./src/guardian
+    go build -o ../../gdn.exe ./cmd/gdn
+    if ($LastExitCode -ne 0) {
+        throw "Building gdn.exe process returned error code: $LastExitCode"
+    }
+  pop-location
 
   # Kill any existing garden servers
   Kill-Garden
@@ -124,10 +110,10 @@ push-location garden-runc-release
 
   Push-Location src/garden-integration-tests
     go mod vendor
-    ginkgo -randomizeSuites -noisyPendings=false
+    ~/go/bin/ginkgo -randomizeSuites -noisyPendings=false
+    $ExitCode="$LastExitCode"
   Pop-Location
 Pop-Location
-$ExitCode="$LastExitCode"
 
 Kill-Garden
 & $wincNetworkPath --action delete --configFile "$env:TEMP/interface.json"
