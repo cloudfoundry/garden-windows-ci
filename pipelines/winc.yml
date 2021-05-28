@@ -10,6 +10,11 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
+- name: ci-wip
+  type: git
+  source:
+    branch: wip
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
 - name: diff-exporter-develop
   type: git
   source:
@@ -43,6 +48,11 @@ resources:
   type: git
   source:
     branch: develop
+    uri: https://github.com/cloudfoundry/winc.git
+- name: winc-develop-wip
+  type: git
+  source:
+    branch: wip
     uri: https://github.com/cloudfoundry/winc.git
 - name: certsplitter
   type: git
@@ -176,6 +186,7 @@ groups:
 
 - name: winc-binary
   jobs:
+    - winc-2019-wip
     - winc-2019
     - merge-winc-to-master
     - gats-2019
@@ -297,6 +308,29 @@ jobs:
   - task: test
     tags: ["2019"]
     file: ci/tasks/test-winc/task.yml
+    input_mapping: { winc: winc-develop }
+    params:
+      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:2019
+      WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
+      WINDOWS_VERSION: 2019
+
+- name: winc-2019-wip
+  serial: true
+  serial_groups: ["2019"]
+  plan:
+  - in_parallel:
+    - get: ci-wip
+    - get: winc-develop-wip
+      trigger: true
+    - get: groot-windows-master
+      trigger: true
+  - task: build-groot
+    tags: ["2019"]
+    file: ci/tasks/build-groot/task.yml
+    input_mapping: { groot-windows: groot-windows-master }
+  - task: test
+    tags: ["2019"]
+    file: ci/tasks/test-winc-wip/task.yml
     input_mapping: { winc: winc-develop }
     params:
       WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:2019
