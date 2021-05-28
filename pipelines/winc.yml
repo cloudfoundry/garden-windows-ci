@@ -523,7 +523,7 @@ jobs:
       bumped-repo: all-submodules-bumped
   - put: winc-release-develop
     params:
-      repository: synced-repo
+      repository: all-submodules-bumped
       rebase: true
 
 - name: test-nstar
