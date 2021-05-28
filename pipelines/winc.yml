@@ -314,29 +314,6 @@ jobs:
       WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
       WINDOWS_VERSION: 2019
 
-- name: winc-2019-wip
-  serial: true
-  serial_groups: ["2019"]
-  plan:
-  - in_parallel:
-    - get: ci-wip
-    - get: winc-develop-wip
-      trigger: true
-    - get: groot-windows-master
-      trigger: true
-  - task: build-groot
-    tags: ["2019"]
-    file: ci/tasks/build-groot/task.yml
-    input_mapping: { groot-windows: groot-windows-master }
-  - task: test
-    tags: ["2019"]
-    file: ci/tasks/test-winc-wip/task.yml
-    input_mapping: { winc: winc-develop }
-    params:
-      WINC_TEST_ROOTFS: docker:///cloudfoundry/windows2016fs:2019
-      WINC_TEST_PERF_CONCURRENT_CONTAINERS: 20
-      WINDOWS_VERSION: 2019
-
 - name: merge-winc-to-master
   serial: true
   plan:
