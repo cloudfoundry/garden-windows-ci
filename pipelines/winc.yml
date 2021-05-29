@@ -10,11 +10,6 @@ resources:
   source:
     branch: master
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
-- name: ci-wip
-  type: git
-  source:
-    branch: wip
-    uri: https://github.com/cloudfoundry/garden-windows-ci.git
 - name: diff-exporter-develop
   type: git
   source:
@@ -48,11 +43,6 @@ resources:
   type: git
   source:
     branch: develop
-    uri: https://github.com/cloudfoundry/winc.git
-- name: winc-develop-wip
-  type: git
-  source:
-    branch: wip
     uri: https://github.com/cloudfoundry/winc.git
 - name: certsplitter
   type: git
@@ -186,7 +176,6 @@ groups:
 
 - name: winc-binary
   jobs:
-    - winc-2019-wip
     - winc-2019
     - merge-winc-to-master
     - gats-2019
@@ -260,7 +249,6 @@ jobs:
     params: { repository: bumped-repo }
 
 - name: test-groot
-  old_name: groot-2019
   serial: true
   serial_groups: [ "2019" ]
   plan:
