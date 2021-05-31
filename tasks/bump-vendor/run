@@ -14,4 +14,4 @@ pushd source-repo
   fi
 popd
 
-cp -r source-repo bumped-repo/
+cp -r source-repo/. bumped-repo/
