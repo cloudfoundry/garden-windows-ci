@@ -54,7 +54,7 @@ $env:VERSION_TAG=$env:OS_VERSION
 cd $repoPath
 ~/go/bin/ginkgo.exe -v
 if ($LASTEXITCODE -ne 0) {
-  # Exit $LASTEXITCODE
+  Exit $LASTEXITCODE
 }
 
 Run-Docker "images", "-a"
