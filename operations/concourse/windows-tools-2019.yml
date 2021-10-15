@@ -42,3 +42,9 @@
   value:
     name: cmake
     release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: ginkgo
+    release: windows-tools
