@@ -15,7 +15,7 @@ $env:WINC_BINARY = "$PWD\winc-binary\winc.exe"
 
 cd diff-exporter
 
-~/go/bin/ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10
+ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10
 $exitCode = $LastExitCode
 if ($exitCode -ne 0) {
   Exit $exitCode

@@ -9,7 +9,7 @@ go.exe version
 
 cd $env:TEST_PATH
 
-~/go/bin/ginkgo.exe -r -p -race -keepGoing -randomizeSuites
+ginkgo.exe -r -p -race -keepGoing -randomizeSuites
 if ($LastExitCode -ne 0) {
     Exit $exitCode
 }

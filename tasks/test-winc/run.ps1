@@ -30,16 +30,16 @@ if ($LastExitCode -ne 0) {
 $env:DEBUG="true"
 
 #TODO: fix these test suites
-#~/go/bin/ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 -skipPackage winc-network,perf
-~/go/bin/ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 -skipPackage winc-network,perf,netinterface
+#ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 -skipPackage winc-network,perf
+ginkgo.exe -p -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 -skipPackage winc-network,perf,netinterface
 $exitCode = $LastExitCode
 if ($exitCode -ne 0) {
   Exit $exitCode
 }
 
 #TODO: fix these test suites
-#~/go/bin/ginkgo.exe -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/perf  ./integration/winc-network
-~/go/bin/ginkgo.exe -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/perf
+#ginkgo.exe -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/perf  ./integration/winc-network
+ginkgo.exe -r -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10 ./integration/perf
 $exitCode = $LastExitCode
 if ($exitCode -ne 0) {
   Exit $exitCode

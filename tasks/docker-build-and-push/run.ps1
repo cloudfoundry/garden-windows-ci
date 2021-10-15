@@ -52,7 +52,7 @@ $env:TEST_CANDIDATE_IMAGE=$env:IMAGE_NAME
 $env:VERSION_TAG=$env:OS_VERSION
 
 cd $repoPath
-~/go/bin/ginkgo.exe -v
+ginkgo.exe -v
 if ($LASTEXITCODE -ne 0) {
   Exit $LASTEXITCODE
 }

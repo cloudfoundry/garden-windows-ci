@@ -5,7 +5,7 @@ go.exe version
 
 cd groot-windows
 
-~/go/bin/ginkgo.exe -r -p -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10
+ginkgo.exe -r -p -race -keepGoing -randomizeSuites -failOnPending -slowSpecThreshold 10
 if ($LastExitCode -ne 0) {
     throw "Testing groot-windows returned error code: $LastExitCode"
 }
