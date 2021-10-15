@@ -58,14 +58,6 @@ resources:
     private_key: ((GREENHOUSE-CI_SSH_KEY))
 
 jobs:
-- name: install-ginkgo
-  serial: true
-  plan:
-  - get: ci
-  - task: install-ginkgo
-    tags: [ "2019" ]
-    file: ci/tasks/install-ginkgo-windows/task.yml
-
 - name: build-and-push
   serial: true
   plan:
