@@ -84,6 +84,7 @@ resources:
 - name: winc-release-develop
   type: git
   source:
+    skip_ssl_verification: true
     branch: develop
     uri: git@github.com:cloudfoundry/winc-release.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_WINC-RELEASE_DEPLOY_KEY}}

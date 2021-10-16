@@ -90,6 +90,7 @@ resources:
 - name: windowsfs-offline-release-develop-2019
   type: git
   source:
+    skip_ssl_verification: true
     branch: develop
     uri: git@github.com:cloudfoundry/windows2019fs-release.git
     private_key: ((GREENHOUSE-CI_SSH_KEY))
@@ -157,6 +158,7 @@ resources:
 - name: winc-release-master
   type: git
   source:
+    skip_ssl_verification: true
     branch: master
     uri: https://github.com/cloudfoundry/winc-release.git
 
