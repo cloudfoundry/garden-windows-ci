@@ -9,7 +9,7 @@ blobstore:
 echo "$PRIVATE_YML" > release-repo/config/private.yml
 
 # Find the latest golang windows zip for amd64.
-zipName=$(curl -s https://golang.org/dl/?mode=json | jq -r 'max_by(.version) | .files | .[] | select(.os == "windows" and .arch == "amd64" and .kind == "archive").filename')
+zipName=$(curl -s https://go.dev/dl/?mode=json | jq -r 'max_by(.version) | .files | .[] | select(.os == "windows" and .arch == "amd64" and .kind == "archive").filename')
 curl -o $zipName https://dl.google.com/go/$zipName
 
 zipPath="$PWD/$zipName"
