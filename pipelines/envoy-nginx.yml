@@ -118,12 +118,12 @@ jobs:
       trigger: true
   - task: run-ginkgo-exe
     tags: ["2019"]
-    file: ci/tasks/ginkgo-from-gopath-windows/task.yml
+    file: ci/tasks/ginkgo-test-windows/task.yml
     input_mapping:
       repo: envoy-nginx-release-develop
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
-      TEST_PATH: "src/code.cloudfoundry.org/envoy-nginx"
+      TEST_PATH: "repo/src/code.cloudfoundry.org/envoy-nginx"
 
 - name: alfredo-cats
   serial: true
