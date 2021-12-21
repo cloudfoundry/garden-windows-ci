@@ -941,6 +941,15 @@ jobs:
             repository: finalized-release/release
             tag: windowsfs-online-release-version/number
             tag_prefix: v
+          on_failure:
+            task: delete-git-tag
+            file: ci/tasks/git-delete-tag/task.yml
+            input_mapping:
+              repo: windowsfs-online-release-master-2019
+              version_dir: windowsfs-online-release-version
+            params:
+              TAG_PREFIX: v
+              GIT_PRIVATE_KEY: ((GREENHOUSE-CI_SSH_KEY))
         - put: windowsfs-online-release-develop-2019
           params:
             repository: finalized-release/release
@@ -971,6 +980,15 @@ jobs:
             repository: windowsfs-release-updated-version
             tag: windowsfs-online-release-version/version
             tag_prefix: v
+          on_failure:
+            task: delete-git-tag
+            file: ci/tasks/git-delete-tag/task.yml
+            input_mapping:
+              repo: windowsfs-offline-release-master-2019
+              version_dir: windowsfs-online-release-version
+            params:
+              TAG_PREFIX: v
+              GIT_PRIVATE_KEY: ((GREENHOUSE-CI_SSH_KEY))
         - put: windowsfs-offline-release-develop-2019
           params:
             repository: windowsfs-release-updated-version
