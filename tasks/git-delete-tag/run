@@ -2,8 +2,15 @@
 
 set -e
 
+func cleanup {
+  eval "$(ssh-agent -k)"
+}
+eval $(ssh-agent -s)
+trap cleanup EXIT
+
 tag="${TAG_PREFIX}$(< version_dir/number)"
 
 cd repo
 
+echo "$GIT_PRIVATE_KEY" | ssh-add -
 git push --delete origin "${tag}"
