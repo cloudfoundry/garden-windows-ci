@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+tag="${TAG_PREFIX}$(< version_dir/number)"
+
+cd repo
+
+git push --delete origin "${tag}"

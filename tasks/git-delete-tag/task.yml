@@ -1,0 +1,14 @@
+---
+platform: linux
+
+image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
+
+inputs:
+  - name: repo
+  - name: version_dir
+
+run:
+  path: ci/tasks/git-delete-tag/run
+
+params:
+  TAG_PREFIX:
