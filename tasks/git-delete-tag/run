@@ -2,9 +2,7 @@
 
 set -e
 
-func cleanup {
-  eval "$(ssh-agent -k)"
-}
+function cleanup() { eval "$(ssh-agent -k)"; }
 eval $(ssh-agent -s)
 trap cleanup EXIT
 
