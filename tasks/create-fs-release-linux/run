@@ -5,3 +5,7 @@ set -e
 pushd windowsfs-release
   ./scripts/create-release --tarball ../release-tarball/release.tgz --timestamp-version
 popd
+
+### Cause failure to keep container around longer
+### TODO: remove
+exit 1
