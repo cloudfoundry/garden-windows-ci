@@ -1,6 +1,20 @@
 #!/bin/bash -e
 # usage: bbl_up_gcp <env> <cf|concourse>
 
+#########################################################################
+errMsg=$(cat <<- EOM
+!! DO NOT USE THIS SCRIPT !!
+THIS SCRIPT IS SUPER OLD. THE ENVIRONMENTS ARE NOT STORED ON A GCS BUCKET.
+SEE: https://github.com/pivotal/garden-windows-environments
+FOR THE BBL STATES. YOU NEED TO RUN BBL PLAN & BBL UP MANUALLY
+EOM
+)
+
+echo "${errMsg}"
+exit 1
+#########################################################################
+
+
 environment=$1
 lb_type=$2
 
