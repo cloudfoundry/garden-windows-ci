@@ -3,6 +3,8 @@
 RED='\033[1;31m'
 NC='\033[0m' # No Color
 
+CONCOURSE_DEPLOYMENT_TAG="${1:-v7.6.0}"
+
 lpass status > /dev/null
 if [[ $? != 0 ]]; then
   echo -e "${RED}Error${NC}: You must log into lastpass before running this script."
@@ -16,11 +18,11 @@ GARDEN_WINDOWS_CI=${GARDEN_WINDOWS_CI:-$HOME/workspace/garden-windows-ci}
 CONCOURSE_DEPLOYMENT=${CONCOURSE_DEPLOYMENT:-$HOME/workspace/concourse-bosh-deployment}
 if [[ ! -d $CONCOURSE_DEPLOYMENT ]]; then
  pushd $HOME/workspace
-  git clone https://github.com/concourse/concourse-bosh-deployment
+  git clone --branch "${CONCOURSE_DEPLOYMENT_TAG}" https://github.com/concourse/concourse-bosh-deployment
  popd
 fi
 
-source $GARDEN_WINDOWS_CI/bin/bash_helpers
+source "${GARDEN_WINDOWS_CI}/bin/bash_helpers"
 
 bosh_target "spitfire"
 
