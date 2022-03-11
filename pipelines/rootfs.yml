@@ -14,6 +14,18 @@ resource_types:
     repository: cloudfoundry/bosh-deployment-resource
 
 groups:
+- name: online-and-offline
+  jobs:
+  - build-and-push-2019
+  - update-windowsfs-online-2019
+  - aioli-online-cats
+  - aioli-online-smoke-test
+  - update-windowsfs-offline-2019
+  - sriracha-offline-cats
+  - sriracha-offline-smoke-test
+  - generate-rootfs-metadata
+  - shipit-minor
+
 - name: online
   jobs:
   - build-and-push-2019
