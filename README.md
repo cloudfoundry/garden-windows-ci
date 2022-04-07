@@ -2,6 +2,16 @@
 
 Set of concourse tasks, dockerfiles, and pipelines for the CF Garden Windows team
 
+### Updating pipelines
+
+There are some handy `fly-*` functions defined in dotfiles/flyw to help you fly with all the right lastpass variables.
+For example, to update the winc pipeline:
+
+```
+$ . $HOME/garden-windows-ci/dotfiles/flyw
+$ fly-winc
+```
+
 ### Our Environments
 
 |Name|IaaS|Purpose|
