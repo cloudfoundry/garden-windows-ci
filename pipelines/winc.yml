@@ -8,7 +8,7 @@ resources:
 - name: ci
   type: git
   source:
-    branch: master
+    branch: winc-additional-tests-iwa
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 - name: diff-exporter-develop
   type: git
@@ -152,6 +152,7 @@ groups:
     - bump-winc-release
     - test-nstar
     - bosh-template-specs
+    - winc-unit-tests
     - pesto-cats-2019
     - shipit-minor
 
@@ -548,7 +549,8 @@ jobs:
       - get: winc-release-develop
         passed: [bump-winc-release]
         trigger: true
-  - config:
+  - task: bosh-template-specs
+    config:
       image_resource:
         source:
           repository: c2cnetworking/tas-runtime-build
@@ -562,7 +564,21 @@ jobs:
         - |
           winc-release-develop/scripts/template-tests
         path: /bin/bash
-    task: bosh-template-specs
+
+- name: winc-unit-tests
+  plan:
+  - in_parallel:
+      steps:
+      - get: ci
+      - get: winc-release-develop
+        passed: [bump-winc-release]
+        trigger: true
+  - task: unit-tests
+    file: ci/tasks/ccg-plugin-unit-tests/task.yml
+    tags: ["2019"]
+    input_mapping:
+      repo: winc-release-develop
+
 
 - name: pesto-cats-2019
   serial: true
@@ -570,7 +586,7 @@ jobs:
   - in_parallel:
     - get: ci
     - get: winc-release-develop
-      passed: [test-nstar, bosh-template-specs]
+      passed: [test-nstar, bosh-template-specs, winc-unit-tests]
       trigger: true
     - get: cf-acceptance-tests
     - get: cf-deployment-concourse-tasks
