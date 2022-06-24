@@ -3,6 +3,10 @@ resource_types:
   type: docker-image
   source:
     repository: cloudfoundry/bosh-deployment-resource
+- name: pcf-pool
+  type: docker-image
+  source:
+    repository: cftoolsmiths/toolsmiths-envs-resource
 
 resources:
 - name: ci
@@ -144,6 +148,12 @@ resources:
     target: ((PESTO_BOSH_ENVIRONMENT))
     jumpbox_url: ((PESTO_JUMPBOX_IP)):22
     jumpbox_ssh_key: ((PESTO_JUMPBOX_SSH_KEY))
+- name: toolsmiths-env
+  type: pcf-pool
+  source:
+    api_token: ((TOOLSMITHS_API_KEY))
+    hostname: environments.toolsmiths.cf-app.com
+    pool_name: cf-deployment
 
 groups:
 - name: main
@@ -153,6 +163,7 @@ groups:
     - test-nstar
     - bosh-template-specs
     - winc-unit-tests
+    - winc-integration-tests
     - pesto-cats-2019
     - shipit-minor
 
@@ -180,6 +191,14 @@ groups:
     - winc-2019
     - merge-winc-to-master
     - gats-2019
+- name: winc
+  jobs:
+    - bosh-template-specs
+    - winc-unit-tests
+    - winc-integration-tests
+    - claim-integration-env
+    - unclaim-integration-env
+    - pesto-cats-2019
 
 jobs:
 - name: generate-readme
@@ -579,6 +598,57 @@ jobs:
     input_mapping:
       repo: winc-release-develop
 
+- name: claim-integration-env
+  plan:
+  - in_parallel:
+      steps:
+      - get: winc-release-develop
+        passed: [bump-winc-release]
+        trigger: true
+      - put: toolsmiths-env
+        params:
+          action: claim
+
+- name: winc-integration-tests
+  plan:
+  - in_parallel:
+      steps:
+      - get: ci
+      - get: winc-release-develop
+        passed: [claim-integration-env]
+      - get: toolsmiths-env
+        passed: [claim-integration-env]
+        trigger: true
+  - task: print-env-info
+    config:
+      image_resource:
+        source:
+          repository: c2cnetworking/tas-runtime-thin
+        type: registry-image
+      inputs:
+      - name: winc-release-develop
+      - name: toolsmiths-env
+      platform: linux
+      run:
+        path: /bin/bash
+        args:
+        - -c
+        - |
+          ls -la
+
+          cat toolsmiths-env/metadata
+
+- name: unclaim-integration-env
+  plan:
+  - get: toolsmiths-env
+    passed: [winc-integration-tests]
+    trigger: true
+  - put: toolsmiths-env
+    params:
+      action: unclaim
+      env_file: toolsmiths-env/metadata
+
+
 
 - name: pesto-cats-2019
   serial: true
@@ -586,7 +656,7 @@ jobs:
   - in_parallel:
     - get: ci
     - get: winc-release-develop
-      passed: [test-nstar, bosh-template-specs, winc-unit-tests]
+      passed: [test-nstar, bosh-template-specs, winc-unit-tests, winc-integration-tests]
       trigger: true
     - get: cf-acceptance-tests
     - get: cf-deployment-concourse-tasks
