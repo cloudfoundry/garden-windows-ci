@@ -92,8 +92,8 @@ resources:
   source:
     bucket: all-bosh-windows
     regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
-    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
 
 # BOSH Deployment
 
@@ -235,8 +235,8 @@ jobs:
     input_mapping: { release: envoy-nginx-release-develop }
     params:
       RELEASE_NAME: envoy-nginx
-      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
   - put: envoy-nginx-release-master
     params:
       repository: finalized-release/release
