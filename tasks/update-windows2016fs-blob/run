@@ -6,6 +6,11 @@ blob_version=$(grep $FS_VERSION windowsfs-release/config/blobs.yml |  grep -o '[
 image_version=$(< image-version/version)
 dir=$PWD
 
+if [[ "${image_version}" == "${blob_version}" ]]; then
+  echo "No new windows2016fs image version detected. Exiting"
+  exit 0
+fi
+
 pushd windowsfs-release/src/code.cloudfoundry.org/hydrator
   go build -o $dir/hydrate ./cmd/hydrate
 popd
