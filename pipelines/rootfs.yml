@@ -277,15 +277,15 @@ resources:
   source:
     bucket: rootfs-release-notes
     versioned_file: kb-metadata
-    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
 - name: tar
   type: s3
   source:
     bucket: bosh-windows-dependencies
     regexp: tar-(.*).exe
-    access_key_id: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-    secret_access_key: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
 
 # Semver
 
@@ -498,8 +498,8 @@ jobs:
   - task: bosh-vendor-package
     file: ci/tasks/bosh-vendor-package/task.yml
     params:
-      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
       PACKAGE: golang-1-windows
     input_mapping:
       release-repo: windowsfs-online-release-develop-2019
@@ -543,13 +543,15 @@ jobs:
       trigger: true
     - get: windowsfs-offline-release-develop-2019
     - get: ci
-  - task: bosh-update-blob
-    file: ci/tasks/bosh-update-blob/task.yml
+  - task: bosh-vendor-package
+    file: ci/tasks/bosh-vendor-package/task.yml
     params:
-      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
+      PACKAGE: golang-1-windows
     input_mapping:
       release-repo: windowsfs-offline-release-develop-2019
+      package-repo: golang-release
   - put: windowsfs-offline-release-develop-2019
     params:
       repository: bumped-release-repo
@@ -945,8 +947,8 @@ jobs:
             version: windowsfs-online-release-version
           params:
             RELEASE_NAME: windowsfs
-            AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_BOSH_CI_S3_ACCESS_KEY_ID))
-            AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_BOSH_CI_S3_SECRET_ACCESS_KEY))
+            AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+            AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
             CI_SKIP: true
         - put: windowsfs-online-release-master-2019
           params:
