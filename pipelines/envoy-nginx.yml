@@ -74,7 +74,7 @@ resources:
 - name: cf-deployment
   type: git
   source:
-    branch: release-candidate
+    branch: main
     uri: https://github.com/cloudfoundry/cf-deployment.git
 
 - name: garden-windows-environments
@@ -208,6 +208,7 @@ jobs:
       file: cf-deployment-concourse-tasks/run-cats/task.yml
       params:
         NODES: 4
+      attempts: 3
       on_success:
         task: delete-deployment
         file: ci/tasks/bosh-deld/task.yml
