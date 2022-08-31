@@ -18,7 +18,7 @@ resources:
   type: git
   source:
     branch: develop
-    uri: git@github.com:cloudfoundry-incubator/envoy-nginx-release.git
+    uri: git@github.com:cloudfoundry/envoy-nginx-release.git
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     git_config:
     - name: user.email
@@ -33,7 +33,7 @@ resources:
   type: git
   source:
     branch: master
-    uri: git@github.com:cloudfoundry-incubator/envoy-nginx-release.git
+    uri: git@github.com:cloudfoundry/envoy-nginx-release.git
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     git_config:
     - name: user.email
@@ -54,7 +54,7 @@ resources:
 - name: envoy-nginx-release-github-release
   type: github-release
   source:
-    user: cloudfoundry-incubator
+    user: cloudfoundry
     repository: envoy-nginx-release
     drafts: true
     access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
