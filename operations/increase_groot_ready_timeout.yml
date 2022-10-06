@@ -1,4 +1,0 @@
----
-- type: replace
-  path: /instance_groups/name=smoke-test/jobs/name=windows2019fs/properties/groot_ready_timeout?
-  value: 60
