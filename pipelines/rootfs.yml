@@ -781,6 +781,7 @@ jobs:
       - ci/operations/enable-rdp-2019.yml
       - windowsfs-opsfile/specified-windowsfs-version.yml
       - ci/operations/use-offline-windows2019fs.yml
+      - ci/operations/increase_groot_ready_timeout.yml
       vars_files:
       - garden-windows-environments/sriracha/cf/vars.yml
       cleanup: true
