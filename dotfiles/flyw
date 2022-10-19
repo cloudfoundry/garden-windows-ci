@@ -13,8 +13,8 @@ fly-envoy-nginx() {
 
   [ "$1" == "-h" ] && echo "Push envoy-nginx pipeline to concourse" && return
   fly -t garden-windows sp -p envoy-nginx -c $HOME/workspace/garden-windows-ci/pipelines/envoy-nginx.yml \
-    -l <(lpass show --notes 'Shared-diego/garden-windows-env-creds') \
-    -l <(lpass show --notes 'Shared-diego/garden-windows-ci-creds') \
+    -l <(lpass show --notes 'Shared-Greenhouse/env-creds') \
+    -l <(lpass show --notes 'Shared-Greenhouse/ci-creds') \
     -l <(lpass show --notes github-deploy-keys)
 }
 

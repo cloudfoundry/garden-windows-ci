@@ -29,6 +29,18 @@ resources:
     - releases/**
     - .final_builds/**
 
+- name: envoy-nginx-release-develop-full
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/envoy-nginx-release.git
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    git_config:
+    - name: user.email
+      value: "pivotal-netgarden-eng@pivotal.io"
+    - name: user.name
+      value: "Greenhouse CI"
+
 - name: envoy-nginx-release-master
   type: git
   source:
@@ -40,6 +52,18 @@ resources:
       value: "pivotal-netgarden-eng@pivotal.io"
     - name: user.name
       value: "Greenhouse CI"
+
+- name: tas-runtime
+  type: git
+  icon: github-box
+  source:
+    uri: git@github.com:pivotal/tas-runtime
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+    paths:
+      - ci/tasks/cf-networking
+      - ci/opsfiles/cf-networking
+      - ci/pipelines
+    branch: main
 
 - name: version
   type: semver
@@ -84,6 +108,14 @@ resources:
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     uri: git@github.com:pivotal/garden-windows-environments
 
+- name: golang-release-latest
+  type: git
+  icon: github-box
+  source:
+    uri: git@github.com:bosh-packages/golang-release.git
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    branch: master
+    tag_filter: v*
 
 # S3
 
@@ -110,6 +142,34 @@ resources:
     skip_check: true
 
 jobs:
+- name: bump-golang
+  plan:
+  - in_parallel:
+    - get: tas-runtime
+    - get: envoy-nginx-release-develop-full
+    - get: golang-release-latest
+      trigger: true
+  - task: bump-golang
+    file: tas-runtime/ci/tasks/shared/upgrade-package-in-release/task.yml
+    params:
+      PACKAGE: golang-1.19-linux
+      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
+      RELEASE: release
+    input_mapping:
+      release: envoy-nginx-release-develop-full
+      package-release: golang-release-latest
+  - task: save-golang-version-to-file
+    file: tas-runtime/ci/tasks/shared/save-golang-version-to-file/task.yml
+    params:
+      BRANCH: develop
+      PACKAGE: golang-1.19-linux
+    input_mapping:
+      release: modified-release
+  - put: envoy-nginx-release-develop-full
+    params:
+      repository: modified-release
+
 - name: test-envoy-nginx
   plan:
   - in_parallel:
