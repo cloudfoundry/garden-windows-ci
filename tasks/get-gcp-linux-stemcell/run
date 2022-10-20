@@ -2,6 +2,7 @@
 
 set -eux
 
-version=$(bosh int --path '/stemcells/os=ubuntu-bionic/version' $bosh_manifest_path)
+version=$(bosh int --path '/stemcells/os=ubuntu-jammy/version' ${bosh_manifest_path})
 cd stemcell
-curl -L "https://bosh.io/d/stemcells/bosh-google-kvm-ubuntu-bionic-go_agent?v=${version}" -o "light-bosh-stemcell-${version}-google-kvm-ubuntu-bionic.tgz"
+curl -Lo "light-bosh-stemcell-${version}-google-kvm-ubuntu-jammy.tgz" \
+    "https://bosh.io/d/stemcells/bosh-google-kvm-ubuntu-jammy-go_agent?v=${version}"
