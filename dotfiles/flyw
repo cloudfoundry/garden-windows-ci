@@ -30,7 +30,7 @@ fly-misc() {
 
   [ "$1" == "-h" ] && echo "Push windows-tools pipeline to concourse" && return
   fly -t garden-windows sp -p misc -c $HOME/workspace/garden-windows-ci/pipelines/misc.yml \
-    -l <(lpass show --notes 'Shared-diego/garden-windows-ci-creds') \
+    -l <(lpass show --notes 'Shared-Greenhouse/ci-creds') \
     -l <(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3)
 }
 
@@ -46,8 +46,8 @@ fly-winc() {
 
   [ "$1" == "-h" ] && echo "Push winc pipeline to concourse" && return
   fly -t garden-windows sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
-    -l <(lpass show --notes 'Shared-diego/garden-windows-env-creds') \
-    -l <(lpass show --notes 'Shared-diego/garden-windows-ci-creds') \
+    -l <(lpass show --notes 'Shared-Greenhouse/env-creds') \
+    -l <(lpass show --notes 'Shared-Greenhouse/ci-creds') \
     -l <(lpass show --notes github-deploy-keys github-deploy-keys-2)
 }
 
@@ -63,8 +63,8 @@ fly-rootfs() {
 
   [ "$1" == "-h" ] && echo "Push rootfs pipeline to concourse" && return
   fly -t garden-windows sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
-    -l <(lpass show --notes 'Shared-diego/garden-windows-env-creds') \
-    -l <(lpass show --notes 'Shared-diego/garden-windows-ci-creds') \
+    -l <(lpass show --notes 'Shared-Greenhouse/env-creds') \
+    -l <(lpass show --notes 'Shared-Greenhouse/ci-creds') \
     -l <(lpass show --notes github-deploy-keys github-deploy-keys-2)
 }
 
@@ -80,7 +80,7 @@ fly-ci () {
 
   [ "$1" == "-h" ] && echo "Push ci pipeline to concourse" && return
   fly -t garden-windows sp -p ci -c $HOME/workspace/garden-windows-ci/pipelines/ci.yml \
-  -l <(lpass show --notes 'Shared-diego/garden-windows-env-creds') \
-  -l <(lpass show --notes 'Shared-diego/garden-windows-ci-creds') \
+  -l <(lpass show --notes 'Shared-Greenhouse/env-creds') \
+  -l <(lpass show --notes 'Shared-Greenhouse/ci-creds') \
   -l <(lpass show --notes github-deploy-keys )
 }
