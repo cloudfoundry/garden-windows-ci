@@ -3,8 +3,20 @@ resource_types:
   type: docker-image
   source:
     repository: cloudfoundry/bosh-deployment-resource
+- name: cf-cli-resource
+  type: registry-image
+  source:
+    repository: nulldriver/cf-cli-resource
+    tag: latest
 
 resources:
+- name: pesto-cf-cli
+  type: cf-cli-resource
+  source:
+    api: api.pesto.cf-app.com
+    username: admin
+    password: ((PESTO_ADMIN_PASSWORD))
+    cf_cli_version: 8
 - name: ci
   type: git
   source:
@@ -602,6 +614,9 @@ jobs:
       - ci/operations/enable-rdp-2019.yml
       - ci/operations/decrease-rep-evacuation-timeout.yml
       - ci/operations/use-2-azs-for-router.yml
+      - ci/operations/enable-windows-auth.yml
+      - ci/operations/enable-windows-tcp-routes.yml
+      - ci/operations/add-dc-to-security-groups.yml
       vars_files:
       - garden-windows-environments/pesto/cf/vars.yml
       cleanup: true
@@ -620,6 +635,27 @@ jobs:
       CF_API: api.pesto.cf-app.com
       CF_USERNAME: admin
       CF_PASSWORD: ((PESTO_ADMIN_PASSWORD))
+  - put: pesto-cf-cli
+    command: push
+    path: winc-release-develop/src/WindowsAuth
+    manifest:
+      applications:
+      - name: iwa-test-app
+        memory: 1G
+        stack: windows
+        buildpacks:
+          - hwc-buildpack
+        routes:
+          - route: &iwa_test_app_route tcp.pesto.cf-app.com:1030
+            protocol: tcp
+  - task: verify-iwa-functionality
+    tags: ["2019"]
+    file: ci/tasks/verify-iwa-functionality/task.yml
+    params:
+      IWA_TEST_APP_ROUTE: *iwa_test_app_route
+      IWA_DOMAIN: ((PESTO_IWA_DOMAIN))
+      IWA_USERNAME: ((PESTO_IWA_USERNAME))
+      IWA_PASSWORD: ((PESTO_IWA_PASSWORD))
   - task: generate-integration-config
     file: ci/tasks/generate-integration-config/task.yml
     params:
