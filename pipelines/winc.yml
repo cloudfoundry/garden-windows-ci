@@ -636,18 +636,19 @@ jobs:
       CF_USERNAME: admin
       CF_PASSWORD: ((PESTO_ADMIN_PASSWORD))
   - put: pesto-cf-cli
-    command: push
-    path: winc-release-develop/src/WindowsAuth
-    manifest:
-      applications:
-      - name: iwa-test-app
-        memory: 1G
-        stack: windows
-        buildpacks:
-          - hwc-buildpack
-        routes:
-          - route: &iwa_test_app_route tcp.pesto.cf-app.com:1030
-            protocol: tcp
+    params:
+      command: push
+      path: winc-release-develop/src/WindowsAuth
+      manifest:
+        applications:
+        - name: iwa-test-app
+          memory: 1G
+          stack: windows
+          buildpacks:
+            - hwc-buildpack
+          routes:
+            - route: &iwa_test_app_route tcp.pesto.cf-app.com:1030
+              protocol: tcp
   - task: verify-iwa-functionality
     tags: ["2019"]
     file: ci/tasks/verify-iwa-functionality/task.yml
