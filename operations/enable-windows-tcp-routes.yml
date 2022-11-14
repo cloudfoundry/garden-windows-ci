@@ -10,3 +10,9 @@
 - type: replace
   path: /instance_groups/name=windows2019-cell/jobs/name=route_emitter_windows/properties/uaa?/ca_cert
   value: ((uaa_ssl.ca))
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/app_domains/-
+  value:
+     name: ((tcp_domain))
+     router_group_name: ((tcp_router_group))
