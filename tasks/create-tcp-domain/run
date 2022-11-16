@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eu
+
+cf login -a "$CF_API" -u "$CF_USERNAME" -p "$CF_PASSWORD" --skip-ssl-validation
+
+cf create-shared-domain "$TCP_DOMAIN" --router-group "$ROUTER_GROUP"

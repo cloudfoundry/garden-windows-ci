@@ -635,6 +635,14 @@ jobs:
       CF_API: api.pesto.cf-app.com
       CF_USERNAME: admin
       CF_PASSWORD: ((PESTO_ADMIN_PASSWORD))
+  - task: create-tcp-domain
+    file: ci/tasks/create-tcp-domain/task.yml
+    attempts: 3
+    params:
+      CF_API: api.pesto.cf-app.com
+      CF_USERNAME: admin
+      CF_PASSWORD: ((PESTO_ADMIN_PASSWORD))
+      TCP_DOMAIN: tcp.pesto.cf-app.com
   - put: pesto-cf-cli
     params:
       command: push
@@ -651,6 +659,7 @@ jobs:
               protocol: tcp
   - task: verify-iwa-functionality
     tags: ["2019"]
+    attempts: 3
     file: ci/tasks/verify-iwa-functionality/task.yml
     params:
       IWA_TEST_APP_ROUTE: *iwa_test_app_route
