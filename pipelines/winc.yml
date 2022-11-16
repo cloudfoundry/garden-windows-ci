@@ -17,6 +17,7 @@ resources:
     username: admin
     password: ((PESTO_ADMIN_PASSWORD))
     cf_cli_version: 8
+    skip_cert_check: true
 - name: ci
   type: git
   source:
