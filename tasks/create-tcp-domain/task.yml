@@ -13,6 +13,7 @@ params:
   CF_API:
   CF_USERNAME:
   CF_PASSWORD:
+  CF_ORG:
   TCP_DOMAIN:
   ROUTER_GROUP: default-tcp
 
