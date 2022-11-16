@@ -646,18 +646,26 @@ jobs:
       TCP_DOMAIN: tcp.pesto.cf-app.com
   - put: pesto-cf-cli
     params:
-      command: push
-      path: winc-release-develop/src/WindowsAuth
-      manifest:
-        applications:
-        - name: iwa-test-app
-          memory: 1G
-          stack: windows
-          buildpacks:
-            - hwc-buildpack
-          routes:
-            - route: &iwa_test_app_route tcp.pesto.cf-app.com:1030
-              protocol: tcp
+      commands:
+        - command: create-org
+          org: iwa-org
+        - command: create-space
+          org: iwa-org
+          space: iwa-space
+        - command: push
+          org: iwa-org
+          space: iwa-space
+          path: winc-release-develop/src/WindowsAuth
+          manifest:
+            applications:
+            - name: iwa-test-app
+              memory: 1G
+              stack: windows
+              buildpacks:
+                - hwc-buildpack
+              routes:
+                - route: &iwa_test_app_route tcp.pesto.cf-app.com:1030
+                  protocol: tcp
   - task: verify-iwa-functionality
     tags: ["2019"]
     attempts: 3
