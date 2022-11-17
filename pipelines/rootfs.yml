@@ -227,17 +227,17 @@ resources:
     branch: main
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
-- name: windows2016fs-master
+- name: windows2016fs-main
   type: git
   source:
-    branch: master
+    branch: main
     uri: git@github.com:cloudfoundry/windows2016fs.git
     private_key: ((CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_DEPLOY_KEY))
 
 - name: windowsfs-dockerfile-2019
   type: git
   source:
-    branch: master
+    branch: main
     uri: https://github.com/cloudfoundry/windows2016fs.git
     paths: [ 2019/Dockerfile ]
 
@@ -350,7 +350,7 @@ jobs:
         skip_download: true
     - get: windowsfs-dockerfile-2019
       trigger: true
-    - get: windows2016fs-master
+    - get: windows2016fs-main
     - get: git-setup
       params:
         globs: [Git-*-64-bit.exe]
@@ -371,7 +371,7 @@ jobs:
     tags: ["2019"]
     file: ci/tasks/docker-build-and-push/task.yml
     input_mapping:
-      repo: windows2016fs-master
+      repo: windows2016fs-main
       version: image-version-2019
     params:
       DOCKERFILE: repo/2019/Dockerfile
@@ -387,7 +387,7 @@ jobs:
   - task: update-image-tag
     file: ci/tasks/update-image-tag/task.yml
     input_mapping:
-      windows2016fs: windows2016fs-master
+      windows2016fs: windows2016fs-main
       image-version: image-version-2019
     params:
       OS_VERSION: "2019"
@@ -399,7 +399,7 @@ jobs:
       repo_with_commit: windowsfs-commit
     params:
       MESSAGE: "Updated 2019 image tag"
-  - put: windows2016fs-master
+  - put: windows2016fs-main
     params:
       repository: windowsfs-commit
   - put: image-version-2019
