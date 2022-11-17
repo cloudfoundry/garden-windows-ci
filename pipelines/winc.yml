@@ -60,12 +60,12 @@ resources:
 - name: certsplitter
   type: git
   source:
-    branch: master
+    branch: main
     uri: https://github.com/cloudfoundry/certsplitter.git
 - name: cert-injector
   type: git
   source:
-    branch: master
+    branch: main
     uri: https://github.com/cloudfoundry/cert-injector.git
 - name: winc-master
   type: git
