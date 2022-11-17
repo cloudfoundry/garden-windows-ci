@@ -41,16 +41,16 @@ resources:
     branch: develop
     uri: git@github.com:cloudfoundry/groot-windows.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
-- name: groot-windows-master
+- name: groot-windows-main
   type: git
   source:
-    branch: master
+    branch: main
     uri: git@github.com:cloudfoundry/groot-windows.git
     private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
 - name: groot
   type: git
   source:
-    branch: master
+    branch: main
     uri: https://github.com/cloudfoundry/groot.git
 - name: winc-develop
   type: git
@@ -284,12 +284,12 @@ jobs:
     - get: groot-windows-develop
       passed: [test-groot]
       trigger: true
-    - get: groot-windows-master
+    - get: groot-windows-main
   - task: merge-develop-to-master
-    input_mapping: { from-repo: groot-windows-develop, to-repo: groot-windows-master}
+    input_mapping: { from-repo: groot-windows-develop, to-repo: groot-windows-main}
     file: ci/tasks/merge-repo/task.yml
     params: { FROM_BRANCH: develop }
-  - put: groot-windows-master
+  - put: groot-windows-main
     params: { repository: merged-repo/to-repo }
 
 - name: winc-2019
@@ -300,12 +300,12 @@ jobs:
     - get: ci
     - get: winc-develop
       trigger: true
-    - get: groot-windows-master
+    - get: groot-windows-main
       trigger: true
   - task: build-groot
     tags: ["2019"]
     file: ci/tasks/build-groot/task.yml
-    input_mapping: { groot-windows: groot-windows-master }
+    input_mapping: { groot-windows: groot-windows-main }
   - task: test
     tags: ["2019"]
     file: ci/tasks/test-winc/task.yml
@@ -337,7 +337,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: groot-windows-master
+    - get: groot-windows-main
       trigger: true
     - get: winc-master
     - get: diff-exporter-develop
@@ -345,7 +345,7 @@ jobs:
   - task: build-groot
     tags: ["2019"]
     file: ci/tasks/build-groot/task.yml
-    input_mapping: { groot-windows: groot-windows-master }
+    input_mapping: { groot-windows: groot-windows-main }
   - task: build-winc
     tags: ["2019"]
     file: ci/tasks/build-binary/task.yml
@@ -407,7 +407,7 @@ jobs:
       passed: [merge-winc-to-master]
       trigger: true
     - get: winc-release-develop
-    - get: groot-windows-master
+    - get: groot-windows-main
   - in_parallel:
     - task: build-winc
       file: ci/tasks/build-binary/task.yml
@@ -425,7 +425,7 @@ jobs:
       tags: ["2019"]
       input_mapping: { winc: winc-master }
     - task: build-groot
-      input_mapping: { groot-windows: groot-windows-master }
+      input_mapping: { groot-windows: groot-windows-main }
       file: ci/tasks/build-groot/task.yml
       tags: ["2019"]
     - task: build-nstar
@@ -475,7 +475,7 @@ jobs:
       passed:
       - merge-winc-to-master
       trigger: true
-    - get: groot-windows-master
+    - get: groot-windows-main
       passed:
       - merge-groot-to-master
       trigger: true
@@ -504,7 +504,7 @@ jobs:
       SUBMODULE: "src/code.cloudfoundry.org/groot-windows"
     input_mapping:
       source-repo: winc-bumped
-      module-repo: groot-windows-master
+      module-repo: groot-windows-main
     output_mapping:
       bumped-repo: winc-groot-bumped
   - task: bump-diff-exporter
