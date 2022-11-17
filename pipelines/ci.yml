@@ -8,13 +8,13 @@ resources:
 - name: ci
   type: git
   source:
-    branch: master
+    branch: main
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
 - name: docker-ci
   type: git
   source:
-    branch: master
+    branch: main
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
     paths: [ docker/Dockerfile.ci ]
 

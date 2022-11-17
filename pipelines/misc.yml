@@ -38,7 +38,7 @@ resources:
 - name: ci
   type: git
   source:
-    branch: master
+    branch: main
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
 - name: windows-tools-release

@@ -11,7 +11,7 @@ resources:
 - name: ci
   type: git
   source:
-    branch: master
+    branch: main
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
 - name: envoy-nginx-release-develop
