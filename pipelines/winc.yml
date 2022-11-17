@@ -164,6 +164,7 @@ groups:
     - generate-readme
     - bump-winc-release
     - test-nstar
+    - bosh-template-specs
     - pesto-cats-2019
     - shipit-minor
 
@@ -553,13 +554,35 @@ jobs:
     params:
       TEST_PATH: "repo/src/nstar"
 
+- name: bosh-template-specs
+  plan:
+  - in_parallel:
+    - get: winc-release-develop
+      passed: [bump-winc-release]
+      trigger: true
+  - task: bosh-template-specs
+    config:
+      image_resource:
+        source:
+          repository: c2cnetworking/tas-runtime-build
+        type: registry-image
+      inputs:
+      - name: winc-release-develop
+      platform: linux
+      run:
+        args:
+        - -c
+        - |
+          winc-release-develop/scripts/template-tests
+        path: /bin/bash
+
 - name: pesto-cats-2019
   serial: true
   plan:
   - in_parallel:
     - get: ci
     - get: winc-release-develop
-      passed: [test-nstar]
+      passed: [test-nstar, bosh-template-specs]
       trigger: true
     - get: cf-acceptance-tests
     - get: cf-deployment-concourse-tasks
