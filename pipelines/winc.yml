@@ -50,7 +50,7 @@ resources:
 - name: groot
   type: git
   source:
-    branch: master
+    branch: main
     uri: https://github.com/cloudfoundry/groot.git
 - name: winc-develop
   type: git
