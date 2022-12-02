@@ -679,10 +679,6 @@ jobs:
   - put: pesto-cf-cli
     params:
       commands:
-        - command: create-buildpack
-          buildpack: UPDATED_hwc_buildpack
-          position: 99
-          path: https://github.com/cloudfoundry/hwc-buildpack/releases/download/v3.1.27/hwc-buildpack-windows-v3.1.27.zip
         - command: push
           org: iwa-org
           space: iwa-space
@@ -693,7 +689,7 @@ jobs:
               memory: 1G
               stack: windows
               buildpacks:
-                - UPDATED_hwc_buildpack
+                - hwc_buildpack
               routes:
                 - route: tcp.pesto.cf-app.com:1030
                   protocol: tcp
