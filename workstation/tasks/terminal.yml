@@ -1,9 +1,0 @@
-- name: Install Terminator
-  when: is_ubuntu
-  package: name=terminator
-
-- name: Install iTerm
-  when: is_osx
-  homebrew_cask: name=iterm2
-  become: yes
-  become_user: pivotal

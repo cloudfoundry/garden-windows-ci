@@ -1,5 +1,0 @@
-- name: Remove unneeded packages (linux)
-  when: is_ubuntu
-  apt: name={{ item }} state=absent purge=yes force=yes
-  with_items:
-    - cheese*

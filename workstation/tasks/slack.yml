@@ -1,8 +1,0 @@
-- name: Install Slack (linux)
-  when: is_ubuntu
-  apt: deb=https://slack-ssb-updates.global.ssl.fastly.net/linux_releases/slack-1.1.5-amd64.deb
-- name: Install Slack (osx)
-  when: is_osx
-  homebrew_cask: name=slack
-  become: yes
-  become_user: pivotal
