@@ -13,9 +13,7 @@ fly-envoy-nginx() {
 
   [ "$1" == "-h" ] && echo "Push envoy-nginx pipeline to concourse" && return
   fly -t garden-windows sp -p envoy-nginx -c $HOME/workspace/garden-windows-ci/pipelines/envoy-nginx.yml \
-    -l <(lpass show --notes 'Shared-Greenhouse/env-creds') \
-    -l <(lpass show --notes 'Shared-Greenhouse/ci-creds') \
-    -l <(lpass show --notes github-deploy-keys)
+    -l <(lpass show --notes Shared-TAS-Runtime/garden-windows-pipeline-secrets)
 }
 
 fly-misc() {
@@ -30,8 +28,7 @@ fly-misc() {
 
   [ "$1" == "-h" ] && echo "Push windows-tools pipeline to concourse" && return
   fly -t garden-windows sp -p misc -c $HOME/workspace/garden-windows-ci/pipelines/misc.yml \
-    -l <(lpass show --notes 'Shared-Greenhouse/ci-creds') \
-    -l <(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3)
+    -l <(lpass show --notes Shared-TAS-Runtime/garden-windows-pipeline-secrets)
 }
 
 fly-winc() {
@@ -46,9 +43,7 @@ fly-winc() {
 
   [ "$1" == "-h" ] && echo "Push winc pipeline to concourse" && return
   fly -t garden-windows sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
-    -l <(lpass show --notes 'Shared-Greenhouse/env-creds') \
-    -l <(lpass show --notes 'Shared-Greenhouse/ci-creds') \
-    -l <(lpass show --notes github-deploy-keys github-deploy-keys-2)
+    -l <(lpass show --notes Shared-TAS-Runtime/garden-windows-pipeline-secrets)
 }
 
 fly-rootfs() {
@@ -63,9 +58,7 @@ fly-rootfs() {
 
   [ "$1" == "-h" ] && echo "Push rootfs pipeline to concourse" && return
   fly -t garden-windows sp -p rootfs -c $HOME/workspace/garden-windows-ci/pipelines/rootfs.yml \
-    -l <(lpass show --notes 'Shared-Greenhouse/env-creds') \
-    -l <(lpass show --notes 'Shared-Greenhouse/ci-creds') \
-    -l <(lpass show --notes github-deploy-keys github-deploy-keys-2)
+    -l <(lpass show --notes Shared-TAS-Runtime/garden-windows-pipeline-secrets)
 }
 
 fly-ci () {
@@ -80,7 +73,5 @@ fly-ci () {
 
   [ "$1" == "-h" ] && echo "Push ci pipeline to concourse" && return
   fly -t garden-windows sp -p ci -c $HOME/workspace/garden-windows-ci/pipelines/ci.yml \
-  -l <(lpass show --notes 'Shared-Greenhouse/env-creds') \
-  -l <(lpass show --notes 'Shared-Greenhouse/ci-creds') \
-  -l <(lpass show --notes github-deploy-keys )
+  -l <(lpass show --notes Shared-TAS-Runtime/garden-windows-pipeline-secrets )
 }
