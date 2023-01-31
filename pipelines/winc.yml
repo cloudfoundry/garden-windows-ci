@@ -28,25 +28,25 @@ resources:
   source:
     branch: develop
     uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_DIFF_EXPORTER_DEPLOY_KEY}}
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
 - name: diff-exporter-master
   type: git
   source:
     branch: master
     uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_DIFF_EXPORTER_DEPLOY_KEY}}
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
 - name: groot-windows-develop
   type: git
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/groot-windows.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
 - name: groot-windows-master
   type: git
   source:
     branch: master
     uri: git@github.com:cloudfoundry/groot-windows.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
 - name: groot
   type: git
   source:
@@ -72,7 +72,7 @@ resources:
   source:
     branch: master
     uri: git@github.com:cloudfoundry/winc.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINC_DEPLOY_KEY}}
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
 - name: cf-acceptance-tests
   type: git
   source:
@@ -92,7 +92,7 @@ resources:
   type: git
   source:
     branch: master
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     uri: git@github.com:pivotal/garden-windows-environments
 - name: winc-release-develop
   type: git
@@ -100,13 +100,13 @@ resources:
     skip_ssl_verification: true
     branch: develop
     uri: git@github.com:cloudfoundry/winc-release.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINC-RELEASE_DEPLOY_KEY}}
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
 - name: winc-release-master
   type: git
   source:
     branch: master
     uri: git@github.com:cloudfoundry/winc-release.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINC-RELEASE_DEPLOY_KEY}}
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
 - name: garden-runc-release
   type: git
   source:
@@ -117,7 +117,7 @@ resources:
   source:
     branch: main
     uri: git@github.com:pivotal/garden-integration-tests-windows.git
-    private_key: ((GARDEN_INTEGRATION_TESTS_DEPLOY_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
 - name: gcp-2019-stemcell
   type: s3
   source:

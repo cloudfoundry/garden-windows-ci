@@ -19,7 +19,7 @@ resources:
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/envoy-nginx-release.git
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     git_config:
     - name: user.email
       value: "pivotal-netgarden-eng@pivotal.io"
@@ -34,7 +34,7 @@ resources:
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/envoy-nginx-release.git
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     git_config:
     - name: user.email
       value: "pivotal-netgarden-eng@pivotal.io"
@@ -46,7 +46,7 @@ resources:
   source:
     branch: master
     uri: git@github.com:cloudfoundry/envoy-nginx-release.git
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     git_config:
     - name: user.email
       value: "pivotal-netgarden-eng@pivotal.io"
@@ -105,7 +105,7 @@ resources:
   type: git
   source:
     branch: master
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     uri: git@github.com:pivotal/garden-windows-environments
 
 - name: golang-release-latest
@@ -113,7 +113,7 @@ resources:
   icon: github-box
   source:
     uri: git@github.com:bosh-packages/golang-release.git
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     branch: master
     tag_filter: v*
 

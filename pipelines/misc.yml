@@ -46,7 +46,7 @@ resources:
   source:
     uri: git@github.com:cloudfoundry/windows-tools-release.git
     branch: develop
-    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
 
 - name: windows-tools-release-github
   type: github-release
@@ -67,7 +67,7 @@ resources:
   source:
     branch: master
     uri: git@github.com:cloudfoundry-community/web-config-transform-buildpack.git
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     git_config:
       - name: user.email
         value: "pivotal-netgarden-eng@pivotal.io"
@@ -79,7 +79,7 @@ resources:
   source:
     branch: master
     uri: git@github.com:cloudfoundry-community/redis-session-aspnet-buildpack.git
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     git_config:
       - name: user.email
         value: "pivotal-netgarden-eng@pivotal.io"
@@ -103,7 +103,7 @@ resources:
   source:
     branch: master
     uri: git@github.com:cloudfoundry/hwc.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_HWC_DEPLOY_KEY}}
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
 
 - name: hwc-release
   type: github-release
@@ -126,35 +126,35 @@ resources:
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/hydrator.git
-    private_key: ((CLOUDFOUNDRY_HYDRATOR_DEPLOY_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
 
 - name: hydrator-master
   type: git
   source:
     branch: master
     uri: git@github.com:cloudfoundry/hydrator.git
-    private_key: ((CLOUDFOUNDRY_HYDRATOR_DEPLOY_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
 
 - name: winc
   type: git
   source:
     branch: master
     uri: git@github.com:cloudfoundry/winc.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_WINC_DEPLOY_KEY}}
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
 
 - name: groot-windows
   type: git
   source:
     branch: master
     uri: git@github.com:cloudfoundry/groot-windows.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_GROOT_WINDOWS_DEPLOY_KEY}}
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
 
 - name: diff-exporter
   type: git
   source:
     branch: master
     uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
-    private_key: {{CLOUDFOUNDRYINCUBATOR_DIFF_EXPORTER_DEPLOY_KEY}}
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
 
 - name: buildpack-extensions-pivnet
   type: pivnet

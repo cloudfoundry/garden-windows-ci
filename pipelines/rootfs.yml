@@ -88,7 +88,7 @@ resources:
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/windowsfs-online-release.git
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     git_config:
     - name: user.email
       value: "pivotal-netgarden-eng@pivotal.io"
@@ -101,7 +101,7 @@ resources:
     skip_ssl_verification: true
     branch: develop
     uri: git@github.com:cloudfoundry/windows2019fs-release.git
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     git_config:
     - name: user.email
       value: "pivotal-netgarden-eng@pivotal.io"
@@ -113,7 +113,7 @@ resources:
   source:
     branch: master
     uri: git@github.com:cloudfoundry/windowsfs-online-release.git
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     git_config:
     - name: user.email
       value: "pivotal-netgarden-eng@pivotal.io"
@@ -126,7 +126,7 @@ resources:
     skip_ssl_verification: true
     branch: master
     uri: git@github.com:cloudfoundry/windows2019fs-release.git
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     git_config:
     - name: user.email
       value: "pivotal-netgarden-eng@pivotal.io"
@@ -161,7 +161,7 @@ resources:
   type: git
   source:
     branch: master
-    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     uri: git@github.com:pivotal/garden-windows-environments
 
 - name: winc-release-master
@@ -232,7 +232,7 @@ resources:
   source:
     branch: main
     uri: git@github.com:cloudfoundry/windows2016fs.git
-    private_key: ((CLOUDFOUNDRYINCUBATOR_WINDOWS2016FS_DEPLOY_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
 
 - name: windowsfs-dockerfile-2019
   type: git
@@ -246,7 +246,7 @@ resources:
   source:
     branch: master
     uri: git@github.com:cloudfoundry/hydrator.git
-    private_key: ((CLOUDFOUNDRY_HYDRATOR_DEPLOY_KEY))
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
 
 - name: golang-release
   type: git
@@ -963,7 +963,7 @@ jobs:
               version_dir: windowsfs-online-release-version
             params:
               TAG_PREFIX: v
-              GIT_PRIVATE_KEY: ((GREENHOUSE-CI_SSH_KEY))
+              GIT_PRIVATE_KEY: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
         - put: windowsfs-online-release-develop-2019
           params:
             repository: finalized-release/release
@@ -1002,7 +1002,7 @@ jobs:
               version_dir: windowsfs-online-release-version
             params:
               TAG_PREFIX: v
-              GIT_PRIVATE_KEY: ((GREENHOUSE-CI_SSH_KEY))
+              GIT_PRIVATE_KEY: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
         - put: windowsfs-offline-release-develop-2019
           params:
             repository: windowsfs-release-updated-version
