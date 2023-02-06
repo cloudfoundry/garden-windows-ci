@@ -268,7 +268,7 @@ resources:
   source:
     user: git-for-windows
     repository: git
-    access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
+    access_token: ((tas-runtime-github-access-token))
 
 # S3
 
@@ -316,7 +316,7 @@ resources:
     user: cloudfoundry
     repository: windowsfs-online-release
     drafts: false
-    access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
+    access_token: ((tas-runtime-github-access-token))
 
 - name: windowsfs-offline-github-release
   type: github-release
@@ -324,7 +324,7 @@ resources:
     user: cloudfoundry
     repository: windows2019fs-release
     drafts: false
-    access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
+    access_token: ((tas-runtime-github-access-token))
 
 
 # Timers

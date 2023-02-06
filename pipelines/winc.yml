@@ -145,7 +145,7 @@ resources:
     user: cloudfoundry
     repository: winc-release
     drafts: true
-    access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
+    access_token: ((tas-runtime-github-access-token))
 - name: pesto-cf-deployment
   type: bosh-deployment
   source:

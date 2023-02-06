@@ -81,7 +81,7 @@ resources:
     user: cloudfoundry
     repository: envoy-nginx-release
     drafts: true
-    access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
+    access_token: ((tas-runtime-github-access-token))
 
 - name: cf-acceptance-tests
   type: git

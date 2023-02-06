@@ -54,7 +54,7 @@ resources:
     user: cloudfoundry
     repository: windows-tools-release
     drafts: true
-    access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
+    access_token: ((tas-runtime-github-access-token))
 
 - name: golang-release
   type: git
@@ -110,7 +110,7 @@ resources:
   source:
     user: cloudfoundry
     repository: hwc
-    access_token: ((GREENHOUSE_CI_ACCESS_TOKEN))
+    access_token: ((tas-runtime-github-access-token))
 
 - name: hwc-version
   type: semver
@@ -249,7 +249,7 @@ jobs:
       file: ci/tasks/web-config-github-shipit/task.yml
       params:
         BRANCH: master
-        GITHUB_AUTH_TOKEN: ((GREENHOUSE_CI_ACCESS_TOKEN))
+        GITHUB_AUTH_TOKEN: ((tas-runtime-github-access-token))
     - task: prepare-metadata-for-pivnet
       file: ci/tasks/prepare-web-config-metadata-for-pivnet/task.yml
       params:
