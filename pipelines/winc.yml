@@ -564,7 +564,7 @@ jobs:
     config:
       image_resource:
         source:
-          repository: c2cnetworking/tas-runtime-build
+          repository: cloudfoundry/tas-runtime-build
         type: registry-image
       inputs:
       - name: winc-release-develop
