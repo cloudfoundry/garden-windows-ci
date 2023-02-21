@@ -227,6 +227,14 @@ resources:
     branch: main
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
+- name: tas-runtime
+  type: git
+  icon: github-box
+  source:
+    uri: git@github.com:pivotal/tas-runtime
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+    branch: main
+
 - name: windows2016fs-main
   type: git
   source:
@@ -494,19 +502,27 @@ jobs:
     - get: golang-release
       trigger: true
     - get: windowsfs-online-release-develop-2019
-    - get: ci
-  - task: bosh-vendor-package
-    file: ci/tasks/bosh-vendor-package/task.yml
+    - get: tas-runtime
+  - task: bump-golang
+    file: tas-runtime/ci/tasks/shared/upgrade-package-in-release/task.yml
     params:
+      PACKAGE: golang-1-windows
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
+      RELEASE: release
+    input_mapping:
+      release: windowsfs-online-release-develop-2019
+      package-release: golang-release
+  - task: save-golang-version-to-file
+    file: tas-runtime/ci/tasks/shared/save-golang-version-to-file/task.yml
+    params:
+      BRANCH: develop
       PACKAGE: golang-1-windows
     input_mapping:
-      release-repo: windowsfs-online-release-develop-2019
-      package-repo: golang-release
+      release: modified-release
   - put: windowsfs-online-release-develop-2019
     params:
-      repository: bumped-release-repo
+      repository: modified-release
 # -----------------------
 #
 #
@@ -543,18 +559,33 @@ jobs:
       trigger: true
     - get: windowsfs-offline-release-develop-2019
     - get: ci
-  - task: bosh-vendor-package
-    file: ci/tasks/bosh-vendor-package/task.yml
+    - get: tas-runtime
+  - task: bump-golang
+    file: tas-runtime/ci/tasks/shared/upgrade-package-in-release/task.yml
     params:
+      PACKAGE: golang-1-windows
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-      PACKAGE: golang-1-windows
+      RELEASE: release
     input_mapping:
-      release-repo: windowsfs-offline-release-develop-2019
-      package-repo: golang-release
+      release: windowsfs-offline-release-develop-2019
+      package-release: golang-release
+  - task: create-windowsfs-release
+    file: ci/tasks/create-fs-release-linux/task.yml
+    input_mapping:
+      windowsfs-release: windowsfs-offline-release-develop-2019
+  - task: save-golang-version-to-file
+    file: tas-runtime/ci/tasks/shared/save-golang-version-to-file/task.yml
+    params:
+      BRANCH: develop
+      PACKAGE: golang-1-windows
+      TARBALL: release.tgz
+    input_mapping:
+      release: modified-release
+      tarball: release-tarball
   - put: windowsfs-offline-release-develop-2019
     params:
-      repository: bumped-release-repo
+      repository: modified-release
 
 # --------------- Tests
 - name: aioli-online-cats
