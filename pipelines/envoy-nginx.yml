@@ -152,7 +152,7 @@ jobs:
   - task: bump-golang
     file: tas-runtime/ci/tasks/shared/upgrade-package-in-release/task.yml
     params:
-      PACKAGE: golang-1.19-linux
+      PACKAGE: golang-1.20-windows
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
       RELEASE: release
@@ -163,7 +163,7 @@ jobs:
     file: tas-runtime/ci/tasks/shared/save-golang-version-to-file/task.yml
     params:
       BRANCH: develop
-      PACKAGE: golang-1.19-linux
+      PACKAGE: golang-1.20-windows
     input_mapping:
       release: modified-release
   - put: envoy-nginx-release-develop-full
