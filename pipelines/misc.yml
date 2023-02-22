@@ -60,7 +60,6 @@ resources:
   source:
     user: cloudfoundry
     repository: windows-tools-release
-    drafts: true
     access_token: ((tas-runtime-github-access-token))
 
 - name: golang-release
@@ -207,6 +206,9 @@ jobs:
   - in_parallel:
     - get: windows-tools-release
     - get: ci
+    - get: golang-release
+      trigger: true
+      passed: [ bump-go ]
   - task: create-release
     file: ci/tasks/ship-windows-tools/task.yml
     params:
