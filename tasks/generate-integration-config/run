@@ -17,7 +17,7 @@ if [ ! -z "$CREDHUB_MODE" ]; then
   set -e
   if ! command -v credhub > /dev/null 2>&1; then
     # TODO add credhub binary to the ci docker image
-    credhub_cli_version=2.5.2
+    credhub_cli_version=2.9.10
     wget https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${credhub_cli_version}/credhub-linux-${credhub_cli_version}.tgz -P /tmp
     tar xzvf /tmp/credhub-linux-${credhub_cli_version}.tgz -C /usr/local/bin
     chmod +x /usr/local/bin/credhub
