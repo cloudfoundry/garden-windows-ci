@@ -41,6 +41,13 @@ resources:
     branch: main
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
+- name: tas-runtime
+  type: git
+  source:
+    uri: git@github.com:pivotal/tas-runtime.git
+    branch: main
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+
 - name: windows-tools-release
   type: git
   source:
@@ -170,19 +177,29 @@ jobs:
     - get: golang-release
       trigger: true
     - get: windows-tools-release
-    - get: ci
-  - task: bosh-vendor-package
-    file: ci/tasks/bosh-vendor-package/task.yml
+    - get: tas-runtime
+  - task: bump-golang-1-windows
+    file: tas-runtime/ci/tasks/shared/upgrade-package-in-release/task.yml
     params:
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
       PACKAGE: golang-1-windows
+      RELEASE: release
     input_mapping:
-      release-repo: windows-tools-release
-      package-repo: golang-release
+      release: windows-tools-release
+      package-release: golang-release
+  - task: save-golang-version-to-file
+    file: tas-runtime/ci/tasks/shared/save-golang-version-to-file/task.yml
+    params:
+      BRANCH: develop
+      PACKAGE: golang-1-windows
+    input_mapping:
+      release: modified-release
+    output_mapping:
+      modified-release: modified-release-docs-update
   - put: windows-tools-release
     params:
-      repository: bumped-release-repo
+      repository: modified-release-docs-update
 
 - name: create-release
   serial: true
