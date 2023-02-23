@@ -1,168 +1,3 @@
-resource_types:
-- name: bosh-deployment
-  type: docker-image
-  source:
-    repository: cloudfoundry/bosh-deployment-resource
-- name: cf-cli-resource
-  type: registry-image
-  source:
-    repository: nulldriver/cf-cli-resource
-    tag: latest
-
-resources:
-- name: pesto-cf-cli
-  type: cf-cli-resource
-  source:
-    api: api.pesto.cf-app.com
-    username: admin
-    password: ((PESTO_ADMIN_PASSWORD))
-    cf_cli_version: 8
-    skip_cert_check: true
-- name: ci
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/garden-windows-ci.git
-- name: diff-exporter-develop
-  type: git
-  source:
-    branch: develop
-    uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
-    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
-- name: diff-exporter-master
-  type: git
-  source:
-    branch: master
-    uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
-    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
-- name: groot-windows-develop
-  type: git
-  source:
-    branch: develop
-    uri: git@github.com:cloudfoundry/groot-windows.git
-    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
-- name: groot-windows-master
-  type: git
-  source:
-    branch: master
-    uri: git@github.com:cloudfoundry/groot-windows.git
-    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
-- name: groot
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/groot.git
-- name: winc-develop
-  type: git
-  source:
-    branch: develop
-    uri: https://github.com/cloudfoundry/winc.git
-- name: certsplitter
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/certsplitter.git
-- name: cert-injector
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/cert-injector.git
-- name: winc-master
-  type: git
-  source:
-    branch: master
-    uri: git@github.com:cloudfoundry/winc.git
-    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
-- name: cf-acceptance-tests
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/cf-acceptance-tests
-- name: cf-deployment-concourse-tasks
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks
-- name: cf-deployment
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/cf-deployment.git
-- name: garden-windows-environments
-  type: git
-  source:
-    branch: master
-    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
-    uri: git@github.com:pivotal/garden-windows-environments
-- name: winc-release-develop
-  type: git
-  source:
-    skip_ssl_verification: true
-    branch: develop
-    uri: git@github.com:cloudfoundry/winc-release.git
-    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
-- name: winc-release-master
-  type: git
-  source:
-    branch: master
-    uri: git@github.com:cloudfoundry/winc-release.git
-    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
-- name: garden-runc-release
-  type: git
-  source:
-    branch: develop
-    uri: https://github.com/cloudfoundry/garden-runc-release.git
-- name: gats-fork
-  type: git
-  source:
-    branch: main
-    uri: git@github.com:pivotal/garden-integration-tests-windows.git
-    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
-- name: gcp-2019-stemcell
-  type: s3
-  source:
-    bucket: all-bosh-windows
-    regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
-    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
-    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-- name: version
-  type: semver
-  source:
-    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
-    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-    bucket: winc-release
-    initial_version: 0.0.0
-    key: version
-    region_name: us-east-1
-- name: golang-release
-  type: git
-  source:
-    uri: https://github.com/bosh-packages/golang-release.git
-    tag_filter: v*
-- name: tas-runtime
-  type: git
-  source:
-    uri: git@github.com:pivotal/tas-runtime.git
-    branch: main
-    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
-- name: winc-release-github-release
-  type: github-release
-  source:
-    user: cloudfoundry
-    repository: winc-release
-    drafts: true
-    access_token: ((tas-runtime-github-access-token))
-- name: pesto-cf-deployment
-  type: bosh-deployment
-  source:
-    deployment: cf
-    skip_check: true
-    client: ((PESTO_BOSH_CLIENT))
-    client_secret: ((PESTO_BOSH_CLIENT_SECRET))
-    ca_cert: ((PESTO_BOSH_CA_CERT))
-    target: ((PESTO_BOSH_ENVIRONMENT))
-    jumpbox_url: ((PESTO_JUMPBOX_IP)):22
-    jumpbox_ssh_key: ((PESTO_JUMPBOX_SSH_KEY))
 
 groups:
 - name: main
@@ -172,7 +7,7 @@ groups:
     - test-nstar
     - bosh-template-specs
     - pesto-cats-2019
-    - shipit-minor
+    - shipit
 
 - name: cert-injector
   jobs:
@@ -206,17 +41,17 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: winc-release-develop
+    - get: develop-branch
       passed: [bump-winc-release]
       trigger: true
   - task: winc-release-readme
     tags: ["2019"]
     file: ci/tasks/winc-release-readme/task.yml
-    input_mapping: { winc-release: winc-release-develop }
+    input_mapping: { winc-release: develop-branch }
     params:
       WINC_TEST_ROOTFS: "docker:///cloudfoundry/windows2016fs:2019"
   - task: override-repo
-    input_mapping: { repo: winc-release-develop, override-repo: generated-readme }
+    input_mapping: { repo: develop-branch, override-repo: generated-readme }
     file: ci/tasks/override-repo/task.yml
   - task: commit-changes
     file: ci/tasks/commit/task.yml
@@ -226,7 +61,7 @@ jobs:
       repo_with_commit: updated-repo
     params:
       MESSAGE: "Updated README"
-  - put: winc-release-develop
+  - put: develop-branch
     params:
       repository: updated-repo
 
@@ -236,7 +71,7 @@ jobs:
   - in_parallel:
     - get: golang-release
       trigger: true
-    - get: winc-release-develop
+    - get: develop-branch
     - get: tas-runtime
   - task: bump-golang-1-windows
     file: tas-runtime/ci/tasks/shared/upgrade-package-in-release/task.yml
@@ -246,7 +81,7 @@ jobs:
       PACKAGE: golang-1-windows
       RELEASE: release
     input_mapping:
-      release: winc-release-develop
+      release: develop-branch
       package-release: golang-release
   - task: save-golang-version-to-file
     file: tas-runtime/ci/tasks/shared/save-golang-version-to-file/task.yml
@@ -257,7 +92,7 @@ jobs:
       release: modified-release
     output_mapping:
       modified-release: modified-release-docs-update
-  - put: winc-release-develop
+  - put: develop-branch
     params:
       repository: modified-release-docs-update
       rebase: true
@@ -423,7 +258,7 @@ jobs:
     - get: winc-master
       passed: [merge-winc-to-master]
       trigger: true
-    - get: winc-release-develop
+    - get: develop-branch
     - get: groot-windows-master
   - in_parallel:
     - task: build-winc
@@ -449,7 +284,7 @@ jobs:
       file: ci/tasks/build-binary/task.yml
       tags: ["2019"]
       input_mapping:
-        repo: winc-release-develop
+        repo: develop-branch
       output_mapping:
         binary-output: nstar-binary
       params:
@@ -486,7 +321,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: winc-release-develop
+    - get: develop-branch
       trigger: true
     - get: winc-master
       passed:
@@ -511,7 +346,7 @@ jobs:
     params:
       SUBMODULE: "src/code.cloudfoundry.org/winc"
     input_mapping:
-      source-repo: winc-release-develop
+      source-repo: develop-branch
       module-repo: winc-master
     output_mapping:
       bumped-repo: winc-bumped
@@ -551,7 +386,7 @@ jobs:
       module-repo: certsplitter
     output_mapping:
       bumped-repo: all-submodules-bumped
-  - put: winc-release-develop
+  - put: develop-branch
     params:
       repository: all-submodules-bumped
       rebase: true
@@ -560,21 +395,21 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: winc-release-develop
+    - get: develop-branch
       passed: [bump-winc-release]
       trigger: true
   - task: run-ginkgo-exe
     file: ci/tasks/ginkgo-test-windows/task.yml
     tags: ["2019"]
     input_mapping:
-      repo: winc-release-develop
+      repo: develop-branch
     params:
       TEST_PATH: "repo/src/nstar"
 
 - name: bosh-template-specs
   plan:
   - in_parallel:
-    - get: winc-release-develop
+    - get: develop-branch
       passed: [bump-winc-release]
       trigger: true
   - task: bosh-template-specs
@@ -584,13 +419,13 @@ jobs:
           repository: cloudfoundry/tas-runtime-build
         type: registry-image
       inputs:
-      - name: winc-release-develop
+      - name: develop-branch
       platform: linux
       run:
         args:
         - -c
         - |
-          winc-release-develop/scripts/template-tests
+          develop-branch/scripts/template-tests
         path: /bin/bash
 
 - name: pesto-cats-2019
@@ -598,7 +433,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: winc-release-develop
+    - get: develop-branch
       passed: [test-nstar, bosh-template-specs]
       trigger: true
     - get: cf-acceptance-tests
@@ -614,7 +449,7 @@ jobs:
     - task: create-winc-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
-        release: winc-release-develop
+        release: develop-branch
       output_mapping:
         release-tarball: winc-tarball
   - task: delete-deployment
@@ -699,7 +534,7 @@ jobs:
         - command: push
           org: iwa-org
           space: iwa-space
-          path: winc-release-develop/src/WindowsAuth
+          path: develop-branch/src/WindowsAuth
           manifest:
             applications:
             - name: iwa-test-app
@@ -749,41 +584,271 @@ jobs:
         JUMPBOX_IP: ((PESTO_JUMPBOX_IP))
         JUMPBOX_SSH_KEY: ((PESTO_JUMPBOX_SSH_KEY))
 
-- name: shipit-minor
+- name: shipit
   serial: true
   plan:
   - in_parallel:
-    - get: ci
-    - get: winc-release-develop
+    - get: tas-runtime
+    - get: develop-branch
       passed: [pesto-cats-2019]
-    - get: winc-release-master
+    - get: release-branch
     - get: version
-      params: {bump: minor}
-  - task: finalize-release
-    file: ci/tasks/finalize-release/task.yml
-    input_mapping: { release: winc-release-develop }
+    - get: github-release
+    - get: develop-branch-mergeback 
+  - task: check-safe-to-push-to-release-branch
+    file: tas-runtime/ci/tasks/shared/checkit/task.yml
+    input_mapping:
+      dev-repo: develop-branch
+      release-repo: release-branch
+  - task: print-bosh-job-spec-diff 
+    file: tas-runtime/ci/tasks/shared/print-bosh-job-spec-diff/task.yml
+    input_mapping:
+      release: develop-branch
+    params:
+      PRE_RELEASE: true
+  - task: build-release-notes
+    file: tas-runtime/ci/tasks/shared/build-release-notes/task.yml
+    input_mapping:
+      release: develop-branch
+      previous-github-release: github-release
+      bosh-job-diff: bosh-job-diff
+    params:
+      RELEASE_NAME: winc-release
+    output_mapping:
+      release-notes: winc-notes
+  - task: build-release-tarball
+    file: tas-runtime/ci/tasks/shared/create-release-tarball/task.yml
+    input_mapping:
+      my-release: develop-branch 
     params:
       RELEASE_NAME: winc
+  - task: finalize-bosh-release
+    file: tas-runtime/ci/tasks/shared/finalize-bosh-release/task.yml
+    input_mapping:
+      release: develop-branch
+      tarball: tarballs
+    params:
       AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-  - put: winc-release-master
+      RELEASE_NAME: winc
+  - put: release-branch
     params:
-      repository: finalized-release/release
+      repository: release-repo
       tag: version/number
       tag_prefix: v
-  - put: winc-release-develop
+  - task: merge-release-into-develop
+    file: tas-runtime/ci/tasks/shared/merge-release/task.yml
     params:
-      repository: finalized-release/release
-      merge: true
-  - put: version
-    params: {file: version/number}
-  - task: generate-github-release
-    input_mapping: { release: finalized-repo }
-    file: ci/tasks/generate-github-release/task.yml
-  - put: winc-release-github-release
-    params:
-      commitish: generated-release/commitish
-      name: generated-release/name
-      tag: generated-release/version
-      globs:
-      - finalized-release/winc-*.tgz
+      release_branch: release
+    input_mapping:
+      release: release-branch
+      dev: develop-branch-mergeback
+  - in_parallel:
+      steps:
+      - put: draft-github-release
+        params:
+          name: version/number
+          tag: version/number
+          tag_prefix: v
+          body: winc-notes/notes.md
+          globs:
+          - final-release/winc-*.tgz
+      - put: develop-branch-mergeback
+        params:
+          repository: release-merged
+  - get: next-version
+    resource: version
+    params: {bump: minor}
+  - put: next-version
+    resource: version
+    params: {file: next-version/number}
+
+
+resources:
+
+# Git repos for release
+- name: develop-branch
+  type: git
+  source:
+    skip_ssl_verification: true
+    branch: develop
+    uri: git@github.com:cloudfoundry/winc-release.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: release-branch
+  type: git
+  source:
+    branch: release
+    uri: git@github.com:cloudfoundry/winc-release.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: develop-branch-mergeback
+  type: git
+  source:
+    skip_ssl_verification: true
+    branch: develop
+    uri: git@github.com:cloudfoundry/winc-release.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: garden-runc-release
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry/garden-runc-release.git
+- name: diff-exporter-develop
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: diff-exporter-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: groot-windows-develop
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/groot-windows.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: groot-windows-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/groot-windows.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: groot
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/groot.git
+- name: winc-develop
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry/winc.git
+- name: certsplitter
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/certsplitter.git
+- name: cert-injector
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/cert-injector.git
+- name: winc-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/winc.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: golang-release
+  type: git
+  source:
+    uri: https://github.com/bosh-packages/golang-release.git
+    tag_filter: v*
+
+ 
+# Git repos for CI
+- name: tas-runtime
+  type: git
+  source:
+    uri: git@github.com:pivotal/tas-runtime.git
+    branch: main
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+- name: ci
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
+- name: cf-acceptance-tests
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests
+- name: cf-deployment-concourse-tasks
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks
+- name: cf-deployment
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/cf-deployment.git
+- name: gats-fork
+  type: git
+  source:
+    branch: main
+    uri: git@github.com:pivotal/garden-integration-tests-windows.git
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+
+# Environments
+- name: garden-windows-environments
+  type: git
+  source:
+    branch: master
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+    uri: git@github.com:pivotal/garden-windows-environments
+
+# Release management
+- name: version
+  type: semver
+  source:
+    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
+    bucket: winc-release
+    initial_version: 0.0.0
+    key: version
+    region_name: us-east-1
+- name: draft-github-release
+  type: github-release
+  source:
+    user: cloudfoundry
+    repository: winc-release
+    drafts: true
+    access_token: ((tas-runtime-github-access-token))
+- name: github-release
+  type: github-release
+  source:
+    user: cloudfoundry
+    repository: winc-release
+    access_token: ((tas-runtime-github-access-token))
+# Other Resources
+- name: pesto-cf-cli
+  type: cf-cli-resource
+  source:
+    api: api.pesto.cf-app.com
+    username: admin
+    password: ((PESTO_ADMIN_PASSWORD))
+    cf_cli_version: 8
+    skip_cert_check: true
+- name: gcp-2019-stemcell
+  type: s3
+  source:
+    bucket: all-bosh-windows
+    regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
+    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
+- name: pesto-cf-deployment
+  type: bosh-deployment
+  source:
+    deployment: cf
+    skip_check: true
+    client: ((PESTO_BOSH_CLIENT))
+    client_secret: ((PESTO_BOSH_CLIENT_SECRET))
+    ca_cert: ((PESTO_BOSH_CA_CERT))
+    target: ((PESTO_BOSH_ENVIRONMENT))
+    jumpbox_url: ((PESTO_JUMPBOX_IP)):22
+    jumpbox_ssh_key: ((PESTO_JUMPBOX_SSH_KEY))
+
+resource_types:
+- name: bosh-deployment
+  type: docker-image
+  source:
+    repository: cloudfoundry/bosh-deployment-resource
+- name: cf-cli-resource
+  type: registry-image
+  source:
+    repository: nulldriver/cf-cli-resource
+    tag: latest
