@@ -75,17 +75,3 @@ fly-ci () {
   fly -t garden-windows sp -p ci -c $HOME/workspace/garden-windows-ci/pipelines/ci.yml \
   -l <(lpass show --notes Shared-TAS-Runtime/garden-windows-pipeline-secrets )
 }
-fly-hello() {
-  RED='\033[1;31m'
-  NC='\033[0m' # No Color
-
-  lpass status > /dev/null
-  if [[ $? != 0 ]]; then
-    echo -e "${RED}Error${NC}: You must log into lastpass before running this script."
-    return
-  fi
-
-  [ "$1" == "-h" ] && echo "Push winc pipeline to concourse" && return
-  fly -t garden-windows sp -p shipit-winc -c $HOME/workspace/garden-windows-ci/pipelines/shipit-winc.yml \
-    -l <(lpass show --notes Shared-TAS-Runtime/garden-windows-pipeline-secrets)
-}
