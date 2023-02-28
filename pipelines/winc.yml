@@ -1,4 +1,162 @@
+resource_types:
+- name: bosh-deployment
+  type: docker-image
+  source:
+    repository: cloudfoundry/bosh-deployment-resource
+- name: cf-cli-resource
+  type: registry-image
+  source:
+    repository: nulldriver/cf-cli-resource
+    tag: latest
 
+resources:
+- name: pesto-cf-cli
+  type: cf-cli-resource
+  source:
+    api: api.pesto.cf-app.com
+    username: admin
+    password: ((PESTO_ADMIN_PASSWORD))
+    cf_cli_version: 8
+    skip_cert_check: true
+- name: ci
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
+- name: diff-exporter-develop
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: diff-exporter-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry-incubator/diff-exporter.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: groot-windows-develop
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/groot-windows.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: groot-windows-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/groot-windows.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: groot
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/groot.git
+- name: winc-develop
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry/winc.git
+- name: certsplitter
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/certsplitter.git
+- name: cert-injector
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/cert-injector.git
+- name: winc-master
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/winc.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: cf-acceptance-tests
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests
+- name: cf-deployment-concourse-tasks
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks
+- name: cf-deployment
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/cf-deployment.git
+- name: garden-windows-environments
+  type: git
+  source:
+    branch: master
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+    uri: git@github.com:pivotal/garden-windows-environments
+- name: winc-release-develop
+  type: git
+  source:
+    skip_ssl_verification: true
+    branch: develop
+    uri: git@github.com:cloudfoundry/winc-release.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: winc-release-release
+  type: git
+  source:
+    branch: release 
+    uri: git@github.com:cloudfoundry/winc-release.git
+    private_key: {{TAS-RUNTIME-GITHUB_PRIVATE_KEY}}
+- name: garden-runc-release
+  type: git
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry/garden-runc-release.git
+- name: gats-fork
+  type: git
+  source:
+    branch: main
+    uri: git@github.com:pivotal/garden-integration-tests-windows.git
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+- name: gcp-2019-stemcell
+  type: s3
+  source:
+    bucket: all-bosh-windows
+    regexp: 2019/tested/gcp/light-bosh-stemcell-(.*)-google-kvm-windows2019-go_agent.tgz
+    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
+- name: version
+  type: semver
+  source:
+    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
+    bucket: winc-release
+    initial_version: 0.0.0
+    key: version
+    region_name: us-east-1
+- name: golang-release
+  type: git
+  source:
+    uri: https://github.com/bosh-packages/golang-release.git
+    tag_filter: v*
+- name: winc-release-github-release
+  type: github-release
+  source:
+    user: cloudfoundry
+    repository: winc-release
+    drafts: true
+    access_token: ((tas-runtime-github-access-token))
+- name: pesto-cf-deployment
+  type: bosh-deployment
+  source:
+    deployment: cf
+    skip_check: true
+    client: ((PESTO_BOSH_CLIENT))
+    client_secret: ((PESTO_BOSH_CLIENT_SECRET))
+    ca_cert: ((PESTO_BOSH_CA_CERT))
+    target: ((PESTO_BOSH_ENVIRONMENT))
+    jumpbox_url: ((PESTO_JUMPBOX_IP)):22
+    jumpbox_ssh_key: ((PESTO_JUMPBOX_SSH_KEY))
 groups:
 - name: main
   jobs:

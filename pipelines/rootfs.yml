@@ -164,11 +164,11 @@ resources:
     private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
     uri: git@github.com:pivotal/garden-windows-environments
 
-- name: winc-release-master
+- name: winc-release-release
   type: git
   source:
     skip_ssl_verification: true
-    branch: master
+    branch: release 
     uri: https://github.com/cloudfoundry/winc-release.git
 
 - name: aioli-cf-deployment
@@ -693,7 +693,7 @@ jobs:
     - get: windowsfs-online-release-develop-2019
       passed: [update-windowsfs-online-2019]
       trigger: true
-    - get: winc-release-master
+    - get: winc-release-release
       trigger: true
     - get: gcp-windows-stemcell
   - in_parallel:
@@ -706,7 +706,7 @@ jobs:
     - task: create-winc-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
-        release: winc-release-master
+        release: winc-release-release
       output_mapping:
         release-tarball: winc-tarball
   - task: delete-deployment
@@ -855,7 +855,7 @@ jobs:
     - get: windowsfs-offline-release-develop-2019
       passed: [update-windowsfs-offline-2019]
       trigger: true
-    - get: winc-release-master
+    - get: winc-release-release
       trigger: true
     - get: gcp-windows-stemcell
   - in_parallel:
@@ -868,7 +868,7 @@ jobs:
     - task: create-winc-release
       file: ci/tasks/bosh-cr/task.yml
       input_mapping:
-        release: winc-release-master
+        release: winc-release-release
       output_mapping:
         release-tarball: winc-tarball
   - task: create-windowsfs-opsfile
