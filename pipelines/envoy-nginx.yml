@@ -14,56 +14,45 @@ resources:
     branch: main
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
-- name: envoy-nginx-release-develop
-  type: git
-  source:
-    branch: develop
-    uri: git@github.com:cloudfoundry/envoy-nginx-release.git
-    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
-    git_config:
-    - name: user.email
-      value: "pivotal-netgarden-eng@pivotal.io"
-    - name: user.name
-      value: "Greenhouse CI"
-    ignore_paths:
-    - releases/**
-    - .final_builds/**
-
-- name: envoy-nginx-release-develop-full
-  type: git
-  source:
-    branch: develop
-    uri: git@github.com:cloudfoundry/envoy-nginx-release.git
-    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
-    git_config:
-    - name: user.email
-      value: "pivotal-netgarden-eng@pivotal.io"
-    - name: user.name
-      value: "Greenhouse CI"
-
-- name: envoy-nginx-release-master
-  type: git
-  source:
-    branch: master
-    uri: git@github.com:cloudfoundry/envoy-nginx-release.git
-    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
-    git_config:
-    - name: user.email
-      value: "pivotal-netgarden-eng@pivotal.io"
-    - name: user.name
-      value: "Greenhouse CI"
-
 - name: tas-runtime
   type: git
-  icon: github-box
   source:
-    uri: git@github.com:pivotal/tas-runtime
-    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
-    paths:
-      - ci/tasks/cf-networking
-      - ci/opsfiles/cf-networking
-      - ci/pipelines
+    uri: git@github.com:pivotal/tas-runtime.git
     branch: main
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+
+- name: develop-branch
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/envoy-nginx-release.git
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+
+- name: develop-branch-full
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/envoy-nginx-release.git
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+    git_config:
+    - name: user.email
+      value: "pivotal-netgarden-eng@pivotal.io"
+    - name: user.name
+      value: "Greenhouse CI"
+
+- name: develop-branch-mergeback
+  type: git
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/envoy-nginx-release.git
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+
+- name: release-branch
+  type: git
+  source:
+    branch: release
+    uri: git@github.com:cloudfoundry/envoy-nginx-release.git
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
 
 - name: version
   type: semver
@@ -75,7 +64,15 @@ resources:
     key: version
     region_name: us-east-1
 
-- name: envoy-nginx-release-github-release
+- name: github-release
+  type: github-release
+  source:
+    user: cloudfoundry
+    repository: envoy-nginx-release
+    drafts: true
+    access_token: ((tas-runtime-github-access-token))
+
+- name: draft-github-release
   type: github-release
   source:
     user: cloudfoundry
@@ -146,7 +143,7 @@ jobs:
   plan:
   - in_parallel:
     - get: tas-runtime
-    - get: envoy-nginx-release-develop-full
+    - get: develop-branch-full
     - get: golang-release-latest
       trigger: true
   - task: bump-golang
@@ -157,7 +154,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
       RELEASE: release
     input_mapping:
-      release: envoy-nginx-release-develop-full
+      release: develop-branch-full
       package-release: golang-release-latest
   - task: save-golang-version-to-file
     file: tas-runtime/ci/tasks/shared/save-golang-version-to-file/task.yml
@@ -166,7 +163,7 @@ jobs:
       PACKAGE: golang-1.20-windows
     input_mapping:
       release: modified-release
-  - put: envoy-nginx-release-develop-full
+  - put: develop-branch-full
     params:
       repository: modified-release
 
@@ -174,13 +171,13 @@ jobs:
   plan:
   - in_parallel:
     - get: ci
-    - get: envoy-nginx-release-develop
+    - get: develop-branch
       trigger: true
   - task: run-ginkgo-exe
     tags: ["2019"]
     file: ci/tasks/ginkgo-test-windows/task.yml
     input_mapping:
-      repo: envoy-nginx-release-develop
+      repo: develop-branch
     params:
       EPHEMERAL_DISK_TEMP_PATH: "C:\\var\\vcap\\data\\tmp"
       TEST_PATH: "repo/src/code.cloudfoundry.org/envoy-nginx"
@@ -191,7 +188,7 @@ jobs:
   - do:
     - in_parallel:
       - get: cf-deployment
-      - get: envoy-nginx-release-develop
+      - get: develop-branch
         passed: [test-envoy-nginx]
         trigger: true
       - get: gcp-windows-stemcell
@@ -201,7 +198,7 @@ jobs:
       - get: garden-windows-environments
     - task: create-release
       file: ci/tasks/bosh-cr/task.yml
-      input_mapping: { release: envoy-nginx-release-develop }
+      input_mapping: { release: develop-branch }
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
@@ -281,41 +278,116 @@ jobs:
           JUMPBOX_IP: {{ALFREDO_JUMPBOX_IP}}
           JUMPBOX_SSH_KEY: {{ALFREDO_JUMPBOX_SSH_KEY}}
 
-- name: shipit-minor
+- name: ship-what
+  plan:
+    - in_parallel:
+        steps:
+        - get: tas-runtime
+        - get: develop-branch
+          passed:
+            - alfredo-cats
+          trigger: true
+        - get: release-branch
+          params:
+            submodules: none
+        - get: github-release
+        - get: version
+    - task: check-safe-to-push-to-release-branch
+      file: tas-runtime/ci/tasks/shared/checkit/task.yml
+      input_mapping:
+        dev-repo: develop-branch
+        release-repo: release-branch
+    - task: print-bosh-job-spec-diff
+      file: tas-runtime/ci/tasks/shared/print-bosh-job-spec-diff/task.yml
+      input_mapping:
+        release: develop-branch
+      params:
+        PRE_RELEASE: "true"
+    - task: build-release-notes
+      file: tas-runtime/ci/tasks/shared/build-release-notes/task.yml
+      input_mapping:
+        release: develop-branch
+        previous-github-release: github-release
+        bosh-job-diff: bosh-job-diff
+      params:
+        RELEASE_NAME: envoy-nginx-release
+      output_mapping:
+        release-notes: gr-notes
+
+- name: shipit
   serial: true
   plan:
-  - in_parallel:
-    - get: ci
-    - get: envoy-nginx-release-develop
-      passed: [alfredo-cats]
-    - get: envoy-nginx-release-master
-    - get: version
+    - in_parallel:
+        steps:
+        - get: tas-runtime
+        - get: develop-branch
+          passed: 
+            - ship-what
+        - get: release-branch
+          params:
+            submodules: none
+        - get: github-release
+        - get: version
+        - get: develop-branch-mergeback
+          params:
+            submodules: none
+    - task: check-safe-to-push-to-release-branch
+      file: tas-runtime/ci/tasks/shared/checkit/task.yml
+      input_mapping:
+        dev-repo: develop-branch
+        release-repo: release-branch
+    - task: print-bosh-job-spec-diff 
+      file: tas-runtime/ci/tasks/shared/print-bosh-job-spec-diff/task.yml
+      input_mapping:
+        release: develop-branch
+      params:
+        PRE_RELEAE: true
+    - task: build-release-notes
+      file: tas-runtime/ci/tasks/shared/build-release-notes/task.yml
+      input_mapping:
+        release: develop-branch
+        previous-github-release: github-release
+        bosh-job-diff: bosh-job-diff
+      params:
+        RELEASE_NAME: envoy-nginx-release
+      output_mapping:
+        release-notes: envoy-nginx-notes
+    - task: create-final-release
+      file: tas-runtime/ci/tasks/shared/create-final-release/task.yml
+      input_mapping:
+        release: develop-branch
+      params:
+        aws_access_key_id: ((bosh_windows_s3_admin_access_key_id))
+        aws_secret_access_key: ((bosh_windows_s3_admin_secret_access_key))
+        release_name: envoy-nginx
+    - put: release-branch
+      params:
+        repository: release-repo
+        tag: version/number
+        tag_prefix: v
+    - task: merge-release-into-develop
+      file: tas-runtime/ci/tasks/shared/merge-release/task.yml
+      params:
+        release_branch: release
+      input_mapping:
+        release: release-branch
+        dev: develop-branch-mergeback
+    - in_parallel:
+        steps:
+        - put: draft-github-release
+          params:
+            name: version/number
+            tag: version/number
+            tag_prefix: v
+            body: envoy-nginx-notes/notes.md
+            globs:
+            - final-release/envoy-nginx-*.tgz
+        - put: develop-branch-mergeback
+          params:
+            repository: release-merged
+    - get: next-version
+      resource: version
       params: {bump: minor}
-  - task: finalize-release
-    file: ci/tasks/finalize-release/task.yml
-    input_mapping: { release: envoy-nginx-release-develop }
-    params:
-      RELEASE_NAME: envoy-nginx
-      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
-      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-  - put: envoy-nginx-release-master
-    params:
-      repository: finalized-release/release
-      tag: version/number
-      tag_prefix: v
-  - put: envoy-nginx-release-develop
-    params:
-      repository: finalized-release/release
-      merge: true
-  - put: version
-    params: {file: version/number}
-  - task: generate-github-release
-    input_mapping: { release: finalized-repo }
-    file: ci/tasks/generate-github-release/task.yml
-  - put: envoy-nginx-release-github-release
-    params:
-      commitish: generated-release/commitish
-      name: generated-release/name
-      tag: generated-release/version
-      globs:
-      - finalized-release/envoy-nginx-*.tgz
+    - put: next-version
+      resource: version
+      params: {file: next-version/number}
