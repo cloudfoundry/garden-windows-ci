@@ -11,20 +11,6 @@ resources:
     branch: main
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
-- name: docker-ci
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/garden-windows-ci.git
-    paths: [ docker/Dockerfile.ci ]
-
-- name: ci-image
-  type: docker-image
-  source:
-    repository: cloudfoundry/garden-windows-ci
-    username: {{DOCKER_USERNAME}}
-    password: {{DOCKER_PASSWORD}}
-
 - name: windows-2019-stemcell
   type: bosh-io-stemcell
   source:
@@ -58,18 +44,6 @@ resources:
     private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
 
 jobs:
-- name: build-and-push
-  serial: true
-  plan:
-  - get: ci
-    resource: docker-ci
-    trigger: true
-  - put: ci-image
-    params:
-      build: ci/docker
-      dockerfile: ci/docker/Dockerfile.ci
-      tag_as_latest: true
-
 - name: update-concourse
   serial: true
   serial_groups: [ deploy ]
