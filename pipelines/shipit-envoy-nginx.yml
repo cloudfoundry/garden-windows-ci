@@ -1,0 +1,168 @@
+
+jobs:
+  - name: shipit
+    serial: true
+    plan:
+      - in_parallel:
+          steps:
+          - get: tas-runtime
+          - get: develop-branch
+          - get: release-branch
+            params:
+              submodules: none
+          - get: github-release
+          - get: version
+          - get: develop-branch-mergeback
+            params:
+              submodules: none
+
+      - task: check-safe-to-push-to-release-branch
+        file: tas-runtime/ci/tasks/shared/checkit/task.yml
+        input_mapping:
+          dev-repo: develop-branch
+          release-repo: release-branch
+
+      - task: print-bosh-job-spec-diff 
+        file: tas-runtime/ci/tasks/shared/print-bosh-job-spec-diff/task.yml
+        input_mapping:
+          release: develop-branch
+        params:
+          PRE_RELEAE: true
+      - task: build-release-notes-garden
+        file: tas-runtime/ci/tasks/shared/build-release-notes/task.yml
+        input_mapping:
+          release: develop-branch
+          previous-github-release: github-release
+          bosh-job-diff: bosh-job-diff
+        params:
+          RELEASE_NAME: envoy-nginx-release
+        output_mapping:
+          release-notes: envoy-nginx-notes
+
+
+      - task: build-release-tarball
+        file: tas-runtime/ci/tasks/shared/create-release-tarball/task.yml
+        input_mapping:
+          my-release: develop-branch 
+        params:
+          RELEASE_NAME: envoy-nginx
+      - task: finalize-bosh-release
+        file: tas-runtime/ci/tasks/shared/finalize-bosh-release/task.yml
+        input_mapping:
+          release: develop-branch
+          tarball: tarballs
+        params:
+          AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+          AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
+          RELEASE_NAME: envoy-nginx
+
+
+      - put: release-branch
+        params:
+          repository: release-repo
+          tag: version/number
+          tag_prefix: v
+      - task: merge-release-into-develop
+        file: tas-runtime/ci/tasks/shared/merge-release/task.yml
+        params:
+          release_branch: release
+        input_mapping:
+          release: release-branch
+          dev: develop-branch-mergeback
+
+
+      - in_parallel:
+          steps:
+          - put: draft-github-release
+            params:
+              name: version/number
+              tag: version/number
+              tag_prefix: v
+              body: envoy-nginx-notes/notes.md
+              globs:
+              - final-release/envoy-nginx-*.tgz
+          - put: develop-branch-mergeback
+            params:
+              repository: release-merged
+    
+
+      - get: next-version
+        resource: version
+        params: {bump: minor}
+      - put: next-version
+        resource: version
+        params: {file: next-version/number}
+
+
+
+      - task: exit-1
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source:
+              repository: cloudfoundry/tas-runtime-thin
+          run:
+            path: /bin/bash
+            args:
+              - -c
+              - |
+               exit 1
+
+resources:
+
+# git resoureces
+- name: tas-runtime
+  type: git
+  source:
+    uri: git@github.com:pivotal/tas-runtime.git
+    branch: main
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+
+- name: develop-branch
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/envoy-nginx-release.git
+    branch: develop
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+
+- name: release-branch 
+  type: git
+  source:
+    uri: git@github.com:reneighbor/envoy-nginx-release.git
+    branch: release
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+
+- name: develop-branch-mergeback
+  type: git
+  source:
+    uri: git@github.com:reneighbor/envoy-nginx-release.git
+    branch: develop
+    private_key: ((TAS-RUNTIME-GITHUB_PRIVATE_KEY))
+
+
+# release resources (github)
+- name: github-release
+  source:
+    access_token: ((tas-runtime-github-access-token))
+    repository: envoy-nginx-release
+    owner: reneighbor
+  type: github-release
+
+- name: draft-github-release # rename to draft-release-resource
+  source:
+    access_token: ((tas-runtime-github-access-token))
+    drafts: true
+    repository: envoy-nginx-release
+    owner: reneighbor
+  type: github-release
+
+- name: version
+  type: semver
+  source:
+    access_key_id: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
+    secret_access_key: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
+    bucket: rchu-envoy-nginx-release
+    initial_version: 0.16.0
+    key: version
+    region_name: us-east-1
