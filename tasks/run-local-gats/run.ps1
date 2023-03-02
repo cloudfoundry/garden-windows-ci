@@ -109,8 +109,7 @@ push-location garden-runc-release
   $env:GROOT_IMAGE_STORE="$grootImageStore"
 
   Push-Location src/garden-integration-tests
-    go mod vendor
-    ~/go/bin/ginkgo -randomizeSuites -noisyPendings=false
+    go run ginkgo -randomizeSuites -noisyPendings=false
     $ExitCode="$LastExitCode"
   Pop-Location
 Pop-Location
