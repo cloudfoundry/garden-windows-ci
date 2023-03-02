@@ -53,7 +53,7 @@ $nstarPath = "$PWD/nstar-binary/nstar.exe"
 
 push-location garden-runc-release
   push-location ./src/guardian
-    go build -o ../../gdn.exe ./cmd/gdn
+    go build -buildvcs=false -o ../../gdn.exe ./cmd/gdn
     if ($LastExitCode -ne 0) {
         throw "Building gdn.exe process returned error code: $LastExitCode"
     }
