@@ -109,7 +109,8 @@ push-location garden-runc-release
   $env:GROOT_IMAGE_STORE="$grootImageStore"
 
   Push-Location src/garden-integration-tests
-    go run github.com/onsi/ginkgo/ginkgo -randomizeSuites -noisyPendings=false
+    go install github.com/onsi/ginkgo/ginkgo@latest
+    ginkgo -randomizeSuites -noisyPendings=false
     $ExitCode="$LastExitCode"
   Pop-Location
 Pop-Location
