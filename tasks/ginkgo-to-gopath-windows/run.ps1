@@ -26,8 +26,8 @@ if ($LASTEXITCODE -ge 8) {
 # get tar on the path
 $env:PATH="$env:PATH;C:\var\vcap\bosh\bin"
 
-go get github.com/onsi/ginkgo/ginkgo
-go get github.com/onsi/gomega
+go install github.com/onsi/ginkgo/ginkgo@v1.16.5
+go install github.com/onsi/gomega@v1.27.2
 
 cd "$PACKAGE"
 go get ./...
