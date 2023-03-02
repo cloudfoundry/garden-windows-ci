@@ -616,21 +616,14 @@ jobs:
       RELEASE_NAME: winc-release
     output_mapping:
       release-notes: winc-notes
-  - task: build-release-tarball
-    file: tas-runtime/ci/tasks/shared/create-release-tarball/task.yml
-    input_mapping:
-      my-release: develop-branch 
-    params:
-      RELEASE_NAME: winc
-  - task: finalize-bosh-release
-    file: tas-runtime/ci/tasks/shared/finalize-bosh-release/task.yml
+  - task: create-final-release
+    file: tas-runtime/ci/tasks/shared/create-final-release/task.yml
     input_mapping:
       release: develop-branch
-      tarball: tarballs
     params:
-      AWS_ACCESS_KEY_ID: ((BOSH_WINDOWS_S3_ADMIN_ACCESS_KEY_ID))
-      AWS_SECRET_ACCESS_KEY: ((BOSH_WINDOWS_S3_ADMIN_SECRET_ACCESS_KEY))
-      RELEASE_NAME: winc
+      aws_access_key_id: ((bosh_windows_s3_admin_access_key_id))
+      aws_secret_access_key: ((bosh_windows_s3_admin_secret_access_key))
+      release_name: winc
   - put: release-branch
     params:
       repository: release-repo
