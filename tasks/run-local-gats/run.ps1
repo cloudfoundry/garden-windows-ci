@@ -110,7 +110,7 @@ push-location garden-runc-release
 
   Push-Location src/garden-integration-tests
     go install github.com/onsi/ginkgo/ginkgo@latest
-    ginkgo -randomizeSuites -noisyPendings=false
+    ginkgo -randomize-suites
     $ExitCode="$LastExitCode"
   Pop-Location
 Pop-Location
