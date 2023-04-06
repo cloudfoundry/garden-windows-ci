@@ -26,9 +26,9 @@ if ($LASTEXITCODE -ge 8) {
 # get tar on the path
 $env:PATH="$env:PATH;C:\var\vcap\bosh\bin"
 
-go install github.com/onsi/ginkgo/ginkgo@v1.16.5
+go install github.com/onsi/ginkgo/v2/ginkgo@latest
 
 cd "$PACKAGE"
 go get ./...
-& "$env:GOPATH/bin/ginkgo.exe" -nodes $env:NODES -r -race -keepGoing -randomizeSuites
+& "$env:GOPATH/bin/ginkgo.exe" -nodes $env:NODES -r -race -keep-going -randomize-suites
 Exit $LastExitCode

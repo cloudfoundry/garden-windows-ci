@@ -9,9 +9,9 @@ export GOPATH="$PWD/go"
 export GOBIN="$GOPATH/bin"
 export PATH="$PATH:$GOBIN"
 
-go install github.com/onsi/ginkgo/ginkgo@v1.16.5
+go install github.com/onsi/ginkgo/v2/ginkgo@latest
 
 pushd "go/src/$IMPORT_PATH"
   go get ./...
-  ginkgo -p -r -race -keepGoing -randomizeSuites -skipPackage "$IGNORE_PACKAGES"
+  ginkgo -p -r -race -keep-going -randomize-suites -skip-package "$IGNORE_PACKAGES"
 popd
