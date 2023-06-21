@@ -59,6 +59,4 @@ if ($LASTEXITCODE -ne 0) {
 
 Run-Docker "images", "-a"
 Run-Docker "login", "-u", "$env:DOCKER_USERNAME", "-p", "$env:DOCKER_PASSWORD"
-Run-Docker "push", "${env:IMAGE_NAME}:latest"
-Run-Docker "push", "${env:IMAGE_NAME}:$version"
-Run-Docker "push", "${env:IMAGE_NAME}:${env:OS_VERSION}"
+Run-Docker "push", "${env:IMAGE_NAME}:with-interactive-services"
