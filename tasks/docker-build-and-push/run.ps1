@@ -41,7 +41,7 @@ curl -UseBasicParsing -Outfile buildDir\rewrite.msi -Uri "https://download.micro
 cd buildDir
 
 Run-Docker "--version"
-Run-Docker "build", "-t", "${env:IMAGE_NAME}:with-interactive-services", "--pull", "."
+Run-Docker "build", "-t", "${env:IMAGE_NAME}:with-interactive-services-2", "--pull", "."
 
 # output systeminfo including hotfixes for documentation
 Run-Docker "run", "${env:IMAGE_NAME}:$version", "cmd", "/c", "systeminfo"
@@ -59,4 +59,4 @@ if ($LASTEXITCODE -ne 0) {
 
 Run-Docker "images", "-a"
 Run-Docker "login", "-u", "$env:DOCKER_USERNAME", "-p", "$env:DOCKER_PASSWORD"
-Run-Docker "push", "${env:IMAGE_NAME}:with-interactive-services"
+Run-Docker "push", "${env:IMAGE_NAME}:with-interactive-services-2"
