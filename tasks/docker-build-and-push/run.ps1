@@ -25,7 +25,7 @@ cp vcredist-ucrt\vcredist-ucrt.x64.exe buildDir\
 cp vcredist-ucrt-x86\vcredist-ucrt.x86.exe buildDir\
 cp vcredist-2010\vcredist-2010.x64.exe buildDir\
 cp vcredist-2010-x86\vcredist-2010.x86.exe buildDir\
-cp -Recurse repo/2019/iwa/app builddir\
+cp -Recurse repo/2019/iwa  builddir\
 
 if (Test-Path dotnet-48-installer) {
   cp dotnet-48-installer\dotnet-48-installer.exe buildDir\
