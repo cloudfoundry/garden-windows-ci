@@ -10,10 +10,7 @@ run:
   - "-ExecutionPolicy"
   - "Bypass"
   - "-File"
-  - ci/tasks/verify-iwa-functionality/run.ps1
+  - ci/tasks/verify-iwa-sql/run.ps1
 
 params:
   IWA_TEST_APP_ROUTE:
-  IWA_DOMAIN:
-  IWA_USERNAME:
-  IWA_PASSWORD:
