@@ -5,5 +5,7 @@ set -eux
 if [[ "$SKIP_TARBALL" == "true" ]]; then
   bosh -n create-release --dir=release --timestamp-version
 else
-  bosh -n create-release --dir=release --tarball=release-tarball/release.tgz --timestamp-version
+  pushd release
+  bosh -n create-release --tarball=../release-tarball/release.tgz --timestamp-version
+  popd
 fi
