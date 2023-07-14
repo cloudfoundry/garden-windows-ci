@@ -1,5 +1,8 @@
 ---
 - type: replace
-  path: /instance_groups/name=windows2019-cell/networks/name=default/static_ips?
-  value: [((windows2019_static_ip))]
+  path: /instance_groups/name=windows2019-cell/networks/-
+  value:
+    name: diego-cell-vip
+    static_ips: [((windows2019_static_ip))]
+    default: [gateway]
 
