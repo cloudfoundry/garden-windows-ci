@@ -4,8 +4,3 @@
   value:
     name: diego-cell-vip
     static_ips: [((windows2019_static_ip))]
-    default: [gateway]
-- type: replace
-  path: /instance_groups/name=windows2019-cell/networks/name=default/default?
-  value: [dns]
-
