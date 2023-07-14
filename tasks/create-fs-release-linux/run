@@ -4,5 +4,7 @@ set -e
 
 pushd windowsfs-release
   ./scripts/create-release --tarball ../release-tarball/release.tgz --timestamp-version
-  echo "$(grep "^name:" config/final.yml  | awk '{print $2}')" > ../release-tarball/name
+  echo "release.tgz" > ../release-tarball/name
+  mkdir ../release-tarball/config
+  cp config/final.yml ../release-tarball/config
 popd
