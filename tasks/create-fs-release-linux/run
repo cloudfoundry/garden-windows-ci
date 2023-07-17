@@ -6,5 +6,5 @@ pushd windowsfs-release
   ./scripts/create-release --tarball ../release.tgz --timestamp-version
 popd
 mkdir release-tarball/config
-cp windows-fs-release/config/final.yml release-tarball/config
+cp windowsfs-release/config/final.yml release-tarball/config
 echo "release.tgz" > release-tarball/name
