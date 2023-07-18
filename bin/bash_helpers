@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # When adding/deleting envs, put them in the right list here
-GITHUB_ENVS_CF="aioli,hummus,sriracha,pesto"
+GITHUB_ENVS_CF="hummus,pesto"
 CONCOURSE_ENV="spitfire"
 GITHUB_ENVS="$CONCOURSE_ENV,$GITHUB_ENVS_PCF"
 
@@ -11,7 +11,7 @@ bosh_target() {
   local environment=$1
 
   # comma seperated list of environments that run in our pipelines
-  local pipeline_envs="pesto,aioli,sriracha"
+  local pipeline_envs="pesto"
   if [[  ",$pipeline_envs," =~ .*\,$environment,.* ]]; then
     read -p "This director runs in a pipeline. Are you sure you want to target it? (yn) " -r
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -324,7 +324,7 @@ _project_name() {
     spitfire)
       echo "cf-greenhouse-$1"
       ;;
-    pesto | aioli | sriracha | hummus | sys.merced)
+    pesto | hummus | sys.merced)
       echo "$1"
       ;;
     edge.buildpacks-gcp.ci)
