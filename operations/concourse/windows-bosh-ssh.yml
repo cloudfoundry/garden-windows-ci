@@ -1,8 +1,0 @@
----
-- type: replace
-  path: /releases/name=windows-utilities?
-  value:
-    name: "windows-utilities"
-    version: "0.14.0"
-    url: "https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.14.0"
-    sha1: "7886ffd43b84d4eced06560ba601ce1eb97c6616"
