@@ -2,7 +2,7 @@
 
 # When adding/deleting envs, put them in the right list here
 GITHUB_ENVS_CF="hummus,pesto"
-CONCOURSE_ENV="spitfire"
+CONCOURSE_ENV=""
 GITHUB_ENVS="$CONCOURSE_ENV,$GITHUB_ENVS_PCF"
 
 # Bosh and CF target functions
@@ -321,9 +321,6 @@ _cf_creds_github() {
 
 _project_name() {
   case "$1" in
-    spitfire)
-      echo "cf-greenhouse-$1"
-      ;;
     pesto | hummus | sys.merced)
       echo "$1"
       ;;
