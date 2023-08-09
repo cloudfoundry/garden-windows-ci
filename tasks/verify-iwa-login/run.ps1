@@ -7,6 +7,7 @@ $curlOutput = curl.exe -s $env:IWA_TEST_APP_ROUTE --negotiate -u $authString | O
 $testString =  "Logged in as $env:IWA_DOMAIN\\$env:IWA_USERNAME via method Negotiate."
 if ($curlOutput -like "*$testString*") {
   Write-Host "success!"
+  Write-Host "Curl output: $curlOutput"
   exit 0
 }
 else {

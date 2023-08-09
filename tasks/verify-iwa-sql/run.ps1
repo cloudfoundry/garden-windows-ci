@@ -2,6 +2,7 @@
 
 $curlOutput = curl.exe -s $env:IWA_TEST_APP_ROUTE | Out-String
 
+# Magic string pre-populated in the IWA database
 $testString =  "AJ, 18"
 if ($curlOutput -like "*$testString*") {
   Write-Host "success!"
