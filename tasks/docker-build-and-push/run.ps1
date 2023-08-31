@@ -20,7 +20,6 @@ $version=(cat version/number)
 mkdir buildDir
 cp $env:DOCKERFILE buildDir\Dockerfile
 cp git-setup\Git-*-64-bit.exe buildDir\
-cp tar\tar-*.exe buildDir\
 cp vcredist-ucrt\vcredist-ucrt.x64.exe buildDir\
 cp vcredist-ucrt-x86\vcredist-ucrt.x86.exe buildDir\
 cp vcredist-2010\vcredist-2010.x64.exe buildDir\

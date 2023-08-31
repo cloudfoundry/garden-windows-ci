@@ -6,7 +6,6 @@ inputs:
 - name: version
 - name: repo
 - name: git-setup
-- name: tar
 - name: vcredist-2010
 - name: vcredist-2010-x86
 - name: vcredist-ucrt
