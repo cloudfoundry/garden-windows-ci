@@ -1,5 +1,7 @@
 FROM ruby:2.7
 
+ARG go_version
+
 ENV bbl_version 7.4.0
 ENV bosh_cli_version 5.4.0
 ENV cf_cli_version 6.44.1
@@ -7,10 +9,6 @@ ENV cf_cli_version 6.44.1
 ENV DEP_VERSION v0.4.1
 ENV DEP_DOWNLOAD_URL "https://github.com/golang/dep/releases/download/$DEP_VERSION/dep-linux-amd64"
 ENV DEP_DOWNLOAD_SHA256 31144e465e52ffbc0035248a10ddea61a09bf28b00784fd3fdd9882c8cbb2315
-
-ENV GOLANG_VERSION 1.19.1
-ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
-ENV GOLANG_DOWNLOAD_SHA256 acc512fbab4f716a8f97a8b3fbaa9ddd39606a28be6c2515ef7c6c6311acffde
 
 ENV GINKGO_VERSION latest
 
@@ -53,10 +51,8 @@ RUN \
   chmod +x /usr/bin/bosh
 
 # golang
-RUN curl -fsSL "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
-    && echo "$GOLANG_DOWNLOAD_SHA256  golang.tar.gz" | sha256sum -c - \
-    && tar -C /usr/local -xzf golang.tar.gz \
-    && rm golang.tar.gz
+RUN \
+  wget -qO- https://dl.google.com/go/go${go_version}.linux-amd64.tar.gz | tar -C /usr/local -xzf -
 
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
