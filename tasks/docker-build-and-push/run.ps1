@@ -40,6 +40,7 @@ curl -UseBasicParsing -Outfile buildDir\rewrite.msi -Uri "https://download.micro
 
 cd buildDir
 
+Write-Host "Building image using the '$digest' provided by Concourse"
 Run-Docker "--version"
 Run-Docker "build", "--build-arg", "BASE_IMAGE_DIGEST=@$digest", "-t", "$env:IMAGE_NAME", "-t", "${env:IMAGE_NAME}:$version", "-t", "${env:IMAGE_NAME}:${env:OS_VERSION}", "--pull", "."
 
