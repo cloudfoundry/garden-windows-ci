@@ -16,6 +16,7 @@ $repoPath = (Resolve-Path repo).Path
 restart-service docker
 
 $version=(cat version/number)
+$digest=(cat upstream-image/digest)
 
 mkdir buildDir
 cp $env:DOCKERFILE buildDir\Dockerfile
@@ -40,7 +41,7 @@ curl -UseBasicParsing -Outfile buildDir\rewrite.msi -Uri "https://download.micro
 cd buildDir
 
 Run-Docker "--version"
-Run-Docker "build", "-t", "$env:IMAGE_NAME", "-t", "${env:IMAGE_NAME}:$version", "-t", "${env:IMAGE_NAME}:${env:OS_VERSION}", "--pull", "."
+Run-Docker "build", "--build-arg", "BASE_IMAGE_DIGEST=@$digest", "-t", "$env:IMAGE_NAME", "-t", "${env:IMAGE_NAME}:$version", "-t", "${env:IMAGE_NAME}:${env:OS_VERSION}", "--pull", "."
 
 # output systeminfo including hotfixes for documentation
 Run-Docker "run", "${env:IMAGE_NAME}:$version", "cmd", "/c", "systeminfo"

@@ -10,6 +10,7 @@ inputs:
 - name: vcredist-2010-x86
 - name: vcredist-ucrt
 - name: vcredist-ucrt-x86
+- name: upstream-image
 - name: dotnet-48-installer
   optional: true
 
